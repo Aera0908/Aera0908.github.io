@@ -26,7 +26,7 @@ const Hero = () => {
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-gradient"></div>
               <div className="relative">
                 <img
-                  src={`${import.meta.env.BASE_URL}ynte_pic.jpg`}
+                  src={`${import.meta.env.BASE_URL}ynte_pic.jpg?v=2`}
                   alt="Aira Josh Ynte"
                   className="w-48 h-48 rounded-full object-cover border-4 border-white/20 shadow-2xl"
                   style={{ objectPosition: 'center center' }}
