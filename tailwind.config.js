@@ -12,6 +12,7 @@ export default {
         'slide-down': 'slideDown 0.6s ease-out',
         'bounce-slow': 'bounce 3s infinite',
         'gradient': 'gradient 8s linear infinite',
+        'flameFlicker': 'flameFlicker 1.5s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -29,6 +30,16 @@ export default {
         gradient: {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
+        },
+        flameFlicker: {
+          '0%, 100%': { 
+            transform: 'scale(1)',
+            opacity: '0.6'
+          },
+          '50%': { 
+            transform: 'scale(1.2)',
+            opacity: '0.9'
+          },
         },
       },
     },

@@ -14,6 +14,71 @@
   .gradient-text {
     @apply bg-gradient-to-r from-red-500 via-red-400 to-orange-500 bg-clip-text text-transparent;
   }
+
+  /* Discord-style animated avatar frame */
+  .discord-frame-ring {
+    animation: discordRotate 20s linear infinite;
+  }
+
+  @keyframes discordRotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .discord-border {
+    background: conic-gradient(
+      from 0deg,
+      rgba(239, 68, 68, 0.8) 0deg,
+      rgba(220, 38, 38, 0.6) 60deg,
+      rgba(185, 28, 28, 0.4) 120deg,
+      rgba(220, 38, 38, 0.6) 180deg,
+      rgba(239, 68, 68, 0.8) 240deg,
+      rgba(249, 115, 22, 0.8) 300deg,
+      rgba(239, 68, 68, 0.8) 360deg
+    );
+    animation: discordBorderSpin 6s linear infinite;
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.5),
+                inset 0 0 30px rgba(239, 68, 68, 0.3);
+  }
+
+  @keyframes discordBorderSpin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .discord-particle {
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, 
+      rgba(239, 68, 68, 1) 0%,
+      rgba(220, 38, 38, 0.8) 50%,
+      rgba(185, 28, 28, 0) 100%
+    );
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.8),
+                0 0 20px rgba(220, 38, 38, 0.5);
+    animation: discordParticlePulse 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes discordParticlePulse {
+    0%, 100% {
+      transform: scale(1) translateY(0);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.5) translateY(-5px);
+      opacity: 1;
+    }
+  }
   
   .card {
     @apply bg-black/40 backdrop-blur-lg rounded-xl p-6 border border-red-900/30 shadow-xl;
