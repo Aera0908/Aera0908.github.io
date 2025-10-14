@@ -29,7 +29,7 @@ const Hero = () => {
                   src={`${import.meta.env.BASE_URL}ynte_pic.jpg`}
                   alt="Aira Josh Ynte"
                   className="w-48 h-48 rounded-full object-cover border-4 border-white/20 shadow-2xl"
-                  style={{ objectPosition: 'center 20%' }}
+                  style={{ objectPosition: 'center center' }}
                   onError={(e) => {
                     console.error('Image failed to load');
                     e.currentTarget.src = 'https://via.placeholder.com/200';
