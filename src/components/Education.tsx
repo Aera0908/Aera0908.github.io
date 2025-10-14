@@ -4,7 +4,7 @@ const Education = () => {
       icon: '🎓',
       school: 'Colegio de Muntinlupa',
       degree: 'Bachelor of Science in Computer Engineering',
-      period: '2020 – 2026 (Expected)',
+      period: '2022 – 2026 (Expected)',
       location: 'Muntinlupa City, Philippines',
       highlights: [
         'Focused on digital electronics, circuit design, and computer architecture',
@@ -18,7 +18,7 @@ const Education = () => {
       icon: '🏫',
       school: 'Muntinlupa Science High School',
       degree: 'Senior & Junior High School',
-      period: '2016 – 2020',
+      period: '2016 – 2022',
       location: 'Muntinlupa City, Philippines',
       highlights: [
         'Managed the Xepto Education website during work immersion',
