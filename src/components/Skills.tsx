@@ -2,7 +2,7 @@ const Skills = () => {
   const skillCategories = [
     {
       title: '💻 Programming Languages',
-      color: 'blue',
+      color: 'red',
       skills: [
         { name: 'C++', color: '00599C' },
         { name: 'Java', color: 'ED8B00' },
@@ -15,7 +15,7 @@ const Skills = () => {
     },
     {
       title: '🚀 Frameworks & Libraries',
-      color: 'purple',
+      color: 'orange',
       skills: [
         { name: 'React', color: '61DAFB' },
         { name: 'TailwindCSS', color: '38B2AC' },
@@ -26,7 +26,7 @@ const Skills = () => {
     },
     {
       title: '☁️ Cloud & DevOps',
-      color: 'pink',
+      color: 'red',
       skills: [
         { name: 'Firebase', color: 'FFCA28' },
         { name: 'Google Cloud', color: '4285F4' },
@@ -36,7 +36,7 @@ const Skills = () => {
     },
     {
       title: '🗄️ Databases',
-      color: 'green',
+      color: 'orange',
       skills: [
         { name: 'MySQL', color: '4479A1' },
         { name: 'MariaDB', color: '003545' },
@@ -56,7 +56,7 @@ const Skills = () => {
     },
     {
       title: '🔧 Hardware & IoT',
-      color: 'yellow',
+      color: 'orange',
       skills: [
         { name: 'Arduino', color: '00979D' },
         { name: 'Raspberry Pi', color: 'C51A4A' },

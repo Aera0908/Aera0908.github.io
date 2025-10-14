@@ -4,13 +4,13 @@ const Logo = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="w-10 h-10">
     <defs>
       <linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style={{ stopColor: '#3B82F6', stopOpacity: 1 }} />
-        <stop offset="50%" style={{ stopColor: '#8B5CF6', stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: '#EC4899', stopOpacity: 1 }} />
+        <stop offset="0%" style={{ stopColor: '#DC2626', stopOpacity: 1 }} />
+        <stop offset="50%" style={{ stopColor: '#EF4444', stopOpacity: 1 }} />
+        <stop offset="100%" style={{ stopColor: '#F97316', stopOpacity: 1 }} />
       </linearGradient>
     </defs>
     <circle cx="50" cy="50" r="48" fill="url(#navGrad)" />
-    <circle cx="50" cy="50" r="42" fill="#1E293B" opacity="0.95" />
+    <circle cx="50" cy="50" r="42" fill="#000000" opacity="0.95" />
     <text 
       x="50" 
       y="63" 

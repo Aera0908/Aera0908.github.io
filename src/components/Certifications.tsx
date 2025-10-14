@@ -6,7 +6,7 @@ const Certifications = () => {
       description: 'Basic Web Development Workshop (June 15)',
       url: 'https://github.com/Aera0908/certificates/raw/main/Aira%20Josh%20C.%20Ynte%20Basic%20Web%20Development%20Workshop%20(June%2015)%20-%20Certificate%20of%20Participation%20(1).pdf',
       icon: '🎮',
-      color: 'blue',
+      color: 'red',
     },
     {
       name: 'Learn React Certificate',
@@ -14,7 +14,7 @@ const Certifications = () => {
       description: 'Comprehensive React.js course completion',
       url: 'https://github.com/Aera0908/certificates/raw/main/Learn%20React%20Certificate.pdf',
       icon: '⚛️',
-      color: 'cyan',
+      color: 'orange',
     },
     {
       name: 'Learn TailwindCSS Certificate',
@@ -22,7 +22,7 @@ const Certifications = () => {
       description: 'Modern utility-first CSS framework mastery',
       url: 'https://github.com/Aera0908/certificates/raw/main/Learn%20Tailwind%20CSS.pdf',
       icon: '🎨',
-      color: 'teal',
+      color: 'red',
     },
     {
       name: 'The AI Engineer Path Certificate',
@@ -30,12 +30,12 @@ const Certifications = () => {
       description: 'AI integration and engineering fundamentals',
       url: 'https://github.com/Aera0908/certificates/raw/main/The%20AI%20Engineer%20Path.pdf',
       icon: '🤖',
-      color: 'purple',
+      color: 'orange',
     },
   ]
 
   return (
-    <section id="certifications" className="py-20 px-4 bg-white/5">
+    <section id="certifications" className="py-20 px-4 bg-black/20">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
           <span className="gradient-text">📜 Certifications</span>
@@ -56,12 +56,12 @@ const Certifications = () => {
                   {cert.icon}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-red-400 transition-colors">
                     {cert.name}
                   </h3>
-                  <p className="text-sm text-purple-400 mb-2">{cert.issuer}</p>
-                  <p className="text-gray-400 text-sm mb-3">{cert.description}</p>
-                  <div className="flex items-center text-sm text-blue-400 group-hover:text-blue-300">
+                  <p className="text-sm text-orange-400 mb-2">{cert.issuer}</p>
+                  <p className="text-gray-200 text-sm mb-3">{cert.description}</p>
+                  <div className="flex items-center text-sm text-red-400 group-hover:text-red-300">
                     <span>View Certificate</span>
                     <svg
                       className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
@@ -84,7 +84,7 @@ const Certifications = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-gray-400">
+          <p className="text-gray-200">
             💡 Continuously learning and expanding my skill set!
           </p>
         </div>

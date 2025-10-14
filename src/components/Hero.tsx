@@ -23,12 +23,12 @@ const Hero = () => {
           {/* Profile Photo */}
           <div className="mb-8 flex justify-center">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-gradient"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-red-600 via-red-500 to-orange-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-gradient"></div>
               <div className="relative">
                 <img
                   src={`${import.meta.env.BASE_URL}ynte_pic.jpg?v=2`}
                   alt="Aira Josh Ynte"
-                  className="w-48 h-48 rounded-full object-cover border-4 border-white/20 shadow-2xl"
+                  className="w-48 h-48 rounded-full object-cover border-4 border-red-900/40 shadow-2xl shadow-red-900/50"
                   style={{ objectPosition: 'center center' }}
                   onError={(e) => {
                     console.error('Image failed to load');
@@ -46,11 +46,11 @@ const Hero = () => {
             <span className="gradient-text">Aira Josh Ynte</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-6">
+          <p className="text-xl md:text-2xl text-gray-100 mb-6">
             🎓 Computer Engineering Student
           </p>
           
-          <p className="text-lg text-gray-400 mb-4">
+          <p className="text-lg text-gray-200 mb-4">
             📍 Muntinlupa City, Philippines
           </p>
 
@@ -69,7 +69,7 @@ const Hero = () => {
             </div>
           </div>
 
-          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-100 mb-12 max-w-2xl mx-auto">
             🚀 Eager to apply technical skills in real-world projects through internship opportunities!
           </p>
 
@@ -83,7 +83,7 @@ const Hero = () => {
             </button>
             <button
               onClick={() => scrollToSection('contact')}
-              className="px-6 py-3 rounded-lg font-semibold border-2 border-purple-500 hover:bg-purple-500/20 transition-all duration-300 transform hover:scale-105"
+              className="px-6 py-3 rounded-lg font-semibold border-2 border-red-600 hover:bg-red-600/20 transition-all duration-300 transform hover:scale-105"
             >
               Get in Touch
             </button>
@@ -92,7 +92,7 @@ const Hero = () => {
           {/* Scroll Indicator */}
           <div className="mt-16 animate-bounce-slow">
             <svg
-              className="w-6 h-6 mx-auto text-gray-400"
+              className="w-6 h-6 mx-auto text-gray-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

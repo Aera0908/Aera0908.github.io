@@ -8,32 +8,32 @@ const About = () => {
 
         <div className="grid md:grid-cols-2 gap-8">
           <div className="card animate-slide-up">
-            <h3 className="text-2xl font-semibold mb-4 text-blue-400">
+            <h3 className="text-2xl font-semibold mb-4 text-red-400">
               💡 Background
             </h3>
-            <p className="text-gray-300 leading-relaxed">
+            <p className="text-gray-100 leading-relaxed">
               Detail-oriented and motivated student with a strong foundation in{' '}
-              <span className="text-purple-400 font-semibold">digital circuit design</span>,{' '}
-              <span className="text-purple-400 font-semibold">logic simulation</span>, and{' '}
-              <span className="text-purple-400 font-semibold">hardware programming</span>.
+              <span className="text-orange-400 font-semibold">digital circuit design</span>,{' '}
+              <span className="text-orange-400 font-semibold">logic simulation</span>, and{' '}
+              <span className="text-orange-400 font-semibold">hardware programming</span>.
             </p>
           </div>
 
           <div className="card animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            <h3 className="text-2xl font-semibold mb-4 text-purple-400">
+            <h3 className="text-2xl font-semibold mb-4 text-red-500">
               🛠️ Expertise
             </h3>
-            <p className="text-gray-300 leading-relaxed">
+            <p className="text-gray-100 leading-relaxed">
               I have hands-on experience using EDA tools, programming languages, and modern web technologies. 
               I love building things—from hardware circuits to AI-enhanced web interfaces!
             </p>
           </div>
 
           <div className="card animate-slide-up md:col-span-2" style={{ animationDelay: '0.2s' }}>
-            <h3 className="text-2xl font-semibold mb-4 text-pink-400">
+            <h3 className="text-2xl font-semibold mb-4 text-orange-500">
               🎯 Experience & Projects
             </h3>
-            <ul className="space-y-3 text-gray-300">
+            <ul className="space-y-3 text-gray-100">
               <li className="flex items-start">
                 <span className="text-2xl mr-3">💼</span>
                 <div>

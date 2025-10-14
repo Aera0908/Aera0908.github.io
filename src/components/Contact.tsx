@@ -52,7 +52,7 @@ const Contact = () => {
           <span className="gradient-text">📬 Get in Touch</span>
         </h2>
         
-        <p className="text-xl text-center text-gray-300 mb-12 max-w-2xl mx-auto">
+        <p className="text-xl text-center text-gray-100 mb-12 max-w-2xl mx-auto">
           I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions!
         </p>
 
@@ -74,7 +74,7 @@ const Contact = () => {
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{link.name}</h3>
-                <p className="text-gray-400 text-sm break-words px-2">{link.username}</p>
+                <p className="text-gray-200 text-sm break-words px-2">{link.username}</p>
                 <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                   <span className="text-blue-400 text-sm">Click to connect →</span>
                 </div>
@@ -127,7 +127,7 @@ const Contact = () => {
           <h3 className="text-2xl font-bold mb-4">
             🚀 Looking for Internship Opportunities!
           </h3>
-          <p className="text-gray-300 mb-6">
+          <p className="text-gray-100 mb-6">
             I'm actively seeking internship positions where I can contribute my skills in 
             digital systems, IC design, web development, and AI integration while continuing to learn and grow.
           </p>

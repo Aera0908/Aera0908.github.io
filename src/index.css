@@ -4,29 +4,29 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900;
+    @apply bg-slate-950;
     @apply min-h-screen;
-    @apply text-white;
+    @apply text-gray-50;
   }
 }
 
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-red-500 via-red-400 to-orange-500 bg-clip-text text-transparent;
   }
   
   .card {
-    @apply bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-xl;
-    @apply hover:bg-white/15 transition-all duration-300;
-    @apply hover:shadow-2xl hover:-translate-y-1;
+    @apply bg-black/40 backdrop-blur-lg rounded-xl p-6 border border-red-900/30 shadow-xl;
+    @apply hover:bg-black/60 hover:border-red-700/50 transition-all duration-300;
+    @apply hover:shadow-2xl hover:shadow-red-900/20 hover:-translate-y-1;
   }
   
   .btn-primary {
     @apply px-6 py-3 rounded-lg font-semibold;
-    @apply bg-gradient-to-r from-blue-500 to-purple-600;
-    @apply hover:from-blue-600 hover:to-purple-700;
+    @apply bg-gradient-to-r from-red-600 to-red-800;
+    @apply hover:from-red-500 hover:to-red-700;
     @apply transform hover:scale-105 transition-all duration-300;
-    @apply shadow-lg hover:shadow-xl;
+    @apply shadow-lg hover:shadow-xl hover:shadow-red-600/50;
   }
   
   .tech-badge {
@@ -40,6 +40,16 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Navbar needs pointer events for navigation */
+nav {
+  pointer-events: auto !important;
+}
+
+/* Make clickable elements capture pointer events */
+button, a, input, textarea, select {
+  pointer-events: auto !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
@@ -50,11 +60,11 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  background: linear-gradient(to bottom, #dc2626, #991b1b);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #2563eb, #7c3aed);
+  background: linear-gradient(to bottom, #ef4444, #7f1d1d);
 }
 
