@@ -78,7 +78,7 @@ const Hero = () => {
           </p>
           
           <p className="text-lg text-gray-200 mb-4">
-            📍 Muntinlupa City, Philippines
+            📍 Muntinlupa City, Metro Manila, Philippines
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">
@@ -102,9 +102,19 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap justify-center gap-4">
+            <a
+              href={`${import.meta.env.BASE_URL}Aira_Josh_Ynte_Resume.pdf`}
+              download="Aira_Josh_Ynte_Resume.pdf"
+              className="btn-primary inline-flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Download Resume
+            </a>
             <button
               onClick={() => scrollToSection('about')}
-              className="btn-primary"
+              className="px-6 py-3 rounded-lg font-semibold border-2 border-red-600 hover:bg-red-600/20 transition-all duration-300 transform hover:scale-105"
             >
               Learn More
             </button>

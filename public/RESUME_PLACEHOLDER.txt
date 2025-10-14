@@ -1,0 +1,17 @@
+📄 Resume PDF Placeholder
+
+To add your resume:
+
+1. Create or export your resume as a PDF file
+2. Name it: Aira_Josh_Ynte_Resume.pdf
+3. Place it in the public/ folder (replace this file)
+4. The download button will automatically work!
+
+Tips:
+- Keep filename exactly as: Aira_Josh_Ynte_Resume.pdf
+- Or update the filename in src/components/Hero.tsx if you use a different name
+- File size should be under 5MB for fast downloads
+- Make sure it's optimized for web viewing
+
+Current file path expected: public/Aira_Josh_Ynte_Resume.pdf
+

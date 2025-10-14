@@ -6,6 +6,7 @@ import Certifications from './components/Certifications'
 import Contact from './components/Contact'
 import Navbar from './components/Navbar'
 import SplineBackground from './components/SplineBackground'
+import FloatingDownloadButton from './components/FloatingDownloadButton'
 
 function App() {
   return (
@@ -32,6 +33,9 @@ function App() {
           </p>
         </footer>
       </div>
+
+      {/* Floating Download Button */}
+      <FloatingDownloadButton />
     </div>
   )
 }
