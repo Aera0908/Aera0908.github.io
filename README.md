@@ -196,7 +196,7 @@ This project is open source and available under the MIT License.
 **Aira Josh Ynte**
 
 - LinkedIn: [Aira Josh Ynte](https://linkedin.com/in/aira-josh-ynte-755353322)
-- Instagram: [@Aera0908](https://instagram.com/Aera0908)
+- Instagram: [@area0908](https://instagram.com/area0908)
 - Email: 08airajosh@gmail.com
 - GitHub: [@Aera0908](https://github.com/Aera0908)
 - Discord: aeradynamics

@@ -21,8 +21,8 @@ const Contact = () => {
     },
     {
       name: 'Instagram',
-      username: '@Aera0908',
-      url: 'https://instagram.com/Aera0908',
+      username: '@area0908',
+      url: 'https://instagram.com/area0908',
       icon: FaInstagram,
       color: 'pink',
       bgColor: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500',
@@ -85,7 +85,7 @@ const Contact = () => {
 
         {/* Social Badges */}
         <div className="mt-12 flex flex-wrap justify-center gap-4">
-          <a href="https://instagram.com/Aera0908" target="_blank" rel="noopener noreferrer">
+          <a href="https://instagram.com/area0908" target="_blank" rel="noopener noreferrer">
             <img
               src="https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white"
               alt="Instagram"
