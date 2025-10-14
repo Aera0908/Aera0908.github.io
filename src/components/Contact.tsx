@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { FaLinkedin, FaInstagram, FaGithub, FaDiscord } from 'react-icons/fa'
 import { HiMail } from 'react-icons/hi'
+import ContactForm from './ContactForm'
 
 const Contact = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false)
   const socialLinks = [
     {
       name: 'Email',
@@ -131,14 +134,17 @@ const Contact = () => {
             I'm actively seeking internship positions where I can contribute my skills in 
             digital systems, IC design, web development, and AI integration while continuing to learn and grow.
           </p>
-          <a
-            href="mailto:08airajosh@gmail.com"
+          <button
+            onClick={() => setIsFormOpen(true)}
             className="btn-primary inline-block"
           >
             📩 Send me an email
-          </a>
+          </button>
         </div>
       </div>
+
+      {/* Contact Form Modal */}
+      <ContactForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
     </section>
   )
 }
