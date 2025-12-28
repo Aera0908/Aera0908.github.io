@@ -15,6 +15,11 @@
     @apply bg-gradient-to-r from-red-500 via-red-400 to-orange-500 bg-clip-text text-transparent;
   }
 
+  /* 3D Perspective for carousel */
+  .perspective-\[2000px\] {
+    perspective: 2000px;
+  }
+
   /* Discord-style animated avatar frame */
   .discord-frame-ring {
     animation: discordRotate 20s linear infinite;

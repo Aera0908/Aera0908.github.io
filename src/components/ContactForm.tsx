@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { HiX } from 'react-icons/hi'
+import { HiX, HiMail } from 'react-icons/hi'
+import { IoCheckmarkCircleOutline, IoCloseCircleOutline, IoSend } from 'react-icons/io5'
 
 interface ContactFormProps {
   isOpen: boolean
@@ -76,8 +77,11 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
           >
             <HiX className="w-6 h-6" />
           </button>
-          <h2 className="text-2xl font-bold gradient-text">📧 Get in Touch</h2>
-          <p className="text-gray-300 mt-2">Send me a message and I'll get back to you soon!</p>
+          <h2 className="text-2xl font-bold gradient-text flex items-center gap-2">
+            <HiMail className="inline" />
+            Get in Touch
+          </h2>
+          <p className="text-gray-300 mt-2 text-justify">Send me a message and I'll get back to you soon!</p>
         </div>
 
         {/* Form */}
@@ -152,14 +156,16 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
 
           {/* Status Messages */}
           {status === 'success' && (
-            <div className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400">
-              ✅ Message sent successfully! I'll get back to you soon.
+            <div className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 flex items-center gap-2">
+              <IoCheckmarkCircleOutline className="text-xl flex-shrink-0" />
+              Message sent successfully! I'll get back to you soon.
             </div>
           )}
 
           {status === 'error' && (
-            <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400">
-              ❌ Oops! Something went wrong. Please try again or email me directly.
+            <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 flex items-center gap-2">
+              <IoCloseCircleOutline className="text-xl flex-shrink-0" />
+              Oops! Something went wrong. Please try again or email me directly.
             </div>
           )}
 
@@ -176,7 +182,7 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
               </>
             ) : (
               <>
-                <span>📤</span>
+                <IoSend className="text-lg" />
                 Send Message
               </>
             )}

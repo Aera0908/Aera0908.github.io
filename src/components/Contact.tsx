@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { FaLinkedin, FaInstagram, FaGithub, FaDiscord } from 'react-icons/fa'
+import { FaLinkedin, FaGithub, FaDiscord, FaRocket } from 'react-icons/fa'
 import { HiMail } from 'react-icons/hi'
+import { MdMailOutline } from 'react-icons/md'
 import ContactForm from './ContactForm'
 
 const Contact = () => {
@@ -21,14 +22,6 @@ const Contact = () => {
       icon: FaLinkedin,
       color: 'blue',
       bgColor: 'bg-blue-600',
-    },
-    {
-      name: 'Instagram',
-      username: '@area0908',
-      url: 'https://instagram.com/area0908',
-      icon: FaInstagram,
-      color: 'pink',
-      bgColor: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500',
     },
     {
       name: 'GitHub',
@@ -52,14 +45,17 @@ const Contact = () => {
     <section id="contact" className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
-          <span className="gradient-text">📬 Get in Touch</span>
+          <span className="gradient-text inline-flex items-center gap-2">
+            <HiMail className="inline" />
+            Get in Touch
+          </span>
         </h2>
         
-        <p className="text-xl text-center text-gray-100 mb-12 max-w-2xl mx-auto">
+        <p className="text-xl text-center text-gray-100 mb-12 max-w-2xl mx-auto text-justify">
           I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions!
         </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
           {socialLinks.map((link, index) => {
             const IconComponent = link.icon
             return (
@@ -88,13 +84,6 @@ const Contact = () => {
 
         {/* Social Badges */}
         <div className="mt-12 flex flex-wrap justify-center gap-4">
-          <a href="https://instagram.com/area0908" target="_blank" rel="noopener noreferrer">
-            <img
-              src="https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white"
-              alt="Instagram"
-              className="tech-badge"
-            />
-          </a>
           <a href="https://linkedin.com/in/aira-josh-ynte-755353322" target="_blank" rel="noopener noreferrer">
             <img
               src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white"
@@ -127,18 +116,20 @@ const Contact = () => {
 
         {/* Call to Action */}
         <div className="mt-16 card text-center max-w-3xl mx-auto">
-          <h3 className="text-2xl font-bold mb-4">
-            🚀 Looking for Internship Opportunities!
+          <h3 className="text-2xl font-bold mb-4 flex items-center justify-center gap-2">
+            <FaRocket className="text-red-400" />
+            Looking for Internship Opportunities!
           </h3>
-          <p className="text-gray-100 mb-6">
+          <p className="text-gray-100 mb-6 text-justify">
             I'm actively seeking internship positions where I can contribute my skills in 
             digital systems, IC design, web development, and AI integration while continuing to learn and grow.
           </p>
           <button
             onClick={() => setIsFormOpen(true)}
-            className="btn-primary inline-block"
+            className="btn-primary inline-flex items-center gap-2"
           >
-            📩 Send me an email
+            <MdMailOutline className="text-xl" />
+            Send me an email
           </button>
         </div>
       </div>

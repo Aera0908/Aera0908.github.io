@@ -3,6 +3,7 @@ import About from './components/About'
 import Education from './components/Education'
 import Skills from './components/Skills'
 import Certifications from './components/Certifications'
+import Portfolio from './components/Portfolio'
 import Contact from './components/Contact'
 import Navbar from './components/Navbar'
 import SplineBackground from './components/SplineBackground'
@@ -23,6 +24,7 @@ function App() {
           <Education />
           <Skills />
           <Certifications />
+          <Portfolio />
           <Contact />
         </main>
 

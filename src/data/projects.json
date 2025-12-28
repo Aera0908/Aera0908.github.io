@@ -1,0 +1,29 @@
+[
+  {
+    "title": "AeroVit - Gamified AI Fitness Platform",
+    "description": "Innovative fitness ecosystem combining wearable technology, real-time AI coaching, and blockchain-based rewards.",
+    "fullDescription": "AeroVit is a comprehensive fitness platform featuring a custom ESP32-based smartwatch, cross-platform mobile application, and AI-powered coaching system. It integrates multi-sensor fusion (HR, SpO2, IMU, temperature), real-time pose tracking with BlazePose for 22 exercises, and an adaptive AI coach using Reinforcement Learning (PPO algorithm). The system provides personalized guidance based on real-time biometrics and computer vision, with planned Web3 rewards integration. Key innovations include IMU-based and vision-based exercise tracking, gesture controls, fall detection, and a scientifically-derived pose detection system trained on 31,033 samples.",
+    "technologies": ["ESP32-S3", "Flutter", "Dart", "Firebase", "PyTorch", "MediaPipe", "BLE", "Reinforcement Learning", "AWS SageMaker", "Web3"],
+    "image": "/aerovit.png",
+    "role": "Lead Developer & Hardware Engineer",
+    "duration": "September 2024 - Present (In Development - 40% Complete)"
+  },
+  {
+    "title": "Student Consultation System",
+    "description": "A modern, full-stack web application for managing student-professor consultations with real-time messaging, scheduling, and comprehensive user management.",
+    "fullDescription": "The Student Consultation System is a comprehensive web platform designed to streamline the consultation process between students and professors. It features separate role-based interfaces with real-time messaging, interactive scheduling calendars, consultation request management, and notification systems. Built with a three-tier architecture, it includes professor discovery, consultation booking with status tracking (pending, approved, ongoing, completed), file attachment support, profile management with photo cropping, dashboard analytics, and announcement posting. The system implements JWT authentication, bcrypt password hashing, PostgreSQL database with optimized queries, and image processing with Sharp for profile photos. Client project - screenshots not available per confidentiality agreement.",
+    "technologies": ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "JWT", "Tailwind CSS", "Vite", "Multer", "Sharp"],
+    "image": "https://placehold.co/1200x675/1e293b/ef4444?text=Student+Consultation+System",
+    "role": "Full-Stack Developer",
+    "duration": "Academic Project - Completed"
+  },
+  {
+    "title": "EMG Interface Controller",
+    "description": "Real-time electromyography (EMG) signal processing and visualization system for muscle activity monitoring and human-computer interaction.",
+    "fullDescription": "The EMG Controller is a professional-grade system built on the ESP32S3 microcontroller platform that captures, processes, and visualizes EMG signals with real-time accuracy. It features 500 Hz sampling rate, adaptive threshold calibration for different users and muscle groups, multiple visualization interfaces including Python GUI and serial plotter, and game controller functionality with Roblox integration. The system implements advanced signal processing including moving average filtering, RMS calculation with 20-sample windows, two-stage smoothing, and envelope detection. Custom hardware includes a KiCad-designed PCB and 3D-printed Fusion 360 enclosure for professional integration.",
+    "technologies": ["ESP32S3", "C/C++", "Python", "Arduino", "KiCad", "Fusion 360", "PySerial", "Matplotlib", "NumPy", "Real-time Signal Processing"],
+    "image": "/project-emg.png",
+    "role": "Embedded Systems Developer & Hardware Designer",
+    "duration": "Academic Project - Completed"
+  }
+]

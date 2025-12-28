@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { IoSchool, IoLocation, IoHardwareChip, IoBuild, IoRocket } from 'react-icons/io5'
+import { FaRobot, FaCode } from 'react-icons/fa'
 
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -74,30 +76,38 @@ const Hero = () => {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-100 mb-6">
-            🎓 Computer Engineering Student
+            Computer Engineering Student
           </p>
           
           <p className="text-lg text-gray-200 mb-4">
-            📍 Muntinlupa City, Metro Manila, Philippines
+            Muntinlupa City, Metro Manila, Philippines
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             <div className="card inline-block">
-              <p className="text-sm">🔌 IC Design</p>
+              <p className="text-sm">
+                IC Design
+              </p>
             </div>
             <div className="card inline-block">
-              <p className="text-sm">🔧 Digital Systems</p>
+              <p className="text-sm">
+                Digital Systems
+              </p>
             </div>
             <div className="card inline-block">
-              <p className="text-sm">💻 Web Development</p>
+              <p className="text-sm">
+                Web Development
+              </p>
             </div>
             <div className="card inline-block">
-              <p className="text-sm">🤖 AI Integration</p>
+              <p className="text-sm">
+                AI Integration
+              </p>
             </div>
           </div>
 
           <p className="text-xl text-gray-100 mb-12 max-w-2xl mx-auto">
-            🚀 Eager to apply technical skills in real-world projects through internship opportunities!
+            Eager to apply technical skills in real-world projects through internship opportunities!
           </p>
 
           {/* CTA Buttons */}
