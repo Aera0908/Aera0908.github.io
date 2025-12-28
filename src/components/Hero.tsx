@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react'
-import { IoSchool, IoLocation, IoHardwareChip, IoBuild, IoRocket } from 'react-icons/io5'
-import { FaRobot, FaCode } from 'react-icons/fa'
 
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false)

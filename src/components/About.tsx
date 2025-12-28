@@ -1,5 +1,5 @@
-import { HiLightBulb, HiBriefcase, HiDesktopComputer, HiGlobeAlt } from 'react-icons/hi'
-import { FaRobot, FaBrain, FaWrench, FaBullseye, FaCog, FaTrophy } from 'react-icons/fa'
+import { HiBriefcase, HiDesktopComputer, HiGlobeAlt } from 'react-icons/hi'
+import { FaRobot, FaBrain, FaBullseye, FaCog, FaTrophy } from 'react-icons/fa'
 
 const About = () => {
   return (

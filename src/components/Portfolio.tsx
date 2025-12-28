@@ -1,5 +1,3 @@
-import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa'
-
 import { useState, useEffect, useRef } from 'react'
 import { HiX, HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import projectsData from '../data/projects.json'
