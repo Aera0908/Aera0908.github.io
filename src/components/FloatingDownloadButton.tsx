@@ -24,8 +24,8 @@ const FloatingDownloadButton = () => {
       }`}
     >
       <a
-        href={`${import.meta.env.BASE_URL}Aira_Josh_Ynte_Resume.pdf`}
-        download="Aira_Josh_Ynte_Resume.pdf"
+        href={`${import.meta.env.BASE_URL}YNTE_Resume.pdf`}
+        download="YNTE_Resume.pdf"
         className="flex items-center gap-2 px-6 py-4 bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 rounded-full shadow-2xl hover:shadow-red-600/50 transition-all duration-300 transform hover:scale-110 group"
         title="Download Resume"
       >

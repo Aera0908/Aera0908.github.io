@@ -111,8 +111,8 @@ const Hero = () => {
           {/* CTA Buttons */}
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href={`${import.meta.env.BASE_URL}Aira_Josh_Ynte_Resume.pdf`}
-              download="Aira_Josh_Ynte_Resume.pdf"
+              href={`${import.meta.env.BASE_URL}YNTE_Resume.pdf`}
+              download="YNTE_Resume.pdf"
               className="btn-primary inline-flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
