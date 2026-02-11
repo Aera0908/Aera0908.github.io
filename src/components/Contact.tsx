@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { FaLinkedin, FaGithub, FaDiscord, FaRocket } from 'react-icons/fa'
+import { FaLinkedin, FaGithub, FaDiscord } from 'react-icons/fa'
 import { HiMail } from 'react-icons/hi'
-import { MdMailOutline } from 'react-icons/md'
 import ContactForm from './ContactForm'
 
 const Contact = () => {
@@ -9,132 +8,76 @@ const Contact = () => {
   const socialLinks = [
     {
       name: 'Email',
-      username: '08airajosh@gmail.com',
+      value: '08airajosh@gmail.com',
       url: 'mailto:08airajosh@gmail.com',
-      icon: HiMail,
-      color: 'red',
-      bgColor: 'bg-red-500',
+      Icon: HiMail,
     },
     {
       name: 'LinkedIn',
-      username: 'Aira Josh Ynte',
+      value: 'Aira Josh Ynte',
       url: 'https://linkedin.com/in/aira-josh-ynte-755353322',
-      icon: FaLinkedin,
-      color: 'blue',
-      bgColor: 'bg-blue-600',
+      Icon: FaLinkedin,
     },
     {
       name: 'GitHub',
-      username: '@Aera0908',
+      value: '@Aera0908',
       url: 'https://github.com/Aera0908',
-      icon: FaGithub,
-      color: 'gray',
-      bgColor: 'bg-gray-800',
+      Icon: FaGithub,
     },
     {
       name: 'Discord',
-      username: 'aeradynamics',
+      value: 'aeradynamics',
       url: 'https://discord.com/users/aeradynamics',
-      icon: FaDiscord,
-      color: 'indigo',
-      bgColor: 'bg-indigo-600',
+      Icon: FaDiscord,
     },
   ]
 
   return (
-    <section id="contact" className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
-          <span className="gradient-text inline-flex items-center gap-2">
-            <HiMail className="inline" />
-            Get in Touch
-          </span>
-        </h2>
-        
-        <p className="text-xl text-center text-gray-100 mb-12 max-w-2xl mx-auto text-justify">
-          I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions!
-        </p>
+    <section id="contact" className="py-16">
+      <p className="font-mono text-sm text-slate-500 mb-4">&gt; COMMS</p>
+      <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-8">Contact</h2>
+      <p className="text-slate-400 mb-8">Open to discussing new projects and opportunities.</p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-          {socialLinks.map((link, index) => {
-            const IconComponent = link.icon
-            return (
-              <a
-                key={index}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="card group text-center animate-slide-up hover:scale-105"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="flex justify-center mb-4">
-                  <div className={`${link.bgColor} p-4 rounded-full group-hover:scale-110 transition-transform shadow-lg`}>
-                    <IconComponent className="text-4xl text-white" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{link.name}</h3>
-                <p className="text-gray-200 text-sm break-words px-2">{link.username}</p>
-                <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-blue-400 text-sm">Click to connect →</span>
-                </div>
-              </a>
-            )
-          })}
-        </div>
-
-        {/* Social Badges */}
-        <div className="mt-12 flex flex-wrap justify-center gap-4">
-          <a href="https://linkedin.com/in/aira-josh-ynte-755353322" target="_blank" rel="noopener noreferrer">
-            <img
-              src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white"
-              alt="LinkedIn"
-              className="tech-badge"
-            />
-          </a>
-          <a href="mailto:08airajosh@gmail.com">
-            <img
-              src="https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white"
-              alt="Email"
-              className="tech-badge"
-            />
-          </a>
-          <a href="https://github.com/Aera0908" target="_blank" rel="noopener noreferrer">
-            <img
-              src="https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white"
-              alt="GitHub"
-              className="tech-badge"
-            />
-          </a>
-          <a href="https://discord.com/users/aeradynamics" target="_blank" rel="noopener noreferrer">
-            <img
-              src="https://img.shields.io/badge/Discord-%235865F2.svg?logo=discord&logoColor=white"
-              alt="Discord"
-              className="tech-badge"
-            />
-          </a>
-        </div>
-
-        {/* Call to Action */}
-        <div className="mt-16 card text-center max-w-3xl mx-auto">
-          <h3 className="text-2xl font-bold mb-4 flex items-center justify-center gap-2">
-            <FaRocket className="text-red-400" />
-            Looking for Internship Opportunities!
-          </h3>
-          <p className="text-gray-100 mb-6 text-justify">
-            I'm actively seeking internship positions where I can contribute my skills in 
-            digital systems, IC design, web development, and AI integration while continuing to learn and grow.
-          </p>
-          <button
-            onClick={() => setIsFormOpen(true)}
-            className="btn-primary inline-flex items-center gap-2"
-          >
-            <MdMailOutline className="text-xl" />
-            Send me an email
-          </button>
-        </div>
+      <div className="grid sm:grid-cols-2 gap-4 mb-8">
+        {socialLinks.map((link, index) => {
+          const Icon = link.Icon
+          return (
+            <a
+              key={index}
+              href={link.url}
+              target={link.url.startsWith('http') ? '_blank' : undefined}
+              rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="dashboard-card block group flex items-center gap-4"
+            >
+              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center text-2xl group-hover:bg-white/10 transition-colors">
+                <Icon className="text-slate-300 group-hover:text-blue-400 transition-colors" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-mono text-xs text-slate-500 mb-1">{link.name}</p>
+                <p className="text-slate-100 font-medium group-hover:text-blue-400 transition-colors truncate">
+                  {link.value}
+                </p>
+              </div>
+            </a>
+          )
+        })}
       </div>
 
-      {/* Contact Form Modal */}
+      <div className="dashboard-card text-center">
+        <h3 className="text-lg font-semibold text-slate-100 mb-3">
+          Internship Opportunities
+        </h3>
+        <p className="text-slate-400 text-sm mb-6">
+          Actively seeking internship positions in digital systems, IC design, web development, and AI integration.
+        </p>
+        <button
+          onClick={() => setIsFormOpen(true)}
+          className="btn-primary"
+        >
+          Send Message
+        </button>
+      </div>
+
       <ContactForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
     </section>
   )

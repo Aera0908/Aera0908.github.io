@@ -1,30 +1,5 @@
 import { useState, useEffect } from 'react'
 
-const Logo = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="w-10 h-10">
-    <defs>
-      <linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style={{ stopColor: '#DC2626', stopOpacity: 1 }} />
-        <stop offset="50%" style={{ stopColor: '#EF4444', stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: '#F97316', stopOpacity: 1 }} />
-      </linearGradient>
-    </defs>
-    <circle cx="50" cy="50" r="48" fill="url(#navGrad)" />
-    <circle cx="50" cy="50" r="42" fill="#000000" opacity="0.95" />
-    <text 
-      x="50" 
-      y="63" 
-      fontFamily="Arial, sans-serif" 
-      fontSize="40" 
-      fontWeight="bold" 
-      fill="url(#navGrad)" 
-      textAnchor="middle"
-    >
-      AY
-    </text>
-  </svg>
-)
-
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -49,27 +24,22 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-slate-900/95 backdrop-blur-lg shadow-lg' : 'bg-transparent'
+        isScrolled ? 'bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80' : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex-shrink-0">
-            <a href="#home" className="flex items-center gap-2 group">
-              <div className="transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                <Logo />
-              </div>
-            </a>
-          </div>
+          <a href="#home" className="text-slate-50 font-bold text-lg tracking-tight hover:text-amber-400 transition-colors">
+            Aira Josh Ynte
+          </a>
 
-          {/* Desktop Menu */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+            <div className="flex items-center gap-1">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10 transition-all duration-300 hover:scale-105"
+                  className="px-4 py-2 text-base text-slate-400 hover:text-amber-400 transition-colors rounded-lg hover:bg-slate-800/50"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.name}
@@ -78,32 +48,17 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-md hover:bg-white/10 transition-all"
+              className="p-2 text-slate-400 hover:text-amber-400 transition-colors rounded-lg"
+              aria-label="Toggle menu"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isMobileMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 )}
               </svg>
             </button>
@@ -111,15 +66,14 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-slate-900/95 backdrop-blur-lg">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <div className="md:hidden border-t border-slate-800 bg-slate-950/95 backdrop-blur-md">
+          <div className="px-6 py-4 space-y-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10 transition-all"
+                className="block px-4 py-3 text-base text-slate-400 hover:text-amber-400 hover:bg-slate-800/50 rounded-lg transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
@@ -133,4 +87,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-
