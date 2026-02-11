@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FaLinkedin, FaGithub, FaDiscord } from 'react-icons/fa'
+import { FaLinkedin, FaGithub, FaDiscord, FaFacebook } from 'react-icons/fa'
+import { FaXTwitter } from 'react-icons/fa6'
 import { HiMail } from 'react-icons/hi'
 import ContactForm from './ContactForm'
 
@@ -23,6 +24,18 @@ const Contact = () => {
       value: '@Aera0908',
       url: 'https://github.com/Aera0908',
       Icon: FaGithub,
+    },
+    {
+      name: 'Twitter',
+      value: 'Aera_W3',
+      url: 'https://x.com/aera0908',
+      Icon: FaXTwitter,
+    },
+    {
+      name: 'Facebook',
+      value: 'Aera Ynte',
+      url: 'https://www.facebook.com/Smo.etti/',
+      Icon: FaFacebook,
     },
     {
       name: 'Discord',

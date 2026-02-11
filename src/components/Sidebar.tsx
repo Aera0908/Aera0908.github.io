@@ -35,8 +35,12 @@ const Sidebar = ({ activeSection, onNavigate, isOpen, onClose }: SidebarProps) =
       `}>
         <div className="p-6 pt-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-lg bg-blue-600/80 flex items-center justify-center glow-blue">
-              <span className="text-white font-bold text-xl">A</span>
+            <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 glow-blue">
+              <img
+                src={`${import.meta.env.BASE_URL}ynte_pic.jpg`}
+                alt="Aira Josh Ynte"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <p className="font-bold text-slate-100 text-sm">AIRA</p>
