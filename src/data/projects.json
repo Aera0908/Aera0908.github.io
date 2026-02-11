@@ -6,6 +6,11 @@
     "technologies": ["ESP32-S3", "Flutter", "Dart", "Firebase", "PyTorch", "MediaPipe", "BLE", "Reinforcement Learning", "AWS SageMaker", "Web3"],
     "image": "/aerovit.png",
     "documentationUrl": "https://aerovit-doc.vercel.app",
+    "gallery": [
+      { "src": "/watch_on_case.jpg", "caption": "Custom ESP32 smartwatch on its charging case" },
+      { "src": "/watch.jpg", "caption": "AeroVit smartwatch display and interface" },
+      { "src": "/watch-worn.jpg", "caption": "Smartwatch worn on wrist during fitness tracking" }
+    ],
     "role": "Lead Developer & Hardware Engineer",
     "duration": "September 2024 - Present (In Development - 40% Complete)"
   },
