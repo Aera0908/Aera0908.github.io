@@ -1,15 +1,15 @@
 [
   {
-    "name": "ESP32 & IoT embedded",
+    "name": "IoT & embedded systems",
     "percentage": 72,
-    "icon": "https://img.shields.io/badge/ESP32-E7352C?style=for-the-badge&logo=espressif&logoColor=white",
+    "icon": "https://img.shields.io/badge/IoT_%26_Embedded-E7352C?style=for-the-badge&logoColor=white",
     "color": "E7352C",
     "category": "hardware"
   },
   {
-    "name": "KiCad & PCB layout",
+    "name": "PCB design & layout",
     "percentage": 61,
-    "icon": "https://img.shields.io/badge/KiCad-314CFF?style=for-the-badge&logo=kicad&logoColor=white",
+    "icon": "https://img.shields.io/badge/PCB_Design_%26_Layout-314CFF?style=for-the-badge&logoColor=white",
     "color": "314CFF",
     "category": "hardware"
   },
@@ -21,9 +21,9 @@
     "category": "hardware"
   },
   {
-    "name": "Arduino / MCU prototyping",
+    "name": "MCU prototyping",
     "percentage": 64,
-    "icon": "https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=arduino&logoColor=white",
+    "icon": "https://img.shields.io/badge/MCU_Prototyping-00979D?style=for-the-badge&logoColor=white",
     "color": "00979D",
     "category": "hardware"
   },
@@ -35,9 +35,9 @@
     "category": "hardware"
   },
   {
-    "name": "Circuit simulation (TINA)",
+    "name": "Circuit simulation",
     "percentage": 56,
-    "icon": "https://img.shields.io/badge/TINA_%2F_Analog_sim-394D6E?style=for-the-badge&logoColor=white",
+    "icon": "https://img.shields.io/badge/Circuit_Simulation-394D6E?style=for-the-badge&logoColor=white",
     "color": "FD8C00",
     "category": "hardware"
   },
