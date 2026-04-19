@@ -1,0 +1,2140 @@
+================================================================================
+                    PLANT.IO - SYSTEM DOCUMENTATION
+                   8-Bit Retro Garden IoT Monitoring Dashboard
+                            Version 0.1.0
+================================================================================
+
+TABLE OF CONTENTS
+================================================================================
+1. PROJECT OVERVIEW
+2. ARCHITECTURE & DESIGN PATTERNS
+3. TECHNOLOGY STACK & DEPENDENCIES
+4. PROJECT STRUCTURE
+5. DATA MODELS & ENTITIES
+6. SERVICES & BUSINESS LOGIC
+7. UI SCREENS & COMPONENTS
+8. STATE MANAGEMENT (PROVIDER)
+9. FIREBASE INTEGRATION
+10. WEATHER SYSTEM
+11. NOTIFICATIONS & ALERTS
+12. BUILD & DEPLOYMENT
+13. CONFIGURATION FILES
+14. KEY FEATURES & CAPABILITIES
+15. HARDWARE INTEGRATION (ESP32)
+16. DEVELOPMENT GUIDELINES
+
+
+1. PROJECT OVERVIEW
+================================================================================
+
+Project Name:        Plant.io / Onion Nursery Monitoring App
+Type:                Cross-Platform Mobile Application (Flutter)
+Purpose:             Real-time IoT plant/nursery monitoring dashboard with 
+                     8-bit retro aesthetics
+Target Platforms:    iOS, Android, Web, macOS, Linux, Windows
+Current Version:     0.1.0
+Flutter SDK:         ^3.10.7
+Dart Version:        Latest (compatible with Flutter 3.10.7)
+
+DESCRIPTION:
+Plant.io is a comprehensive IoT monitoring solution designed for nurseries, 
+greenhouses, and garden enthusiasts. It provides real-time sensor data visualization, 
+actuator control, historical analytics, and plant health monitoring through an 
+engaging 8-bit retro user interface.
+
+KEY OBJECTIVES:
+- Real-time monitoring of multiple garden beds / ESP32 devices simultaneously
+- Intuitive visualization of soil moisture, temperature, humidity, EC, and pH levels
+- Remote actuation control (pump, fans, fertilizer dispensing)
+- Historical data logging and trend analysis
+- Plant health scoring system (mood calculation)
+- Weather integration for environmental context
+- Cross-platform compatibility
+- Offline support with local caching
+
+
+2. ARCHITECTURE & DESIGN PATTERNS
+================================================================================
+
+ARCHITECTURAL PATTERN: Layered Architecture with Provider-based State Management
+
+LAYERS:
+-------
+
++─────────────────────────────────────────+
+│         Presentation Layer              │
+│  (Screens, Widgets, UI Components)      │
++─────────────────────────────────────────+
+              ↓
++─────────────────────────────────────────+
+│      State Management Layer              │
+│  (Provider Pattern, ChangeNotifiers)    │
++─────────────────────────────────────────+
+              ↓
++─────────────────────────────────────────+
+│      Business Logic Layer               │
+│  (Services, Analytics, Calculations)    │
++─────────────────────────────────────────+
+              ↓
++─────────────────────────────────────────+
+│      Data Layer                         │
+│  (Models, Firebase, SharedPreferences)  │
++─────────────────────────────────────────+
+
+DESIGN PATTERNS USED:
+1. Singleton Pattern - Services (FirebaseService, NotificationService, etc.)
+2. Provider Pattern - State management and dependency injection
+3. Factory Pattern - Model constructors (fromMap, fromJson, etc.)
+4. Strategy Pattern - Data modes (normal, randomAuto, custom)
+5. Observer Pattern - Provider listeners for UI updates
+6. Builder Pattern - Complex UI construction (Scaffold, RichText, etc.)
+
+SEPARATION OF CONCERNS:
+- Models: Data structures and business logic calculations
+- Providers: State management and data flow control
+- Services: External integrations (Firebase, notifications, connectivity)
+- Screens: UI composition and user interaction
+- Widgets: Reusable UI components
+
+
+3. TECHNOLOGY STACK & DEPENDENCIES
+================================================================================
+
+CORE DEPENDENCIES:
+─────────────────
+flutter:
+  - Framework for building cross-platform mobile applications
+  - Material Design components
+
+provider: ^6.1.2
+  - State management and dependency injection
+  - ChangeNotifierProvider for reactive updates
+
+google_fonts: ^6.2.1
+  - Typography - Main font is Press Start 2P (8-bit retro style)
+  - Custom text themes for consistent styling
+
+http: ^1.2.0
+  - HTTP client for API calls
+  - Used for weather data fetching (Open-Meteo API)
+
+shared_preferences: ^2.2.2
+  - Local persistent storage for app preferences
+  - Saved preferences: weather location, selected bed, UI states
+
+connectivity_plus: ^7.0.0
+  - Network connectivity monitoring
+  - Detects online/offline state changes
+  - Displays connectivity status in UI
+
+audioplayers: ^6.5.1
+  - Audio playback for UI feedback
+  - Click sounds, alert notifications
+  - Retro 8-bit sound effects
+
+flutter_local_notifications: ^18.0.1
+  - Local push notifications for plant alerts
+  - Thirsty, hot, critical status alerts
+  - No internet required
+
+FIREBASE DEPENDENCIES:
+──────────────────────
+firebase_core: ^4.4.0
+  - Firebase initialization and configuration
+  - Platform-specific setup handling
+
+firebase_database: ^12.1.2
+  - Real-time database for live sensor data
+  - Device streams, command writing, log storage
+  - Automatic synchronization
+
+cloud_firestore: ^6.2.0
+  - Cloud Firestore for structured data
+  - Historical logs and alerts storage
+  - Scalable alternative to Realtime DB
+
+VISUALIZATION DEPENDENCIES:
+────────────────────────
+fl_chart: ^0.70.2
+  - Charting library for data visualization
+  - Line charts for sensor trends
+  - Pie/bar charts for analytics
+
+DEVELOPMENT DEPENDENCIES:
+────────────────────────
+flutter_test: ^3.10.7
+  - Flutter testing framework
+
+flutter_lints: ^6.0.0
+  - Linting rules following Flutter best practices
+
+flutter_launcher_icons: ^0.14.3
+  - App icon generation for all platforms
+  - Adaptive icon support (Android)
+
+TOOL SCRIPTS:
+─────────────
+- generate_icon.dart - Custom icon generation script
+- generate_sounds.js - Audio asset processing
+- simulate_esp32.js - ESP32 simulator for testing
+
+
+4. PROJECT STRUCTURE
+================================================================================
+
+plant-io-app/
+│
+├── lib/                                 # Main application source
+│   ├── main.dart                       # App entry point & initialization
+│   ├── firebase_options.dart           # Firebase configuration (auto-generated)
+│   │
+│   ├── core/                           # Core application resources
+│   │   ├── theme/
+│   │   │   ├── app_theme.dart         # Material theme definition
+│   │   │   ├── app_colors.dart        # Color palette (dark mode, retro)
+│   │   │   └── constants.dart         # UI constants & magic numbers
+│   │   └── widgets/
+│   │       ├── pixel_border.dart      # Retro border widget
+│   │       ├── crt_effect.dart        # CRT scanline effect
+│   │       └── pixelated_widget.dart  # Pixel art renderer
+│   │
+│   ├── models/                         # Data models & entities
+│   │   ├── nursery_data.dart          # Main sensor telemetry
+│   │   ├── garden_bed.dart            # Garden bed/device representation
+│   │   ├── soil_sensor.dart           # Individual soil sensor
+│   │   ├── plant_mood.dart            # Plant health scoring
+│   │   ├── plant_type.dart            # Plant enumeration
+│   │   ├── log_entry.dart             # Historical event logging
+│   │   ├── weather_data.dart          # Weather information
+│   │   ├── time_of_day_period.dart    # Time period enumeration
+│   │   └── hardware_telemetry.dart    # Raw hardware data
+│   │
+│   ├── providers/                      # State management (Provider pattern)
+│   │   ├── nursery_provider.dart      # Main device/sensor state
+│   │   └── weather_provider.dart      # Weather data & location state
+│   │
+│   ├── services/                       # Business logic & integrations
+│   │   ├── firebase_service.dart      # Firebase RTDB & Firestore ops
+│   │   ├── firebase_database_structure.md # Database schema docs
+│   │   ├── notification_service.dart  # Local notifications
+│   │   ├── sound_service.dart         # Audio playback
+│   │   ├── connectivity_service.dart  # Network monitoring
+│   │   └── toast_service.dart         # Toast overlay management
+│   │
+│   ├── screens/                        # UI screens & pages
+│   │   ├── splash/
+│   │   │   └── splash_screen.dart    # Splash/loading screen
+│   │   │
+│   │   ├── shell/
+│   │   │   └── main_shell.dart       # Main app shell with nav
+│   │   │
+│   │   ├── dashboard/
+│   │   │   ├── dashboard_screen.dart # Main dashboard layout
+│   │   │   └── dashboard_content.dart# Dashboard content
+│   │   │
+│   │   ├── logs/
+│   │   │   └── logs_content.dart     # Historical logs view
+│   │   │
+│   │   └── settings/
+│   │       ├── settings_content.dart  # Settings UI
+│   │       └── developer_options_screen.dart # Debug options
+│   │
+│   └── widgets/                        # Reusable UI components
+│       ├── adjustments_overlay.dart   # Control overlay widget
+│       ├── garden_bed_selector.dart   # Device selection UI
+│       ├── log_entry_tile.dart        # Log entry list item
+│       ├── plant_mood_indicator.dart  # Mood visualization
+│       ├── soil_sensor_grid.dart      # Multi-sensor display
+│       └── onion_avatar/              # Main plant visualization
+│           ├── garden_visualizer.dart # Pixel art garden scene
+│           ├── onion_avatar.dart      # Animated plant character
+│           └── painters/              # Custom paint implementations
+│
+├── assets/                             # Static resources
+│   ├── icon/
+│   │   ├── app_icon.png              # Main app icon
+│   │   └── app_icon_foreground.png   # Adaptive icon foreground
+│   └── sounds/                        # Audio assets
+│       ├── click.mp3
+│       ├── alert.mp3
+│       └── success.mp3
+│
+├── android/                            # Android-specific configuration
+│   ├── app/
+│   │   ├── src/                       # Android source code
+│   │   └── google-services.json       # Firebase Android config
+│   ├── build.gradle.kts               # Android build configuration
+│   └── local.properties               # Local build properties
+│
+├── ios/                                # iOS-specific configuration
+│   ├── Runner/                        # iOS app target
+│   └── GoogleService-Info.plist       # Firebase iOS config
+│
+├── macos/                              # macOS-specific configuration
+│
+├── linux/                              # Linux-specific configuration
+│
+├── windows/                            # Windows-specific configuration
+│
+├── web/                                # Web-specific configuration
+│
+├── tool/                               # Utility scripts
+│   ├── generate_icon.dart
+│   ├── generate_sounds.js
+│   └── simulate_esp32.js
+│
+├── build/                              # Build output (generated)
+│
+├── pubspec.yaml                        # Flutter dependencies & config
+├── pubspec.lock                        # Locked dependency versions
+├── analysis_options.yaml               # Lint rules
+├── firebase.json                       # Firebase project config
+├── onion_nursery_monitoring_app.iml    # IDE project file
+├── README.md                           # Project README
+├── HOW_TO_CHECK_DATABASE.md            # Firebase testing guide
+└── SYSTEM_DOCUMENTATION.txt            # This file
+
+
+5. DATA MODELS & ENTITIES
+================================================================================
+
+5.1 NURSERYDATA - Main Sensor Telemetry
+────────────────────────────────────────
+Location: lib/models/nursery_data.dart
+Purpose: Represents a snapshot of sensor readings from ESP32
+
+FIELDS:
+- moisture: int (0–100%) - Capacitive soil moisture sensor
+- temperature: double (0–50°C) - DHT22 / DS18B20 temperature sensor
+- humidity: int (0–100%) - DHT22 relative humidity sensor
+- ecLevel: double (0–3.0 mS/cm) - TDS/EC electrical conductivity sensor
+- phLevel: double (0–14.0) - pH level sensor
+- voltage: double - Power supply voltage (e.g., 12V)
+- current: double - Power consumption current (e.g., 1.5A)
+- waterLevel: int (0–100%) - HC-SR04 ultrasonic tank level sensor
+- pumpStatus: bool - Relay CH-1: Irrigation pump status
+- fanStatus: bool - Relay CH-2: Mist fan status
+- airFanStatus: bool - Relay CH-4: Air circulation fan status
+- fertilizerPumpStatus: bool - Relay CH-3: Fertilizer/nutrient pump
+
+COMPUTED PROPERTIES:
+- isThirsty: bool - Calculated when moisture < 30%
+- isHot: bool - Calculated when temperature > 35°C
+- isCritical: bool - Either thirsty OR hot OR offline
+- statusColor: Color - Visual status indicator
+- statusText: String - Human-readable status ("OK", "DRY", etc.)
+
+FACTORIES & METHODS:
+- fromMap(Map) - Parse from Firebase/API response
+- toMap() - Serialize to JSON for storage
+- copyWith() - Immutable copy with overrides
+
+5.2 GARDENBED - Physical Device/Location
+──────────────────────────────────────────
+Location: lib/models/garden_bed.dart
+Purpose: Represents a physical garden bed with one or more sensors
+
+FIELDS:
+- id: String - Unique identifier (e.g., "esp32-001")
+- name: String - Display name (e.g., "Tomato Bed A")
+- nodeId: String - Hardware node ID
+- location: String - Physical location (e.g., "Greenhouse 1")
+- plantType: PlantType - Enum: onion, radish, etc.
+- sensors: SoilSensorArray - Array of soil sensor readings
+- pumpStatus/fanStatus/airFanStatus/fertilizerPumpStatus: bool - Relay states
+- isOnline: bool - Device connectivity status
+- batteryLevel: int (0–100%) - Device battery percentage
+- isDemo: bool - Demo bed flag
+- waterLevel: int - Tank/reservoir level
+- voltage: double - Power supply voltage
+- current: double - Current draw
+- lastTelemetryAt: DateTime - Last update timestamp
+- isThirstyOverride/isHotOverride: bool - Firmware overrides
+- automaticControl: bool - Automatic vs manual mode
+
+DERIVED VALUES:
+- data: NurseryData - Aggregated sensor data
+- averageMoisture/temperature/humidity/ecLevel - Sensor averages
+- isThirsty/isHot - Health status
+- mood: PlantMood - Happiness score calculation
+
+5.3 SOILSENSOR - Individual Sensor Reading
+────────────────────────────────────────────
+Location: lib/models/soil_sensor.dart
+Purpose: Single soil sensor data point
+
+FIELDS:
+- id: String - Sensor identifier
+- name: String - Display name (e.g., "Sensor 1")
+- moisture: int (0–100%)
+- temperature: double
+- humidity: int (0–100%)
+- ecLevel: double
+- phLevel: double (default: 7.0)
+- isActive: bool
+
+PROPERTIES:
+- isThirsty: bool - moisture < 30%
+- isHot: bool - temperature > 35°C
+- hasIssues: bool - Any issues detected
+- statusText: String - "OK", "OFFLINE", "DRY", "HOT", "CRITICAL"
+
+5.4 PLANTMOOD - Health & Happiness Score
+──────────────────────────────────────────
+Location: lib/models/plant_mood.dart
+Purpose: Calculate plant health from sensor data
+
+MOOD LEVELS:
+- Ecstatic: 90-100%
+- Happy: 70-89%
+- Content: 50-69%
+- Concerned: 30-49%
+- Stressed: 10-29%
+- Critical: 0-9%
+
+OPTIMAL RANGES:
+- Moisture: 50-80%
+- Temperature: 20-30°C
+- Humidity: 50-70%
+- EC Level: 1.0-2.0 mS/cm
+- Water Level: 30%+
+
+PROPERTIES:
+- happinessScore: int (0-100)
+- moodLevel: MoodLevel
+- emoji: String - Visual representation
+- message: String - Status message
+- issues: List<String> - Problems detected
+
+CALCULATION:
+Weighted average of individual sensor scores:
+- Moisture score: 35%
+- Temperature score: 35%
+- Humidity score: 15%
+- EC score: 15%
+Total = 100%
+
+5.5 LOGENTRY - Historical Event Log
+─────────────────────────────────────
+Location: lib/models/log_entry.dart
+Purpose: Record events and sensor snapshots
+
+LOG TYPES:
+- sensor: Periodic sensor data recording
+- pumpOn/pumpOff: Pump activation events
+- fanOn/fanOff: Fan/cooler events
+- airFanOn/airFanOff: Air circulation fan
+- fertilizerPumpOn/fertilizerPumpOff: Nutrient pump
+- heaterOn/heaterOff: Heater events
+- alert: Thirsty, hot, critical alerts
+- system: Boot, sync, mode changes
+- bedChanged: Device switched
+
+FIELDS:
+- entryKey: String - Stable ID for deduplication
+- title: String - Event name
+- subtitle: String - Details
+- timestamp: DateTime - Event time
+- type: LogType - Event category
+- [sensor snapshot data] - Moisture, temp, humidity, EC, pH, voltage, current
+- durationSeconds: int - For on/off event pairs
+- firestoreDocId: String - Cloud document ID
+- dateKey: String - Calendar date (YYYY-MM-DD)
+- deviceId: String - Source device
+- plantType: String - Plant type at time
+- isThirsty/isHot: bool - Status flags
+- alertLevel/alertType: String - Alert classification
+
+5.6 WEATHERDATA - Environmental Conditions
+────────────────────────────────────────────
+Location: lib/models/weather_data.dart
+Purpose: Current weather and environmental data
+
+WEATHER CONDITIONS:
+- sunny, partlyCloudy, cloudy
+- rainy, stormy
+- snowy, foggy, windy
+
+FIELDS:
+- locationName: String - Location name with coordinates
+- temperature: double - Current temperature (°C)
+- humidity: int (0–100%)
+- condition: WeatherCondition - Enum
+- description: String - Human-readable description
+- isDay: bool - Daylight indicator
+
+PROVIDES:
+- Visual sun/moon/clouds based on time of day
+- Weather-responsive UI theming
+- Environmental context for plant monitoring
+
+5.7 PLANT TYPE ENUMERATION
+────────────────────────────
+Location: lib/models/plant_type.dart
+Purpose: Available plant types for visualization
+
+TYPES:
+- onion: 🧅 emoji
+- radish: 🌱 emoji
+
+USES:
+- Plant-specific care recommendations
+- Avatar animation variations
+- Database filtering
+
+
+5.8 HARDWARE TELEMETRY
+───────────────────────
+Location: lib/models/hardware_telemetry.dart
+Purpose: Raw hardware-level data
+
+Captures:
+- Memory usage, CPU load
+- Sensor error rates
+- Relay duty cycles
+- Communication stats
+- Power monitoring
+
+
+6. SERVICES & BUSINESS LOGIC
+================================================================================
+
+6.1 FIREBASESERVICE - Data Persistence & Sync
+───────────────────────────────────────────────
+Location: lib/services/firebase_service.dart
+Pattern: Singleton
+Purpose: All Firebase Realtime Database and Firestore operations
+
+DATABASE STRUCTURE:
+```
+{root}/
+├── devices/{deviceId}/
+│   ├── sensors/              ← Live sensor data (ESP32 writes)
+│   └── settings/             ← App preferences (app writes)
+├── commands/{deviceId}/      ← Control commands (app writes)
+└── logs/
+    ├── sensor/{date}/{timestamp}
+    ├── events/{date}/{timestamp}
+    └── alerts/{date}/{timestamp}
+```
+
+KEY METHODS:
+- init() - Initialize Firebase connection
+- subscribeToDeviceList() - Watch all devices
+- subscribeToSelectedDevice() - Real-time sensor updates
+- writeCommand(deviceId, command) - Send relay commands
+- saveSensorLog() - Historical data logging
+- saveAlert() - Alert event logging
+- updateDeviceSettings() - Save plant type, mode
+- getHistoricalLogs() - Query past data
+- queryLogsBetween() - Time-range queries
+
+DATABASE REFERENCES:
+- devicesRef: devices/
+- deviceSensorsRef(id): devices/{id}/sensors
+- commandsRef(id): commands/{id}
+- _logsSensorRef: logs/sensor/
+- _logsEventsRef: logs/events/
+- _logsAlertsRef: logs/alerts/
+
+FEATURES:
+- Automatic timestamp handling
+- Server-side timestamp sync
+- Batch operations support
+- Real-time streaming updates
+- Graceful error handling for missing fields
+
+6.2 NOTIFICATIONSERVICE - Local Alerts
+────────────────────────────────────────
+Location: lib/services/notification_service.dart
+Pattern: Singleton
+Purpose: Local push notifications for plant events
+
+CAPABILITIES:
+- Android & iOS native notifications
+- Custom sound alerts
+- Summary notifications
+- Deep linking (future enhancement)
+
+ALERT TYPES:
+- Plant Thirsty: "Your plant needs water!"
+- Plant Hot: "Temperature too high!"
+- Critical Alert: "Plant in critical condition!"
+- System Events: Boot, sync completion, errors
+
+FEATURES:
+- 5-minute cooldown between notifications
+- Mood-based alert customization
+- Silent mode support
+- Permission request handling
+
+IMPLEMENTATION:
+- flutter_local_notifications plugin
+- Android: AndroidInitializationSettings
+- iOS: DarwinInitializationSettings
+
+6.3 SOUNDSERVICE - Audio Feedback
+───────────────────────────────────
+Location: lib/services/sound_service.dart
+Pattern: Singleton
+Purpose: Retro 8-bit sound effects
+
+SOUNDS:
+- Click: Button tap feedback
+- Alert: Warning/alert sound
+- Success: Confirmation sound
+- Thirsty: Plant needs water tone
+
+FEATURES:
+- Async initialization with error handling
+- Volume control
+- Graceful fallback if audio unavailable
+- 8-bit retro sound effects
+
+6.4 CONNECTIVITYSERVICE - Network Monitoring
+──────────────────────────────────────────────
+Location: lib/services/connectivity_service.dart
+Pattern: Singleton + ChangeNotifier
+Purpose: Monitor internet connectivity
+
+PROPERTIES:
+- isConnected: bool - Current connectivity status
+- hasCheckedOnce: bool - Initial check performed
+- previouslyConnected: bool - Last known state
+
+FEATURES:
+- Real-time connectivity monitoring
+- Platform-specific implementations (iOS, Android, Web)
+- Automatic reconnection detection
+- UI notification on status change
+
+LISTENERS:
+- Connected: Hide error UI, resume updates
+- Disconnected: Show "NO INTERNET" error screen
+- Network switch: Automatic failover detection
+
+6.5 TOASTSERVICE - Toast/Overlay Notifications
+────────────────────────────────────────────────
+Location: lib/services/toast_service.dart
+Pattern: Singleton
+Purpose: Non-blocking user feedback messages
+
+FEATURES:
+- Overlay-based toast messages
+- Automatic dismissal
+- Customizable duration
+- Success/error/info message types
+- Works without navigation context (global NavigatorKey)
+
+USAGE:
+- Async operation feedback (Save complete, Error occurred)
+- User action confirmation
+- Form validation messages
+
+
+7. UI SCREENS & COMPONENTS
+================================================================================
+
+7.1 MAIN SHELL & NAVIGATION
+─────────────────────────────
+Location: lib/screens/shell/main_shell.dart
+Purpose: Main app container with persistent bottom navigation
+
+SCREENS (3-tab navigation):
+1. Logs (Left) - Historical data / event log
+2. Dashboard (Center) - Main monitoring view
+3. Settings (Right) - Configuration & options
+
+FEATURES:
+- IndexedStack for efficient screen switching
+- Persistent navigation state
+- Connectivity error overlay
+- Bottom Navigation Bar with retro styling
+
+7.2 DASHBOARD SCREEN - Main Monitoring Interface
+──────────────────────────────────────────────────
+Location: lib/screens/dashboard/dashboard_screen.dart
+Purpose: Real-time sensor visualization and control
+
+SECTIONS:
+1. Weather Status Bar
+   - Current location
+   - Temperature
+   - Weather condition icon
+   - Real-time clock
+   - Time period (dawn, morning, noon, dusk, night)
+
+2. Garden Visualizer
+   - Pixel-art animated garden scene
+   - Plant avatar responding to mood
+   - Dynamic weather effects (rain, snow, wind, clouds)
+   - Day/night cycle with sky gradient
+   - Fence and environmental elements
+
+3. Plant Mood Card
+   - Happiness score (0-100%)
+   - Mood emoji (Ecstatic → Critical)
+   - Current issues list
+   - Status message
+
+4. Sensor Data Grid
+   - Moisture: 0-100%
+   - Temperature: 0-50°C
+   - Humidity: 0-100%
+   - EC Level: 0-3.0 mS/cm
+   - pH Level: 0-14.0
+   - Water Level: 0-100%
+   - Voltage & Current readings
+
+5. Control Panel
+   - Pump toggle (irrigation)
+   - Fan toggle (misting/cooling)
+   - Air fan toggle (circulation)
+   - Fertilizer pump toggle
+   - Command status feedback
+
+6. Device Selector
+   - List of available garden beds
+   - Demo vs real device indication
+   - Quick device switching
+   - Last telemetry timestamp
+
+7.3 LOGS SCREEN - Historical Data & Analytics
+────────────────────────────────────────────────
+Location: lib/screens/logs/logs_content.dart
+Purpose: View and analyze historical events and trends
+
+FEATURES:
+- Session logs (current session in memory)
+- Historical logs (loaded from Firestore)
+- Date filtering
+- Event type filtering
+- Log entry details with full sensor snapshot
+- Pagination support
+
+LOG TYPES DISPLAYED:
+- Sensor readings
+- Pump on/off events with duration
+- Fan activation events
+- Fertilizer pump events
+- Alert events (thirsty, hot, critical)
+- System events
+- Device switch events
+
+7.4 SETTINGS SCREEN - Configuration & Options
+────────────────────────────────────────────────
+Location: lib/screens/settings/settings_content.dart
+Purpose: User configuration and advanced options
+
+SECTIONS:
+
+A. Device Settings
+   - Current device display
+   - Device selector dropdown
+   - Show demo beds toggle
+   - Demo vs real device count
+
+B. Plant Type Selection
+   - Onion / Radish selection
+   - Save to Firebase settings
+   - Plant-specific care tips
+
+C. Data Mode Selection
+   - Normal mode (static demo data)
+   - Random auto mode (simulated changes)
+   - Custom mode (manual slider control)
+   - Mode-specific UI elements
+
+D. Weather Settings
+   - Refresh weather data
+   - Weather location selector
+   - Preset locations (Manila, Cebu, Davao, Tokyo, Singapore, etc.)
+   - Custom weather mode (testing)
+   - Weather condition selector
+   - Time period selector
+
+E. Sound & Notifications
+   - Toggle notification sounds
+   - Volume control
+   - Test notification button
+   - Alert customization
+
+F. Database Tools
+   - Connection test button
+   - Save data to Firebase
+   - View stored data
+   - Clear local cache
+
+G. Developer Options
+   - Hidden developer menu
+   - Sensor value sliders
+   - Time manipulation
+   - Weather simulation
+   - Logging controls
+
+7.5 SPLASH SCREEN - Loading & Initialization
+──────────────────────────────────────────────
+Location: lib/screens/splash/splash_screen.dart
+Purpose: Initial app loading and Firebase initialization
+
+SEQUENCE:
+1. Display splash screen logo
+2. Initialize Firebase
+3. Initialize services (sound, notifications, connectivity)
+4. Load preferences (plants, device, weather)
+5. Fetch initial data
+6. Transition to main app
+
+FEATURES:
+- Error handling during initialization
+- Progress indicators
+- Retry mechanisms
+- Graceful fallback to demo mode
+
+7.6 REUSABLE WIDGETS
+──────────────────────
+
+A. ONION AVATAR - Main Plant Character
+   Location: lib/widgets/onion_avatar/onion_avatar.dart
+   Features:
+   - Animated plant sprite responding to mood
+   - Mood-based animations (happy, concerned, stressed)
+   - Pixel-art style with smooth animations
+   - Color changes based on plant health
+   - Interactive (tappable for details)
+
+B. GARDEN VISUALIZER - Pixel-Art Environment
+   Location: lib/widgets/onion_avatar/garden_visualizer.dart
+   Features:
+   - Dynamic sky gradient (time & weather based)
+   - Animated weather effects:
+     * Rain (straight down)
+     * Stormy weather (angled rain + wind)
+     * Falling snow
+     * Wind effect
+     * Dazzling stars (night time)
+   - Cloud formations (density based on weather)
+   - Sun/Moon with CRT glow effect
+   - Pixel fences
+   - Time-of-day cycle with smooth transitions
+   - CRT scanline effect overlay
+
+C. SOIL SENSOR GRID
+   Location: lib/widgets/soil_sensor_grid.dart
+   Features:
+   - Grid display of multiple sensors
+   - Color-coded status (green/yellow/red)
+   - Individual sensor details
+   - Responsive layout
+
+D. PLANT MOOD INDICATOR
+   Location: lib/widgets/plant_mood_indicator.dart
+   Features:
+   - Mood emoji display
+   - Happiness percentage bar
+   - Issue list
+   - Status color coding
+
+E. GARDEN BED SELECTOR
+   Location: lib/widgets/garden_bed_selector.dart
+   Features:
+   - Dropdown device selector
+   - Device status indicators
+   - Last telemetry time
+   - Quick access menu
+
+F. LOG ENTRY TILE
+   Location: lib/widgets/log_entry_tile.dart
+   Features:
+   - Event title and timestamp
+   - Sensor snapshot summary
+   - Event type color coding
+   - Expandable details
+
+G. ADJUSTMENTS OVERLAY
+   Location: lib/widgets/adjustments_overlay.dart
+   Features:
+   - Control panel for relays
+   - Command feedback
+   - Real-time status updates
+   - Haptic feedback
+
+H. PIXEL BORDER
+   Location: lib/core/widgets/pixel_border.dart
+   Features:
+   - Retro pixel-art border frames
+   - Customizable colors and thickness
+   - Decorative padding
+   - Used throughout UI for visual consistency
+
+I. CRT EFFECT
+   Location: lib/core/widgets/crt_effect.dart
+   Features:
+   - CRT scanline simulation
+   - Vignette effect
+   - Phosphor glow
+   - Togglable for performance
+
+J. PIXELATED WIDGET
+   Location: lib/core/widgets/pixelated_widget.dart
+   Features:
+   - Pixel scaling/blocky effect
+   - Adjustable pixel size
+   - Retro aesthetic enhancement
+
+
+8. STATE MANAGEMENT (PROVIDER)
+================================================================================
+
+PATTERN: Provider + ChangeNotifier for reactive UI updates
+
+8.1 NURSERY PROVIDER - Main Application State
+───────────────────────────────────────────────
+Location: lib/providers/nursery_provider.dart
+Class: NurseryProvider extends ChangeNotifier
+
+RESPONSIBILITIES:
+- Device/garden bed management
+- Sensor data aggregation
+- Relay command dispatching
+- Log management (session + historical)
+- Data mode switching
+- Demo bed handling
+
+STATE VARIABLES:
+- _gardenBeds: List<GardenBed> - All devices
+- _remoteBeds: List<GardenBed> - Real ESP32 devices from Firebase
+- _data: NurseryData - Current displayed sensor snapshot
+- _sessionLogs: List<LogEntry> - In-memory session logs
+- _historicalLogs: List<LogEntry> - Cloud-synced logs
+- _selectedBedIndex: int - Currently viewed device
+- _dataMode: DataMode - normal/randomAuto/custom
+- _selectedPlant: PlantType - User-selected plant type
+- _showDemoBeds: bool - Toggle demo devices visibility
+- [Various sliders for custom mode]
+
+PUBLIC GETTERS:
+- gardenBeds, selectedBed, data, logs, historicalLogs
+- isLoading, isOffline, showBedSelector
+- selectedPlant, showDemoBeds
+- [Data mode-specific getters]
+
+KEY METHODS:
+- selectBed(index) - Switch active device
+- togglePump/Fan/AirFan/FertilizerPump - Execute relays
+- setDataMode(DataMode) - Change data source
+- saveSensorLog() - Record snapshot to logs
+- setSensorValue(value) - Manual custom mode control
+- loadHistoricalLogs() - Fetch cloud logs
+- subscribeToDeviceUpdates() - Real-time Firebase stream
+- mergeDemoBeds() - Combine demo + real devices
+
+DATA FLOW:
+1. subscribeToDeviceList() watches /devices/
+2. Device key detected → subscribeToSelectedDevice() on that device
+3. New sensor reading → _data updated → notifyListeners()
+4. UI rebuilds in real-time using Consumer<NurseryProvider>
+
+DEMO BEDS:
+- Static demo garden beds created for testing without hardware
+- Can be toggled on/off
+- Merged with real devices when display flag is true
+- Useful for showcasing features without ESP32
+
+8.2 WEATHER PROVIDER - Environmental Data & Conditions
+─────────────────────────────────────────────────────────
+Location: lib/providers/weather_provider.dart
+Class: WeatherProvider extends ChangeNotifier
+
+RESPONSIBILITIES:
+- Fetch live weather from Open-Meteo API
+- Manage location selection
+- Control custom weather simulation
+- Time-of-day period calculation
+- Weather UI updates
+
+STATE VARIABLES:
+- _weather: WeatherData - Current conditions
+- _selectedLocation: WeatherLocation - Chosen location
+- _isLoading: bool - Fetch in progress
+- _error: String? - Error message
+- _isCustomMode: bool - Demo mode toggle
+- _customWeather: WeatherData? - Custom values
+- _customTimePeriod: TimeOfDayPeriod? - Demo time
+- _internetTime: DateTime? - Location local time
+- _timezone: String? - Location timezone
+
+PUBLIC GETTERS:
+- weather, selectedLocation, isLoading, error
+- customCondition, customTemperature, customTimePeriod
+- effectiveTimePeriod, formattedTime, internetTime, timezone
+
+KEY METHODS:
+- fetchWeather() - Async API call
+- setLocation(location) - Change location & persist
+- setCustomMode(enabled) - Toggle simulation mode
+- setCustomCondition(condition) - Change weather type
+- setCustomTemperature(temp) - Override temperature
+- setCustomTimePeriod(period) - Simulate time of day
+- refresh() - Manually refresh weather
+
+WEATHER API:
+- Service: Open-Meteo (free API, no key required)
+- Endpoint: https://api.open-meteo.com/v1/forecast
+- Parameters: latitude, longitude, current params
+- Response: Current weather code, temperature, humidity, timezone
+
+TIME CALCULATION:
+- Uses API's utc_offset_seconds to calculate local time
+- Separate from device timezone for accurate location time
+- Used for garden visualizer (sun/moon position)
+- Used for time period calculation (dawn, morning, noon, dusk, night)
+
+CUSTOM MODE USES:
+- Testing weather-specific UI/logic
+- Simulating different times of day
+- Developer options testing
+- Demo presentations
+
+PRESET LOCATIONS:
+- Manila, PH; Cebu, PH; Davao, PH; Baguio, PH; Nueva Ecija, PH
+- Tokyo, JP; Singapore; Bangkok, TH
+- London, UK; New York, US; Sydney, AU
+- Expandable for additional locations
+
+
+9. FIREBASE INTEGRATION
+================================================================================
+
+9.1 DATABASE STRUCTURE (V2)
+─────────────────────────────
+Reference: lib/services/firebase_database_structure.md
+
+DATABASE URL:
+https://plant-nursery-monitoring-default-rtdb.asia-southeast1.firebasedatabase.app
+
+ROOT NODES:
+
+/devices/
+├── {deviceId}/ (e.g., "esp32-001")
+│   ├── sensors/
+│   │   ├── soil1-3: int (moisture %)
+│   │   ├── temp1-2: double (°C)
+│   │   ├── hum1-2: int (%)
+│   │   ├── ecLevel: double (mS/cm)
+│   │   ├── phLevel: double
+│   │   ├── voltage: double
+│   │   ├── current: double
+│   │   ├── waterLevel: int
+│   │   ├── pumpStatus: bool
+│   │   ├── fanStatus: bool
+│   │   ├── airFan: bool
+│   │   ├── fertilizerPump: bool
+│   │   ├── isThirsty: bool (firmware computed)
+│   │   ├── isHot: bool (firmware computed)
+│   │   ├── timestamp: int (ms)
+│   │   └── lastUpdated: string (ISO-8601)
+│   └── settings/
+│       ├── plantType: string
+│       ├── automatic: bool
+│       ├── manual: bool
+│       └── updatedAt: int (server time)
+
+/commands/
+├── {deviceId}/
+│   ├── pump: bool (relay CH-1)
+│   ├── fan: bool (relay CH-2)
+│   ├── fertilizerPump: bool (relay CH-3)
+│   ├── airFan: bool (relay CH-4)
+│   └── updatedAt: int (server time)
+
+/logs/
+├── sensor/
+│   ├── {YYYY-MM-DD}/
+│   │   └── {timestamp}: { full sensor data + metadata }
+├── events/
+│   ├── {YYYY-MM-DD}/
+│   │   └── {timestamp}: { event data }
+└── alerts/
+    ├── {YYYY-MM-DD}/
+    │   └── {timestamp}: { alert data }
+
+9.2 REALTIME DATA FLOW
+────────────────────────
+SEQUENCE:
+
+1. ESP32 → Firebase (Telemetry Push)
+   ESP32 SET /devices/{id}/sensors/ with complete object
+   Interval: Every 5-10 seconds (configurable)
+   Contains: All sensor readings + relay echo
+
+2. App ← Firebase (Real-time Subscription)
+   App listens on /devices/{id}/sensors/
+   Triggered: Any child update
+   Handler: Update UI in real-time
+
+3. App → Firebase (Command Write)
+   App writes /commands/{id}/ with relay commands
+   Triggered: User button tap
+   Contains: pump, fan, airFan, fertilizerPump booleans
+
+4. ESP32 ← Firebase (Command Pull)
+   Firmware listens on /commands/{id}/
+   Triggered: updatedAt timestamp changes
+   Handler: Execute relay for ~30 seconds
+
+5. App → Firestore (Historical Logging)
+   App writes telemetry to /logs/sensor/{date}/{ts}
+   Interval: Every 30-60 seconds
+   Prevents duplicate: _lastLoggedTimePerDevice map
+
+9.3 FIREBASE SECURITY RULES
+──────────────────────────────
+CURRENT (Development/Testing):
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+
+RECOMMENDED (Production):
+{
+  "rules": {
+    "devices": {
+      ".read": true,
+      "{deviceId}": {
+        "sensors": {
+          ".read": true,
+          ".write": "root.child('commands').child(auth.uid).exists()"
+        },
+        "settings": {
+          ".write": "auth.uid != null",
+          ".read": true
+        }
+      }
+    },
+    "commands": {
+      "{deviceId}": {
+        ".write": "auth.uid == root.child('devices').child({deviceId}).child('owner').val()"
+      }
+    },
+    "logs": {
+      ".read": true,
+      ".write": "auth.uid != null"
+    }
+  }
+}
+
+9.4 FIRESTORE COLLECTIONS (Alternative)
+──────────────────────────────────────────
+Collections for structured historical data:
+
+devices/
+├── {deviceId}/
+│   ├── name: string
+│   ├── location: string
+│   ├── plantType: string
+│   ├── createdAt: timestamp
+│   └── owner: string
+
+telemetry/{YYYY-MM-DD}/
+├── {deviceId}_{timestamp}/
+│   ├── deviceId: string
+│   ├── timestamp: timestamp
+│   ├── moisture: number
+│   ├── temperature: number
+│   ├── humidity: number
+│   ├── ecLevel: number
+│   ├── phLevel: number
+│   └── [other readings]
+
+alerts/{YYYY-MM-DD}/
+├── {deviceId}_{timestamp}/
+│   ├── deviceId: string
+│   ├── timestamp: timestamp
+│   ├── alertType: string (THIRSTY, HOT, CRITICAL)
+│   ├── severity: string (WARNING, CRITICAL)
+│   └── message: string
+
+9.5 DATA PERSISTENCE STRATEGY
+───────────────────────────────
+LAYER 1: Real-time Stream (Firebase RTDB)
+- Current sensor data
+- Command acknowledgements
+- Latency: <500ms typically
+- Used for: Live dashboard
+
+LAYER 2: Session Memory (NurseryProvider)
+- In-memory session logs
+- Fast access for current session view
+- Cleared on app restart
+
+LAYER 3: Local Cache (SharedPreferences)
+- User preferences (plant, location, device)
+- Session state
+- Survives app restart
+
+LAYER 4: Cloud Storage (Firestore)
+- Historical telemetry
+- Alert history
+- Event logs
+- Backup and long-term storage
+
+SYNC STRATEGY:
+- Real-time updates: Firebase RTDB Listeners
+- Batch operations: Firebase REST API
+- Historical queries: Firestore
+- Conflict resolution: Timestamp-based (server wins)
+
+
+10. WEATHER SYSTEM
+================================================================================
+
+10.1 WEATHER INTEGRATION
+─────────────────────────
+Service: Open-Meteo Free Weather API
+Type: RESTful HTTP API
+Authentication: No API key required
+Coverage: Global weather data
+
+API ENDPOINT:
+https://api.open-meteo.com/v1/forecast
+
+PARAMETERS:
+- latitude: Location latitude coordinate
+- longitude: Location longitude coordinate
+- current: Requested current parameters
+  * temperature_2m
+  * relative_humidity_2m
+  * is_day (0 = night, 1 = day)
+  * weather_code (WMO code)
+- timezone: auto (API determines from coordinates)
+
+RESPONSE FORMAT:
+{
+  "latitude": 14.5995,
+  "longitude": 120.9842,
+  "current": {
+    "temperature_2m": 28.5,
+    "relative_humidity_2m": 65,
+    "is_day": 1,
+    "weather_code": 0,
+    "time": "2024-01-15T10:30"
+  },
+  "timezone": "Asia/Manila",
+  "utc_offset_seconds": 28800
+}
+
+WMO WEATHER CODES:
+0: Clear sky → SUNNY
+1-2: Mainly/Partly clear → PARTLY_CLOUDY
+3: Overcast → CLOUDY
+45, 48: Foggy → FOGGY
+51-67: Drizzle/Rain → RAINY
+71-77: Snow → SNOWY
+80-82: Rain showers → RAINY
+85-86: Snow showers → SNOWY
+95-99: Thunderstorm → STORMY
+
+10.2 TIME OF DAY PERIODS
+─────────────────────────
+Location: lib/models/time_of_day_period.dart
+
+PERIODS (Based on Solar Position):
+- Midnight (00:00-05:59): Darkest, cold tones
+- Night (06:00-06:59): Dawn preparation
+- Dawn (07:00-08:59): Sunrise period
+- Morning (09:00-11:59): Bright, energetic
+- Noon (12:00-15:59): Peak brightness, hottest
+- Dusk (16:00-17:59): Sunset period
+- Evening (18:00-20:59): Twilight
+- Night (21:00-23:59): Dark, stars visible
+
+SKY COLORS (Gradient by period):
+- Midnight: Deep blue/black (#0a0b1a to #1a0a2e)
+- Night: Navy/purple (#1a0a2e to #2d1b4e)
+- Dawn: Orange/pink (#4a2f4e to #ff6b35)
+- Morning: Light blue (#87ceeb to #e0f6ff)
+- Noon: Bright cyan (#00d4ff to #87ceeb)
+- Dusk: Orange/pink (#ff6b35 to #4a2f4e)
+- Evening: Deep orange (#2d1b4e to #1a0a2e)
+- Night: Navy (#1a0a2e to #0a0b1a)
+
+LIGHTING EFFECTS:
+- Sunrise/Sunset: Dynamic color transition
+- Time-based glow colors on UI elements
+- CRT effect intensity varies by period
+
+10.3 WEATHER VISUALIZATION
+────────────────────────────
+Components: Garden Visualizer widget
+
+VISUAL MAPPINGS:
+
+Weather → What's Drawn:
+- SUNNY: Bright sky, single cloud, sun
+- PARTLY_CLOUDY: Light sky, medium clouds, sun
+- CLOUDY: Gray sky, many clouds, diffuse lighting
+- RAINY: Gray sky, rain effects, darker clouds
+- STORMY: Very dark, heavy angled rain, wind effects
+- SNOWY: White sky, falling snow, cold tones
+- FOGGY: Reduced visibility, fog overlay
+- WINDY: Swaying plants, wind streaks, dust
+
+ANIMATION EFFECTS:
+- Rain: Continuous downward movement (straight or angled)
+- Snow: Slow falling particles with slight wind sway
+- Wind: Object distortion and streaking
+- Clouds: Drifting across sky
+- Stars: Twinkling effect (night only)
+
+CRT EFFECTS:
+- Glow color matches time period
+- Scanlines intensity varies with brightness
+- Vignette darkening at edges
+- Phosphor glow on bright elements
+
+10.4 PRESET WEATHER LOCATIONS
+──────────────────────────────
+presetLocations list in WeatherLocation class:
+
+PHILIPPINES:
+- Manila, PH (14.5995, 120.9842) - Tropical
+- Cebu, PH (10.3157, 123.8854) - Central Visayas
+- Davao, PH (7.1907, 125.4553) - Mindanao
+- Baguio, PH (16.4023, 120.5960) - Highlands (cooler)
+- Nueva Ecija, PH (15.5784, 121.1113) - Agricultural region
+
+ASIA-PACIFIC:
+- Tokyo, JP (35.6762, 139.6503) - Temperate
+- Singapore (1.3521, 103.8198) - Equatorial
+- Bangkok, TH (13.7563, 100.5018) - Tropical
+
+NORTH AMERICA:
+- New York, US (40.7128, -74.0060) - Temperate
+- Los Angeles, US (34.0522, -118.2437) - Mediterranean
+
+OCEANIA:
+- Sydney, AU (-33.8688, 151.2093) - Temperate
+
+EUROPE:
+- London, UK (51.5074, -0.1278) - Temperate maritime
+
+10.5 CUSTOM WEATHER MODE
+──────────────────────────
+For Testing & Development
+
+CONTROLLABLE PARAMETERS:
+- weater Condition
+- Temperature
+- Time of Day Period
+
+USE CASES:
+- Test UI in different weather conditions
+- Demo specific features
+- Screenshot/video creation
+- Weather-specific logic testing
+
+IMPLEMENTATION:
+- Toggle via Developer Options
+- Override realtime fetch
+- Persist during session
+- Reset on app restart
+
+
+11. NOTIFICATIONS & ALERTS
+================================================================================
+
+11.1 ALERT TYPES
+─────────────────
+SYSTEM GENERATES ALERTS FOR:
+
+1. Plant Thirsty
+   Triggered: Moisture < 30%
+   Title: "🌵 THIRSTY!"
+   Message: "Your plant needs water!"
+   Sound: Alert tone
+   Action: Open dashboard
+
+2. Plant Hot
+   Triggered: Temperature > 35°C
+   Title: "🔥 HOT!"
+   Message: "Temperature too high!"
+   Sound: Warning tone
+   Action: Open dashboard
+
+3. Critical Condition
+   Triggered: Moisture < 20% OR Temp > 40°C
+   Title: "⚠️ CRITICAL!"
+   Message: "Plant in critical condition!"
+   Sound: Urgent alert
+   Action: Open dashboard with emergency controls
+
+4. Device Offline
+   Triggered: No telemetry for 120+ seconds
+   Title: "📡 OFFLINE!"
+   Message: "{device} no longer responding"
+   Sound: Connection lost
+   Action: Device details
+
+5. System Events
+   - Firebase sync complete
+   - Connection restored
+   - Settings saved
+   - Log rotation
+
+11.2 NOTIFICATION BEHAVIOR
+─────────────────────────────
+ANDROID:
+- Native Android notification
+- Notification icon: @mipmap/ic_launcher
+- Channel: "plant_alerts" with High importance
+- Sound: Defined in NotificationChannel
+- Vibration: Device default
+- LED: Green for success, Red for alert
+
+iOS:
+- Native iOS notification
+- Sound: Default system sound
+- Badge: App icon badge count
+- Permissions: AlertPermission, BadgePermission, SoundPermission
+- Alert style: Banner (non-intrusive)
+- Threading: UIThread enforced
+
+WEB:
+- Browser notification API
+- Silent fallback if permission denied
+- Title + body + icon support
+
+11.3 COOLDOWN MECHANISM
+─────────────────────────
+RULE: Only one alert per plant every 5 minutes
+
+IMPLEMENTATION:
+- _lastNotificationTime tracks timestamp
+- Compare: now() - lastTime > 5 minutes?
+- If yes: send notification, update timestamp
+- If no: skip notification
+
+RATIONALE:
+- Prevent notification spam
+- Allow user to respond
+- Battery/performance optimization
+- Better UX (not overwhelming)
+
+11.4 NOTIFICATION CUSTOMIZATION
+──────────────────────────────────
+MOOD-BASED MESSAGES:
+
+Ecstatic: "Your plant is thriving!"
+Happy: "All looks great!"
+Content: "Plant is doing fine"
+Concerned: "Plant needs attention"
+Stressed: "Plant is struggling"
+Critical: "URGENT: Plant needs help!"
+
+SENSOR-SPECIFIC MESSAGES:
+
+Moisture Issue:
+- Mild: "Soil looks a bit dry"
+- Severe: "URGENT: Water your plant!"
+
+Temperature Issue:
+- Mild: "Slightly warm, monitor"
+- Severe: "CRITICAL: Plant overheating!"
+
+EC Issue:
+- Mild: "Consider nutrient adjustment"
+- Severe: "Nutrient levels critical!"
+
+11.5 NOTIFICATION PERMISSIONS
+────────────────────────────────
+ANDROID:
+- POST_NOTIFICATIONS (API 31+)
+- Requested at runtime
+- Fallback to silent if denied
+
+iOS:
+- UNUserNotificationCenter
+- Requested on first app launch
+- Can be changed in system settings
+
+PERMISSION FLOW:
+1. App launch → Check for permissions
+2. First alert trigger → Request if needed
+3. User allows/denies → Remember preference
+4. Subsequent alerts → Use permission state
+
+
+12. BUILD & DEPLOYMENT
+================================================================================
+
+12.1 PROJECT CONFIGURATION
+────────────────────────────
+pubspec.yaml:
+
+name: onion_nursery_monitoring_app
+description: "Plant.io - 8-bit Retro Garden IoT Monitoring Dashboard"
+version: 0.1.0
+environment: sdk: ^3.10.7
+
+dependencies:
+  flutter: [latest]
+  provider: ^6.1.2
+  google_fonts: ^6.2.1
+  http: ^1.2.0
+  shared_preferences: ^2.2.2
+  connectivity_plus: ^7.0.0
+  audioplayers: ^6.5.1
+  flutter_local_notifications: ^18.0.1
+  firebase_core: ^4.4.0
+  firebase_database: ^12.1.2
+  cloud_firestore: ^6.2.0
+  fl_chart: ^0.70.2
+
+dev_dependencies:
+  flutter_test
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+
+12.2 BUILDING FOR PLATFORMS
+──────────────────────────────
+
+ANDROID:
+build.gradle.kts (app level):
+- minSdkVersion: 21+ (Firebase requirement)
+- targetSdkVersion: 34+ (current Google Play requirement)
+- compileSdkVersion: 35
+
+Build command:
+flutter build apk --release
+flutter build appbundle --release  # For Play Store
+
+iOS:
+Runner.xcodeproj configuration:
+- iOS Deployment Target: 11.0+
+- Xcode version: 14.0+
+- CocoaPods: Latest
+
+Build command:
+flutter build ios --release
+
+Web:
+flutter build web --release
+# Output: build/web/
+
+Desktop (Windows/macOS/Linux):
+flutter build windows --release
+flutter build macos --release
+flutter build linux --release
+
+12.3 FIREBASE SETUP FOR PLATFORMS
+───────────────────────────────────
+
+ANDROID:
+1. Add google-services.json to android/app/
+2. Configure Firebase in AndroidManifest.xml
+3. Enable Firebase Cloud Messaging (FCM)
+
+iOS:
+1. Add GoogleService-Info.plist to Runner/
+2. Configure in Xcode build settings
+3. Enable APNs push notifications
+
+WEB:
+1. Initialize Firebase in index.html <script>
+2. Configure firebaseConfig object
+3. Enable CORS for API calls
+
+12.4 RELEASE CHECKLIST
+────────────────────────
+□ Update version in pubspec.yaml
+□ Run flutter pub get
+□ Run flutter analyze (fix all issues)
+□ Run flutter test (all tests passing)
+□ Update README.md changelog
+□ Test on physical device (Android + iOS)
+□ Verify Firebase rules for production
+□ Check icon sizes and formats
+□ Sign Android keystore
+□ Update app screenshots
+□ Write release notes
+□ Tag release in git
+□ Build release APK/AAB
+□ Upload to Play Store/TestFlight
+□ Monitor crash reports
+
+12.5 DEPLOYMENT TARGETS
+─────────────────────────
+GOOGLE PLAY STORE (Android):
+- Minimum version: Android 7.0 (API 24)
+- Target version: Latest (API 34+)
+- APK split by ABI (arm64-v8a, armeabi-v7a)
+- App Bundle (.aab) preferred
+
+APPLE APP STORE (iOS):
+- iOS 11.0+
+- Requires Apple Developer account
+- Code signing required
+- TestFlight beta testing available
+
+WEB:
+- Flutter web deployment
+- Options: Firebase Hosting, Netlify, Vercel
+- PWA support
+- Service workers for offline support
+
+12.6 SIGNING & CERTIFICATES
+──────────────────────────────
+
+ANDROID:
+Create signing key:
+keytool -genkey -v -keystore ~/upload-keystore.jks \
+  -keyalg RSA -keysize 2048 -validity 10950 \
+  -alias upload
+
+Configure gradle:
+  signingConfigs {
+    release {
+      keystore file(../upload-keystore.jks)
+      keystorePassword: [password]
+      keyAlias: "upload"
+      keyPassword: [password]
+    }
+  }
+
+iOS:
+- Apple Developer certificate required
+- Provisioning profiles configured
+- Code signing by Xcode (automatic if configured)
+
+12.7 ENVIRONMENT CONFIGURATION
+─────────────────────────────────
+android/local.properties:
+flutter.sdk=/path/to/flutter/sdk
+flutter.buildMode=release
+
+.env (if using env package - future):
+FIREBASE_PROJECT_ID=plant-nursery-monitoring
+FIREBASE_API_KEY=...
+WEATHER_API_KEY=... (not needed for Open-Meteo)
+
+
+13. CONFIGURATION FILES
+================================================================================
+
+13.1 pubspec.yaml
+──────────────────
+Main project configuration
+- Name, version, description
+- Flutter & Dart version requirements
+- All dependencies
+- Dev dependencies
+- Asset paths
+- Icon generation config
+
+Key sections:
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#0D1117"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/sounds/
+
+13.2 firebase.json
+────────────────────
+Firebase project configuration
+- Project ID: plant-nursery-monitoring
+- Realtime Database region: asia-southeast1
+- Firestore region: asia-southeast1
+- Hosting: (if deployed)
+
+13.3 analysis_options.yaml
+────────────────────────────
+Dart linting configuration
+Includes: flutter_lints recommendations
+
+Options:
+- Avoid unnecessary imports
+- Formatting rules
+- Error levels
+- Excluded paths
+
+13.4 iOS Configuration (Info.plist)
+──────────────────────────────────────
+- App display name
+- Bundle identifier
+- App version
+- Permissions (location, notifications)
+- Supported device types
+- Supported orientations
+
+13.5 Android Configuration (AndroidManifest.xml)
+────────────────────────────────────────────────────
+- Package name
+- Permissions:
+  * INTERNET
+  * ACCESS_FINE_LOCATION
+  * ACCESS_COARSE_LOCATION
+  * POST_NOTIFICATIONS (Android 13+)
+- Activities
+- Intent filters
+- Firebase configuration
+
+13.6 firebase_options.dart (Auto-generated)
+──────────────────────────────────────────────
+Platform-specific Firebase initialization
+Includes: Project ID, API keys, database URLs
+Generated by Firebase CLI
+
+
+14. KEY FEATURES & CAPABILITIES
+================================================================================
+
+14.1 REAL-TIME MONITORING
+────────────────────────────
+✓ Live sensor data from multiple ESP32 devices
+✓ <500ms latency for updates
+✓ Multi-device simultaneous monitoring
+✓ Last telemetry timestamp tracking
+✓ Automatic reconnection on network change
+✓ Offline indicator with recovery info
+
+14.2 SENSOR SUPPORT
+─────────────────────
+✓ Soil Moisture (Capacitive): 0-100%
+✓ Temperature (DHT22/DS18B20): 0-50°C
+✓ Humidity (DHT22): 0-100%
+✓ EC/TDS (Electrical Conductivity): 0-3.0 mS/cm
+✓ pH Level: 0-14.0
+✓ Water Level (Ultrasonic): 0-100%
+✓ Voltage Monitoring: Power supply monitoring
+✓ Current Monitoring: Power consumption tracking
+
+14.3 ACTUATOR CONTROL
+──────────────────────
+✓ Irrigation Pump (Relay CH-1)
+✓ Mist Fan (Relay CH-2)
+✓ Fertilizer/Nutrient Pump (Relay CH-3)
+✓ Air Circulation Fan (Relay CH-4)
+✓ Real-time toggle from UI
+✓ Command acknowledgement via echo
+✓ Automatic 30-second relay timeout (firmware)
+
+14.4 PLANT HEALTH SCORING
+───────────────────────────
+✓ Mood calculation from sensor data
+✓ 6-level mood system (Ecstatic → Critical)
+✓ Weighted sensor scoring
+✓ Issue identification & messaging
+✓ Happiness percentage (0-100%)
+✓ Emoji-based visualization
+✓ Customizable thresholds
+
+14.5 HISTORICAL LOGGING & ANALYTICS
+──────────────────────────────────────
+✓ Session logs (in-memory)
+✓ Cloud logs (Firestore)
+✓ Date-based organization
+✓ Event type filtering
+✓ Trend chart visualization
+✓ Export capability (future)
+✓ Performance metrics
+✓ Audit trail for automation events
+
+14.6 WEATHER INTEGRATION
+──────────────────────────
+✓ Real-time weather from Open-Meteo
+✓ 8 weather conditions
+✓ 24-hour time-of-day tracking
+✓ Location-based weather
+✓ Timezone handling
+✓ Pixel-art weather visualization
+✓ Custom weather simulation
+✓ Weather-responsive garden visualizer
+
+14.7 NOTIFICATIONS
+────────────────────
+✓ Plant thirsty alerts
+✓ Plant hot alerts
+✓ Critical condition alerts
+✓ Device offline alerts
+✓ System event notifications
+✓ 5-minute alert cooldown
+✓ Customizable alert messages
+✓ Sound & vibration feedback
+
+14.8 UI/UX FEATURES
+──────────────────────
+✓ 8-bit retro aesthetic
+✓ CRT scanline effects
+✓ Pixel-art components
+✓ Responsive layout
+✓ Dark mode (only supported)
+✓ Smooth animations
+✓ Touch feedback (haptics)
+✓ Color-coded status indicators
+✓ Accessibility considerations
+✓ Bottom tab navigation
+✓ Quick device switching
+✓ Settings persistence
+
+14.9 OFFLINE SUPPORT
+──────────────────────
+✓ Local data caching (SharedPreferences)
+✓ Session log persistence
+✓ UI displays cached data
+✓ Automatic reconnection attempts
+✓ Connectivity status indication
+✓ Graceful fallback to demo data
+
+14.10 DEVELOPER FEATURES
+─────────────────────────
+✓ Demo beds for testing
+✓ Custom data mode (sliders)
+✓ Random auto-generated data
+✓ Weather simulation
+✓ Time period manipulation
+✓ Verbose logging
+✓ Firebase data visualization
+✓ Connection testing
+✓ Database save/load utilities
+✓ Error reporting
+
+
+15. HARDWARE INTEGRATION (ESP32)
+================================================================================
+
+15.1 EXPECTED ESP32 FIRMWARE
+──────────────────────────────
+The app communicates with an ESP32 microcontroller.
+Expected firmware capabilities:
+
+SENSOR READING:
+- Read capacitive moisture sensors (ADC)
+- Read DHT22 temperature/humidity
+- Read TDS/EC sensor via ADC
+- Read pH sensor via analog input
+- Measure water level via ultrasonic (HC-SR04)
+- Monitor power: voltage and current
+- Poll sensors every 1-5 seconds
+
+WIFI CONNECTIVITY:
+- Connect to WiFi SSID (hardcoded or configurable)
+- Maintain persistent connection
+- Automatic reconnection on loss
+- MDNS or static IP addressing
+
+FIREBASE REALTIME DATABASE:
+- Initialize Firebase RTDB connection
+- Write sensor data to /devices/{deviceId}/sensors/
+- Format: Complete JSON object (SET operation)
+- Include timestamp
+- Poll for commands at /commands/{deviceId}/
+- Check for new commands via updatedAt timestamp
+
+RELAY CONTROL:
+- Listen for commands on /commands/{deviceId}/
+- Parse pump, fan, airFan, fertilizerPump booleans
+- Activate corresponding relay pin
+- Timeout relays after 30 seconds (safety)
+
+DATA FORMAT (What app expects):
+{
+  "deviceId": "esp32-001",
+  "soil1": 65,              // or: moisture
+  "soil2": 60,
+  "soil3": 70,
+  "temp1": 28.5,            // or: temperature
+  "temp2": 29.0,
+  "hum1": 55,               // or: humidity
+  "hum2": 52,
+  "ecLevel": 1.2,
+  "phLevel": 6.5,
+  "voltage": 12.5,
+  "current": 1.1,
+  "waterLevel": 80,
+  "pumpStatus": false,
+  "fanStatus": false,
+  "airFan": false,
+  "fertilizerPump": false,
+  "isThirsty": false,       // Optional (app calculates if missing)
+  "isHot": false,           // Optional (app calculates if missing)
+  "timestamp": 1711900000000,
+  "lastUpdated": "2024-03-31T12:00:00.000Z"
+}
+
+15.2 COMMAND PROTOCOL
+───────────────────────
+App → ESP32 (via /commands/{deviceId}/):
+{
+  "pump": true,             // Irrigation
+  "fan": false,             // Misting/cooling
+  "airFan": true,           // Air circulation
+  "fertilizerPump": false,  // Nutrient pump
+  "updatedAt": 1711900000000
+}
+
+ESP32 → App (via sensor echo):
+Firmware should repeat the received command back in sensor data:
+{
+  ...
+  "pumpStatus": true,
+  "fanStatus": false,
+  "airFanStatus": true,
+  "fertilizerPumpStatus": false,
+  ...
+}
+
+This confirms command was received/executed.
+
+15.3 DEVICE REGISTRATION
+───────────────────────────
+Manual process (currently):
+1. ESP32 boots and connects to WiFi
+2. Firmware initializes Firebase connection
+3. Firmware creates node: /devices/{deviceId}/
+4. Firmware starts writing to /devices/{deviceId}/sensors/
+5. App detects device in device list
+6. User selects device in UI
+
+Automatic features (future):
+- BLE device discovery
+- QR code provisioning
+- WiFi setup wizard
+- Firmware OTA updates
+
+
+16. DEVELOPMENT GUIDELINES
+================================================================================
+
+16.1 CODE ORGANIZATION
+────────────────────────
+STRUCTURE:
+- One main file per class/widget
+- Folder-based organization by feature
+- Related files grouped together
+- Clear separation of concerns
+
+NAMING CONVENTIONS:
+- Classes: PascalCase (e.g., NurseryProvider)
+- Methods/functions: camelCase (e.g., fetchWeather)
+- Variables: camelCase
+- Constants: CONSTANT_CASE or camelCase for private
+- Private members: leading underscore (_variableName)
+- Files: snake_case (e.g., main_shell.dart)
+
+IMPORTS:
+- Organize imports: dart, flutter, packages, relative
+- Remove unused imports (flutter analyze will warn)
+- Prefer relative imports for local files
+
+16.2 WIDGET BEST PRACTICES
+─────────────────────────────
+STATELESS vs STATEFUL:
+- Use StatelessWidget by default (immutable)
+- Only use StatefulWidget when state changes needed
+- Avoid excessive nested widgets
+- Extract reusable components into separate files
+
+PROVIDER USAGE:
+- Use Consumer<T> to access providers
+- Avoid accessing providers in build() without wrapping
+- Keep provider scope minimal
+- Use Selector for fine-grained updates
+
+PERFORMANCE:
+- Use const constructors where possible
+- Cache complex calculations
+- Avoid rebuilding large widgets
+- Use ListView.builder for long lists
+- Profile with DevTools
+
+16.3 ERROR HANDLING
+─────────────────────
+TRY-CATCH:
+- Wrap Firebase calls in try-catch
+- Handle timeout scenarios
+- Log errors with debugPrint()
+- Show user-friendly error messages
+
+FIREBASE ERRORS:
+- FirebaseException for database errors
+- Parse error codes appropriately
+- Retry logic for network errors
+- Fallback to demo data on failure
+
+STREAM HANDLING:
+- Use StreamSubscription for long-lived streams
+- Cancel subscriptions in dispose()
+- Handle stream errors with onError callback
+- Check hasData before using StreamSnapshot data
+
+16.4 TESTING
+──────────────
+UNIT TESTS:
+- Test data transformations (fromMap, toMap)
+- Test calculations (mood, scores)
+- Mock Firebase calls
+- Test date/time logic
+
+WIDGET TESTS:
+- Test widget rendering
+- Test user interactions
+- Mock providers with test values
+- Verify UI updates on state changes
+
+INTEGRATION TESTS:
+- Test full app flows
+- Use real Firebase (staging environment)
+- Test on multiple platforms
+- Verify offline behavior
+
+16.5 DEBUGGING
+────────────────
+TOOLS:
+- Flutter DevTools (performance, memory, network)
+- Android Studio/VS Code debugger
+- Firebase Console for data inspection
+- Local notifications debugging
+- Network request inspection (Dio with logging)
+
+LOGGING:
+- Use debugPrint() for debug messages
+- Avoid print() in production
+- Structured logging with timestamp/level
+- Log important state changes
+- Clear verbose logs for final build
+
+16.6 PERFORMANCE OPTIMIZATION
+───────────────────────────────
+RENDERING:
+- Use RepaintBoundary for complex custom paints
+- Cache image calculations
+- Limit animation frame rates
+- Use SingleChildScrollView carefully (measure first)
+
+MEMORY:
+- Dispose streams and listeners
+- Clear caches on logout
+- Monitor memory growth with DevTools
+- Avoid global state leaks
+
+NETWORK:
+- Batch Firebase operations
+- Use appropriate update frequency
+- Cache API responses
+- Implement request deduplication
+
+16.7 VERSION CONTROL
+──────────────────────
+GIT WORKFLOW:
+- Feature branches for new features
+- Commit messages in format: "type: description"
+  * feat: new feature
+  * fix: bug fix
+  * docs: documentation
+  * refactor: code restructuring
+- Small, logical commits
+- Pull requests for code review
+- Merge to main after approval
+
+TAGS:
+- Tag releases: v0.1.0, v0.2.0, etc.
+- Include changelog in release notes
+
+16.8 DOCUMENTATION
+─────────────────────
+CODE COMMENTS:
+- Explain WHY, not WHAT (code shows what)
+- Document complex algorithms
+- Add comments for temporary workarounds
+- Use /// for public API documentation
+- Include @param and @return for methods
+
+README:
+- Setup instructions
+- Feature list
+- Architecture overview
+- Build and deploy steps
+- Known issues/limitations
+- Contributing guidelines
+
+INTERNAL DOCS:
+- Database schema (firebase_database_structure.md)
+- UI component gallery
+- API integration guide
+- Performance metrics
+
+16.9 SECURITY CONSIDERATIONS
+──────────────────────────────
+FIREBASE:
+- Enforce authentication rules (production)
+- Validate input on client and server
+- Use Firebase Security Rules
+- Never expose secrets in code
+- Use environment variables for sensitive data
+
+DATA:
+- Sanitize user input
+- Encrypt sensitive data at rest
+- Use HTTPS for all API calls
+- Implement rate limiting
+- Regular security audits
+
+CODE:
+- Regularly update dependencies
+- Use dependabot for security updates
+- Review third-party packagedependencies
+- Avoid code injection vulnerabilities
+- Use secure random number generation
+
+16.10 COMMON PITFALLS TO AVOID
+────────────────────────────────
+1. Building widgets without keys (list rendering)
+2. Not canceling subscriptions (memory leaks)
+3. Firebase queries without proper indexing (slow)
+4. Storing sensitive data in SharedPreferences
+5. Not testing on actual devices
+6. Ignoring platform-specific requirements
+7. Over-nesting widgets (hard to test/debug)
+8. Not handling null values properly
+9. Firebase read/write in build()
+10. Ignoring device orientation changes
+
+
+================================================================================
+                            END OF DOCUMENTATION
+================================================================================
+
+CONTACT & SUPPORT:
+For questions about the codebase or system architecture, refer to the 
+inline code comments and specific documentation files in the repository.
+
+KEY DOCUMENTATION FILES:
+- README.md - Project overview
+- HOW_TO_CHECK_DATABASE.md - Firebase testing guide
+- firebase_database_structure.md - Database schema details
+- SYSTEM_DOCUMENTATION.txt - This comprehensive guide
+
+REPOSITORY STRUCTURE:
+- lib/ - Main application source code
+- pugsec.yaml - Dependencies and configuration
+- pubspec.lock - Locked dependency versions
+- android/ - Android-specific files
+- ios/ - iOS-specific files
+- build/ - Generated build outputs
+
+For deploying to production, refer to section 12 (BUILD & DEPLOYMENT).
+For ESP32 firmware requirements, refer to section 15 (HARDWARE INTEGRATION).
+
+Version: 0.1.0
+Last Updated: 2024
+Framework: Flutter 3.10.7+
+Dart SDK: 3+ compatible

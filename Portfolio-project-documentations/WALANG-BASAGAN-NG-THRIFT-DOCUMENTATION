@@ -1,0 +1,267 @@
+WALANG BASAGAN NG THRIFT
+Project Documentation
+
+1. Project Overview
+Walang Basagan ng Thrift is a Y2K-inspired thrift store web application built with React, TypeScript, Vite, Tailwind CSS, and an Express backend. The project combines an online storefront, role-based authentication, a shopping flow, customer support, and an admin dashboard for managing users, products, orders, homepage content, and support tickets.
+
+The application is designed to showcase both frontend and full-stack development skills for a portfolio. It features a modern responsive UI, reusable components, data-driven content, file uploads, user roles, and local development scripts for Windows.
+
+2. Project Goals
+- Build a visually distinct thrift shop website with a Y2K aesthetic.
+- Provide a smooth shopping experience for buyers.
+- Separate customer, moderator, and admin capabilities.
+- Include an admin dashboard for real management workflows.
+- Support both SQLite and JSON-based backend storage.
+- Make the project easy to run on Windows.
+
+3. Tech Stack
+Frontend:
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- React Icons
+
+Backend:
+- Node.js
+- Express
+- bcryptjs
+- multer
+- cors
+- better-sqlite3
+
+Storage:
+- SQLite database by default
+- JSON fallback mode for environments without SQLite build support
+
+4. Main Features
+4.1 Public Website
+- Home page with branded hero sections and promotional content
+- Y2K themed header and layout
+- Product showcase sections
+- Brand introduction and trust sections
+- Reviews and newsletter sections
+- Footer with social links and informational pages
+- Background music and support widget
+
+4.2 Authentication
+- Register and login pages
+- Password visibility toggle
+- Role-aware session handling
+- Redirects based on authenticated user role
+
+4.3 Shopping Experience
+- Product listing page
+- Product detail page
+- Add to cart functionality
+- Buy now flow
+- Cart management
+- Checkout page
+- User order history page
+
+4.4 Support System
+- Support widget for site users
+- Support threads and messages
+- Admin support reply tools
+- Thread assignment for moderators and admins
+
+4.5 Admin Dashboard
+- User management
+- Product management
+- Order management
+- Support ticket management
+- Homepage content management
+- Review monitoring
+- Role and status controls for users
+
+5. User Roles
+5.1 Admin
+- Full access to admin dashboard
+- Manage users, products, orders, homepage, and support messages
+- Cannot modify the first admin account role or status
+
+5.2 Moderator
+- Manage products
+- Manage support messages
+- View orders and homepage content
+- Cannot access user management
+
+5.3 Buyer
+- Browse products
+- Add items to cart
+- Place orders
+- View order history
+- Create support threads and send messages
+
+6. Important Pages
+- Home page: main marketing and branding landing page
+- Products page: catalog browsing
+- Product detail page: single item view and purchase actions
+- Cart page: cart editing and checkout preparation
+- Checkout page: shipping and payment confirmation
+- Orders page: buyer order history
+- Auth page: login and sign up
+- Admin dashboard: back-office management
+- Info pages: static informational content such as about, support, policies, and similar pages
+
+7. Project Structure
+Frontend source:
+- src/App.tsx: application routing and layout orchestration
+- src/main.tsx: app entry point
+- src/context/AuthContext.tsx: authentication state
+- src/lib/api.ts: frontend API client
+- src/lib/homepageDefaults.ts: default homepage content merge logic
+- src/components/: reusable UI sections and feature components
+- src/pages/: route-level pages such as auth, admin, support, and info pages
+- src/data/: structured JSON content used by the UI
+
+Backend:
+- server/index.js: Express application and route definitions
+- server/db.js: SQLite database access
+- server/db-json.js: JSON storage fallback
+- server/seed-admin.js: admin seed script for SQLite
+- server/seed-admin-json.js: admin seed script for JSON mode
+- server/seed-users.js: sample users for SQLite
+- server/seed-users-json.js: sample users for JSON mode
+- server/data/: backend data files
+- server/uploads/: uploaded images and media
+
+8. Routing and Navigation
+The frontend uses React Router for page navigation. Common routes include:
+- / : home page
+- /products : product listing
+- /products/:id : product details
+- /cart : shopping cart
+- /checkout : checkout flow
+- /orders : buyer order history
+- /login and /signup : authentication pages
+- /admin/* : admin dashboard routes
+- /info/:slug : informational pages
+
+The app also handles conditional redirects:
+- Admin and moderator accounts are sent to the dashboard after login.
+- Buyers can access cart, checkout, and orders.
+- Unauthenticated users are redirected to login for protected pages.
+
+9. API Summary
+Authentication:
+- POST /api/auth/register
+- POST /api/auth/login
+- GET /api/auth/me/:id
+
+Public data:
+- GET /api/products
+- GET /api/homepage
+- GET /api/reviews
+
+Buyer features:
+- POST /api/orders
+- GET /api/orders
+- PATCH /api/orders/:orderId/cancel
+- Support thread endpoints under /api/support
+
+Admin features:
+- GET /api/admin/users
+- POST /api/admin/users
+- PATCH /api/admin/users/:id/role
+- PATCH /api/admin/users/:id/status
+- GET /api/admin/products
+- POST /api/admin/products
+- PATCH /api/admin/products/:id
+- DELETE /api/admin/products/:id
+- GET /api/admin/orders
+- PATCH /api/admin/orders/:orderId
+- GET /api/admin/support/threads
+- GET /api/admin/support/threads/:id/messages
+- POST /api/admin/support/threads/:id/messages
+- PATCH /api/admin/support/threads/:id/assign
+- GET /api/admin/homepage
+- PATCH /api/admin/homepage
+- POST /api/admin/homepage/upload
+
+10. Local Development Scripts
+Frontend:
+- npm run dev
+
+Backend:
+- npm run dev:server
+- npm run dev:all
+- npm run dev:all:json
+
+Database seeding:
+- npm run seed:admin
+- npm run seed:admin:json
+- npm run seed:users
+- npm run seed:users:json
+
+Production build:
+- npm run build
+- npm run preview
+
+Utility:
+- npm run lint
+- npm run stop
+
+11. Windows Batch Files
+- install-node.bat: installs Node.js using the provided installer
+- run.bat: starts the full app and installs dependencies if needed
+- run-server-json.bat: starts the backend in JSON fallback mode
+- create-users.bat: helper script for user creation tasks
+
+12. Setup Instructions
+Default setup:
+1. Install Node.js if needed.
+2. Run the project using run.bat or npm run dev:all.
+3. Create the first admin account using the seed script.
+4. Open the app in the browser at http://localhost:5173.
+
+If SQLite fails:
+1. Use JSON fallback mode with run-server-json.bat or USE_JSON_DB=1.
+2. Seed the admin using npm run seed:admin:json.
+3. Start the frontend separately with npm run dev.
+
+13. Data and Storage Notes
+- Product images are uploaded to server/uploads.
+- Uploaded files are served from /uploads.
+- Homepage content is stored in the backend and can be edited from the admin dashboard.
+- The app merges backend homepage content with default content so the site still renders safely even when some fields are missing.
+
+14. Security and Access Control
+- Passwords are hashed using bcryptjs before storage.
+- Admin routes require an X-User-Id request header.
+- Role checks prevent unauthorized access to privileged routes.
+- Suspended and banned users are blocked from logging in and using protected actions.
+- The first admin account is protected from demotion or status changes.
+
+15. Design Highlights
+- Y2K-inspired thrift aesthetic
+- Pink and white visual palette
+- Rounded UI elements and modern card styling
+- Responsive layout for desktop and mobile
+- Consistent section-based homepage composition
+- Reusable components for clean development and maintenance
+
+16. Portfolio Value
+This project is suitable for a portfolio because it demonstrates:
+- Frontend architecture with React and TypeScript
+- Backend API design with Express
+- Authentication and role-based access control
+- CRUD operations for users and products
+- File upload handling
+- Cart, checkout, and order workflows
+- Support messaging and dashboard management
+- Responsive UI and branded design direction
+- Practical Windows-friendly developer experience
+
+17. Troubleshooting
+- If the backend is not running, the frontend may show an API error.
+- If port 3002 is busy, stop the conflicting process or change the backend port.
+- If SQLite cannot build on Windows, use the JSON fallback mode.
+- If product images do not show, confirm the backend is serving /uploads correctly.
+- If admin routes do not load, confirm the admin account exists and the session is active.
+
+18. Short Project Summary
+Walang Basagan ng Thrift is a complete thrift e-commerce platform with a Y2K-inspired design, buyer shopping features, customer support, and a powerful admin dashboard. It is built to be both functional and portfolio-ready, showing end-to-end web development capability.
+
+End of documentation.

@@ -1,0 +1,559 @@
+================================================================================
+                    THE SAFEHOUSE - PORTFOLIO DOCUMENTATION
+================================================================================
+
+PROJECT OVERVIEW
+================================================================================
+
+Project Name: The Safehouse Web Platform
+Description: A modern, interactive web presence for The Safehouse - a Web3 
+             community platform dedicated to onboarding people into Web3 with 
+             a focus on safe, encouraging spaces and real human connection.
+
+Tagline: "A Home Built on People. A Future Built on Web3."
+
+Type: Full-stack React Single Page Application (SPA)
+Status: Production-ready
+Last Updated: April 2026
+
+
+MISSION & PURPOSE
+================================================================================
+
+The Safehouse aims to:
+- Onboard more people into Web3 in a safe and encouraging environment
+- Make Web3 accessible to everyone
+- Promote community-driven empowerment
+- Foster camaraderie and fairness
+- Guide individuals toward meaningful progress and community belonging
+
+
+TECHNOLOGY STACK
+================================================================================
+
+Frontend Framework:
+  - React 19.2.4 (Latest)
+  - React Router DOM 7.14.1 (Routing)
+  - React DOM 19.2.4
+
+Build Tools:
+  - Vite 8.0.4 (Lightning-fast build tool)
+  - ESLint 9.39.4 (Code quality)
+  - Tailwind CSS 4.2.2 (Utility-first styling)
+  - @tailwindcss/vite 4.2.2 (Vite integration)
+
+Animation & Motion Libraries:
+  - GSAP (GreenSock Animation Platform) 3.15.0 - Timeline & scroll animations
+  - @gsap/react 2.1.2 - React hooks for GSAP
+  - Framer Motion 12.38.0 - Advanced React animations
+  - Lenis 1.3.23 - Smooth scrolling library
+  - Tempus 1.0.0-dev.17 - Timing & scheduling utilities
+
+3D Graphics & Visualization:
+  - Three.js 0.183.2 - WebGL 3D library
+  - @react-three/fiber 9.6.0 - React renderer for Three.js
+  - @react-three/drei 10.7.7 - Useful helpers for React Three Fiber
+  - @react-three/postprocessing 3.0.4 - Post-processing effects
+
+Animation & Vector Assets:
+  - @rive-app/react-canvas 4.28.0 - Rive animation framework
+
+Utilities:
+  - clsx 2.1.1 - Conditional className utility
+  - React Router DOM for page navigation
+
+
+FOLDER STRUCTURE & ORGANIZATION
+================================================================================
+
+ROOT FILES:
+  ├── package.json              Build configuration & dependencies
+  ├── vite.config.js            Vite build configuration
+  ├── eslint.config.js          ESLint rules configuration
+  ├── index.html                Entry HTML file
+  ├── README.md                 Original template documentation
+  └── PORTFOLIO_DOCUMENTATION.txt (This file)
+
+PUBLIC ASSETS:
+  public/
+  ├── rive/                     Rive animation assets
+  └── svg/                      SVG graphics
+
+SOURCE CODE:
+  src/
+  ├── main.jsx                  React application entry point
+  ├── App.jsx                   Root component with routing
+  ├── index.css                 Global styles
+  
+  ├── assets/                   Static resources & images
+  
+  ├── components/               Reusable UI components
+  │   ├── ImagePlaceholder.jsx  Placeholder component for images
+  │   ├── JourneyScrollBridge.jsx Scroll-based journey animation
+  │   ├── Nav.jsx               Navigation component
+  │   ├── Parallax.jsx          Parallax effect component
+  │   ├── Reveal.jsx            Reveal animation on scroll
+  │   ├── RoughCard.jsx         Styled card component
+  │   ├── ScrollStages.jsx      Scroll-triggered stage controller
+  │   ├── SplitHeading.jsx      Split text animation for headings
+  │   └── Waypoint.jsx          Intersection observer waypoint
+  
+  ├── context/                  React Context API
+  │   └── MotionModeContext.jsx Context for motion preferences
+  
+  ├── data/                     Content & configuration
+  │   └── content.js            Content copy, text, and data
+  
+  ├── lib/                      Utility functions & hooks
+  │   ├── gsapSetup.js          GSAP configuration & helpers
+  │   ├── scroll.js             Scroll-related utilities
+  │   └── useSmoothScroll.js    Custom hook for smooth scrolling
+  
+  ├── sections/                 Page sections (major components)
+  │   ├── Hero.jsx              Hero banner section
+  │   ├── HangingHero.jsx       Alternative hero with hanging elements
+  │   ├── Mission.jsx           Mission statement section
+  │   ├── StandFor.jsx          Core values/pillars section
+  │   ├── TrackRecord.jsx       Track record & achievements
+  │   ├── WhyWorks.jsx          Explanation section
+  │   ├── Offer.jsx             Offerings section
+  │   ├── WhyPartner.jsx        Partnership value section
+  │   ├── Opportunities.jsx     Opportunities overview
+  │   ├── Beyond.jsx            Beyond/future section
+  │   ├── Finale.jsx            Closing section
+  │   ├── AboutUs.jsx           About the organization
+  │   ├── Team.jsx              Team member profiles
+  │   ├── Socials.jsx           Social media links
+  │   └── Contacts.jsx          Contact information
+  
+  └── three/                    3D graphics & Three.js components
+      ├── CameraRig.jsx         Camera control system
+      ├── CampfireCanvas.jsx    Canvas for campfire scene
+      ├── CampfireScene.jsx     Campfire 3D scene setup
+      ├── Embers.jsx            Ember particle effects
+      ├── Environment.jsx       3D environment setup
+      ├── JourneyCanvas.jsx     Canvas for journey visualization
+      
+      └── journey/              Journey-specific 3D components
+          ├── Birds.jsx         Flying bird animations
+          ├── CampfireGathering.jsx Campfire gathering scene
+          ├── CurvedGround.jsx  Ground mesh with curves
+          ├── Gate.jsx          Gateway 3D model
+          ├── GrassField.jsx    Grass terrain generation
+          ├── TreeForest.jsx    Forest of trees
+          ├── Tent.jsx          Tent 3D model
+          ├── Sign.jsx          Sign object with texture
+          ├── JourneySigns.jsx  Collection of signs
+          ├── JourneyCamera.jsx Camera controls for journey
+          ├── JourneyWorld.jsx  Main journey world container
+          ├── PathStrip.jsx     Path visualization
+          ├── CurvedGround.jsx  Ground generation
+          ├── fireConstants.js  Fire/fire effects constants
+          ├── groundMath.js     Ground mesh mathematics
+          ├── pathCurve.js      Path curve generation
+          ├── rng.js            Random number generator utilities
+          └── signTexture.js    Sign texture generation
+
+
+CORE FEATURES
+================================================================================
+
+1. RESPONSIVE DESIGN
+   - Mobile-first approach
+   - Tailwind CSS for responsive layouts
+   - Adaptive components for all screen sizes
+
+2. SMOOTH SCROLLING
+   - Lenis integration for silk-smooth scrolling
+   - Custom scroll-based animations
+   - Scroll stage tracking and triggers
+
+3. ADVANCED ANIMATIONS
+   - GSAP timeline animations
+   - Scroll-triggered reveals and parallax
+   - Staggered animations on elements
+   - Framer Motion for React components
+   - Custom fade-in transitions
+
+4. 3D VISUALIZATION
+   - Three.js WebGL scenes
+   - Interactive 3D journey visualization
+   - Dynamic environment rendering
+   - Particle effects (embers)
+   - Procedural terrain generation
+
+5. INTERACTIVE ELEMENTS
+   - Animated navigation bar
+   - Scroll waypoints for section tracking
+   - Intersection observer-based reveals
+   - Dynamic content sections
+   - Rive vector animations
+
+6. ROUTING
+   - Multi-page support via React Router
+   - Automatic scroll-to-top on navigation
+   - Deep linking support
+
+7. MOTION PREFERENCES
+   - Motion mode context for accessibility
+   - Respects user preferences
+   - Fallback animations for reduced motion
+
+
+KEY DEPENDENCIES EXPLAINED
+================================================================================
+
+GSAP (GreenSock Animation Platform):
+  - Industry-standard JavaScript animation library
+  - Used for: timeline animations, scroll triggers, complex sequences
+  - Components: gsapSetup.js handles initialization
+  - Key Methods: gsap.timeline(), ScrollTrigger
+
+Framer Motion:
+  - React-native animation library
+  - Used for: component-level animations, staggered effects
+  - Key Features: Keyframes, layout animations, variants
+
+Three.js & React Three Fiber:
+  - 3D graphics rendering engine
+  - Used for: journey visualization, 3D scenes, terrain
+  - react-three/fiber provides React bindings
+  - drei provides helpful components (OrbitControls, etc.)
+
+Lenis:
+  - High-performance smooth scrolling library
+  - Provides: event-based scroll updates, inertia
+  - Integration: useSmoothScroll hook
+
+Rive:
+  - Vector animation and graphics editor
+  - Used for: interactive animated graphics
+  - Assets located in: public/rive/
+
+
+INSTALLATION & SETUP
+================================================================================
+
+PREREQUISITES:
+  - Node.js (v16 or higher)
+  - npm or yarn package manager
+
+INSTALLATION STEPS:
+
+1. Clone the repository
+   $ git clone [repository-url]
+   $ cd web
+
+2. Install dependencies
+   $ npm install
+
+3. Start development server
+   $ npm run dev
+
+4. Open browser
+   - Navigate to http://localhost:5173 (Vite default port)
+   - Auto hot module replacement enabled
+
+
+AVAILABLE SCRIPTS
+================================================================================
+
+Development:
+  $ npm run dev
+  - Starts Vite development server with HMR
+  - Enables fast refresh for code changes
+  - Watches for file changes automatically
+
+Production Build:
+  $ npm run build
+  - Optimizes and bundles for production
+  - Output: dist/ folder
+  - Ready for deployment
+
+Preview Production Build:
+  $ npm run preview
+  - Serves the production build locally
+  - Useful for testing optimized version before deploy
+
+Linting:
+  $ npm run lint
+  - Runs ESLint to check code quality
+  - Uses configured ESLint rules
+  - Fixes formatting issues
+
+
+COMPONENT ARCHITECTURE
+================================================================================
+
+SECTION COMPONENTS:
+  - Top-level page sections
+  - Imported in App.jsx as routes
+  - Examples: Hero, Mission, Team, Contacts
+  - Each section is self-contained and scrollable
+
+REUSABLE COMPONENTS:
+  - Modular, props-based components
+  - Examples: Nav, Parallax, Reveal, RoughCard
+  - Can be composed together
+  - Handle specific UI/animation concerns
+
+3D COMPONENTS:
+  - Canvas components (CampfireCanvas, JourneyCanvas)
+  - Scene setup components (CampfireScene, JourneyWorld)
+  - Entity components (Trees, Birds, Tents, Signs)
+  - Camera controllers (CameraRig, JourneyCamera)
+  - Math/utility modules for 3D calculations
+
+UTILITY HOOKS:
+  - useSmoothScroll: Enables smooth scrolling behavior
+  - Custom React hooks for motion mode preferences
+  - GSAP setup utilities for timeline management
+
+
+CONTENT MANAGEMENT
+================================================================================
+
+Content is centralized in src/data/content.js:
+
+  - Site metadata (title, tagline, contact info)
+  - Section-specific copy (mission, values, pillars)
+  - Team information
+  - Contact details
+  - Social media links
+  - All text content for easy management
+
+To update content:
+  1. Edit src/data/content.js
+  2. Changes reflect immediately in dev mode
+  3. Components consume this data
+
+Structure:
+  export const site = { ... }      // Global site info
+  export const hero = { ... }      // Hero section content
+  export const mission = { ... }   // Mission section content
+  export const standFor = { ... }  // Core values
+  [additional sections...]
+
+
+STYLING & THEMING
+================================================================================
+
+Tailwind CSS:
+  - Utility-first CSS framework
+  - Configuration: tailwind.config.cjs (if present)
+  - Classes applied directly to components
+  - @tailwindcss/vite plugin for compilation
+
+Global Styles:
+  - Location: src/index.css
+  - Imported in main.jsx
+  - Contains global resets and base styles
+
+Component Styles:
+  - Inline Tailwind classes
+  - BEM naming for complex components
+  - CSS modules (if needed for scoped styles)
+
+Conventions:
+  - Use Tailwind classes for layout/spacing
+  - Use CSS for complex animations (GSAP)
+  - Use styled variants from clsx for conditional classes
+
+
+PERFORMANCE CONSIDERATIONS
+================================================================================
+
+1. Code Splitting:
+   - JourneyCanvas is lazy-loaded with React.lazy()
+   - Reduces initial bundle size
+   - Loaded only when needed
+
+2. Asset Optimization:
+   - SVG assets in public/svg/
+   - Rive animations pre-optimized
+   - Images placeholder component
+
+3. Animation Performance:
+   - GSAP uses requestAnimationFrame
+   - GPU-accelerated transforms (transform, opacity)
+   - Avoid animating expensive properties (width, height)
+
+4. Scroll Performance:
+   - Lenis handles smooth scrolling efficiently
+   - ScrollStages manages scroll stage tracking
+   - Waypoint component uses Intersection Observer API
+
+5. 3D Performance:
+   - Three.js with proper LOD (Level of Detail)
+   - Particle systems optimized
+   - Terrain generated procedurally to reduce assets
+
+
+ACCESSIBILITY
+================================================================================
+
+Motion Preferences:
+  - MotionModeContext respects prefers-reduced-motion
+  - Fallback animations for accessibility users
+
+Navigation:
+  - Semantic HTML in sections
+  - ARIA labels where needed
+  - Keyboard navigation support via Nav component
+
+SEO Considerations:
+  - index.html contains meta tags
+  - Semantic section structures
+  - Heading hierarchy (h1, h2, h3)
+
+
+DEPLOYMENT
+================================================================================
+
+Build Process:
+  1. Run $ npm run build
+  2. Outputs optimized code to dist/ folder
+  3. All assets included in dist/
+
+Deployment Options:
+  - Vercel (recommended for Vite)
+  - Netlify
+  - GitHub Pages
+  - AWS S3 + CloudFront
+  - Any static hosting service
+
+Pre-deployment Checklist:
+  - [ ] npm run lint passes
+  - [ ] npm run build succeeds
+  - [ ] npm run preview displays correctly
+  - [ ] Test on multiple devices
+  - [ ] All links and forms functional
+  - [ ] Images optimized
+  - [ ] Meta tags configured
+
+
+TROUBLESHOOTING
+================================================================================
+
+Port Already in Use:
+  - Change port in vite.config.js
+  - Or kill process using port 5173
+
+Animations Not Triggering:
+  - Check GSAP ScrollTrigger refresh in gsapSetup.js
+  - Verify ScrollStages initialization
+  - Check MotionModeContext setting
+
+3D Scene Not Rendering:
+  - Verify WebGL support in browser
+  - Check browser console for errors
+  - Ensure Three.js dependencies installed
+
+Build Fails:
+  - Remove node_modules and package-lock.json
+  - Run npm install again
+  - Check Node.js version compatibility
+
+
+FUTURE ENHANCEMENTS
+================================================================================
+
+Potential Improvements:
+  - SEO optimization & meta tags
+  - Dark mode theme support
+  - Progressive Web App (PWA) features
+  - Analytics integration
+  - Email/contact form backend
+  - Blog or news section
+  - Multi-language support (i18n)
+  - WebGL fallbacks for older browsers
+
+
+PROJECT STATISTICS
+================================================================================
+
+Frontend Components: 25+
+  - 13 page sections
+  - 8 reusable UI components
+  - 4 3D scene components
+  - Multiple 3D entities
+
+Source Files: 35+
+  - React components (.jsx)
+  - Utility modules (.js)
+  - Styling with Tailwind CSS
+
+Dependencies: 18 production | 8 development
+  - Zero external component libraries
+  - Built with foundational libraries
+  - Lightweight and performant
+
+Project Type: Single Page Application (SPA)
+Estimated Bundle Size: ~400-600KB (with 3D assets)
+
+
+DEVELOPER NOTES
+================================================================================
+
+Code Quality:
+  - ESLint configured for React best practices
+  - Use React hooks for state management
+  - Functional components only
+  - Custom hooks for reusable logic
+
+Best Practices:
+  - Lazy load heavy components
+  - Use React.memo where appropriate
+  - Avoid inline functions in render
+  - Export constants from data/content.js
+  - Keep components focused and single-responsibility
+
+Git Workflow:
+  - Commit early and often
+  - Write descriptive commit messages
+  - Keep feature branches focused
+  - Test before merging to main
+
+Team Collaboration:
+  - Update content.js for copy changes
+  - Coordinate 3D asset changes
+  - Test animations on target devices
+  - Share performance insights
+
+
+CONTACT & SUPPORT
+================================================================================
+
+Project Contact: The Safehouse
+Phone: +63 927 884 9968
+Social Handle: @thesafehouseph
+Website: [configured in content.js]
+
+
+FINAL NOTES
+================================================================================
+
+This portfolio project showcases:
+  ✓ Modern React development practices
+  ✓ Advanced animation techniques (GSAP + Framer Motion)
+  ✓ 3D web graphics with Three.js
+  ✓ Responsive design with Tailwind CSS
+  ✓ Component-based architecture
+  ✓ Performance optimization
+  ✓ Smooth user experience with custom scroll handling
+  ✓ Professional, production-ready codebase
+
+The Safehouse web platform demonstrates expertise in:
+  - Frontend development
+  - UX/UI animation
+  - 3D web experiences
+  - Performance optimization
+  - Component design patterns
+  - React ecosystem knowledge
+
+
+================================================================================
+End of Documentation
+Generated: April 2026
+Version: 1.0
+================================================================================

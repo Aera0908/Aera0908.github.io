@@ -1,22 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import projectsData from '../data/projects.json'
-
-interface GalleryImage {
-  src: string
-  caption: string
-}
-
-interface Project {
-  title: string
-  description: string
-  fullDescription: string
-  technologies: string[]
-  image: string
-  role: string
-  duration: string
-  documentationUrl?: string
-  gallery?: GalleryImage[]
-}
+import type { Project } from '../data/projectTypes'
+import { routeTo } from '../hooks/useHashRoute'
+import WebTierBadge from './WebTierBadge'
+import { EngagementBadge, LimitedInfoBadge } from './ProjectTagBadges'
 
 const Portfolio = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -25,7 +12,9 @@ const Portfolio = () => {
   const modalRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const projects = projectsData as Project[]
+  const allProjects = projectsData as Project[]
+  const featured = allProjects.filter((p) => p.featured)
+  const projects = featured.length > 0 ? featured : allProjects
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % projects.length)
@@ -75,17 +64,42 @@ const Portfolio = () => {
     }
   }, [isClosing])
 
-  const ProjectCard = ({ project, onClick }: { project: Project; onClick: () => void }) => (
-    <div className="dashboard-card overflow-hidden">
-      <div className="overflow-hidden rounded-lg mb-4">
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-48 object-cover"
-        />
-      </div>
-      <h3 className="text-lg font-semibold text-slate-100 mb-2">{project.title}</h3>
-      <p className="text-slate-400 text-sm mb-4 line-clamp-3">{project.description}</p>
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [])
+
+  const goToCaseStudy = (projectId: string) => {
+    document.body.style.overflow = 'unset'
+    setSelectedProject(null)
+    setIsClosing(false)
+    routeTo(`/portfolio/${projectId}`)
+  }
+
+  const ProjectCard = ({ project, onClick }: { project: Project; onClick: () => void }) => {
+    const hasBadges =
+      project.webTier || project.engagement || project.ndaConstrained
+    return (
+      <div className="dashboard-card overflow-hidden">
+        <div className="relative overflow-hidden rounded-lg mb-4">
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-48 object-cover"
+          />
+        </div>
+        <h3 className="text-lg font-semibold text-slate-100 mb-2">{project.title}</h3>
+        {hasBadges && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {project.webTier && <WebTierBadge tier={project.webTier} size="sm" />}
+            {project.engagement && (
+              <EngagementBadge engagement={project.engagement} size="sm" />
+            )}
+            {project.ndaConstrained && <LimitedInfoBadge active size="sm" />}
+          </div>
+        )}
+        <p className="text-slate-400 text-sm mb-4 line-clamp-3">{project.description}</p>
       <div className="flex flex-wrap gap-2 mb-4">
         {project.technologies.slice(0, 4).map((tech, techIndex) => (
           <span
@@ -97,31 +111,49 @@ const Portfolio = () => {
         ))}
       </div>
       <div className="flex gap-2">
-        {project.documentationUrl && (
+        {project.websiteUrl && (
           <a
-            href={project.documentationUrl}
+            href={project.websiteUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 py-2 text-sm font-medium bg-white/5 text-slate-300 rounded-lg hover:bg-white/10 transition-colors text-center border border-white/10"
             onClick={(e) => e.stopPropagation()}
           >
-            Documentation
+            Website
           </a>
         )}
         <button
           onClick={onClick}
-          className={`py-2 text-sm font-medium bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors ${project.documentationUrl ? 'flex-1' : 'w-full'}`}
+          className={`py-2 text-sm font-medium bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors ${project.websiteUrl ? 'flex-1' : 'w-full'}`}
         >
           View Details
         </button>
       </div>
     </div>
-  )
+    )
+  }
 
   return (
     <section id="portfolio" className="py-16">
-      <p className="font-mono text-sm text-slate-500 mb-4">&gt; PROJECTS</p>
-      <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-8">Portfolio</h2>
+      <p className="font-mono text-sm text-slate-500 mb-4">&gt; PROJECTS / BEST_WORK</p>
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-2">Portfolio</h2>
+          <p className="text-slate-400 text-sm max-w-xl">
+            A curated carousel of my best projects. Open the full archive for every project
+            on file, including placeholders and smaller builds.
+          </p>
+        </div>
+        <button
+          onClick={() => routeTo('/portfolio')}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors border border-blue-500/20"
+        >
+          View full archive
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
 
       <div className="relative">
         {/* Mobile: Simple 2D carousel */}
@@ -293,19 +325,30 @@ const Portfolio = () => {
               <h3 className="text-xl font-bold text-slate-50 mb-6">
                 {projects[selectedProject].title}
               </h3>
-              {projects[selectedProject].documentationUrl && (
-                <a
-                  href={projects[selectedProject].documentationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors"
+              <div className="flex flex-wrap gap-2 mb-6">
+                <button
+                  onClick={() => goToCaseStudy(projects[selectedProject].id)}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors"
                 >
-                  View Documentation
+                  View Full Case Study
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                </a>
-              )}
+                </button>
+                {projects[selectedProject].websiteUrl && (
+                  <a
+                    href={projects[selectedProject].websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/5 text-slate-300 rounded-lg hover:bg-white/10 transition-colors border border-white/10"
+                  >
+                    Website
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                )}
+              </div>
               <div className="space-y-4 text-sm">
                 <div>
                   <h4 className="text-slate-500 font-mono text-xs mb-2">DESCRIPTION</h4>

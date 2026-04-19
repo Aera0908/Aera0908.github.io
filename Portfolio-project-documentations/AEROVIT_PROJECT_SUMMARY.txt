@@ -1,0 +1,315 @@
+AEROVIT SYSTEM DOCUMENTATION
+(Compiled from web-showcase and web-doc)
+Date: 2026-04-19
+
+============================================================
+1) SYSTEM SUMMARY
+============================================================
+Aerovit is a hybrid fitness ecosystem that combines:
+- A mobile fitness app (Flutter/Dart)
+- Computer vision pose tracking (MediaPipe BlazePose)
+- A custom ESP32-S3 smartwatch for biometric sensing and BLE streaming
+- Gamified progression (ranking, quests, dungeon RPG)
+- Web3 tokenization (AERO token on Ethereum Sepolia)
+- AI coaching systems (RAG + pre-recorded audio + RL adaptation)
+
+Core value proposition:
+Users complete workouts and quests, receive biomechanic and biometric feedback,
+progress through hunter ranks, and earn in-game/off-chain rewards that can be
+withdrawn on-chain as ERC-20 AERO tokens.
+
+============================================================
+2) WEB SURFACES DOCUMENTED
+============================================================
+A) web-showcase (Next.js 16 + React 19 + Tailwind + Framer Motion + Three.js)
+- Role: Product showcase, technical feature pages, immersive brand experience
+- Includes 3D portal-scroll storytelling and dedicated pages for:
+  - Pose Detection
+  - Rank Progression
+  - Hardware
+  - Dungeon Raid
+  - Rewards/Web3
+
+B) web-doc (Vite + React 19 + React Router + Tailwind)
+- Role: Technical documentation and user guide
+- Includes routes for:
+  - User Guide
+  - Getting Started
+  - Features
+  - Architecture
+  - Hardware
+  - Progress
+  - Tokenomics
+
+============================================================
+3) HIGH-LEVEL ARCHITECTURE
+============================================================
+Presentation Layer
+- Flutter Mobile App (primary runtime for users)
+- web-showcase (marketing/showcase)
+- web-doc (technical docs/user onboarding)
+
+Application/Service Layer
+- Workout logic and persistence services
+- Watch pairing + biometric stream services
+- Quest, XP, rank progression services
+- Social/friends/leaderboard services
+- Wallet/token services
+- AI coach orchestration services
+
+AI/ML Layer
+- BlazePose pose inference and rep/form algorithms
+- RAG assistant with ChromaDB semantic retrieval
+- RL coaching model (FSM-constrained PPO) for adaptive interventions
+
+Backend/Data Layer
+- Firebase Authentication (email, Google, Facebook)
+- Firestore (profiles, quests, social, dungeon saves, rewards)
+- Cloud Functions (token withdrawal, burn, transfer flows)
+
+Hardware Layer
+- ESP32-S3 smartwatch (touch LCD + sensors + BLE + wallet features)
+- Sensor stack: MAX30102 (HR/SpO2), QMI8658 (IMU)
+
+Blockchain Layer
+- AERO ERC-20 token on Ethereum Sepolia testnet
+- Off-chain reward accrual + on-chain withdrawal model
+
+============================================================
+4) CORE FEATURE DOMAINS
+============================================================
+4.1 Gamification & Progression
+- Hunter rank progression: E, D, C, B, A, S, National
+- XP from workouts, reps, form quality, quests, streaks, achievements
+- Daily quests with reset cycle and streak multipliers
+- Social leaderboards and friend comparison
+- Trophy case and unlockable profile titles
+
+4.2 Pose Detection & Exercise Intelligence
+- MediaPipe BlazePose (33 landmarks, 3D coordinates + visibility)
+- Real-time form validation and color-coded angle feedback
+- Rep counting using phase/state logic and angle thresholds
+- EMA-based smoothing and low-latency processing pipeline
+- Multi-exercise support (22+ to 24 exercise coverage referenced)
+
+4.3 AI Coaching
+- RAG workout guidance using curated fitness corpus (ChromaDB)
+- Voice/text interactions with STT/TTS integration
+- Pre-recorded low-latency audio coaching with modular phrase chaining
+- Multiple coach personalities (serious/friendly/fierce)
+- RL adaptation for workout intensity and intervention strategy
+
+4.4 Wearable + Biometric Intelligence
+- Real-time HR/SpO2 capture and watch-to-app BLE streaming
+- Step counting via high-pass filter + zero-crossing detection
+- Cadence-based activity classification (6 tiers)
+- Danger detection for abnormal HR/SpO2 and overexertion conditions
+- Max-HR session tracking and calorie estimation (MET-based)
+- Smart wake/sleep behavior and battery-aware UI flow
+
+4.5 Dungeon Raid RPG
+- 20-floor turn-based dungeon system
+- 10 enemy species + 2 major boss milestones
+- 23 skills across physical/magic/heal/buff/status groups
+- 10 status effects for strategic combat
+- Equipment system: 11 weapons + 11 armors + rarity tiers
+- Consumable inventory and shop economy
+- Save/resume and reward synchronization with user progression
+
+4.6 Web3 + Token Economy
+- AERO token (ERC-20, Sepolia testnet)
+- Move-to-earn reward conversion from fitness activity
+- Off-chain accumulation with on-chain withdrawal
+- Deflationary burn mechanism (5% withdrawal burn)
+- Hardware wallet-assisted signing flow via watch
+
+============================================================
+5) HARDWARE SPECIFICATION (DOCUMENTED)
+============================================================
+Main platform
+- ESP32-S3 (dual-core class, 240 MHz class references)
+- 1.69 inch touch LCD (240x280)
+
+Sensors
+- MAX30102: HR + SpO2
+- QMI8658: 6-axis IMU (accelerometer + gyroscope)
+
+Connectivity
+- BLE 5.0 class connectivity
+- Real-time biometric packet streaming
+- QR-assisted watch pairing workflow
+
+Watch capabilities
+- Activity detection
+- Step detection
+- Health danger alerting
+- Haptic/notification feedback
+- Hardware wallet operations
+
+============================================================
+6) BIOMETRIC PROCESSING DETAILS
+============================================================
+6.1 Step Detection Parameters
+- STEP_THRESHOLD: 0.15g
+- MIN_INTERVAL: 250ms
+- MAX_INTERVAL: 2000ms
+- HP_ALPHA: 0.96
+
+High-pass filter model:
+hp_output = alpha * (hp_output_prev + raw - raw_prev)
+
+6.2 Activity Classification Bands (cadence SPM)
+- Idle: 0-14
+- Slow Walk: 15-79
+- Normal Walk: 80-99
+- Brisk Walk: 100-119
+- Jogging: 120-149
+- Running: 150+
+
+6.3 Danger Detection Thresholds
+- High HR: > 180 BPM
+- Low SpO2: < 90%
+- Overexertion condition: HR > 170 and SpO2 < 93%
+
+6.4 MAX30102 Notes
+- HR valid range filtering (40-180 BPM noted)
+- SpO2 ratio-based estimation and calibrated lookup methods
+- Finger detection hysteresis to reduce reading flicker
+
+============================================================
+7) BLE INTEGRATION
+============================================================
+- Documented as 11 BLE characteristics across biometric, pairing, wallet, alerts, etc.
+- Biometric packet format documented as 28 bytes
+- Packet includes fields such as:
+  - SpO2
+  - Heart rate
+  - Battery
+  - Status
+  - Activity type
+  - Cadence
+  - Calories
+  - Steps
+
+Service UUID references appear in documentation/showcase content as custom Aerovit UUIDs.
+
+============================================================
+8) POSE/WORKOUT PIPELINE (CONSOLIDATED)
+============================================================
+1. Camera frame capture (mobile)
+2. BlazePose inference (33 landmarks)
+3. Landmark smoothing/filtering
+4. Joint angle computation
+5. Exercise phase state-machine updates
+6. Rep count/form validation updates
+7. UI/audio coaching feedback
+8. Workout persistence and reward updates
+
+============================================================
+9) REWARD, POINTS, AND TOKEN FLOW
+============================================================
+9.1 Reward Inputs
+- Workout completion
+- Rep volume
+- Form quality
+- Streak continuity
+- Quest completion
+- Level/rank milestones
+- Dungeon progression outcomes
+
+9.2 Points/Token Logic (documented examples)
+- Formula examples include weighted contributions from reps, form score,
+  streak days, heart-rate intensity, and completion bonuses
+- Conversion references include point-to-token conversion models
+
+9.3 Off-chain to On-chain Flow
+- User earns rewards off-chain (Firestore/account state)
+- User requests withdrawal
+- Cloud logic validates and applies burn
+- Net amount transferred on-chain
+- On-chain tx data recorded back to user records
+
+============================================================
+10) TOKENOMICS SNAPSHOT
+============================================================
+Token identity
+- Name: AERO Token
+- Standard: ERC-20
+- Network: Ethereum Sepolia (testnet)
+- Decimals: 18
+- Max supply: 100,000,000
+- Initial mint: 10,000,000
+
+Withdrawal and burn policy
+- Minimum withdrawal: 100 AERO (documented)
+- Cooldown: 24 hours (documented)
+- Burn: 5% on withdrawal (live documented behavior)
+
+Planned burn tiers for in-game spend are also documented by item category.
+
+============================================================
+11) HARDWARE WALLET SECURITY MODEL
+============================================================
+Documented security elements include:
+- On-device key generation and storage
+- BIP-39/BIP-32 style derivation references
+- secp256k1 ECDSA transaction signing
+- AES-256 encryption at rest (NVS storage)
+- PIN protection with PBKDF2 and lockout/cooldown
+- BLE operation commands for wallet lifecycle actions
+- Private key usage constrained to signing windows and memory wipe behavior
+
+============================================================
+12) USER FLOW (END-TO-END)
+============================================================
+1. User installs app and signs in
+2. User configures profile/fitness settings
+3. User pairs watch via QR + BLE
+4. User starts workout
+5. Pose pipeline tracks reps/form in real time
+6. Watch streams HR/SpO2/activity/steps
+7. AI coach + RL adaptation provide feedback/interventions
+8. Quest/XP/rank progress updates and persists
+9. Optional dungeon gameplay uses fitness-linked progression
+10. User can withdraw earned rewards through wallet flow
+
+============================================================
+13) DOCUMENTED PROJECT STATUS INDICATORS
+============================================================
+web-doc progress page references near-complete status overall and high completion
+across mobile app, dungeon game, wearable, web3, and documentation tracks,
+with AI coach still flagged as comparatively less complete than other modules.
+
+============================================================
+14) TECHNOLOGY STACK (CROSS-SOURCE)
+============================================================
+Mobile
+- Flutter, Dart, Flame 2D
+
+Web
+- web-showcase: Next.js, React, TypeScript, Tailwind, Framer Motion, Three.js
+- web-doc: Vite, React, TypeScript, React Router, Tailwind
+
+Backend & Data
+- Firebase Auth, Firestore, Cloud Functions
+
+AI/ML
+- Python, MediaPipe BlazePose, ChromaDB, ONNX/TFLite deployment paths
+
+Hardware
+- ESP32-S3 + MAX30102 + QMI8658 + BLE
+
+Web3
+- Ethereum (Sepolia), ERC-20 AERO token, hardware signing flow
+
+============================================================
+15) NOTES ON SCOPE AND SOURCE ALIGNMENT
+============================================================
+- This document is a synthesis from web-showcase and web-doc content only.
+- Numerical values and status labels are preserved where explicitly shown in those sources.
+- Some values may differ by page version (showcase vs docs); this file captures the
+  current documented state rather than enforcing one canonical runtime truth.
+
+============================================================
+END OF DOCUMENT
+============================================================

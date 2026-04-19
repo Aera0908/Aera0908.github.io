@@ -1,35 +1,679 @@
 [
   {
+    "id": "aerovit",
     "title": "AeroVit - Gamified AI Fitness Platform",
-    "description": "Innovative fitness ecosystem combining wearable technology, real-time AI coaching, and blockchain-based rewards.",
-    "fullDescription": "AeroVit is a comprehensive fitness platform featuring a custom ESP32-based smartwatch, cross-platform mobile application, and AI-powered coaching system. It integrates multi-sensor fusion (HR, SpO2, IMU, temperature), real-time pose tracking with BlazePose for 22 exercises, and an adaptive AI coach using Reinforcement Learning (PPO algorithm). The system provides personalized guidance based on real-time biometrics and computer vision, with planned Web3 rewards integration. Key innovations include IMU-based and vision-based exercise tracking, gesture controls, fall detection, and a scientifically-derived pose detection system trained on 31,033 samples.",
-    "technologies": ["ESP32-S3", "Flutter", "Dart", "Firebase", "PyTorch", "MediaPipe", "BLE", "Reinforcement Learning", "AWS SageMaker", "Web3"],
-    "image": "/aerovit.png",
-    "documentationUrl": "https://aerovit-doc.vercel.app",
+    "description": "Hybrid fitness ecosystem: Flutter app, BlazePose coaching, ESP32-S3 smartwatch, dungeon RPG, and AERO token rewards on Ethereum Sepolia—built as a fully integrated prototype.",
+    "fullDescription": "AeroVit is a hybrid fitness ecosystem that pairs a Flutter mobile app with a custom ESP32-S3 smartwatch, MediaPipe BlazePose pose tracking, an adaptive AI coaching layer, and an ERC-20 reward token deployed on Ethereum Sepolia.\n\nUsers complete workouts and quests, receive real-time biomechanical and biometric feedback, progress through Hunter ranks, and earn rewards that can be withdrawn on-chain as AERO tokens. A 20-floor turn-based dungeon RPG (Flame 2D) sits alongside the fitness experience as a gamified progression track.\n\nSupporting surfaces include a Next.js product showcase (Three.js, Framer Motion) and the technical website at aerovit.dev (Vite). The build described there is complete at demonstration depth—fully walkable end-to-end flows—but deliberately scoped as a prototype, not a production consumer product.",
+    "technologies": ["ESP32-S3", "Flutter", "Dart", "Flame", "Firebase", "Cloud Functions", "Firestore", "MediaPipe", "ChromaDB", "BLE", "Next.js", "Ethereum Sepolia", "ERC-20"],
+    "image": "/Aerovit-images/aerovit.png",
+    "category": "IoT / AI / Mobile",
+    "status": "Complete — prototype (not production)",
+    "featured": true,
+    "webTier": "Web3",
+    "websiteUrl": "https://aerovit.dev",
     "gallery": [
-      { "src": "/watch_on_case.jpg", "caption": "Custom ESP32 smartwatch on its charging case" },
-      { "src": "/watch.jpg", "caption": "AeroVit smartwatch display and interface" },
-      { "src": "/watch-worn.jpg", "caption": "Smartwatch worn on wrist during fitness tracking" }
+      { "src": "/Aerovit-images/watch_on_case.jpg", "caption": "Custom ESP32-S3 smartwatch on its charging case" },
+      { "src": "/Aerovit-images/watch.jpg", "caption": "AeroVit smartwatch display and interface" },
+      { "src": "/Aerovit-images/watch-worn.jpg", "caption": "Smartwatch worn on wrist during fitness tracking" }
     ],
     "role": "Lead Developer & Hardware Engineer",
-    "duration": "September 2024 - Present (In Development - 40% Complete)"
+    "duration": "September 2024 - April 2026",
+    "highlights": [
+      "End-to-end prototype: pairing, workouts, pose pipeline, wearable BLE, quests, dungeon, website, and showcase",
+      "MediaPipe BlazePose (33 landmarks) + rep / form state machines; 22+ exercise coverage referenced on the project website",
+      "Gamification: Hunter ranks (E → National), XP, daily quests, leaderboards; 20-floor turn-based dungeon with skills and economy",
+      "Web3 rewards: AERO ERC-20 on Ethereum Sepolia, off-chain accrual, on-chain withdrawal with 5% burn",
+      "AI coaching: RAG (ChromaDB), STT/TTS, pre-recorded low-latency audio, and RL-style adaptation",
+      "Hardware: ESP32-S3 + 1.69\" touch LCD, MAX30102 (HR/SpO2), QMI8658 IMU, BLE 5.0, documented wallet-signing flow"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "AeroVit delivers workouts, biomechanical and biometric feedback, Hunter-rank progression, and rewards that bridge in-app points to on-chain AERO withdrawals.\n\nThe runtime spans a Flutter mobile app, a custom ESP32-S3 smartwatch streaming biometrics over BLE, a Next.js marketing showcase, and the Vite-powered technical website at aerovit.dev. Together they describe a single coherent prototype, not a production deployment."
+      },
+      {
+        "title": "System Architecture",
+        "type": "diagram",
+        "diagramId": "aerovit-architecture",
+        "caption": "Layered architecture: clients → services → AI/ML → backend → chain.",
+        "content": "Five layers make up the AeroVit stack. The client layer covers the Flutter app, the ESP32-S3 smartwatch, and two web surfaces. The service layer houses workout, pairing, quest, dungeon, and wallet logic. AI/ML provides the pose, RAG, and RL coaching models. Firebase Auth, Firestore, and Cloud Functions form the backend plane, and the AERO token lives on Ethereum Sepolia."
+      },
+      {
+        "title": "Data & Reward Flow",
+        "type": "diagram",
+        "diagramId": "aerovit-dataflow",
+        "caption": "From wearable biometrics and camera pose estimates to off-chain reward ledger, withdrawal, and on-chain AERO transfers.",
+        "content": "Biometrics stream from the watch as 28-byte BLE packets into the Flutter app. Camera frames feed the pose pipeline in parallel. The AI coach consumes both signals and updates progression systems (quests, dungeon, profile). Earnings accumulate in an off-chain ledger; withdrawal is gated by a minimum (100 AERO), a 24-hour cooldown, and a 5% burn before on-chain transfer on Sepolia."
+      },
+      {
+        "title": "Technology Stack",
+        "type": "stack",
+        "content": "The stack is intentionally composed of small, well-scoped tools rather than a single monolith.",
+        "groups": [
+          { "label": "Mobile", "items": ["Flutter", "Dart", "Flame 2D"] },
+          { "label": "Web", "items": ["Next.js", "React", "Tailwind CSS", "Framer Motion", "Three.js", "Vite", "React Router"] },
+          { "label": "Backend / Data", "items": ["Firebase Auth", "Firestore", "Cloud Functions"] },
+          { "label": "AI / ML", "items": ["MediaPipe BlazePose", "ChromaDB (RAG)", "PPO (RL coaching)", "STT / TTS"] },
+          { "label": "Hardware", "items": ["ESP32-S3", "1.69\" touch LCD", "MAX30102", "QMI8658 IMU", "BLE 5.0"] },
+          { "label": "Web3", "items": ["Ethereum Sepolia", "ERC-20 AERO"] }
+        ]
+      },
+      {
+        "title": "Key Features",
+        "type": "list",
+        "items": [
+          "Gamification: Hunter ranks (E through National), XP from workouts, quests, streaks, and trophies",
+          "Pose pipeline: 33 landmarks, EMA smoothing, joint-angle scoring, phase state machines, and rep counting",
+          "Wearables: real-time HR/SpO2 streaming, step detection, cadence-based activity tiers, and danger thresholds",
+          "Dungeon RPG: 20 floors, 10 enemy species, 2 boss milestones, 23 skills, and a consumable/equipment economy",
+          "Web3: move-to-earn accrual, withdrawal/cooldown/burn policies, and watch-assisted signing flow",
+          "AI coach: RAG guidance, modular audio coaching, multiple personas, and RL-style intensity adaptation",
+          "Web properties: technical guides, tokenomics routes, onboarding flow, and a 3D product showcase"
+        ]
+      },
+      {
+        "title": "AERO Token Snapshot",
+        "type": "stats",
+        "content": "Tokenomics as published on the project website. Values reflect the prototype deployment on Sepolia.",
+        "stats": [
+          { "label": "Standard", "value": "ERC-20", "note": "Ethereum Sepolia" },
+          { "label": "Decimals", "value": "18" },
+          { "label": "Max supply", "value": "100,000,000" },
+          { "label": "Initial mint", "value": "10,000,000" },
+          { "label": "Min withdrawal", "value": "100 AERO" },
+          { "label": "Cooldown", "value": "24 hours" },
+          { "label": "Withdrawal burn", "value": "5%" }
+        ]
+      },
+      {
+        "title": "Biometric Parameters",
+        "type": "stats",
+        "content": "Key tunable thresholds used by the on-watch biometric pipeline.",
+        "stats": [
+          { "label": "Step threshold", "value": "0.15 g" },
+          { "label": "Step min interval", "value": "250 ms" },
+          { "label": "Step max interval", "value": "2000 ms" },
+          { "label": "High-HR alert", "value": "> 180 BPM" },
+          { "label": "Low-SpO2 alert", "value": "< 90%" },
+          { "label": "Overexertion", "value": "HR > 170 + SpO2 < 93%" }
+        ]
+      },
+      {
+        "title": "Scope note",
+        "type": "callout",
+        "variant": "warn",
+        "content": "Per the compiled system summary (web-showcase + web-doc, 2026-04-19), modules are near-complete for the prototype, with the AI coach track still comparatively less mature than the mobile, dungeon, wearable, Web3, and public-website workstreams.\n\nThis remains a prototype: no claim of production readiness, audited security, or regulated health compliance."
+      },
+      {
+        "title": "My Role",
+        "content": "Lead Developer & Hardware Engineer — smartwatch firmware and BLE integration, co-design of fitness and game systems, ML/vision and backend touchpoints, and coordination of the web stack and token flows across the prototype."
+      }
+    ],
+    "links": {
+      "website": "https://aerovit.dev"
+    }
   },
   {
+    "id": "plantio",
+    "title": "Plant.io — 8-Bit IoT Nursery Dashboard",
+    "description": "Cross-platform Flutter dashboard for ESP32-based plant nurseries: real-time sensor telemetry, actuator control, plant-mood scoring, and an 8-bit retro UI.",
+    "fullDescription": "Plant.io (a.k.a. the Onion Nursery Monitoring App) is a Flutter-based IoT monitoring dashboard built for nurseries, greenhouses, and hobby garden beds. It pairs with ESP32 devices to deliver real-time telemetry — soil moisture, temperature, humidity, EC, and pH — alongside remote actuator control (pump, fans, fertilizer dispensing), a historical log timeline, weather integration, and a plant-health scoring system rendered as an animated \"onion\" avatar.\n\nThe app is structured in layers (presentation → state → business logic → data) using Provider for reactive state and Firebase Realtime Database + Cloud Firestore for live sensor data and historical alerts. The UI commits fully to an 8-bit aesthetic: Press Start 2P typography, CRT scanline effects, pixel-art borders, and retro sound design for UI feedback.\n\nThis is a freelance engagement. Per contract, screenshots, client branding, and certain implementation details are withheld from the public case study.",
+    "technologies": [
+      "Flutter",
+      "Dart",
+      "Provider",
+      "Firebase Realtime DB",
+      "Cloud Firestore",
+      "fl_chart",
+      "Open-Meteo API",
+      "ESP32",
+      "flutter_local_notifications",
+      "Press Start 2P"
+    ],
+    "image": "https://placehold.co/1200x675/0f3d2e/4ade80?text=Plant.io+IoT+Dashboard",
+    "category": "Mobile / IoT",
+    "status": "Delivered",
+    "featured": true,
+    "webTier": "Web2",
+    "engagement": "Freelance",
+    "ndaConstrained": true,
+    "role": "Full-Stack Mobile & IoT Developer",
+    "duration": "2025",
+    "highlights": [
+      "Real-time multi-device monitoring: soil moisture, temperature, humidity, EC, pH",
+      "Remote actuator control: pump, fans, and fertilizer dispensing per bed",
+      "Plant-mood scoring renders live health via an animated onion avatar",
+      "Historical analytics with fl_chart line/pie/bar visualizations",
+      "Weather integration (Open-Meteo) + location-aware recommendations",
+      "Offline caching, connectivity monitoring, and local push alerts (thirsty/hot/critical)",
+      "Cross-platform: iOS, Android, Web, macOS, Linux, Windows"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "Plant.io is a production-style IoT dashboard for ESP32 garden devices. The system continuously streams sensor telemetry into Firebase, computes a plant-health \"mood\", and lets the user actuate pumps, fans, and a fertilizer dispenser remotely.\n\nThe visual language is deliberate: an 8-bit dark-mode UI with Press Start 2P typography, CRT scanlines, pixelated components, and a custom animated plant avatar that reflects the computed mood in real time."
+      },
+      {
+        "title": "Architecture",
+        "paragraphs": [
+          "The app follows a layered architecture with Provider-based state management. The presentation layer (screens + widgets) is driven by ChangeNotifier providers that sit over a business logic layer (services, analytics, calculations), which in turn sits over a data layer (models, Firebase, SharedPreferences).",
+          "Core design patterns in use: Singleton (FirebaseService, NotificationService, SoundService, ConnectivityService), Provider/Observer (reactive UI updates), Factory (fromMap/fromJson on all models), Strategy (normal, randomAuto, and custom data modes), and Builder (Scaffold/RichText composition).",
+          "State is split across two primary providers — NurseryProvider for device and sensor state, and WeatherProvider for location and weather context — while services mediate all external I/O: Firebase, notifications, audio feedback, and connectivity."
+        ]
+      },
+      {
+        "title": "Key Features",
+        "type": "list",
+        "items": [
+          "Multiple garden beds / ESP32 devices monitored simultaneously",
+          "Real-time telemetry: soil moisture, temperature, humidity, EC, pH",
+          "Remote actuation: pump, fans, fertilizer dispensing with per-bed commands",
+          "Historical logging and trend analysis with fl_chart",
+          "Plant mood indicator with animated onion avatar (thirsty / hot / critical / thriving)",
+          "Weather integration via Open-Meteo for environmental context",
+          "Offline support with SharedPreferences caching and connectivity awareness",
+          "Local push notifications for critical plant conditions (no internet required)",
+          "Retro 8-bit UI: Press Start 2P fonts, CRT scanline effect, pixel borders, and retro SFX"
+        ]
+      },
+      {
+        "title": "Technology Stack",
+        "type": "stack",
+        "groups": [
+          {
+            "label": "App",
+            "items": ["Flutter", "Dart", "Provider", "google_fonts (Press Start 2P)"]
+          },
+          {
+            "label": "Data / Backend",
+            "items": ["Firebase Core", "Firebase Realtime Database", "Cloud Firestore", "SharedPreferences"]
+          },
+          {
+            "label": "Visualization",
+            "items": ["fl_chart (line / pie / bar)"]
+          },
+          {
+            "label": "Device / IO",
+            "items": ["connectivity_plus", "audioplayers", "flutter_local_notifications"]
+          },
+          {
+            "label": "External",
+            "items": ["Open-Meteo API", "ESP32 (sensor + actuator firmware)"]
+          }
+        ]
+      },
+      {
+        "title": "Hardware Integration",
+        "type": "callout",
+        "variant": "info",
+        "content": "The app pairs with ESP32 firmware over Firebase Realtime Database: devices push sensor readings to per-device streams and subscribe to a command channel for actuator control. The repository ships an ESP32 simulator (simulate_esp32.js) so the dashboard can be developed and demoed without physical hardware on bench."
+      },
+      {
+        "title": "Design & UX",
+        "paragraphs": [
+          "The 8-bit retro direction is implemented consistently across the UI: Press Start 2P for typography, a CRT scanline overlay widget, pixelated borders, and a palette optimized for a dark gardening terminal feel. Audio feedback (click, alert, success) is pre-generated and played through audioplayers to reinforce the retro tone.",
+          "The centerpiece is the animated onion avatar — a custom-painted plant character that visualizes the computed plant mood in real time, backed by a pixel-art garden scene."
+        ]
+      },
+      {
+        "title": "Confidentiality",
+        "type": "callout",
+        "variant": "warn",
+        "content": "Plant.io is a freelance engagement. Under the client contract, screenshots, full UI walkthroughs, and some implementation details are withheld. The description above is limited to non-sensitive architectural and feature-level information."
+      }
+    ],
+    "links": {}
+  },
+  {
+    "id": "safehouse",
+    "title": "The Safehouse — Web3 Onboarding Platform",
+    "description": "Narrative Web3 community site built around an interactive 3D journey — campfire, forest, tent, and signposts — powered by React Three Fiber, GSAP, and Lenis smooth scroll.",
+    "fullDescription": "The Safehouse is the web presence for a Web3 community built around one idea: \"A Home Built on People. A Future Built on Web3.\" The site onboards newcomers into Web3 by walking them through a guided 3D journey — a campfire gathering, a forest path, signposts, and a gate into the wider community — rather than a conventional marketing page.\n\nUnder the hood it is a React 19 single-page app with Vite and Tailwind CSS 4, a React Three Fiber scene for the journey world, GSAP + Lenis for scroll-driven choreography, and Rive + Framer Motion for vector and component-level motion. The narrative is sliced into ~13 scroll sections (Hero, Mission, StandFor, TrackRecord, WhyWorks, Offer, WhyPartner, Opportunities, Beyond, Finale, AboutUs, Team, Socials, Contacts) each tied to scroll stages and waypoint reveals.\n\nAccessibility is a first-class concern: a MotionModeContext respects prefers-reduced-motion and provides fallback animations, and the heavy JourneyCanvas is lazy-loaded to keep initial load light.",
+    "technologies": [
+      "React 19",
+      "Vite 8",
+      "Tailwind CSS 4",
+      "React Router DOM",
+      "Three.js",
+      "@react-three/fiber",
+      "@react-three/drei",
+      "@react-three/postprocessing",
+      "GSAP",
+      "Framer Motion",
+      "Lenis",
+      "Rive"
+    ],
+    "image": "https://placehold.co/1200x675/1a0a00/f59e0b?text=The+Safehouse",
+    "category": "Web / Web3 Community",
+    "status": "Work in progress",
+    "featured": true,
+    "webTier": "Web3",
+    "role": "Frontend & 3D Web Developer",
+    "duration": "2025 — Present",
+    "highlights": [
+      "Interactive 3D journey scene (forest → signposts → gate → campfire gathering) in React Three Fiber",
+      "GSAP timelines + ScrollTrigger wired to Lenis smooth scroll via a shared Tempus clock",
+      "13 scroll-driven narrative sections, each tied to waypoints and scroll stages",
+      "Rive vector animations + SplitHeading / Reveal / Parallax primitives for component-level motion",
+      "Procedural terrain (CurvedGround), ember particles, and path-curve math for the journey world",
+      "Accessibility-first: MotionModeContext respects prefers-reduced-motion, JourneyCanvas lazy-loaded"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "The Safehouse positions Web3 onboarding as a journey, not a pitch deck. Visitors arrive at a Hero with hanging elements, follow a scroll-driven path through mission, values, offerings, opportunities, and team sections, and exit through a Finale/Contacts hand-off.\n\nThe canonical metaphor — a campfire gathering in a forest clearing, approached by following signposts through a curved valley — is rendered in real-time WebGL and drives the pacing of the text sections around it."
+      },
+      {
+        "title": "The 3D Journey",
+        "paragraphs": [
+          "The hero and mission stages are anchored by a CampfireCanvas — a React Three Fiber scene with a campfire, embers (custom particle system), tent, and camera rig that subtly drifts around the gathering. Post-processing effects (@react-three/postprocessing) add bloom around the fire to sell the warmth.",
+          "As the user scrolls, a second, larger JourneyCanvas takes over: a procedurally generated curved ground (CurvedGround + groundMath + pathCurve), a grass field, a tree forest, birds, and themed signposts (Sign + signTexture + JourneySigns) along a path strip that ends at a gate. A JourneyCamera rig follows the path, driven by scroll progress rather than time.",
+          "Both canvases are gated behind a JourneyScrollBridge and a MotionModeContext check so users who prefer reduced motion see static fallbacks instead of real-time 3D."
+        ]
+      },
+      {
+        "title": "Narrative Sections",
+        "type": "list",
+        "content": "The experience is split into purpose-built section components under src/sections/, each self-contained and tied to a scroll stage:",
+        "items": [
+          "Hero / HangingHero — opening frame with hanging elements and split-text animation",
+          "Mission — what The Safehouse is and why it exists",
+          "StandFor — core values and pillars",
+          "TrackRecord — achievements and social proof",
+          "WhyWorks — explanation of the onboarding model",
+          "Offer — what members get",
+          "WhyPartner — partnership and collaboration value",
+          "Opportunities — live opportunities overview",
+          "Beyond / Finale — closing narrative and hand-off",
+          "AboutUs, Team, Socials, Contacts — organizational footer surfaces"
+        ]
+      },
+      {
+        "title": "Technology Stack",
+        "type": "stack",
+        "groups": [
+          {
+            "label": "App",
+            "items": ["React 19.2", "React Router DOM 7", "Vite 8", "Tailwind CSS 4", "ESLint 9"]
+          },
+          {
+            "label": "Motion",
+            "items": ["GSAP 3.15", "@gsap/react", "Framer Motion 12", "Lenis 1.3", "Tempus"]
+          },
+          {
+            "label": "3D",
+            "items": ["Three.js 0.183", "@react-three/fiber 9", "@react-three/drei 10", "@react-three/postprocessing 3"]
+          },
+          {
+            "label": "Vector / Assets",
+            "items": ["@rive-app/react-canvas", "SVG (public/svg)", "Rive scenes (public/rive)"]
+          },
+          {
+            "label": "Utilities",
+            "items": ["clsx", "useSmoothScroll hook", "gsapSetup helpers", "MotionModeContext"]
+          }
+        ]
+      },
+      {
+        "title": "Component Architecture",
+        "paragraphs": [
+          "Page sections (src/sections/) are top-level and scroll-anchored. Reusable UI primitives (src/components/) include Nav, Parallax, Reveal, RoughCard, ScrollStages, SplitHeading, Waypoint, and JourneyScrollBridge — small pieces that handle one concern each and compose cleanly inside section components.",
+          "The 3D layer (src/three/ and src/three/journey/) is split into canvases (CampfireCanvas, JourneyCanvas), scenes (CampfireScene, JourneyWorld), entities (Tent, Tree, Birds, Gate, Embers), camera rigs (CameraRig, JourneyCamera), and pure math/RNG modules (groundMath, pathCurve, fireConstants, rng, signTexture) so the scenes stay deterministic and tree-shakeable."
+        ]
+      },
+      {
+        "title": "Performance & Accessibility",
+        "type": "callout",
+        "variant": "info",
+        "content": "JourneyCanvas is loaded via React.lazy to keep initial bundle size manageable despite the 3D payload. GSAP animations stick to GPU-accelerated transform + opacity. Lenis drives smooth scroll without replacing native scroll semantics. MotionModeContext surfaces user motion preferences to every scene and animation primitive."
+      },
+      {
+        "title": "Key Features",
+        "type": "list",
+        "items": [
+          "Responsive, mobile-first layout with Tailwind 4",
+          "Silk-smooth scrolling via Lenis, synchronized with GSAP timelines through Tempus",
+          "Scroll-triggered reveals, parallax, staggered entrances, and split-text headings",
+          "Interactive 3D journey visualization with campfire, forest, path, gate, birds, and embers",
+          "Procedural terrain generation and deterministic RNG for repeatable scenes",
+          "Rive vector animation integration for interactive accent elements",
+          "Motion preferences respected throughout via MotionModeContext",
+          "Multi-page routing with scroll-to-top on navigation and deep-linking support"
+        ]
+      },
+      {
+        "title": "Status",
+        "type": "callout",
+        "variant": "note",
+        "content": "The platform is actively in development (April 2026). The 3D journey, scroll choreography, and narrative sections are in place; polish, final copy, and production deployment are still ongoing."
+      }
+    ],
+    "links": {}
+  },
+  {
+    "id": "student-consultation",
     "title": "Student Consultation System",
     "description": "A modern, full-stack web application for managing student-professor consultations with real-time messaging, scheduling, and comprehensive user management.",
-    "fullDescription": "The Student Consultation System is a comprehensive web platform designed to streamline the consultation process between students and professors. It features separate role-based interfaces with real-time messaging, interactive scheduling calendars, consultation request management, and notification systems. Built with a three-tier architecture, it includes professor discovery, consultation booking with status tracking (pending, approved, ongoing, completed), file attachment support, profile management with photo cropping, dashboard analytics, and announcement posting. The system implements JWT authentication, bcrypt password hashing, PostgreSQL database with optimized queries, and image processing with Sharp for profile photos. Client project - screenshots not available per confidentiality agreement.",
+    "fullDescription": "The Student Consultation System is a full-stack web platform that turns ad-hoc student–professor consultations into a structured, trackable workflow.\n\nIt features role-based interfaces with real-time messaging, an interactive scheduling calendar, consultation request management, and a notification system. A three-tier architecture separates the React frontend, an Express API, and a PostgreSQL database. Features include professor discovery, consultation booking with a clear status lifecycle (pending → approved → ongoing → completed), file attachments, profile management with photo cropping, dashboard analytics, and announcement posting.\n\nSecurity and performance: JWT authentication, bcrypt password hashing, parameterized PostgreSQL queries, and a Sharp-based image pipeline for profile photos.\n\nNote: client project — screenshots are not available per a confidentiality agreement.",
     "technologies": ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "JWT", "Tailwind CSS", "Vite", "Multer", "Sharp"],
     "image": "https://placehold.co/1200x675/1e293b/ef4444?text=Student+Consultation+System",
+    "category": "Web / Full-Stack",
+    "status": "Delivered",
+    "featured": true,
+    "webTier": "Web2",
+    "engagement": "Freelance",
+    "ndaConstrained": true,
     "role": "Full-Stack Developer",
-    "duration": "Academic Project - Completed"
+    "duration": "2025",
+    "highlights": [
+      "Role-based interfaces for students, professors, and admins",
+      "Real-time messaging and interactive scheduling calendar",
+      "JWT auth, bcrypt hashing, and Sharp-based image processing",
+      "Dashboard analytics and announcement posting",
+      "Client project — screenshots not available per NDA"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "Students discover professors, book consultations with a clear status lifecycle, and communicate through real-time messaging with attachments. Professors manage availability and requests; admins oversee users and announcements."
+      },
+      {
+        "title": "Key Features",
+        "type": "list",
+        "items": [
+          "Role-based dashboards (student, professor, admin)",
+          "Real-time messaging with file attachments",
+          "Interactive calendar-based scheduling",
+          "Consultation status tracking and notifications",
+          "Profile management with photo cropping",
+          "Announcement posting and dashboard analytics"
+        ]
+      },
+      {
+        "title": "Technology Stack",
+        "type": "stack",
+        "groups": [
+          { "label": "Frontend", "items": ["React", "TypeScript", "Vite", "Tailwind CSS"] },
+          { "label": "Backend", "items": ["Node.js", "Express", "JWT", "bcrypt"] },
+          { "label": "Data", "items": ["PostgreSQL"] },
+          { "label": "Assets", "items": ["Multer", "Sharp"] }
+        ]
+      },
+      {
+        "title": "Security & Performance",
+        "type": "list",
+        "items": [
+          "JWT-based authentication with refresh tokens",
+          "bcrypt password hashing",
+          "Parameterized PostgreSQL queries (no string concatenation)",
+          "Sharp-based image pipeline for profile photos",
+          "Response-level caching on the hottest read endpoints"
+        ]
+      },
+      {
+        "title": "Confidentiality",
+        "type": "callout",
+        "variant": "warn",
+        "content": "This is a client project covered by an NDA — screenshots and code samples cannot be shared publicly. A high-level description is provided for context only."
+      }
+    ],
+    "links": {}
   },
   {
+    "id": "walang-basagan-thrift",
+    "title": "Walang Basagan ng Thrift",
+    "description": "Y2K-themed thrift e-commerce platform with a React + TypeScript storefront, Express backend, role-based auth, admin dashboard, and a built-in customer support inbox.",
+    "fullDescription": "Walang Basagan ng Thrift is a Y2K-inspired thrift store web application built with React 19, TypeScript, Vite, Tailwind CSS, and an Express backend. It combines an online storefront, role-based authentication, a shopping flow, customer support threads, and an admin dashboard for managing users, products, orders, homepage content, and support tickets.\n\nThe storefront emphasizes branded visual storytelling — a Y2K aesthetic with pink-and-white palette, rounded UI, background music, and section-based homepage composition. The backend supports both SQLite (default) and a JSON fallback mode so the project runs cleanly on Windows developer machines even without a native SQLite toolchain.\n\nThis is a freelance engagement. Per contract, screenshots and certain implementation details are withheld from the public case study; the description here covers only non-sensitive architecture and feature-level information.",
+    "technologies": [
+      "React 19",
+      "TypeScript",
+      "Vite",
+      "Tailwind CSS",
+      "React Router",
+      "Node.js",
+      "Express",
+      "better-sqlite3",
+      "bcryptjs",
+      "multer",
+      "cors"
+    ],
+    "image": "https://placehold.co/1200x675/2a0a1f/ff8fc5?text=Walang+Basagan+ng+Thrift",
+    "category": "Web / E-commerce",
+    "status": "Delivered",
+    "featured": true,
+    "webTier": "Web2",
+    "engagement": "Freelance",
+    "ndaConstrained": true,
+    "role": "Full-Stack Web Developer",
+    "duration": "2025",
+    "highlights": [
+      "Full storefront: home, product catalog, detail pages, cart, checkout, and order history",
+      "Role-based auth (admin / moderator / buyer) with protected routes and session redirects",
+      "Admin dashboard: users, products, orders, support tickets, homepage content, reviews",
+      "In-app support inbox: threaded messages with moderator/admin assignment",
+      "SQLite-first storage with JSON fallback mode for Windows without native build tools",
+      "Image uploads via multer, served from /uploads with homepage-driven content model"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "Walang Basagan ng Thrift is a full-stack thrift e-commerce platform designed around a Y2K visual identity. Customers can browse curated products, add to cart, check out, and track orders; admins and moderators run the store through a dedicated back-office dashboard with product, order, user, support, and homepage management.\n\nThe architecture is deliberately portable: the frontend is a Vite + React + TypeScript SPA, and the backend is a single Express process that can run either against better-sqlite3 or a JSON file store, chosen via an environment flag."
+      },
+      {
+        "title": "Key Features",
+        "type": "list",
+        "items": [
+          "Branded Y2K home page with hero, promos, product showcase, brand/trust sections, reviews, newsletter, footer, background music, and a support widget",
+          "Authentication with role-aware session handling, password visibility toggle, and role-based post-login redirects",
+          "Shopping flow: product listing, product detail, add-to-cart, buy now, cart management, checkout, order history",
+          "Customer support: buyer-facing support widget, threaded messaging, moderator/admin reply tools, and thread assignment",
+          "Admin dashboard: user management, product CRUD, order management, homepage content editing, support ticket handling, review monitoring, role/status controls",
+          "Content safety: the frontend merges backend homepage content with defaults so the site still renders if fields are missing"
+        ]
+      },
+      {
+        "title": "User Roles",
+        "type": "stack",
+        "content": "Permissions follow a strict three-tier model. The first admin account is specifically protected from demotion or status change to guarantee a working back door for recovery.",
+        "groups": [
+          {
+            "label": "Admin",
+            "items": [
+              "Full dashboard access",
+              "Users / products / orders / homepage / support",
+              "First admin is protected from role / status changes"
+            ]
+          },
+          {
+            "label": "Moderator",
+            "items": [
+              "Manage products",
+              "Manage support messages",
+              "View orders and homepage content",
+              "No access to user management"
+            ]
+          },
+          {
+            "label": "Buyer",
+            "items": [
+              "Browse products",
+              "Cart and checkout",
+              "Order history",
+              "Create support threads"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Technology Stack",
+        "type": "stack",
+        "groups": [
+          {
+            "label": "Frontend",
+            "items": ["React 19", "TypeScript", "Vite", "Tailwind CSS", "React Router", "React Icons"]
+          },
+          {
+            "label": "Backend",
+            "items": ["Node.js", "Express", "bcryptjs", "multer", "cors"]
+          },
+          {
+            "label": "Storage",
+            "items": ["better-sqlite3 (default)", "JSON file fallback mode"]
+          },
+          {
+            "label": "Dev / Ops",
+            "items": ["Windows batch runners (run.bat, install-node.bat)", "Admin + user seed scripts"]
+          }
+        ]
+      },
+      {
+        "title": "Routing & API",
+        "type": "list",
+        "items": [
+          "Frontend routes: /, /products, /products/:id, /cart, /checkout, /orders, /login, /signup, /admin/*, /info/:slug",
+          "Auth: POST /api/auth/register, POST /api/auth/login, GET /api/auth/me/:id",
+          "Public: GET /api/products, GET /api/homepage, GET /api/reviews",
+          "Buyer: POST /api/orders, GET /api/orders, PATCH /api/orders/:orderId/cancel, support threads under /api/support",
+          "Admin: full CRUD on users, products, orders, homepage, and support, plus homepage uploads"
+        ]
+      },
+      {
+        "title": "Security & Access Control",
+        "type": "list",
+        "items": [
+          "Passwords hashed with bcryptjs before storage",
+          "Admin routes require an X-User-Id header",
+          "Role checks block unauthorized access to privileged routes",
+          "Suspended and banned users are rejected at login and on protected actions",
+          "First admin account is locked from demotion or status changes"
+        ]
+      },
+      {
+        "title": "Confidentiality",
+        "type": "callout",
+        "variant": "warn",
+        "content": "This is a freelance engagement. Per contract, screenshots, client-facing copy, final assets, and some implementation details are withheld from the public case study. The case study above is limited to non-sensitive architectural and feature-level information."
+      }
+    ],
+    "links": {}
+  },
+  {
+    "id": "emg-controller",
     "title": "EMG Interface Controller",
     "description": "Real-time electromyography (EMG) signal processing and visualization system for muscle activity monitoring and human-computer interaction.",
-    "fullDescription": "The EMG Controller is a professional-grade system built on the ESP32S3 microcontroller platform that captures, processes, and visualizes EMG signals with real-time accuracy. It features 500 Hz sampling rate, adaptive threshold calibration for different users and muscle groups, multiple visualization interfaces including Python GUI and serial plotter, and game controller functionality with Roblox integration. The system implements advanced signal processing including moving average filtering, RMS calculation with 20-sample windows, two-stage smoothing, and envelope detection. Custom hardware includes a KiCad-designed PCB and 3D-printed Fusion 360 enclosure for professional integration.",
-    "technologies": ["ESP32S3", "C/C++", "Python", "Arduino", "KiCad", "Fusion 360", "PySerial", "Matplotlib", "NumPy", "Real-time Signal Processing"],
-    "image": "/project-emg.png",
+    "fullDescription": "The EMG Controller is a real-time electromyography signal processing and visualization system built on the ESP32-S3. It captures, processes, and visualizes EMG signals with professional-grade accuracy and provides multiple interaction modes, including game control and data analysis.\n\nThe firmware samples at 500 Hz, runs a multi-stage DSP pipeline, and streams the processed signal over UART. On the PC side, a Python GUI visualizes the signal in real time, the Arduino Serial Plotter is supported for quick debugging, and a pynput-based bridge can drive a Roblox game controller.\n\nCustom hardware includes a KiCad-designed PCB and a Fusion 360 3D-printed enclosure for professional integration.",
+    "technologies": ["ESP32-S3", "C/C++", "Python", "Arduino", "KiCad", "Fusion 360", "PySerial", "Matplotlib", "NumPy", "pynput"],
+    "image": "/project-emg/project-emg.png",
+    "category": "Embedded / Hardware",
+    "status": "Completed",
+    "featured": true,
     "role": "Embedded Systems Developer & Hardware Designer",
-    "duration": "Academic Project - Completed"
+    "duration": "Academic Project - Completed",
+    "highlights": [
+      "500 Hz EMG sampling on ESP32-S3",
+      "Adaptive threshold calibration per user and muscle group",
+      "Real-time Python GUI + Arduino serial plotter visualization",
+      "Game controller bridge with Roblox integration (pynput)",
+      "Custom KiCad PCB + Fusion 360 3D-printed enclosure"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "A real-time EMG acquisition and visualization platform on the ESP32-S3. The system captures muscle activity, applies a multi-stage DSP pipeline, and drives two downstream use cases: a scientific visualization GUI and a game controller bridge."
+      },
+      {
+        "title": "Signal Processing Pipeline",
+        "type": "diagram",
+        "diagramId": "emg-pipeline",
+        "caption": "End-to-end flow: electrodes → EMG Candy front-end → ESP32-S3 ADC → DSP stages → UART → PC outputs.",
+        "content": "The pipeline runs entirely on the ESP32-S3 and emits a clean, thresholded envelope over UART at 115200 baud. Adaptive threshold calibration adjusts per session so the same firmware behaves correctly across users and muscle groups."
+      },
+      {
+        "title": "Hardware",
+        "type": "callout",
+        "variant": "info",
+        "content": "Custom KiCad-designed PCB integrating the Upside Down Labs EMG Candy front-end with an ESP32-S3 core. A Fusion 360 3D-printed enclosure houses the PCB and provides strain relief for the EMG leads."
+      },
+      {
+        "title": "Key Parameters",
+        "type": "stats",
+        "stats": [
+          { "label": "MCU", "value": "ESP32-S3", "note": "XIAO ESP32-S3" },
+          { "label": "Sample rate", "value": "500 Hz" },
+          { "label": "RMS window", "value": "20 samples" },
+          { "label": "Serial baud", "value": "115200" },
+          { "label": "Front-end", "value": "EMG Candy", "note": "0–3.3 V, pre-amped" },
+          { "label": "Calibration", "value": "Adaptive", "note": "per-session threshold" }
+        ]
+      },
+      {
+        "title": "Technology Stack",
+        "type": "stack",
+        "groups": [
+          { "label": "Firmware", "items": ["ESP32-S3", "Arduino framework", "C/C++"] },
+          { "label": "Python", "items": ["pyserial", "matplotlib", "NumPy", "pynput"] },
+          { "label": "Design", "items": ["KiCad (PCB)", "Fusion 360 (enclosure)"] }
+        ]
+      },
+      {
+        "title": "Applications",
+        "type": "list",
+        "items": [
+          "Real-time Python GUI for research-grade visualization",
+          "Arduino Serial Plotter for quick debugging",
+          "Game controller bridge (Roblox integration via pynput)",
+          "Threshold-based gesture commands"
+        ]
+      }
+    ],
+    "links": {}
+  },
+  {
+    "id": "personal-resume-site",
+    "title": "Aira.sys Personal Portfolio",
+    "description": "This portfolio site — a dashboard-style resume built with React, TypeScript, and Tailwind, themed as a terminal OS.",
+    "fullDescription": "A personal portfolio and resume site built as a terminal-inspired dashboard.\n\nFeatures include a fixed sidebar navigation, scroll-spy section highlighting, a 3D project carousel, a standalone portfolio grid page, and per-project detail pages with inline architecture diagrams. Entirely static, deployed to GitHub Pages via the gh-pages workflow.",
+    "technologies": ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion", "GitHub Pages"],
+    "image": "https://placehold.co/1200x675/0d0d0d/3b82f6?text=Aira.sys+Portfolio",
+    "category": "Web / Personal",
+    "status": "Live",
+    "featured": false,
+    "webTier": "Web2",
+    "role": "Designer & Developer",
+    "duration": "2025 - Present",
+    "highlights": [
+      "Terminal-OS visual language with sidebar + system header",
+      "3D project carousel with perspective transforms",
+      "Standalone portfolio grid and per-project detail pages",
+      "Inline SVG architecture diagrams on case studies",
+      "Static build deployed to GitHub Pages"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "This site is both the resume you are reading and a design exercise — a lightweight dashboard UI themed as a terminal OS, built as a single-page React app with hash-based routing for the portfolio subsection."
+      },
+      {
+        "title": "Key Features",
+        "type": "list",
+        "items": [
+          "Scroll-spy sidebar navigation",
+          "3D perspective project carousel",
+          "Standalone portfolio grid with per-project detail pages",
+          "Inline SVG architecture and pipeline diagrams",
+          "Resume PDF download with floating CTA",
+          "Fully responsive, mobile-first layout"
+        ]
+      },
+      {
+        "title": "Technology Stack",
+        "type": "stack",
+        "groups": [
+          { "label": "Frontend", "items": ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"] },
+          { "label": "Hosting", "items": ["GitHub Pages"] }
+        ]
+      }
+    ],
+    "links": {}
   }
 ]

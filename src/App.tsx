@@ -9,12 +9,23 @@ import Certifications from './components/Certifications'
 import Portfolio from './components/Portfolio'
 import Contact from './components/Contact'
 import FloatingDownloadButton from './components/FloatingDownloadButton'
+import PortfolioPage from './components/PortfolioPage'
+import ProjectDetailPage from './components/ProjectDetailPage'
+import { useHashRoute } from './hooks/useHashRoute'
 
 function App() {
   const [activeSection, setActiveSection] = useState('home')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { route } = useHashRoute()
+
+  const isPortfolioRoute =
+    route.segments[0] === 'portfolio' || route.path === '/portfolio'
+  const isProjectDetail = isPortfolioRoute && route.segments.length >= 2
+  const projectId = isProjectDetail ? route.segments[1] : null
 
   useEffect(() => {
+    if (isPortfolioRoute) return
+
     const handleScroll = () => {
       const sections = ['home', 'about', 'education', 'skills', 'certifications', 'portfolio', 'contact']
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -28,7 +39,15 @@ function App() {
     window.addEventListener('scroll', handleScroll)
     handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isPortfolioRoute])
+
+  if (isProjectDetail && projectId) {
+    return <ProjectDetailPage projectId={projectId} />
+  }
+
+  if (isPortfolioRoute) {
+    return <PortfolioPage />
+  }
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] bg-grid-pattern flex flex-col">
