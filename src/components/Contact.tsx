@@ -15,7 +15,7 @@ const Contact = () => {
     },
     {
       name: 'LinkedIn',
-      value: 'Aira Josh Ynte',
+      value: 'Aira Ynte',
       url: 'https://linkedin.com/in/aira-josh-ynte-755353322',
       Icon: FaLinkedin,
     },
@@ -33,7 +33,7 @@ const Contact = () => {
     },
     {
       name: 'Facebook',
-      value: 'Aera Ynte',
+      value: 'Aira Ynte',
       url: 'https://www.facebook.com/Smo.etti/',
       Icon: FaFacebook,
     },

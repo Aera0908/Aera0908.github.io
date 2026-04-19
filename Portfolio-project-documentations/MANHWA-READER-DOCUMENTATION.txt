@@ -1,0 +1,176 @@
+MANHWA READER - PORTFOLIO DOCUMENTATION
+=======================================
+
+Project Name:
+Manhwa Reader
+
+Developer:
+Aera
+
+Project Type:
+Frontend Web Application (Single Page App)
+
+Last Updated:
+April 19, 2026
+
+
+1) PROJECT OVERVIEW
+-------------------
+Manhwa Reader is a modern web application built to browse and read manhwa chapters using the MangaDex API.
+The app focuses on a clean reading experience, responsive layout, dark/light theme support, and simple navigation.
+
+Core user flow:
+Home -> Manhwa Detail -> Chapter Reader
+
+
+2) PROBLEM IT SOLVES
+--------------------
+- Helps readers discover popular and recently updated manhwa.
+- Provides fast title-based search.
+- Allows users to open chapter lists and read pages in a dedicated reader view.
+- Offers accessible UI options with dark/light mode.
+
+
+3) MAIN FEATURES
+----------------
+- Home page with:
+  - Hero search input
+  - Popular manhwa section
+  - Recently updated section
+  - Category chips (UI)
+- Search function:
+  - Query-based search against MangaDex
+  - Result grid with quick access to details
+- Detail page:
+  - Cover, title, latest chapter, synopsis
+  - English chapter list
+  - Start reading button
+- Reader page:
+  - Full chapter image loading
+  - Chapter selector dropdown
+  - Previous/Next chapter navigation
+  - Optional control panel toggle
+- Settings page:
+  - Light/Dark theme switch
+  - UI placeholders for reading preferences and notifications
+- Error and empty states:
+  - Loading spinners
+  - "Not found" and "No pages/chapters" fallbacks
+
+
+4) TECH STACK
+-------------
+- React 19
+- TypeScript
+- Vite 7
+- React Router DOM 7
+- Tailwind CSS 3
+- ESLint 9
+- MangaDex REST API
+
+
+5) ARCHITECTURE & FILE ORGANIZATION
+-----------------------------------
+- src/components/
+  - Reusable UI blocks (Navbar, ManhwaCard)
+- src/pages/
+  - Route-level pages (Home, ManhwaDetail, Reader, Settings)
+- src/services/
+  - API communication and data transformation logic (mangaService.ts)
+- src/config/
+  - API endpoint and URL helpers (api.ts)
+- src/contexts/
+  - Global state provider for theme (ThemeContext.tsx)
+- src/hooks/
+  - Custom React hooks (useTheme)
+- src/types/
+  - TypeScript interfaces for Manga, Chapters, and card data
+- src/utils/
+  - Utility functions (date formatting)
+
+
+6) ROUTING MAP
+--------------
+- /                      -> Home
+- /settings              -> Settings
+- /manhwa/:id            -> Manhwa detail page
+- /read/:mangaId/:chapterId -> Reader page
+
+
+7) API INTEGRATION NOTES
+------------------------
+The app integrates with MangaDex endpoints to:
+- Fetch popular titles
+- Fetch recently updated titles
+- Search manga by title
+- Fetch manga metadata by ID
+- Fetch chapter feed (English)
+- Resolve chapter image server + page URLs
+
+Important behavior:
+- Chapters are paginated in batches and merged.
+- Duplicate chapter numbers are filtered; better page-count entries are preferred.
+- Chapter pages are built from baseUrl + chapter hash + filename.
+
+
+8) UI/UX HIGHLIGHTS
+-------------------
+- Responsive card grids for discovery
+- Sticky reader header for quick navigation
+- Dark theme persistence with localStorage
+- Clear spacing and typography for long reading sessions
+
+
+9) HOW TO RUN LOCALLY
+---------------------
+Requirements:
+- Node.js 18+ recommended
+- npm
+
+Commands:
+1. npm install
+2. npm run dev
+3. Open the local Vite URL shown in terminal
+
+Build for production:
+- npm run build
+
+Preview production build:
+- npm run preview
+
+
+10) CHALLENGES & SOLUTIONS (PORTFOLIO TALKING POINTS)
+-----------------------------------------------------
+Challenge:
+- MangaDex data can have missing fields and inconsistent chapter uploads.
+
+Solution:
+- Added robust fallbacks for title, description, and chapter labels.
+- Implemented duplicate chapter filtering logic.
+- Added loading and empty/error UI states to keep user experience stable.
+
+Challenge:
+- Reading view needs smooth chapter switching and quick controls.
+
+Solution:
+- Built in-reader chapter selector plus prev/next actions.
+- Added control visibility toggle for cleaner page viewing.
+
+
+11) FUTURE IMPROVEMENTS
+-----------------------
+- Bookmark/favorites system
+- Continue reading history
+- Better filter controls (genre, status, rating)
+- Offline caching and image prefetching
+- User auth + personalized reading lists
+
+
+12) PORTFOLIO SUMMARY
+---------------------
+This project demonstrates:
+- Building a complete React + TypeScript SPA
+- Designing API-driven UI with strong error handling
+- Implementing route-based UX for discovery and reading workflows
+- Organizing scalable frontend architecture with reusable components and typed models
+- Delivering responsive design and theme support with Tailwind CSS

@@ -12,9 +12,10 @@
     "webTier": "Web3",
     "websiteUrl": "https://aerovit.dev",
     "gallery": [
-      { "src": "/Aerovit-images/watch_on_case.jpg", "caption": "Custom ESP32-S3 smartwatch on its charging case" },
+      { "src": "/Aerovit-images/watch_on_case.jpg", "caption": "Custom ESP32-S3 smartwatch on its case" },
       { "src": "/Aerovit-images/watch.jpg", "caption": "AeroVit smartwatch display and interface" },
-      { "src": "/Aerovit-images/watch-worn.jpg", "caption": "Smartwatch worn on wrist during fitness tracking" }
+      { "src": "/Aerovit-images/watch-worn.jpg", "caption": "Smartwatch worn on wrist during fitness tracking" },
+      { "src": "/Aerovit-images/video-demo.mp4", "caption": "Product walkthrough / demo recording", "type": "video" }
     ],
     "role": "Lead Developer & Hardware Engineer",
     "duration": "September 2024 - April 2026",
@@ -130,7 +131,7 @@
       "flutter_local_notifications",
       "Press Start 2P"
     ],
-    "image": "https://placehold.co/1200x675/0f3d2e/4ade80?text=Plant.io+IoT+Dashboard",
+    "image": "/plant-io-images/plant-io-banner.png",
     "category": "Mobile / IoT",
     "status": "Delivered",
     "featured": true,
@@ -243,7 +244,11 @@
       "Lenis",
       "Rive"
     ],
-    "image": "https://placehold.co/1200x675/1a0a00/f59e0b?text=The+Safehouse",
+    "image": "/safehouse-images/hero-section.png",
+    "gallery": [
+      { "src": "/safehouse-images/hero-section.png", "caption": "Hero section — full-width landing and brand frame" },
+      { "src": "/safehouse-images/web-record.mp4", "caption": "In-browser site walkthrough (screen recording)", "type": "video" }
+    ],
     "category": "Web / Web3 Community",
     "status": "Work in progress",
     "featured": true,
@@ -623,6 +628,98 @@
           "Arduino Serial Plotter for quick debugging",
           "Game controller bridge (Roblox integration via pynput)",
           "Threshold-based gesture commands"
+        ]
+      }
+    ],
+    "links": {}
+  },
+  {
+    "id": "manhwa-reader",
+    "title": "Manhwa Reader",
+    "description": "React + TypeScript SPA to browse and read manhwa via the MangaDex API—discovery, detail pages, and a full chapter reader with dark/light themes.",
+    "fullDescription": "Manhwa Reader is a single-page web app for discovering titles and reading chapters end-to-end: home with search, popular and recently updated feeds, manhwa detail (cover, synopsis, English chapter list), and a dedicated reader with page images, chapter selector, and previous/next navigation.\n\nThe stack is React 19, TypeScript, Vite 7, React Router DOM 7, and Tailwind CSS 3, with all manga data coming from the MangaDex REST API. Theme preference persists via localStorage; the UI includes loading, empty, and error states so inconsistent API payloads don’t break the flow.\n\nChapter lists merge paginated results, filter duplicate chapter numbers, and prefer entries with better page coverage. Page URLs are resolved from MangaDex base URL, chapter hash, and filenames for reliable image loading.",
+    "technologies": [
+      "React 19",
+      "TypeScript",
+      "Vite 7",
+      "React Router DOM 7",
+      "Tailwind CSS 3",
+      "ESLint 9",
+      "MangaDex API"
+    ],
+    "image": "/manhwa-reader-images/banner.png",
+    "category": "Web / Frontend",
+    "status": "Complete",
+    "featured": false,
+    "webTier": "Web2",
+    "engagement": "Personal",
+    "role": "Frontend Developer",
+    "duration": "2026",
+    "highlights": [
+      "Home: hero search, popular & recently updated grids, category chips",
+      "Title search against MangaDex with result grid → detail → reader flow",
+      "Detail: cover, synopsis, English chapters, start reading",
+      "Reader: full chapter images, chapter dropdown, prev/next, optional control panel toggle",
+      "Settings: light/dark theme with persistence",
+      "Robust handling of missing fields, duplicate chapters, and empty/error states"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "Core flow: Home → Manhwa detail → Chapter reader. The app emphasizes a calm reading layout, responsive grids for discovery, and sticky reader chrome so navigation stays reachable during long sessions."
+      },
+      {
+        "title": "Architecture",
+        "paragraphs": [
+          "Components under src/components/ (e.g. Navbar, ManhwaCard), route-level pages under src/pages/ (Home, ManhwaDetail, Reader, Settings).",
+          "src/services/mangaService.ts centralizes API calls and data shaping; src/config/api.ts holds endpoints and URL helpers.",
+          "ThemeContext + useTheme wire global light/dark mode; src/types/ carries typed models for manga, chapters, and card props; src/utils/ handles helpers such as date formatting."
+        ]
+      },
+      {
+        "title": "Routes",
+        "type": "list",
+        "items": [
+          "/ — Home",
+          "/settings — Theme and preference placeholders",
+          "/manhwa/:id — Detail (metadata + English chapter list)",
+          "/read/:mangaId/:chapterId — Reader (pages + chapter navigation)"
+        ]
+      },
+      {
+        "title": "MangaDex integration",
+        "type": "list",
+        "items": [
+          "Popular and recently updated feeds; search by title",
+          "Manga metadata by ID; English chapter feed (paginated, merged)",
+          "Chapter pages from baseUrl + hash + filename",
+          "Duplicate chapter numbers filtered; richer page-count entries preferred"
+        ]
+      },
+      {
+        "title": "Key features",
+        "type": "list",
+        "items": [
+          "Discovery grids, search, and navigation into detail and reader",
+          "Full chapter image loading with chapter selector and prev/next",
+          "Light/dark theme with localStorage persistence",
+          "Loading spinners and not-found / no-pages fallbacks"
+        ]
+      },
+      {
+        "title": "Challenges & approach",
+        "type": "callout",
+        "variant": "info",
+        "content": "MangaDex payloads can be incomplete or inconsistent across uploads. The client uses defensive defaults for titles and descriptions, deduplicates chapter rows, and keeps the reader usable with explicit empty and error UI. For long reading sessions, controls can be toggled for a cleaner viewport."
+      },
+      {
+        "title": "Future direction",
+        "type": "list",
+        "items": [
+          "Bookmarks / favorites and continue-reading history",
+          "Richer filters (genre, status, rating)",
+          "Offline caching and image prefetch",
+          "Optional auth and personalized lists"
         ]
       }
     ],

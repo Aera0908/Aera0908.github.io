@@ -225,7 +225,7 @@ const PortfolioPage = () => {
         )}
 
         <footer className="mt-16 pt-8 border-t border-white/5 font-mono text-center text-xs text-slate-500">
-          {new Date().getFullYear()} Aira Josh Ynte — Portfolio Archive
+          {new Date().getFullYear()} Aira Ynte — Portfolio Archive
         </footer>
       </div>
     </div>

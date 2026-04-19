@@ -5,6 +5,7 @@ import { routeTo } from '../hooks/useHashRoute'
 import { ProjectDiagram } from './diagrams/ProjectDiagrams'
 import WebTierBadge from './WebTierBadge'
 import { EngagementBadge, LimitedInfoBadge } from './ProjectTagBadges'
+import ProjectGallery from './ProjectGallery'
 
 interface ProjectDetailPageProps {
   projectId: string
@@ -282,22 +283,7 @@ const ProjectDetailPage = ({ projectId }: ProjectDetailPageProps) => {
                 <h2 className="font-mono text-xs text-slate-500 mb-4 tracking-wider">
                   &gt; GALLERY
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {project.gallery.map((img, i) => (
-                    <figure key={i} className="space-y-2">
-                      <div className="overflow-hidden rounded-lg bg-slate-900/40">
-                        <img
-                          src={img.src}
-                          alt={img.caption}
-                          className="w-full h-48 object-cover hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                      <figcaption className="text-slate-400 text-xs leading-relaxed">
-                        {img.caption}
-                      </figcaption>
-                    </figure>
-                  ))}
-                </div>
+                <ProjectGallery items={project.gallery} />
               </section>
             )}
           </div>
@@ -467,7 +453,7 @@ const ProjectDetailPage = ({ projectId }: ProjectDetailPageProps) => {
         </nav>
 
         <footer className="mt-12 pt-8 border-t border-white/5 font-mono text-center text-xs text-slate-500">
-          {new Date().getFullYear()} Aira Josh Ynte
+          {new Date().getFullYear()} Aira Ynte
         </footer>
       </div>
     </div>

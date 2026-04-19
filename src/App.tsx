@@ -87,7 +87,7 @@ function App() {
 
         <footer className="py-8 px-4 border-t border-white/5">
           <p className="font-mono text-center text-xs text-slate-500">
-            {new Date().getFullYear()} Aira Josh Ynte
+            {new Date().getFullYear()} Aira Ynte
           </p>
         </footer>
         </main>

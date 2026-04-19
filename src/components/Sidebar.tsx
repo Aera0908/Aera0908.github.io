@@ -38,7 +38,7 @@ const Sidebar = ({ activeSection, onNavigate, isOpen, onClose }: SidebarProps) =
             <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 glow-blue">
               <img
                 src={`${import.meta.env.BASE_URL}ynte_pic.jpg`}
-                alt="Aira Josh Ynte"
+                alt="Aira Ynte"
                 className="w-full h-full object-cover"
               />
             </div>

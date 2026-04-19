@@ -30,7 +30,7 @@ const Navbar = () => {
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <a href="#home" className="text-slate-50 font-bold text-lg tracking-tight hover:text-amber-400 transition-colors">
-            Aira Josh Ynte
+            Aira Ynte
           </a>
 
           <div className="hidden md:block">

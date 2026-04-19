@@ -9,7 +9,7 @@ const Education = () => {
       highlights: [
         'Digital electronics, circuit design, computer architecture',
         'Hardware assembly, robotics, system simulation',
-        'CPE Challenge 2024 (Java Programming by ICpEP.se)',
+        'AeroVit — end-to-end prototype (mobile, wearable, AI, Web3)',
         'School Clinic Web Booking System (DB, UI, backend)',
       ],
     },
@@ -65,9 +65,20 @@ const Education = () => {
             <h3 className="text-lg font-semibold text-slate-100">Current Status</h3>
           </div>
           <div className="space-y-3 text-sm">
-            <p><span className="text-slate-500">Focus:</span> <span className="text-slate-300">IC Design & Microcontrollers</span></p>
-            <p><span className="text-slate-500">Learning:</span> <span className="text-slate-300">Machine Learning on Edge</span></p>
-            <p><span className="text-slate-500">Availability:</span> <span className="text-green-400 font-medium">Open for Internships</span></p>
+            <p>
+              <span className="text-slate-500">Focus:</span>{' '}
+              <span className="text-slate-300">
+                IC design, IoT &amp; embedded systems, AI integration, Web2/Web3 application development
+              </span>
+            </p>
+            <p>
+              <span className="text-slate-500">Learning:</span>{' '}
+              <span className="text-slate-300">Web3 &amp; blockchain fundamentals (smart contracts, on-chain workflows)</span>
+            </p>
+            <p>
+              <span className="text-slate-500">Availability:</span>{' '}
+              <span className="text-green-400 font-medium">Open for Internships</span>
+            </p>
           </div>
         </div>
       </div>

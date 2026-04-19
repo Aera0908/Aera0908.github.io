@@ -1,4 +1,4 @@
-# 🌐 Web Resume - Aira Josh Ynte
+# 🌐 Web Resume - Aira Ynte
 
 An interactive, modern web resume built with React, TypeScript, and TailwindCSS. Featuring smooth animations, hover effects, and a beautiful gradient design.
 
@@ -158,7 +158,7 @@ To change it, simply replace `public/ynte_pic.jpg` with your new photo, or updat
 ```tsx
 <img
   src="/ynte_pic.jpg"  // Your current photo
-  alt="Aira Josh Ynte"
+  alt="Aira Ynte"
   className="w-48 h-48 rounded-full..."
 />
 ```
@@ -193,9 +193,9 @@ This project is open source and available under the MIT License.
 
 ##  Author
 
-**Aira Josh Ynte**
+**Aira Ynte**
 
-- LinkedIn: [Aira Josh Ynte](https://linkedin.com/in/aira-josh-ynte-755353322)
+- LinkedIn: [Aira Ynte](https://linkedin.com/in/aira-josh-ynte-755353322)
 - Instagram: [@area0908](https://instagram.com/area0908)
 - Email: 08airajosh@gmail.com
 - GitHub: [@Aera0908](https://github.com/Aera0908)

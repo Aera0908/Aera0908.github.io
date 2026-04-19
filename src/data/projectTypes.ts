@@ -1,6 +1,8 @@
 export interface GalleryImage {
   src: string
   caption: string
+  /** Defaults to `image` when omitted (backwards compatible). */
+  type?: 'image' | 'video'
 }
 
 export interface StackGroup {

@@ -4,6 +4,7 @@ import type { Project } from '../data/projectTypes'
 import { routeTo } from '../hooks/useHashRoute'
 import WebTierBadge from './WebTierBadge'
 import { EngagementBadge, LimitedInfoBadge } from './ProjectTagBadges'
+import ProjectGallery from './ProjectGallery'
 
 const Portfolio = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -377,19 +378,8 @@ const Portfolio = () => {
                 </div>
                 {projects[selectedProject].gallery && projects[selectedProject].gallery!.length > 0 && (
                   <div>
-                    <h4 className="text-slate-500 font-mono text-xs mb-3">HARDWARE</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {projects[selectedProject].gallery!.map((img, i) => (
-                        <div key={i} className="flex flex-col">
-                          <img
-                            src={img.src}
-                            alt={img.caption}
-                            className="w-full h-48 object-cover rounded-lg"
-                          />
-                          <p className="text-slate-400 text-sm mt-2">{img.caption}</p>
-                        </div>
-                      ))}
-                    </div>
+                    <h4 className="text-slate-500 font-mono text-xs mb-3">GALLERY</h4>
+                    <ProjectGallery items={projects[selectedProject].gallery!} nested />
                   </div>
                 )}
               </div>

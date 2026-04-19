@@ -18,37 +18,67 @@ const About = () => {
         <div className="dashboard-card">
           <h3 className="text-lg font-semibold text-blue-400 mb-3">Expertise</h3>
           <p className="text-slate-300 text-base leading-relaxed">
-            Hands-on experience in embedded systems, web designing, and SQL database management systems.
-            Building from hardware circuits to AI-enhanced web interfaces.
+            IC design, embedded &amp; IoT, and full-stack software—spanning Web2 and Web3. I go from RTL and PCBs
+            to React, mobile, and on-chain prototypes, with an eye on applied AI and edge systems.
           </p>
         </div>
 
         <div className="dashboard-card">
           <h3 className="text-lg font-semibold text-blue-400 mb-4">Experience & Projects</h3>
-          <ul className="space-y-3 text-slate-300 text-base">
+          <ul className="space-y-5 text-slate-300 text-base">
             <li className="flex gap-2">
-              <span className="text-slate-500">|</span>
-              <span><span className="font-semibold text-slate-100">IC Design Intern</span> – Xinyx Design Consultancy and Services Inc.</span>
+              <span className="text-slate-500 shrink-0">|</span>
+              <div>
+                <span className="font-semibold text-slate-100">AeroVit</span>
+                <span className="text-slate-400"> — flagship project today: </span>
+                Flutter app, ESP32-S3 smartwatch, BlazePose, Firebase, Web3 rewards (Ethereum Sepolia / ERC-20),
+                Next.js &amp; Vite surfaces — full-stack hybrid fitness prototype.
+              </div>
             </li>
+
             <li className="flex gap-2">
-              <span className="text-slate-500">|</span>
-              <span><span className="font-semibold text-slate-100">AMBA APB3 Project</span> – SystemVerilog design and verification</span>
+              <span className="text-slate-500 shrink-0">|</span>
+              <div className="min-w-0 flex-1">
+                <div>
+                  <span className="font-semibold text-slate-100">IC Design Intern</span>
+                  <span className="text-slate-400"> — </span>
+                  Xinyx Design Consultancy and Services Inc.
+                </div>
+                <ul className="mt-3 ml-1 space-y-2 border-l border-blue-500/25 pl-4 text-sm text-slate-400">
+                  <li>
+                    <span className="font-medium text-slate-200">AMBA APB3</span>
+                    {' — '}SystemVerilog design and verification — done during this internship.
+                  </li>
+                </ul>
+              </div>
             </li>
+
             <li className="flex gap-2">
-              <span className="text-slate-500">|</span>
-              <span><span className="font-semibold text-slate-100">CPE Challenge 2024</span> – Java Programming, ICpEP.se</span>
+              <span className="text-slate-500 shrink-0">|</span>
+              <div>
+                <span className="font-semibold text-slate-100">School Clinic Web Booking System</span>
+                {' — '}database, UI, backend (academic / team project).
+              </div>
             </li>
+
             <li className="flex gap-2">
-              <span className="text-slate-500">|</span>
-              <span><span className="font-semibold text-slate-100">School Clinic Web Booking System</span> – DB, UI, backend</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-slate-500">|</span>
-              <span><span className="font-semibold text-slate-100">Xepto Education Website</span> – Work immersion, Muntinlupa Science High School</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-slate-500">|</span>
-              <span><span className="font-semibold text-slate-100">DRRR Project</span> – Automotive robot</span>
+              <span className="text-slate-500 shrink-0">|</span>
+              <div className="min-w-0 flex-1">
+                <div>
+                  <span className="font-semibold text-slate-100">Muntinlupa Science High School</span>
+                  <span className="text-slate-400"> — work immersion &amp; engineering projects</span>
+                </div>
+                <ul className="mt-3 ml-1 space-y-2 border-l border-blue-500/25 pl-4 text-sm text-slate-400">
+                  <li>
+                    <span className="font-medium text-slate-200">Xepto Education Website</span>
+                    {' — '}built during work immersion.
+                  </li>
+                  <li>
+                    <span className="font-medium text-slate-200">DRRR Project</span>
+                    {' — '}automotive robot (team / school build).
+                  </li>
+                </ul>
+              </div>
             </li>
           </ul>
         </div>

@@ -21,7 +21,7 @@ const Hero = () => {
       >
         <p className="font-mono text-sm text-slate-500 mb-4">&gt; WHOAMI</p>
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-50 mb-4">
-          Hello, I&apos;m <span className="text-violet-400">Aira</span>.
+          Hello, I&apos;m <span className="text-violet-400">Aira Ynte</span>.
         </h1>
         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6 max-w-2xl">
           I am a{' '}
@@ -29,15 +29,11 @@ const Hero = () => {
           bridging the gap between hardware and software. I build systems that think, interact, and solve real-world problems.
         </p>
         <div className="flex flex-wrap gap-2 mb-8">
-          <span className="hashtag-tag text-blue-400 border border-blue-500/40 bg-blue-500/10">
-            #ICDesign
-          </span>
-          <span className="hashtag-tag text-violet-400 border border-violet-500/40 bg-violet-500/10">
-            #IoT
-          </span>
-          <span className="hashtag-tag text-green-400 border border-green-500/40 bg-green-500/10">
-            #SoftwareDev
-          </span>
+          <span className="hashtag-tag text-blue-400 border border-blue-500/40 bg-blue-500/10">#ICDesign</span>
+          <span className="hashtag-tag text-violet-400 border border-violet-500/40 bg-violet-500/10">#IoT</span>
+          <span className="hashtag-tag text-cyan-400 border border-cyan-500/40 bg-cyan-500/10">#AI</span>
+          <span className="hashtag-tag text-sky-400 border border-sky-500/40 bg-sky-500/10">#Web2</span>
+          <span className="hashtag-tag text-fuchsia-400 border border-fuchsia-500/40 bg-fuchsia-500/10">#Web3</span>
         </div>
         <div className="flex flex-wrap gap-3">
           <a
