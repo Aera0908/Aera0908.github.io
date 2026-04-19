@@ -81,18 +81,24 @@ const Portfolio = () => {
   const ProjectCard = ({ project, onClick }: { project: Project; onClick: () => void }) => {
     const hasBadges =
       project.webTier || project.engagement || project.ndaConstrained
+    const showReadMore = project.description.length > 90
+
     return (
-      <div className="dashboard-card overflow-hidden">
-        <div className="relative overflow-hidden rounded-lg mb-4">
+      <div
+        className="dashboard-card flex h-[432px] w-full max-w-[380px] flex-col overflow-hidden md:h-[432px] md:w-[380px]"
+      >
+        <div className="relative mb-3 shrink-0 overflow-hidden rounded-lg">
           <img
             src={project.image}
             alt={project.title}
-            className="w-full h-48 object-cover"
+            className="h-36 w-full object-cover md:h-40"
           />
         </div>
-        <h3 className="text-lg font-semibold text-slate-100 mb-2">{project.title}</h3>
+        <h3 className="mb-2 line-clamp-2 shrink-0 text-base font-semibold leading-snug text-slate-100 md:text-lg">
+          {project.title}
+        </h3>
         {hasBadges && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
+          <div className="mb-2 flex max-h-[52px] flex-wrap gap-1.5 overflow-hidden">
             {project.webTier && <WebTierBadge tier={project.webTier} size="sm" />}
             {project.engagement && (
               <EngagementBadge engagement={project.engagement} size="sm" />
@@ -100,37 +106,52 @@ const Portfolio = () => {
             {project.ndaConstrained && <LimitedInfoBadge active size="sm" />}
           </div>
         )}
-        <p className="text-slate-400 text-sm mb-4 line-clamp-3">{project.description}</p>
-      <div className="flex flex-wrap gap-2 mb-4">
-        {project.technologies.slice(0, 4).map((tech, techIndex) => (
-          <span
-            key={techIndex}
-            className="px-2 py-0.5 text-xs text-slate-500 font-mono bg-white/5 rounded"
+        <div className="mb-3 min-h-0 flex-1">
+          <p className="line-clamp-2 text-sm leading-relaxed text-slate-400">{project.description}</p>
+          {showReadMore && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                onClick()
+              }}
+              className="mt-1 text-left text-xs font-medium text-blue-400 hover:text-blue-300 hover:underline"
+            >
+              read more
+            </button>
+          )}
+        </div>
+        <div className="mb-3 flex max-h-[52px] shrink-0 flex-wrap gap-2 overflow-hidden">
+          {project.technologies.slice(0, 4).map((tech, techIndex) => (
+            <span
+              key={techIndex}
+              className="rounded bg-white/5 px-2 py-0.5 font-mono text-[10px] text-slate-500 md:text-xs"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+        <div className="mt-auto flex shrink-0 gap-2 pt-1">
+          {project.websiteUrl && (
+            <a
+              href={project.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 rounded-lg border border-white/10 bg-white/5 py-2 text-center text-sm font-medium text-slate-300 transition-colors hover:bg-white/10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Website
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={onClick}
+            className={`rounded-lg bg-blue-600/20 py-2 text-sm font-medium text-blue-400 transition-colors hover:bg-blue-600/30 ${project.websiteUrl ? 'flex-1' : 'w-full'}`}
           >
-            {tech}
-          </span>
-        ))}
+            View Details
+          </button>
+        </div>
       </div>
-      <div className="flex gap-2">
-        {project.websiteUrl && (
-          <a
-            href={project.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 py-2 text-sm font-medium bg-white/5 text-slate-300 rounded-lg hover:bg-white/10 transition-colors text-center border border-white/10"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Website
-          </a>
-        )}
-        <button
-          onClick={onClick}
-          className={`py-2 text-sm font-medium bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors ${project.websiteUrl ? 'flex-1' : 'w-full'}`}
-        >
-          View Details
-        </button>
-      </div>
-    </div>
     )
   }
 
@@ -159,68 +180,76 @@ const Portfolio = () => {
       <div className="relative">
         {/* Mobile: Simple 2D carousel */}
         <div className="md:hidden">
-          <div className="flex flex-col items-center gap-6">
+          <div className="relative flex min-h-[440px] w-full flex-col items-center justify-center">
             {projects.map((project, index) => (
               <div
                 key={index}
-                className={`w-full max-w-lg transition-all duration-300 ${
+                className={`w-full max-w-[380px] transition-all duration-300 ${
                   index === currentIndex
-                    ? 'opacity-100'
-                    : 'opacity-0 absolute pointer-events-none'
+                    ? 'relative z-10 opacity-100'
+                    : 'pointer-events-none absolute inset-0 z-0 flex items-center justify-center opacity-0'
                 }`}
               >
-                <ProjectCard project={project} onClick={() => openModal(index)} />
+                <div className="mx-auto w-full max-w-[380px]">
+                  <ProjectCard project={project} onClick={() => openModal(index)} />
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Desktop: 3D Carousel */}
-        <div className="hidden md:block relative h-[480px]" style={{ perspective: '2000px' }}>
-          <div className="absolute inset-0 flex items-center justify-center" style={{ perspectiveOrigin: 'center center', transformStyle: 'preserve-3d' }}>
-            {projects.map((project, index) => {
-              let offset = index - currentIndex
-              if (offset > projects.length / 2) offset -= projects.length
-              else if (offset < -projects.length / 2) offset += projects.length
+        {/* Desktop: 3D Carousel — controls sit below the scene so dots never overlap the cards */}
+        <div className="hidden md:block">
+          <div className="relative h-[460px]" style={{ perspective: '2000px' }}>
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{ perspectiveOrigin: 'center center', transformStyle: 'preserve-3d' }}
+            >
+              {projects.map((project, index) => {
+                let offset = index - currentIndex
+                if (offset > projects.length / 2) offset -= projects.length
+                else if (offset < -projects.length / 2) offset += projects.length
 
-              const absOffset = Math.abs(offset)
-              const translateX = offset * 320
-              const translateZ = absOffset === 0 ? 0 : -absOffset * 180
-              const rotateY = offset * 25
-              const scale = absOffset === 0 ? 1 : Math.max(0.55, 0.85 - absOffset * 0.12)
-              const opacity = absOffset === 0 ? 1 : absOffset === 1 ? 0.7 : absOffset > 2 ? 0 : 0.45
-              const zIndex = projects.length - absOffset
-              const isVisible = absOffset <= 2
+                const absOffset = Math.abs(offset)
+                const translateX = offset * 320
+                const translateZ = absOffset === 0 ? 0 : -absOffset * 180
+                const rotateY = offset * 25
+                const scale = absOffset === 0 ? 1 : Math.max(0.55, 0.85 - absOffset * 0.12)
+                const opacity = absOffset === 0 ? 1 : absOffset === 1 ? 0.7 : absOffset > 2 ? 0 : 0.45
+                const zIndex = projects.length - absOffset
+                const isVisible = absOffset <= 2
 
-              return (
-                <div
-                  key={index}
-                  className={`absolute w-[380px] transition-all duration-700 ease-out cursor-pointer ${!isVisible ? 'hidden' : ''}`}
-                  style={{
-                    transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
-                    transformStyle: 'preserve-3d',
-                    opacity,
-                    zIndex,
-                    pointerEvents: absOffset === 0 ? 'auto' : 'none',
-                    perspective: 2000,
-                  }}
-                  onClick={() => absOffset === 0 && openModal(index)}
-                >
-                  <div className="overflow-hidden rounded-lg" style={{ transform: 'translateZ(0)' }}>
-                    <ProjectCard project={project} onClick={() => openModal(index)} />
+                return (
+                  <div
+                    key={index}
+                    className={`absolute w-[380px] cursor-pointer transition-all duration-700 ease-out ${!isVisible ? 'hidden' : ''}`}
+                    style={{
+                      transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+                      transformStyle: 'preserve-3d',
+                      opacity,
+                      zIndex,
+                      pointerEvents: absOffset === 0 ? 'auto' : 'none',
+                      perspective: 2000,
+                    }}
+                    onClick={() => absOffset === 0 && openModal(index)}
+                  >
+                    <div className="overflow-hidden rounded-lg" style={{ transform: 'translateZ(0)' }}>
+                      <ProjectCard project={project} onClick={() => openModal(index)} />
+                    </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
 
-          <div className="absolute inset-x-0 -bottom-4 flex justify-center items-center gap-4 z-10">
+          <div className="flex items-center justify-center gap-4 pb-2 pt-10">
             <button
+              type="button"
               onClick={prevSlide}
-              className="p-3 text-slate-400 hover:text-blue-400 hover:bg-white/5 rounded-lg transition-colors"
+              className="rounded-lg p-3 text-slate-400 transition-colors hover:bg-white/5 hover:text-blue-400"
               aria-label="Previous project"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -228,22 +257,24 @@ const Portfolio = () => {
               {projects.map((_, index) => (
                 <button
                   key={index}
+                  type="button"
                   onClick={() => setCurrentIndex(index)}
                   className={`h-2 rounded-full transition-all ${
                     index === currentIndex
-                      ? 'bg-blue-500 w-8'
-                      : 'bg-slate-600 w-2 hover:bg-slate-500'
+                      ? 'w-8 bg-blue-500'
+                      : 'w-2 bg-slate-600 hover:bg-slate-500'
                   }`}
                   aria-label={`Go to project ${index + 1}`}
                 />
               ))}
             </div>
             <button
+              type="button"
               onClick={nextSlide}
-              className="p-3 text-slate-400 hover:text-blue-400 hover:bg-white/5 rounded-lg transition-colors"
+              className="rounded-lg p-3 text-slate-400 transition-colors hover:bg-white/5 hover:text-blue-400"
               aria-label="Next project"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -251,7 +282,7 @@ const Portfolio = () => {
         </div>
 
         {/* Mobile navigation */}
-        <div className="md:hidden flex justify-center items-center gap-4 mt-8">
+        <div className="mt-12 flex justify-center items-center gap-4 md:hidden">
           <button
             onClick={prevSlide}
             className="p-2 text-slate-400 hover:text-blue-400 transition-colors"

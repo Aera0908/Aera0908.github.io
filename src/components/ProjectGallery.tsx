@@ -89,7 +89,7 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
 
       {openItem && openIndex !== null && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-8"
           role="dialog"
           aria-modal="true"
           aria-label={openItem.type === 'video' ? 'Video player' : 'Image preview'}
@@ -102,11 +102,11 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
           />
 
           <div
-            className="relative z-10 flex max-h-[90vh] w-full max-w-5xl flex-col gap-3"
+            className="relative z-10 flex max-h-[92vh] w-full max-w-5xl flex-col gap-2 sm:gap-3"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-3">
-              <p className="min-w-0 text-sm text-slate-300">{openItem.caption}</p>
+            <div className="flex items-start justify-between gap-3 px-1">
+              <p className="min-w-0 pr-2 text-sm text-slate-300">{openItem.caption}</p>
               <button
                 type="button"
                 onClick={close}
@@ -119,29 +119,62 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-hidden rounded-xl border border-white/10 bg-slate-950/90 shadow-2xl">
-              {openItem.type === 'video' ? (
-                <video
-                  key={openItem.src}
-                  src={openItem.src}
-                  controls
-                  playsInline
-                  autoPlay
-                  className="max-h-[75vh] w-full bg-black"
+            <div className="relative flex min-h-0 flex-1 items-center justify-center gap-1 sm:gap-2">
+              {items.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => openIndex > 0 && setOpenIndex(openIndex - 1)}
+                  disabled={openIndex === 0}
+                  className="shrink-0 rounded-full border border-white/10 bg-slate-900/90 p-2.5 text-slate-200 shadow-lg transition hover:bg-white/10 disabled:pointer-events-none disabled:opacity-30 sm:p-3"
+                  aria-label="Previous item"
                 >
-                  Your browser does not support embedded video.
-                </video>
-              ) : (
-                <img
-                  src={openItem.src}
-                  alt={openItem.caption}
-                  className="max-h-[75vh] w-full object-contain"
-                />
+                  <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
+
+              <div className="min-h-0 min-w-0 flex-1 overflow-hidden rounded-xl border border-white/10 bg-slate-950/90 shadow-2xl">
+                {openItem.type === 'video' ? (
+                  <video
+                    key={openItem.src}
+                    src={openItem.src}
+                    controls
+                    playsInline
+                    autoPlay
+                    className="max-h-[70vh] w-full bg-black sm:max-h-[75vh]"
+                  >
+                    Your browser does not support embedded video.
+                  </video>
+                ) : (
+                  <img
+                    src={openItem.src}
+                    alt={openItem.caption}
+                    className="max-h-[70vh] w-full object-contain sm:max-h-[75vh]"
+                  />
+                )}
+              </div>
+
+              {items.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    openIndex < items.length - 1 && setOpenIndex(openIndex + 1)
+                  }
+                  disabled={openIndex >= items.length - 1}
+                  className="shrink-0 rounded-full border border-white/10 bg-slate-900/90 p-2.5 text-slate-200 shadow-lg transition hover:bg-white/10 disabled:pointer-events-none disabled:opacity-30 sm:p-3"
+                  aria-label="Next item"
+                >
+                  <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               )}
             </div>
 
             <p className="text-center font-mono text-[10px] text-slate-500">
-              ← → to navigate · Esc to close
+              {items.length > 1 ? 'Use arrows or keyboard ← → · ' : ''}
+              Esc to close
             </p>
           </div>
         </div>

@@ -210,17 +210,17 @@ const ProjectDetailPage = ({ projectId }: ProjectDetailPageProps) => {
           <span className="text-slate-300">{project.id}</span>
         </nav>
 
-        <div className="relative overflow-hidden rounded-xl mb-8 aspect-[16/7] bg-slate-900/40">
+        {/* Mobile: banner image + text below (readable, no tiny overlay text) */}
+        <div className="mb-8 overflow-hidden rounded-xl border border-white/10 md:hidden">
           <img
             src={project.image}
-            alt={project.title}
-            className="w-full h-full object-cover"
+            alt=""
+            className="h-48 w-full object-cover sm:h-56"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-            <div className="flex flex-wrap gap-2 mb-3">
+          <div className="border-t border-white/10 bg-[#121212] p-5">
+            <div className="mb-3 flex flex-wrap gap-2">
               {project.category && (
-                <span className="px-2.5 py-1 text-[10px] font-mono bg-blue-600/80 text-white rounded tracking-wider">
+                <span className="rounded bg-blue-600/80 px-2.5 py-1 font-mono text-[10px] tracking-wider text-white">
                   {project.category.toUpperCase()}
                 </span>
               )}
@@ -230,17 +230,44 @@ const ProjectDetailPage = ({ projectId }: ProjectDetailPageProps) => {
               )}
               {project.ndaConstrained && <LimitedInfoBadge active size="md" />}
               {project.status && (
-                <span className="px-2.5 py-1 text-[10px] font-mono bg-black/70 text-slate-300 rounded border border-white/10">
+                <span className="rounded border border-white/10 bg-black/70 px-2.5 py-1 font-mono text-[10px] text-slate-300">
                   {project.status}
                 </span>
               )}
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold text-slate-50 mb-2 max-w-3xl">
-              {project.title}
-            </h1>
-            <p className="text-slate-300 text-sm md:text-base max-w-3xl">
-              {project.description}
-            </p>
+            <h1 className="mb-3 text-xl font-bold leading-snug text-slate-50 sm:text-2xl">{project.title}</h1>
+            <p className="text-sm leading-relaxed text-slate-400">{project.description}</p>
+          </div>
+        </div>
+
+        {/* Desktop / tablet: gradient overlay on wide banner */}
+        <div className="relative mb-8 hidden overflow-hidden rounded-xl bg-slate-900/40 md:block md:aspect-[16/7]">
+          <img
+            src={project.image}
+            alt={project.title}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+            <div className="mb-3 flex flex-wrap gap-2">
+              {project.category && (
+                <span className="rounded bg-blue-600/80 px-2.5 py-1 font-mono text-[10px] tracking-wider text-white">
+                  {project.category.toUpperCase()}
+                </span>
+              )}
+              {project.webTier && <WebTierBadge tier={project.webTier} size="md" />}
+              {project.engagement && (
+                <EngagementBadge engagement={project.engagement} size="md" />
+              )}
+              {project.ndaConstrained && <LimitedInfoBadge active size="md" />}
+              {project.status && (
+                <span className="rounded border border-white/10 bg-black/70 px-2.5 py-1 font-mono text-[10px] text-slate-300">
+                  {project.status}
+                </span>
+              )}
+            </div>
+            <h1 className="mb-2 max-w-3xl text-2xl font-bold text-slate-50 md:text-4xl">{project.title}</h1>
+            <p className="max-w-3xl text-sm text-slate-300 md:text-base">{project.description}</p>
           </div>
         </div>
 

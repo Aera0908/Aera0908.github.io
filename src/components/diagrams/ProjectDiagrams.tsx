@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 
 const palette = {
   stroke: '#334155',
@@ -376,8 +376,73 @@ const registry: Record<string, () => JSX.Element> = {
   'emg-pipeline': EmgPipeline,
 }
 
+const ZOOM_MIN = 0.25
+const ZOOM_MAX = 3
+const ZOOM_STEP = 0.25
+const LIGHTBOX_PAD = 40
+
+type FitLayout = { vbW: number; vbH: number; fit: number }
+
 export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }) => {
   const Component = registry[id]
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  /** Multiplier on top of viewport “fit” scale (1 = fit to window). */
+  const [zoom, setZoom] = useState(1)
+  const [fitLayout, setFitLayout] = useState<FitLayout | null>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!lightboxOpen) return
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [lightboxOpen])
+
+  useEffect(() => {
+    if (!lightboxOpen) {
+      setZoom(1)
+      setFitLayout(null)
+    }
+  }, [lightboxOpen])
+
+  const recalcFit = useCallback(() => {
+    const vp = viewportRef.current
+    if (!vp || !lightboxOpen) return
+    const svg = vp.querySelector('svg')
+    if (!svg?.viewBox?.baseVal) return
+    const vbW = svg.viewBox.baseVal.width
+    const vbH = svg.viewBox.baseVal.height
+    if (vbW <= 0 || vbH <= 0) return
+    const vw = vp.clientWidth - LIGHTBOX_PAD
+    const vh = vp.clientHeight - LIGHTBOX_PAD
+    if (vw <= 0 || vh <= 0) return
+    const fit = Math.min(vw / vbW, vh / vbH)
+    setFitLayout({ vbW, vbH, fit })
+  }, [lightboxOpen])
+
+  useLayoutEffect(() => {
+    if (!lightboxOpen) return
+    recalcFit()
+    const rafId = requestAnimationFrame(() => recalcFit())
+    return () => cancelAnimationFrame(rafId)
+  }, [lightboxOpen, id, recalcFit])
+
+  useLayoutEffect(() => {
+    if (!lightboxOpen) return
+    const vp = viewportRef.current
+    if (!vp) return
+    const ro = new ResizeObserver(() => recalcFit())
+    ro.observe(vp)
+    window.addEventListener('orientationchange', recalcFit)
+    window.addEventListener('resize', recalcFit)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('orientationchange', recalcFit)
+      window.removeEventListener('resize', recalcFit)
+    }
+  }, [lightboxOpen, recalcFit])
+
   if (!Component) {
     return (
       <div className="rounded-lg border border-dashed border-white/10 bg-white/5 p-6 text-center font-mono text-xs text-slate-500">
@@ -385,15 +450,156 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
       </div>
     )
   }
+
+  const nudgeZoom = (delta: number) => {
+    setZoom((z) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.round((z + delta) * 100) / 100)))
+  }
+
+  const effectiveScale = fitLayout ? fitLayout.fit * zoom : 1
+
   return (
     <figure className="space-y-3">
-      <div className="rounded-lg bg-black/30 border border-white/5 p-4 overflow-x-auto">
-        <Component />
+      <div className="relative overflow-hidden rounded-lg border border-white/5 bg-black/30">
+        <button
+          type="button"
+          onClick={() => setLightboxOpen(true)}
+          className="group relative block w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
+          aria-label="Open diagram larger"
+        >
+          <span className="absolute right-2 top-2 z-10 rounded border border-white/15 bg-black/70 px-2 py-1 font-mono text-[10px] text-slate-300 opacity-90 backdrop-blur-sm transition group-hover:border-blue-500/40 group-hover:text-blue-300">
+            Tap to enlarge
+          </span>
+          <div className="overflow-x-auto p-3 sm:p-4">
+            <Component />
+          </div>
+        </button>
       </div>
       {caption && (
-        <figcaption className="text-slate-400 text-xs leading-relaxed font-mono text-center">
-          {caption}
-        </figcaption>
+        <figcaption className="text-center font-mono text-xs leading-relaxed text-slate-400">{caption}</figcaption>
+      )}
+
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-[70] flex flex-col bg-black/95 p-3 sm:p-5"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Diagram viewer"
+        >
+          <button
+            type="button"
+            className="absolute inset-0 z-0 cursor-default sm:cursor-zoom-out"
+            onClick={() => setLightboxOpen(false)}
+            aria-label="Close diagram"
+          />
+          <div className="relative z-10 mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">Zoom</span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  nudgeZoom(-ZOOM_STEP)
+                }}
+                disabled={zoom <= ZOOM_MIN}
+                className="rounded border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-sm text-slate-200 hover:bg-white/10 disabled:opacity-30"
+                aria-label="Zoom out"
+              >
+                −
+              </button>
+              <span className="min-w-[3rem] text-center font-mono text-xs text-slate-400" title="100% = fit to viewer">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  nudgeZoom(ZOOM_STEP)
+                }}
+                disabled={zoom >= ZOOM_MAX}
+                className="rounded border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-sm text-slate-200 hover:bg-white/10 disabled:opacity-30"
+                aria-label="Zoom in"
+              >
+                +
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setZoom(1)
+                }}
+                className="rounded border border-white/15 bg-white/5 px-2 py-1.5 font-mono text-[11px] text-slate-400 hover:bg-white/10"
+              >
+                Reset
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setLightboxOpen(false)
+              }}
+              className="rounded-lg border border-white/15 p-2 text-slate-400 hover:bg-white/10 hover:text-white"
+              aria-label="Close"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div
+            ref={viewportRef}
+            className="relative z-10 min-h-0 flex-1 overflow-auto rounded-lg border border-white/10 bg-[#0a0a0a]"
+            onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => {
+              if (e.ctrlKey || e.metaKey) {
+                e.preventDefault()
+                nudgeZoom(e.deltaY > 0 ? -0.08 : 0.08)
+              }
+            }}
+          >
+            <div className="flex min-h-full min-w-full items-center justify-center box-border p-5">
+              <div
+                className="flex-shrink-0"
+                style={
+                  fitLayout
+                    ? {
+                        width: fitLayout.vbW * effectiveScale,
+                        height: fitLayout.vbH * effectiveScale,
+                      }
+                    : {
+                        width: 'min(96vw, 1400px)',
+                        maxWidth: '100%',
+                      }
+                }
+              >
+                <div
+                  className="rounded border border-white/5 bg-black/40 shadow-xl"
+                  style={
+                    fitLayout
+                      ? {
+                          width: fitLayout.vbW,
+                          height: fitLayout.vbH,
+                          transform: `scale(${effectiveScale})`,
+                          transformOrigin: 'top left',
+                        }
+                      : { width: '100%' }
+                  }
+                >
+                  <Component />
+                </div>
+              </div>
+            </div>
+          </div>
+          {caption && (
+            <p className="relative z-10 mt-2 text-center font-mono text-[11px] text-slate-500">
+              {caption}
+            </p>
+          )}
+          <p className="relative z-10 mt-1 text-center font-mono text-[10px] text-slate-600">
+            Default size fits the viewer. Ctrl/⌘ + scroll to zoom · drag to pan when zoomed
+          </p>
+        </div>
       )}
     </figure>
   )
