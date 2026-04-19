@@ -18,9 +18,9 @@ const Certifications = () => {
       downloadName: 'YNTE-XINYX-OJT-CERTIFICATE.pdf',
     },
     {
-      name: 'TINA Circuit Simulation Certificate',
-      issuer: 'DesignSoft',
-      description: 'Training on the TINA circuit simulation and PCB design suite.',
+      name: 'TINA DESIGN SUITE WORKSHOP',
+      issuer: 'Hytec Power & Inc.',
+      description: 'Workshop on the TINA circuit simulation and PCB design suite.',
       url: '/CERTIFICATE-PREVIEWS/YNTE-DESIGNSOFT-TINA.pdf',
       downloadName: 'YNTE-DESIGNSOFT-TINA.pdf',
     },
