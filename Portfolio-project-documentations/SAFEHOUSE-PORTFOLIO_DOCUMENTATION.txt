@@ -13,7 +13,7 @@ Description: A modern, interactive web presence for The Safehouse - a Web3
 Tagline: "A Home Built on People. A Future Built on Web3."
 
 Type: Full-stack React Single Page Application (SPA)
-Status: Production-ready
+Status: Working in progress
 Last Updated: April 2026
 
 
