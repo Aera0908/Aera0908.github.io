@@ -81,11 +81,11 @@ const Portfolio = () => {
   const ProjectCard = ({ project, onClick }: { project: Project; onClick: () => void }) => {
     const hasBadges =
       project.webTier || project.engagement || project.ndaConstrained
-    const showReadMore = project.description.length > 90
+    const descIsLong = project.description.length > 160
 
     return (
       <div
-        className="dashboard-card flex h-[432px] w-full max-w-[380px] flex-col overflow-hidden md:h-[432px] md:w-[380px]"
+        className="dashboard-card flex h-[472px] w-full max-w-[380px] flex-col overflow-hidden md:h-[472px] md:w-[380px]"
       >
         <div className="relative mb-3 shrink-0 overflow-hidden rounded-lg">
           <img
@@ -100,7 +100,7 @@ const Portfolio = () => {
           {project.title}
         </h3>
         {hasBadges && (
-          <div className="mb-2 flex max-h-[52px] flex-wrap gap-1.5 overflow-hidden">
+          <div className="mb-2 flex shrink-0 max-h-[52px] flex-wrap gap-1.5 overflow-hidden">
             {project.webTier && <WebTierBadge tier={project.webTier} size="sm" />}
             {project.engagement && (
               <EngagementBadge engagement={project.engagement} size="sm" />
@@ -108,9 +108,9 @@ const Portfolio = () => {
             {project.ndaConstrained && <LimitedInfoBadge active size="sm" />}
           </div>
         )}
-        <div className="mb-3 min-h-0 flex-1">
-          <p className="line-clamp-2 text-sm leading-relaxed text-slate-400">{project.description}</p>
-          {showReadMore && (
+        <div className="mb-3 min-h-0 flex-1 overflow-hidden">
+          <p className="line-clamp-3 text-sm leading-relaxed text-slate-400">{project.description}</p>
+          {descIsLong && (
             <button
               type="button"
               onClick={(e) => {
@@ -119,11 +119,11 @@ const Portfolio = () => {
               }}
               className="mt-1 text-left text-xs font-medium text-blue-400 hover:text-blue-300 hover:underline"
             >
-              read more
+              ... see more
             </button>
           )}
         </div>
-        <div className="mb-3 flex max-h-[52px] shrink-0 flex-wrap gap-2 overflow-hidden">
+        <div className="mb-3 flex max-h-[24px] shrink-0 flex-wrap gap-2 overflow-hidden">
           {project.technologies.slice(0, 4).map((tech, techIndex) => (
             <span
               key={techIndex}

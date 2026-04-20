@@ -227,9 +227,9 @@
   },
   {
     "id": "safehouse",
-    "title": "The Safehouse — Web3 Onboarding Platform",
-    "description": "Narrative Web3 community site built around an interactive 3D journey — campfire, forest, tent, and signposts — powered by React Three Fiber, GSAP, and Lenis smooth scroll.",
-    "fullDescription": "The Safehouse is the web presence for a Web3 community built around one idea: \"A Home Built on People. A Future Built on Web3.\" The site onboards newcomers into Web3 by walking them through a guided 3D journey — a campfire gathering, a forest path, signposts, and a gate into the wider community — rather than a conventional marketing page.\n\nUnder the hood it is a React 19 single-page app with Vite and Tailwind CSS 4, a React Three Fiber scene for the journey world, GSAP + Lenis for scroll-driven choreography, and Rive + Framer Motion for vector and component-level motion. The narrative is sliced into ~13 scroll sections (Hero, Mission, StandFor, TrackRecord, WhyWorks, Offer, WhyPartner, Opportunities, Beyond, Finale, AboutUs, Team, Socials, Contacts) each tied to scroll stages and waypoint reveals.\n\nAccessibility is a first-class concern: a MotionModeContext respects prefers-reduced-motion and provides fallback animations, and the heavy JourneyCanvas is lazy-loaded to keep initial load light.",
+    "title": "The Safehouse — Web3 Community Showcase Site",
+    "description": "Narrative showcase website for a Web3 community, built around an interactive 3D scroll journey — campfire, forest, tent, and signposts — powered by React Three Fiber, GSAP, and Lenis smooth scroll.",
+    "fullDescription": "The Safehouse is a showcase website for a Web3 community built around one idea: \"A Home Built on People. A Future Built on Web3.\" It is not a product or onboarding platform — it is the community's public-facing marketing site, designed to introduce visitors to the brand through a guided 3D scroll journey (campfire gathering, forest path, signposts, and a gate) rather than a conventional static landing page.\n\nThe site is a React 19 single-page app built with Vite and Tailwind CSS 4. A React Three Fiber scene drives the journey world, GSAP + Lenis handle scroll-driven choreography, and Rive + Framer Motion add vector and component-level motion. The narrative is sliced into ~13 scroll sections (Hero, Mission, StandFor, TrackRecord, WhyWorks, Offer, WhyPartner, Opportunities, Beyond, Finale, AboutUs, Team, Socials, Contacts) each tied to scroll stages and waypoint reveals.\n\nAccessibility is a first-class concern: a MotionModeContext respects prefers-reduced-motion and provides fallback animations, and the heavy JourneyCanvas is lazy-loaded to keep initial load light.",
     "technologies": [
       "React 19",
       "Vite 8",
@@ -249,7 +249,7 @@
       { "src": "/safehouse-images/hero-section.png", "caption": "Hero section — full-width landing and brand frame" },
       { "src": "/safehouse-images/web-record.mp4", "caption": "In-browser site walkthrough (screen recording)", "type": "video" }
     ],
-    "category": "Web / Web3 Community",
+    "category": "Showcase Website",
     "status": "Work in progress",
     "featured": true,
     "webTier": "Web3",
@@ -266,7 +266,7 @@
     "sections": [
       {
         "title": "Overview",
-        "content": "The Safehouse positions Web3 onboarding as a journey, not a pitch deck. Visitors arrive at a Hero with hanging elements, follow a scroll-driven path through mission, values, offerings, opportunities, and team sections, and exit through a Finale/Contacts hand-off.\n\nThe canonical metaphor — a campfire gathering in a forest clearing, approached by following signposts through a curved valley — is rendered in real-time WebGL and drives the pacing of the text sections around it."
+        "content": "The Safehouse is a showcase website for a Web3 community — a marketing/brand site, not a product or platform. Visitors arrive at a Hero with hanging elements, follow a scroll-driven path through mission, values, offerings, opportunities, and team sections, and exit through a Finale/Contacts hand-off.\n\nThe canonical metaphor — a campfire gathering in a forest clearing, approached by following signposts through a curved valley — is rendered in real-time WebGL and drives the pacing of the text sections around it."
       },
       {
         "title": "The 3D Journey",
@@ -350,7 +350,7 @@
         "title": "Status",
         "type": "callout",
         "variant": "note",
-        "content": "The platform is actively in development (April 2026). The 3D journey, scroll choreography, and narrative sections are in place; polish, final copy, and production deployment are still ongoing."
+        "content": "This is a showcase website, not a product. It is actively in development (April 2026): the 3D journey, scroll choreography, and narrative sections are in place; polish, final copy, and production deployment are still ongoing."
       }
     ],
     "links": {}
