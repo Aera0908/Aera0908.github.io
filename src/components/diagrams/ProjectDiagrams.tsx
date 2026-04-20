@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useFocusTrap } from '../../hooks/useFocusTrap'
 
 const palette = {
   stroke: '#334155',
@@ -390,12 +391,19 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
   const [zoom, setZoom] = useState(1)
   const [fitLayout, setFitLayout] = useState<FitLayout | null>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, lightboxOpen)
 
   useEffect(() => {
     if (!lightboxOpen) return
     document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = 'unset'
+      window.removeEventListener('keydown', onKey)
     }
   }, [lightboxOpen])
 
@@ -484,6 +492,8 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
           role="dialog"
           aria-modal="true"
           aria-label="Diagram viewer"
+          ref={dialogRef}
+          tabIndex={-1}
         >
           <button
             type="button"

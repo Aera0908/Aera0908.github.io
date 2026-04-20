@@ -91,6 +91,8 @@ const Portfolio = () => {
           <img
             src={project.image}
             alt={project.title}
+            loading="lazy"
+            decoding="async"
             className="h-36 w-full object-cover md:h-40"
           />
         </div>
@@ -132,23 +134,36 @@ const Portfolio = () => {
           ))}
         </div>
         <div className="mt-auto flex shrink-0 gap-2 pt-1">
-          {project.websiteUrl && (
+          {(project.links?.live || project.websiteUrl) && (
             <a
-              href={project.websiteUrl}
+              href={project.links?.live || project.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 py-2 text-center text-sm font-medium text-emerald-300 transition-colors hover:bg-emerald-500/20"
+              onClick={(e) => e.stopPropagation()}
+              title="Open live site"
+            >
+              Live
+            </a>
+          )}
+          {project.links?.github && (
+            <a
+              href={project.links.github}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 rounded-lg border border-white/10 bg-white/5 py-2 text-center text-sm font-medium text-slate-300 transition-colors hover:bg-white/10"
               onClick={(e) => e.stopPropagation()}
+              title="Open source repository"
             >
-              Website
+              Repo
             </a>
           )}
           <button
             type="button"
             onClick={onClick}
-            className={`rounded-lg bg-blue-600/20 py-2 text-sm font-medium text-blue-400 transition-colors hover:bg-blue-600/30 ${project.websiteUrl ? 'flex-1' : 'w-full'}`}
+            className={`rounded-lg bg-blue-600/20 py-2 text-sm font-medium text-blue-400 transition-colors hover:bg-blue-600/30 ${project.links?.live || project.websiteUrl || project.links?.github ? 'flex-1 px-3' : 'w-full'}`}
           >
-            View Details
+            Details
           </button>
         </div>
       </div>
@@ -352,6 +367,8 @@ const Portfolio = () => {
               <img
                 src={projects[selectedProject].image}
                 alt={projects[selectedProject].title}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-48 object-cover rounded-lg mb-6"
               />
               <h3 className="text-xl font-bold text-slate-50 mb-6">

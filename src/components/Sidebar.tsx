@@ -39,6 +39,8 @@ const Sidebar = ({ activeSection, onNavigate, isOpen, onClose }: SidebarProps) =
               <img
                 src={`${import.meta.env.BASE_URL}ynte_pic.jpg`}
                 alt="Aira Ynte"
+                decoding="async"
+                fetchPriority="high"
                 className="w-full h-full object-cover"
               />
             </div>

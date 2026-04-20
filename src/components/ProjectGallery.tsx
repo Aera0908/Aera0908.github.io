@@ -1,5 +1,6 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useRef, useState } from 'react'
 import type { GalleryImage } from '../data/projectTypes'
+import { useFocusTrap } from '../hooks/useFocusTrap'
 
 interface ProjectGalleryProps {
   items: GalleryImage[]
@@ -10,6 +11,8 @@ interface ProjectGalleryProps {
 /** Image/video grid: thumbnails open in a modal; videos never autoplay inline—only inside the modal. */
 const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, openIndex !== null)
 
   const openItem = openIndex !== null ? items[openIndex] : null
 
@@ -77,7 +80,9 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
               >
                 <img
                   src={item.src}
-                  alt=""
+                  alt={item.caption || 'Project image'}
+                  loading="lazy"
+                  decoding="async"
                   className="h-48 w-full object-cover transition duration-500 group-hover:scale-105"
                 />
               </button>
@@ -93,6 +98,8 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
           role="dialog"
           aria-modal="true"
           aria-label={openItem.type === 'video' ? 'Video player' : 'Image preview'}
+          ref={dialogRef}
+          tabIndex={-1}
         >
           <button
             type="button"
@@ -149,7 +156,8 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
                 ) : (
                   <img
                     src={openItem.src}
-                    alt={openItem.caption}
+                    alt={openItem.caption || 'Project image'}
+                    decoding="async"
                     className="max-h-[70vh] w-full object-contain sm:max-h-[75vh]"
                   />
                 )}

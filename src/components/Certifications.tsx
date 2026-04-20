@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useFocusTrap } from '../hooks/useFocusTrap'
 
 interface Certificate {
   name: string
@@ -62,6 +63,8 @@ const Certifications = () => {
   ]
 
   const [selected, setSelected] = useState<Certificate | null>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, selected !== null)
 
   useEffect(() => {
     if (!selected) return
@@ -130,6 +133,8 @@ const Certifications = () => {
           role="dialog"
           aria-modal="true"
           aria-label={`${selected.name} preview`}
+          ref={dialogRef}
+          tabIndex={-1}
         >
           <div
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"

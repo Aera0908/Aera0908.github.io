@@ -44,14 +44,15 @@ const Skills = () => {
 
   const hardware = useMemo(() => skills.filter((s) => s.category === 'hardware'), [skills])
   const software = useMemo(() => skills.filter((s) => s.category !== 'hardware'), [skills])
+  const allSkillsText = useMemo(() => skills.map((s) => s.name).join(', '), [skills])
 
   return (
-    <section id="skills" className="py-16">
+    <section id="skills" className="py-16" aria-label="Technical skills">
       <p className="font-mono text-sm text-slate-500 mb-4">&gt; MODULES</p>
       <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-2">Skills</h2>
       <p className="text-slate-400 mb-10 max-w-2xl leading-relaxed">
-        Hardware &amp; embedded stack from internships, PCBs, and flagship projects—plus Web2 tooling and APIs. Software
-        bars measure day-to-day full-stack depth; hardware bars reflect board bring-up, simulation certs, and delivery.
+        Hardware &amp; embedded experience from internships, PCB work, and flagship projects—plus Web2 tooling and APIs.
+        The bars reflect practical hands-on depth across both tracks.
       </p>
 
       <div className="space-y-12">
@@ -79,6 +80,11 @@ const Skills = () => {
           </div>
         </div>
       </div>
+
+      {/* Plain-text skill list for search engines and screen readers */}
+      <p className="sr-only">
+        Skills &amp; technologies: {allSkillsText}.
+      </p>
     </section>
   )
 }

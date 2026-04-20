@@ -134,88 +134,138 @@ const PortfolioPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((project) => (
-            <button
-              key={project.id}
-              onClick={() => routeTo(`/portfolio/${project.id}`)}
-              className="dashboard-card group text-left flex flex-col overflow-hidden hover:-translate-y-1 hover:glow-blue transition-transform duration-300"
-            >
-              <div className="relative overflow-hidden rounded-lg mb-4 aspect-video bg-slate-900/40">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
+          {filtered.map((project) => {
+            const liveUrl = project.links?.live || project.links?.website || project.websiteUrl
+            const githubUrl = project.links?.github
+            const openProject = () => routeTo(`/portfolio/${project.id}`)
 
-              {project.category && (
-                <p className="font-mono text-[10px] text-blue-400/80 mb-1 tracking-wider">
-                  {project.category.toUpperCase()}
-                </p>
-              )}
-              <h3 className="text-lg font-semibold text-slate-100 mb-2 group-hover:text-blue-400 transition-colors">
-                {project.title}
-              </h3>
-              {(project.webTier ||
-                project.engagement ||
-                project.ndaConstrained ||
-                project.featured) && (
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  {project.webTier && <WebTierBadge tier={project.webTier} size="sm" />}
-                  {project.engagement && (
-                    <EngagementBadge engagement={project.engagement} size="sm" />
-                  )}
-                  {project.ndaConstrained && <LimitedInfoBadge active size="sm" />}
-                  {project.featured && (
-                    <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono tracking-wider bg-blue-600/80 text-white rounded">
-                      FEATURED
-                    </span>
-                  )}
+            return (
+              <div
+                key={project.id}
+                role="link"
+                tabIndex={0}
+                onClick={openProject}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    openProject()
+                  }
+                }}
+                className="dashboard-card group text-left flex flex-col overflow-hidden hover:-translate-y-1 hover:glow-blue transition-transform duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+                aria-label={`Open case study: ${project.title}`}
+              >
+                <div className="relative overflow-hidden rounded-lg mb-4 aspect-video bg-slate-900/40">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
-              )}
-              <p className="text-slate-400 text-sm mb-4 line-clamp-3 flex-1">
-                {project.description}
-              </p>
 
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {project.technologies.slice(0, 4).map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-2 py-0.5 text-[10px] text-slate-400 font-mono bg-white/5 rounded"
-                  >
-                    {tech}
-                  </span>
-                ))}
-                {project.technologies.length > 4 && (
-                  <span className="px-2 py-0.5 text-[10px] text-slate-500 font-mono">
-                    +{project.technologies.length - 4}
-                  </span>
+                {project.category && (
+                  <p className="font-mono text-[10px] text-blue-400/80 mb-1 tracking-wider">
+                    {project.category.toUpperCase()}
+                  </p>
                 )}
-              </div>
+                <h3 className="text-lg font-semibold text-slate-100 mb-2 group-hover:text-blue-400 transition-colors">
+                  {project.title}
+                </h3>
+                {(project.webTier ||
+                  project.engagement ||
+                  project.ndaConstrained ||
+                  project.featured) && (
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {project.webTier && <WebTierBadge tier={project.webTier} size="sm" />}
+                    {project.engagement && (
+                      <EngagementBadge engagement={project.engagement} size="sm" />
+                    )}
+                    {project.ndaConstrained && <LimitedInfoBadge active size="sm" />}
+                    {project.featured && (
+                      <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono tracking-wider bg-blue-600/80 text-white rounded">
+                        FEATURED
+                      </span>
+                    )}
+                  </div>
+                )}
+                <p className="text-slate-400 text-sm mb-4 line-clamp-3 flex-1">
+                  {project.description}
+                </p>
 
-              <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/5">
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
-                  {project.status && (
-                    <span className="font-mono text-[10px] text-slate-300 truncate">
-                      {project.status}
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {project.technologies.slice(0, 4).map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-2 py-0.5 text-[10px] text-slate-400 font-mono bg-white/5 rounded"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                  {project.technologies.length > 4 && (
+                    <span className="px-2 py-0.5 text-[10px] text-slate-500 font-mono">
+                      +{project.technologies.length - 4}
                     </span>
                   )}
-                  {project.status && project.duration && (
-                    <span className="font-mono text-[10px] text-slate-600">·</span>
-                  )}
-                  <span className="font-mono text-[10px] text-slate-500 truncate">
-                    {project.duration}
+                </div>
+
+                {(liveUrl || githubUrl) && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {liveUrl && (
+                      <a
+                        href={liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded font-mono text-[10px] tracking-wider border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition-colors"
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M14 3h7v7m0-7L10 14M5 5v14h14v-6" />
+                        </svg>
+                        LIVE DEMO
+                      </a>
+                    )}
+                    {githubUrl && (
+                      <a
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded font-mono text-[10px] tracking-wider border border-white/15 bg-white/5 text-slate-300 hover:bg-white/10 transition-colors"
+                      >
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.02c-3.2.69-3.87-1.37-3.87-1.37-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.67 1.24 3.32.95.1-.74.4-1.24.73-1.52-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.47.11-3.06 0 0 .96-.31 3.15 1.18a10.9 10.9 0 015.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.77.11 3.06.73.8 1.18 1.82 1.18 3.08 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.18c0 .31.21.66.79.54A11.51 11.51 0 0023.5 12C23.5 5.65 18.35.5 12 .5z" />
+                        </svg>
+                        REPO
+                      </a>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/5">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
+                    {project.status && (
+                      <span className="font-mono text-[10px] text-slate-300 truncate">
+                        {project.status}
+                      </span>
+                    )}
+                    {project.status && project.duration && (
+                      <span className="font-mono text-[10px] text-slate-600">·</span>
+                    )}
+                    <span className="font-mono text-[10px] text-slate-500 truncate">
+                      {project.duration}
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-sm font-medium text-blue-400 group-hover:gap-2 transition-all shrink-0">
+                    View case study
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </span>
                 </div>
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-blue-400 group-hover:gap-2 transition-all shrink-0">
-                  View case study
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </span>
               </div>
-            </button>
-          ))}
+            )
+          })}
         </div>
 
         {filtered.length === 0 && (
