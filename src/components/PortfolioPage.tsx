@@ -24,7 +24,7 @@ const PortfolioPage = () => {
   const [activeTier, setActiveTier] = useState<'All' | WebTier>('All')
   const [activeEngagement, setActiveEngagement] = useState<'All' | Engagement>('All')
 
-  const tiers: Array<'All' | WebTier> = ['All', 'Web2', 'Web3']
+  const tiers: Array<'All' | WebTier> = ['All', 'Web2', 'Web3', 'Hybrid']
 
   const filtered = useMemo(
     () =>
@@ -95,7 +95,9 @@ const PortfolioPage = () => {
                       ? 'bg-violet-500/20 text-violet-300 border-violet-500/40'
                       : tier === 'Web2'
                         ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
-                        : 'bg-blue-600/20 text-blue-400 border-blue-500/40'
+                        : tier === 'Hybrid'
+                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                          : 'bg-blue-600/20 text-blue-400 border-blue-500/40'
                     : 'bg-white/5 text-slate-400 border-white/5 hover:text-slate-200 hover:bg-white/10'
                 }`}
               >

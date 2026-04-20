@@ -46,7 +46,7 @@ export interface ProjectLinks {
   live?: string
 }
 
-export type WebTier = 'Web2' | 'Web3'
+export type WebTier = 'Web2' | 'Web3' | 'Hybrid'
 
 export type Engagement = 'Freelance' | 'Client' | 'Academic' | 'Personal' | 'Open Source'
 

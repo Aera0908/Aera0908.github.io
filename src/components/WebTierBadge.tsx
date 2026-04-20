@@ -11,6 +11,13 @@ interface Props {
 const styles: Record<WebTier, string> = {
   Web2: 'bg-sky-500/15 text-sky-300 border border-sky-500/30',
   Web3: 'bg-violet-500/15 text-violet-300 border border-violet-500/30',
+  Hybrid: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30',
+}
+
+const titles: Record<WebTier, string> = {
+  Web2: 'Traditional web / app stack',
+  Web3: 'Includes on-chain / blockchain components',
+  Hybrid: 'Hybrid — combines Web2 and Web3 components',
 }
 
 const sizes: Record<Size, string> = {
@@ -23,7 +30,7 @@ const WebTierBadge = ({ tier, size = 'sm', className = '' }: Props) => {
   return (
     <span
       className={`inline-flex items-center gap-1 rounded font-mono tracking-wider ${styles[tier]} ${sizes[size]} ${className}`}
-      title={tier === 'Web3' ? 'Includes on-chain / blockchain components' : 'Traditional web / app stack'}
+      title={titles[tier]}
     >
       <span className="w-1 h-1 rounded-full bg-current opacity-80" />
       {tier.toUpperCase()}
