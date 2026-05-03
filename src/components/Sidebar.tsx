@@ -9,9 +9,10 @@ const navItems = [
   { id: 'home', label: 'DASHBOARD', path: '/' },
   { id: 'about', label: 'WHOAMI', path: '/whoami' },
   { id: 'education', label: 'EDUCATION', path: '/edu' },
-  { id: 'skills', label: 'MODULES', path: '/modules' },
+  { id: 'tech-stack', label: 'TECH.STACK', path: '/stack' },
   { id: 'certifications', label: 'CERTIFICATIONS', path: '/certs' },
   { id: 'portfolio', label: 'PROJECTS', path: '/projects' },
+  { id: 'activity', label: 'PRESENCE', path: '/presence' },
   { id: 'contact', label: 'COMMS', path: '/comms' },
 ]
 
@@ -40,8 +41,8 @@ const Sidebar = ({ activeSection, onNavigate, isOpen, onClose }: SidebarProps) =
                 src={`${import.meta.env.BASE_URL}ynte_pic.jpg`}
                 alt="Aira Ynte"
                 decoding="async"
-                fetchPriority="high"
-                className="w-full h-full object-cover"
+                loading="eager"
+                className="h-full w-full object-cover"
               />
             </div>
             <div>

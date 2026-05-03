@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-[#0d0d0d] text-slate-100 min-h-screen;
+    @apply bg-[#0d0d0d] text-slate-100 min-h-screen overflow-x-hidden;
     font-family: 'DM Sans', system-ui, sans-serif;
   }
 

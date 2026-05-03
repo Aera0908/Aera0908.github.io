@@ -7,6 +7,7 @@ import Education from './components/Education'
 import Skills from './components/Skills'
 import Certifications from './components/Certifications'
 import Portfolio from './components/Portfolio'
+import DeveloperPresence from './components/DeveloperPresence'
 import Contact from './components/Contact'
 import FloatingDownloadButton from './components/FloatingDownloadButton'
 import PortfolioPage from './components/PortfolioPage'
@@ -27,7 +28,16 @@ function App() {
     if (isPortfolioRoute) return
 
     const handleScroll = () => {
-      const sections = ['home', 'about', 'education', 'skills', 'certifications', 'portfolio', 'contact']
+      const sections = [
+        'home',
+        'about',
+        'education',
+        'tech-stack',
+        'certifications',
+        'portfolio',
+        'activity',
+        'contact',
+      ]
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i])
         if (el && el.getBoundingClientRect().top < 200) {
@@ -50,10 +60,10 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] bg-grid-pattern flex flex-col">
+    <div className="min-h-screen bg-[#0d0d0d] bg-grid-pattern flex flex-col overflow-x-hidden">
       <HeaderBar />
       
-      <div className="flex flex-1 relative">
+      <div className="flex flex-1 relative min-w-0">
         <div className="lg:hidden fixed top-8 left-0 right-0 h-12 bg-[#141414]/95 backdrop-blur border-b border-white/5 z-30 flex items-center px-4">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -74,14 +84,15 @@ function App() {
           onClose={() => setSidebarOpen(false)}
         />
 
-        <main className="flex-1 pt-20 lg:pt-0 min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="flex-1 pt-20 lg:pt-0 min-h-screen min-w-0 w-full max-w-full overflow-x-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full min-w-0 box-border">
           <Hero />
           <About />
           <Education />
           <Skills />
           <Certifications />
           <Portfolio />
+          <DeveloperPresence />
           <Contact />
         </div>
 

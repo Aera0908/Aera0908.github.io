@@ -6,7 +6,8 @@
   "homepage": "https://Aera0908.github.io",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "fetch-stats": "node scripts/fetch-developer-stats.mjs",
+    "build": "npm run fetch-stats && tsc && vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"

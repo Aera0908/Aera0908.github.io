@@ -216,7 +216,7 @@ const ProjectDetailPage = ({ projectId }: ProjectDetailPageProps) => {
             src={project.image}
             alt={`${project.title} cover`}
             decoding="async"
-            fetchPriority="high"
+            loading="eager"
             className="h-48 w-full object-cover sm:h-56"
           />
           <div className="border-t border-white/10 bg-[#121212] p-5">
@@ -248,7 +248,7 @@ const ProjectDetailPage = ({ projectId }: ProjectDetailPageProps) => {
             src={project.image}
             alt={project.title}
             decoding="async"
-            fetchPriority="high"
+            loading="eager"
             className="h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />

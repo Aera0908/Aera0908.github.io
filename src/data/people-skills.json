@@ -1,0 +1,20 @@
+{
+  "hardSkills": [
+    "Digital circuits & logic simulation fundamentals",
+    "SystemVerilog RTL modeling — APB-focused internship block",
+    "Embedded firmware & MCU peripherals (BLE / wearables familiarity)",
+    "PCB layout through prototyping-ready revisions",
+    "React / TypeScript SPA dashboards & marketing surfaces",
+    "Backend APIs & persistence layers (Express/SQLite patterns)",
+    "Realtime telemetry orchestration (Firebase-style stacks)",
+    "Applied sensing hooks — biomechanical pose pipelines at the edge"
+  ],
+  "softSkills": [
+    "Detail-oriented execution across hardware ↔ software scopes",
+    "Cross-functional teaming — booking systems & robotics builds",
+    "Freelance engagements with iterative stakeholder feedback",
+    "Translating architecture intent into concise rationale",
+    "Structured troubleshooting across stacks",
+    "Self-directed upskilling on unfamiliar tooling when specs shift"
+  ]
+}
