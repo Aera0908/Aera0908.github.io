@@ -24,7 +24,15 @@ const About = () => {
         </div>
 
         <div className="dashboard-card">
-          <h3 className="text-lg font-semibold text-blue-400 mb-4">Experience & Projects</h3>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h3 className="text-lg font-semibold text-blue-400">Experiences</h3>
+            <a
+              href="#/portfolio"
+              className="inline-flex items-center gap-1 rounded-md border border-blue-500/40 bg-blue-500/10 px-3 py-1.5 font-mono text-[11px] tracking-wider text-blue-300 transition-colors hover:bg-blue-500/20"
+            >
+              PROJECTS ARCHIVE
+            </a>
+          </div>
           <ul className="space-y-5 text-slate-300 text-base">
             <li className="flex gap-2">
               <span className="text-slate-500 shrink-0">|</span>
@@ -61,25 +69,6 @@ const About = () => {
               </div>
             </li>
 
-            <li className="flex gap-2">
-              <span className="text-slate-500 shrink-0">|</span>
-              <div className="min-w-0 flex-1">
-                <div>
-                  <span className="font-semibold text-slate-100">Muntinlupa Science High School</span>
-                  <span className="text-slate-400"> — work immersion &amp; engineering projects</span>
-                </div>
-                <ul className="mt-3 ml-1 space-y-2 border-l border-blue-500/25 pl-4 text-sm text-slate-400">
-                  <li>
-                    <span className="font-medium text-slate-200">Xepto Education Website</span>
-                    {' — '}built during work immersion.
-                  </li>
-                  <li>
-                    <span className="font-medium text-slate-200">DRRR Project</span>
-                    {' — '}automotive robot (team / school build).
-                  </li>
-                </ul>
-              </div>
-            </li>
           </ul>
         </div>
       </div>

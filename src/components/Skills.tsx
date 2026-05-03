@@ -62,11 +62,11 @@ const TechStackItem = ({
 
   if (layoutExpanded) {
     return (
-      <div className="flex min-w-0 max-w-full flex-col gap-2 overflow-hidden rounded-lg border border-white/[0.08] bg-[#161616]/80 px-3 py-2.5">
+      <div className="flex h-full min-w-0 max-w-full flex-col gap-2 overflow-hidden rounded-lg border border-white/[0.08] bg-[#161616]/80 px-3 py-2.5">
         <span className="break-words text-[13px] font-medium leading-snug text-slate-200">
           {skill.name}
         </span>
-        <span className="inline-flex self-start">{tierBadge(tier)}</span>
+        <span className="mt-auto inline-flex self-start">{tierBadge(tier)}</span>
       </div>
     )
   }

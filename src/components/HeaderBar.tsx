@@ -19,7 +19,7 @@ const HeaderBar = () => {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 h-8 bg-[#1a1a1a] border-b border-white/5 flex items-center justify-between px-4 font-mono text-xs text-slate-400 shrink-0">
+    <header className="fixed top-0 left-0 right-0 z-50 h-8 bg-[#1a1a1a] border-b border-white/5 flex items-center justify-between px-4 font-mono text-xs text-slate-400 shrink-0">
       <div className="flex gap-3 sm:gap-6">
         <span className="hidden sm:inline">MEM: 16GB OK</span>
         <span className="hidden sm:inline">CPU: 3.2GHz</span>

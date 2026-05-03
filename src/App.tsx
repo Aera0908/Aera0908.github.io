@@ -60,7 +60,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] bg-grid-pattern flex flex-col overflow-x-hidden">
+    <div className="min-h-screen bg-[#0d0d0d] bg-grid-pattern flex flex-col overflow-x-hidden pt-8">
       <HeaderBar />
       
       <div className="flex flex-1 relative min-w-0">
@@ -84,7 +84,7 @@ function App() {
           onClose={() => setSidebarOpen(false)}
         />
 
-        <main className="flex-1 pt-20 lg:pt-0 min-h-screen min-w-0 w-full max-w-full overflow-x-hidden">
+        <main className="flex-1 pt-20 lg:pt-0 min-h-screen min-w-0 w-full max-w-full overflow-x-hidden lg:ml-64">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full min-w-0 box-border">
           <Hero />
           <About />

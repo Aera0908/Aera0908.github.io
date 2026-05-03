@@ -28,10 +28,11 @@ const Sidebar = ({ activeSection, onNavigate, isOpen, onClose }: SidebarProps) =
       )}
 
       <aside className={`
-        fixed lg:sticky lg:top-8 lg:h-[calc(100vh-2rem)] inset-y-0 left-0 z-50
+        fixed inset-y-0 left-0 z-50
         w-64 bg-[#141414] border-r border-white/5
         flex flex-col shrink-0
         transform transition-transform duration-300 ease-out
+        lg:fixed lg:top-8 lg:bottom-0 lg:inset-y-auto lg:h-[calc(100vh-2rem)]
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="p-6 pt-8">
