@@ -1,8 +1,14 @@
 /**
  * Build-time fetch for GitHub contribution calendar + LeetCode public stats.
  * Reads developer-presence.config.json (repo root).
- * GitHub: uses GraphQL when GITHUB_CONTRIBUTIONS_TOKEN is set; otherwise a public
- * JSON API (github-contributions.vercel.app) so the heatmap still fills at build time.
+ *
+ * GitHub accuracy:
+ * - Set GITHUB_CONTRIBUTIONS_TOKEN (classic PAT: read:user, or fine-grained with
+ *   read access to user profile). The script queries `viewer` first so counts match
+ *   what you see while logged in (including private contributions if your PAT is yours).
+ * - Without a token, a third-party public API is used — it only sees public activity
+ *   and can differ from your profile; treat it as approximate.
+ *
  * Loads KEY=value pairs from .env in repo root when present (no extra deps).
  */
 import fs from 'node:fs'
@@ -202,6 +208,34 @@ function buildRollingWeeksFromLeetCodeCalendar(submissionCalendarStr) {
   return buildRollingWeeksFromDayCountMap(countsByDay)
 }
 
+/**
+ * GitHub profile graph uses a rolling ~365-day window in UTC (full calendar days).
+ * Normalize from/to so GraphQL matches the grid you see on github.com.
+ */
+function gitHubContributionsWindowUTC() {
+  const now = new Date()
+  const y = now.getUTCFullYear()
+  const m = now.getUTCMonth()
+  const d = now.getUTCDate()
+  const from = new Date(Date.UTC(y, m, d, 0, 0, 0, 0))
+  from.setUTCDate(from.getUTCDate() - 364)
+  const to = new Date(Date.UTC(y, m, d, 23, 59, 59, 999))
+  return { from, to }
+}
+
+async function graphqlRequest(token, query, variables) {
+  const res = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers: {
+      Authorization: `bearer ${token}`,
+      'Content-Type': 'application/json',
+      'User-Agent': 'web_resume-developer-stats/1.0',
+    },
+    body: JSON.stringify({ query, variables }),
+  })
+  return res.json()
+}
+
 async function fetchGitHubContributionsPublic(login) {
   const url = `https://github-contributions.vercel.app/api/v1/${encodeURIComponent(login)}`
   const res = await fetch(url, {
@@ -231,52 +265,79 @@ async function fetchGitHubContributionsPublic(login) {
 }
 
 async function fetchGitHub(login, token) {
-  const to = new Date()
-  const from = new Date(to)
-  from.setUTCFullYear(from.getUTCFullYear() - 1)
+  const { from, to } = gitHubContributionsWindowUTC()
+  const fromISO = from.toISOString()
+  const toISO = to.toISOString()
 
-  const query = `
-    query ($login: String!, $from: DateTime!, $to: DateTime!) {
-      user(login: $login) {
-        contributionsCollection(from: $from, to: $to) {
-          contributionCalendar {
-            totalContributions
-            weeks {
-              contributionDays {
-                contributionCount
-                date
-              }
-            }
-          }
+  const calendarFields = `
+    contributionCalendar {
+      totalContributions
+      weeks {
+        contributionDays {
+          contributionCount
+          date
         }
       }
     }
   `
-  const res = await fetch('https://api.github.com/graphql', {
-    method: 'POST',
-    headers: {
-      Authorization: `bearer ${token}`,
-      'Content-Type': 'application/json',
-      'User-Agent': 'web_resume-developer-stats/1.0',
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        login,
-        from: from.toISOString(),
-        to: to.toISOString(),
-      },
-    }),
-  })
 
-  const json = await res.json()
-  if (json.errors?.length) {
-    throw new Error(json.errors.map((e) => e.message).join('; '))
+  // Prefer viewer — same account as the PAT; matches logged-in contribution graph.
+  const viewerJson = await graphqlRequest(
+    token,
+    `
+    query ($from: DateTime!, $to: DateTime!) {
+      viewer {
+        login
+        contributionsCollection(from: $from, to: $to) {
+          ${calendarFields}
+        }
+      }
+    }
+  `,
+    { from: fromISO, to: toISO },
+  )
+
+  if (!viewerJson.errors?.length) {
+    const viewerLogin = viewerJson.data?.viewer?.login
+    const calViewer =
+      viewerJson.data?.viewer?.contributionsCollection?.contributionCalendar
+    if (
+      calViewer &&
+      viewerLogin &&
+      viewerLogin.toLowerCase() === login.toLowerCase()
+    ) {
+      return {
+        login: viewerLogin,
+        totalContributions: calViewer.totalContributions ?? 0,
+        weeks: calViewer.weeks ?? [],
+      }
+    }
   }
-  const cal = json.data?.user?.contributionsCollection?.contributionCalendar
+
+  // PAT is for a different account or viewer missing — query the configured login.
+  const userJson = await graphqlRequest(
+    token,
+    `
+    query ($login: String!, $from: DateTime!, $to: DateTime!) {
+      user(login: $login) {
+        contributionsCollection(from: $from, to: $to) {
+          ${calendarFields}
+        }
+      }
+    }
+  `,
+    { login, from: fromISO, to: toISO },
+  )
+
+  if (userJson.errors?.length) {
+    throw new Error(userJson.errors.map((e) => e.message).join('; '))
+  }
+
+  cal = userJson.data?.user?.contributionsCollection?.contributionCalendar
   if (!cal) {
     throw new Error('GitHub: user not found or no calendar')
   }
+
   return {
     login,
     totalContributions: cal.totalContributions ?? 0,
@@ -325,6 +386,9 @@ async function main() {
   if (!payload.github) {
     try {
       payload.github = await fetchGitHubContributionsPublic(githubLogin)
+      warnings.push(
+        'github: using public mirror (set GITHUB_CONTRIBUTIONS_TOKEN for data that matches your logged-in profile)',
+      )
     } catch (e) {
       warnings.push(
         `github public API: ${e instanceof Error ? e.message : String(e)}`,
