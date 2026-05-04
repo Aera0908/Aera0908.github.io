@@ -178,7 +178,7 @@ const Portfolio = () => {
           <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-2">Portfolio</h2>
           <p className="text-slate-400 text-sm max-w-xl">
             A curated carousel of my best projects. Open the full archive for every project
-            on file, including placeholders and smaller builds.
+            on file.
           </p>
         </div>
         <button

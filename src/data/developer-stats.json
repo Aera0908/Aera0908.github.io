@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-05-03T16:02:47.344Z",
+  "fetchedAt": "2026-05-04T12:09:01.053Z",
   "profile": {
     "githubLogin": "Aera0908",
     "leetcodeUsername": "Aera0908"
@@ -1708,16 +1708,16 @@
   },
   "leetcode": {
     "username": "Aera0908",
-    "streak": 3,
-    "totalActiveDays": 6,
+    "streak": 4,
+    "totalActiveDays": 7,
     "activeYears": [
       2024,
       2026
     ],
     "solved": {
-      "All": 13,
+      "All": 14,
       "Easy": 7,
-      "Medium": 6,
+      "Medium": 7,
       "Hard": 0
     },
     "weeks": [
@@ -3393,7 +3393,7 @@
           },
           {
             "date": "2026-05-04",
-            "contributionCount": 0
+            "contributionCount": 2
           },
           {
             "date": "2026-05-05",
