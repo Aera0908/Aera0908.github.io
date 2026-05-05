@@ -18,7 +18,7 @@ const Hero = () => {
   const emailHref =
     'mailto:08airajosh@gmail.com' +
     '?subject=' +
-    encodeURIComponent('Internship inquiry — Aira Ynte') +
+    encodeURIComponent('Engineering opportunity — Aira Ynte') +
     '&body=' +
     encodeURIComponent(
       'Hi Aira,\n\nI came across your portfolio and wanted to reach out about an opportunity.\n\n',
@@ -36,7 +36,7 @@ const Hero = () => {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
-          OPEN TO INTERNSHIPS · METRO MANILA / REMOTE
+          OPEN TO SOFTWARE / HARDWARE ENGINEERING ROLES · METRO MANILA / REMOTE
         </div>
 
         <p className="font-mono text-sm text-slate-500 mb-4">&gt; WHOAMI</p>
@@ -45,8 +45,8 @@ const Hero = () => {
         </h1>
         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6 max-w-full sm:max-w-2xl break-words">
           I am a{' '}
-          <span className="font-semibold text-blue-400">Computer Engineering Student</span>{' '}
-          bridging the gap between hardware and software. I build systems that think, interact, and solve real-world problems.
+          <span className="font-semibold text-blue-400">Software & Hardware Engineer (Computer Engineering)</span>{' '}
+          bridging hardware and software to build systems that think, interact, and solve real-world problems. Expected graduation: July 2026.
         </p>
         <div className="flex flex-wrap gap-2 mb-8 w-full max-w-full">
           <span className="hashtag-tag text-blue-400 border border-blue-500/40 bg-blue-500/10">#ICDesign</span>

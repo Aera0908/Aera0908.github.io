@@ -60,7 +60,7 @@ const ResumePreviewModal = ({
             <h3 className="text-base md:text-lg font-semibold text-slate-100 truncate">
               Aira Ynte — Resume
             </h3>
-            <p className="text-blue-400 text-sm truncate">PDF · Computer Engineering Student</p>
+            <p className="text-blue-400 text-sm truncate">PDF · Software / Hardware Engineer (Expected Graduation: July 2026)</p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">

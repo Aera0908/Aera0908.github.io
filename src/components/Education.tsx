@@ -3,9 +3,9 @@ const Education = () => {
     {
       school: 'Colegio de Muntinlupa',
       degree: 'Bachelor of Science in Computer Engineering',
-      period: '2022 – 2026 (Expected)',
+      period: '2022 – 2026 (Expected July 2026)',
       location: 'Muntinlupa City, Metro Manila, Philippines',
-      progress: 'In Progress...',
+      progress: 'Expected Graduation: July 2026',
       highlights: [
         'Digital electronics, circuit design, computer architecture',
         'Hardware assembly, robotics, system simulation',
@@ -77,7 +77,7 @@ const Education = () => {
             </p>
             <p>
               <span className="text-slate-500">Availability:</span>{' '}
-              <span className="text-green-400 font-medium">Open for Internships</span>
+              <span className="text-green-400 font-medium">Open for software / hardware engineering roles</span>
             </p>
           </div>
         </div>

@@ -78,10 +78,10 @@ const Contact = () => {
 
       <div className="dashboard-card text-center">
         <h3 className="text-lg font-semibold text-slate-100 mb-3">
-          Internship Opportunities
+          Engineering Opportunities
         </h3>
         <p className="text-slate-400 text-sm mb-6">
-          Actively seeking internship positions in digital systems, IC design, web development, and AI integration.
+          Open to software and hardware engineering roles in digital systems, IC design, web development, and AI integration. Expected graduation: July 2026.
         </p>
         <button
           onClick={() => setIsFormOpen(true)}
