@@ -7,7 +7,8 @@
     "React / TypeScript SPA dashboards & marketing surfaces",
     "Backend APIs & persistence layers (Express/SQLite patterns)",
     "Realtime telemetry orchestration (Firebase-style stacks)",
-    "Applied sensing hooks — biomechanical pose pipelines at the edge"
+    "Applied sensing hooks — biomechanical pose pipelines at the edge",
+    "Decentralized Web3 execution — Solidity smart contracts & sub-second EVM settlement rails (Morph L2)"
   ],
   "softSkills": [
     "Detail-oriented execution across hardware ↔ software scopes",

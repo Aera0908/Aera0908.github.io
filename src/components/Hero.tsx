@@ -5,6 +5,7 @@ const Hero = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [resumeOpen, setResumeOpen] = useState(false)
   const resumeSrc = `${import.meta.env.BASE_URL}YNTE_Resume.pdf`
+  const cvSrc = `${import.meta.env.BASE_URL}YNTE_CV.pdf`
 
   useEffect(() => {
     setIsVisible(true)
@@ -31,12 +32,15 @@ const Hero = () => {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}
       >
-        <div className="mb-5 inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 font-mono text-[10px] sm:text-[11px] tracking-wider text-emerald-300 leading-snug">
-          <span className="relative flex h-2 w-2">
+        <div className="mb-5 inline-flex max-w-full flex-nowrap items-center gap-x-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 font-mono text-[10px] sm:text-[11px] tracking-wider text-emerald-300 leading-snug">
+          <span className="relative shrink-0 flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
-          OPEN TO SOFTWARE / HARDWARE ENGINEERING ROLES · METRO MANILA / REMOTE
+          <span className="min-w-0 whitespace-nowrap sm:hidden">OPEN TO SW/HW ROLES · MNL / REMOTE</span>
+          <span className="hidden min-w-0 sm:inline">
+            OPEN TO SOFTWARE / HARDWARE ENGINEERING ROLES · METRO MANILA / REMOTE
+          </span>
         </div>
 
         <p className="font-mono text-sm text-slate-500 mb-4">&gt; WHOAMI</p>
@@ -76,7 +80,18 @@ const Hero = () => {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
             </svg>
-            Download
+            Download Resume
+          </a>
+          <a
+            href={cvSrc}
+            download="YNTE_CV.pdf"
+            className="inline-flex w-full shrink-0 items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 transition-colors sm:w-auto"
+            title="Download CV as PDF"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+            </svg>
+            Download CV
           </a>
           <a
             href={emailHref}

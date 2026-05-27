@@ -16,19 +16,29 @@ const FloatingDownloadButton = () => {
     return () => window.removeEventListener('scroll', toggleVisibility)
   }, [])
 
+  const base = import.meta.env.BASE_URL
+
   return (
     <div
-      className={`fixed bottom-6 right-6 z-40 transition-all duration-300 ${
+      className={`fixed bottom-6 right-6 z-40 flex flex-col gap-2 transition-all duration-300 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
       }`}
     >
       <a
-        href={`${import.meta.env.BASE_URL}YNTE_Resume.pdf`}
+        href={`${base}YNTE_Resume.pdf`}
         download="YNTE_Resume.pdf"
-        className="flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-lg font-mono transition-colors"
-        title="Download Resume"
+        className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-lg font-mono transition-colors shadow-lg"
+        title="Download resume (PDF)"
       >
         Download Resume
+      </a>
+      <a
+        href={`${base}YNTE_CV.pdf`}
+        download="YNTE_CV.pdf"
+        className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-lg font-mono transition-colors shadow-lg"
+        title="Download CV (PDF)"
+      >
+        Download CV
       </a>
     </div>
   )

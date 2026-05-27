@@ -60,6 +60,13 @@ const Certifications = () => {
       url: '/CERTIFICATE-PREVIEWS/The%20AI%20Engineer%20Path.pdf',
       downloadName: 'YNTE-Scrimba-AI-Engineer-Path.pdf',
     },
+    {
+      name: 'Blockchain4Youth Certificate',
+      issuer: 'Bitget Blockchain4Youth',
+      description: 'Certification in blockchain technology, smart contract development, and Web3 fundamentals.',
+      url: '/CERTIFICATE-PREVIEWS/B4Y-Certificate-Aira-Josh-C.-Ynte.jpg',
+      downloadName: 'B4Y-Certificate-Aira-Josh-C.-Ynte.jpg',
+    },
   ]
 
   const [selected, setSelected] = useState<Certificate | null>(null)
@@ -222,12 +229,20 @@ const Certifications = () => {
               </div>
             </div>
 
-            <div className="flex-1 min-h-0 rounded-lg overflow-hidden border border-white/5 bg-slate-900/60">
-              <iframe
-                src={`${selected.url}#toolbar=0&navpanes=0&view=FitH`}
-                title={`${selected.name} preview`}
-                className="w-full h-full"
-              />
+            <div className="flex-1 min-h-0 rounded-lg overflow-hidden border border-white/5 bg-slate-900/60 flex items-center justify-center">
+              {selected.url.match(/\.(jpg|jpeg|png|webp|gif)$/i) ? (
+                <img
+                  src={selected.url}
+                  alt={`${selected.name} preview`}
+                  className="max-w-full max-h-full object-contain p-2"
+                />
+              ) : (
+                <iframe
+                  src={`${selected.url}#toolbar=0&navpanes=0&view=FitH`}
+                  title={`${selected.name} preview`}
+                  className="w-full h-full border-0"
+                />
+              )}
             </div>
 
             <p className="mt-3 font-mono text-[10px] text-slate-500 tracking-wider">

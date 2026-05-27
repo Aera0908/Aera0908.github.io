@@ -369,12 +369,114 @@ const EmgPipeline = () => {
 }
 
 // =====================================================================
+// Fehuvia — Dual-State Treasury Architecture
+// =====================================================================
+const FehuviaArchitecture = () => {
+  const rowH = 78
+  const rowGap = 26
+  const padX = 40
+  const width = 1200
+  const labelCol = 130
+
+  const rows = [
+    {
+      label: 'WORKSTATION',
+      accent: 'blue' as const,
+      nodes: [
+        { label: 'Workstation UI', sub: 'React 19 · glassmorphic' },
+        { label: 'AI OCR Scan', sub: 'PDF / Image grid parsing' },
+        { label: 'MetaMask Signing', sub: 'EIP-1193 zero-custody' },
+      ],
+    },
+    {
+      label: 'API BACKEND',
+      accent: 'neutral' as const,
+      nodes: [
+        { label: 'Express.js Server', sub: 'API broker & faucet route' },
+        { label: 'Gas Dispenser', sub: 'Vault faucet dispenser' },
+        { label: 'AI Co-Pilot RAG', sub: 'GPT-4o runway prompt assembly' },
+      ],
+    },
+    {
+      label: 'PERSISTENCE',
+      accent: 'emerald' as const,
+      nodes: [
+        { label: 'PostgreSQL DB', sub: 'suppliers · users' },
+        { label: 'Invoice Ledger', sub: 'ACID transactional directory' },
+      ],
+    },
+    {
+      label: 'EVM LEDGER',
+      accent: 'amber' as const,
+      nodes: [
+        { label: 'B2BSettlement.sol', sub: 'atomic transfer pattern' },
+        { label: 'MockUSDC.sol', sub: '6-decimal stablecoin' },
+        { label: 'Morph Layer 2', sub: 'sub-2 second L2 blocks' },
+      ],
+    },
+    {
+      label: 'DAEMON SYNC',
+      accent: 'violet' as const,
+      nodes: [
+        { label: 'Listener Daemon', sub: 'JSON-RPC EVM event stream' },
+        { label: 'Log Reconciliation', sub: 'T+0 dual-state sync' },
+      ],
+    },
+  ]
+
+  const height = rows.length * rowH + (rows.length - 1) * rowGap + 40
+
+  return (
+    <DiagramFrame viewBox={`0 0 ${width} ${height}`}>
+      {rows.map((row, rIdx) => {
+        const y = 20 + rIdx * (rowH + rowGap)
+        const available = width - padX * 2 - labelCol
+        const gap = 18
+        const totalGap = gap * (row.nodes.length - 1)
+        const boxW = (available - totalGap) / row.nodes.length
+
+        return (
+          <g key={rIdx}>
+            <RowLabel x={padX} y={y + rowH / 2 + 3} text={`> ${row.label}`} />
+            {row.nodes.map((n, i) => (
+              <DiagramNode
+                key={i}
+                x={padX + labelCol + i * (boxW + gap)}
+                y={y}
+                w={boxW}
+                h={rowH}
+                label={n.label}
+                sublabel={n.sub}
+                accent={row.accent}
+              />
+            ))}
+            {rIdx < rows.length - 1 && (
+              <line
+                x1={width / 2}
+                x2={width / 2}
+                y1={y + rowH + 2}
+                y2={y + rowH + rowGap - 2}
+                stroke={palette.strokeStrong}
+                strokeWidth={1.4}
+                strokeDasharray="3 4"
+                markerEnd="url(#arrow-muted)"
+              />
+            )}
+          </g>
+        )
+      })}
+    </DiagramFrame>
+  )
+}
+
+// =====================================================================
 // Registry + public component
 // =====================================================================
 const registry: Record<string, () => JSX.Element> = {
   'aerovit-architecture': AeroVitArchitecture,
   'aerovit-dataflow': AeroVitDataFlow,
   'emg-pipeline': EmgPipeline,
+  'fehuvia-architecture': FehuviaArchitecture,
 }
 
 const ZOOM_MIN = 0.25

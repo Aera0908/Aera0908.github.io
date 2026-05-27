@@ -152,5 +152,19 @@
     "icon": "https://img.shields.io/badge/Firebase-%23039BE5.svg?style=for-the-badge&logo=firebase",
     "color": "039BE5",
     "category": "software"
+  },
+  {
+    "name": "Solidity",
+    "percentage": 65,
+    "icon": "https://img.shields.io/badge/Solidity-%23363636.svg?style=for-the-badge&logo=solidity&logoColor=white",
+    "color": "363636",
+    "category": "software"
+  },
+  {
+    "name": "Web3 & Smart Contracts",
+    "percentage": 62,
+    "icon": "https://img.shields.io/badge/Web3-%233F62AD.svg?style=for-the-badge&logo=ethereum&logoColor=white",
+    "color": "3F62AD",
+    "category": "software"
   }
 ]

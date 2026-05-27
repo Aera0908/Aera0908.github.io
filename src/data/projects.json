@@ -771,5 +771,84 @@
       }
     ],
     "links": {}
+  },
+  {
+    "id": "fehuvia",
+    "title": "Fehuvia — Open Finance Web3 B2B SME Treasury Workstation",
+    "description": "High-fidelity Web3 B2B treasury workstation on Morph Layer 2 featuring an AI OCR automated invoice digitization scanner, an AI co-pilot engine (GPT-4o via context-aware RAG), and an autonomous gas faucet.",
+    "fullDescription": "Fehuvia is a high-fidelity Web3 B2B treasury workstation engineered to prevent liquidity dryouts and multi-day corporate settlement delays for Southeast Asian SMEs. By marrying relational database state tracking with next-generation smart contract execution rails on Morph Layer 2, Fehuvia slashes settlement times from a 3-day banking standard to under 2 seconds (T+0) while optimizing transaction costs to a fraction of a cent.\n\nEquipped with an AI Financial Co-Pilot (GPT-4o via context-aware RAG) and Automated AI OCR Invoice Digitization, the platform parses incoming PDF/image invoices, automatically populates billing drawers, maps suppliers, and classifies obligations into actionable runway statuses (Safe to Pay, Delay, or Review) based on projected cashflow reserves.\n\nTo resolve the core Web3 onboarding obstacle—transaction gas acquisition—Fehuvia runs an automated background faucet (/api/faucet/drip) that monitors operator MetaMask accounts and dispenses L2 ETH asynchronously as needed. A reliable off-chain listener daemon tracks EVM log event streams to ensure a highly audited, bulletproof dual-state relational database ledger in PostgreSQL.",
+    "technologies": ["React 19", "Vite", "Solidity", "Hardhat", "Express", "PostgreSQL", "MetaMask", "Ethers.js", "GPT-4o", "RAG", "Morph L2"],
+    "image": "/fehuvia-images/og-card.png",
+    "category": "Web3 / AI / Full-Stack",
+    "status": "Live",
+    "websiteUrl": "https://www.fehuvia.app/",
+    "featured": true,
+    "webTier": "Web3",
+    "engagement": "Personal",
+    "role": "Lead Web3 & Full-Stack Developer",
+    "duration": "2026",
+    "highlights": [
+      "Web3 Settlements: Atomic sub-2 second payment clearance on Morph Layer 2 via custom Solidity contracts",
+      "EVM Listener Daemon: Real-time logs syncing to PostgreSQL for robust dual-state financial auditing",
+      "AI Financial Co-Pilot: GPT-4o RAG pipeline for structured cashflow analytics and runway forecasting",
+      "AI OCR Scan: Auto-character grid parsing for uploaded invoice sheets, auto-filling workstation drawers",
+      "Frictionless Faucet: Self-healing background gas faucet dispensing L2 gas asynchronously to MetaMask accounts",
+      "Zero-Custody: Client-side signing via MetaMask (EIP-1193), keeping private keys completely out of servers"
+    ],
+    "sections": [
+      {
+        "title": "Overview",
+        "content": "Fehuvia bridges B2B blockchain transparency and sub-second payment clearance with traditional relational database speed and analytics.\n\nThe system is built with React 19 and Vite for a custom glassmorphic workstation UI, an Express.js backend for AI orchestration and database sync, PostgreSQL for transactional persistence, and Solidity smart contracts compiled with Hardhat and deployed to Morph L2 Testnet."
+      },
+      {
+        "title": "System Architecture",
+        "type": "diagram",
+        "diagramId": "fehuvia-architecture",
+        "caption": "Layered flow: OCR scan -> PostgreSQL draft -> MetaMask L2 signature -> EVM execution -> Listener daemon dual-state reconciliation.",
+        "content": "Fehuvia's architecture operates in five modular phases: first, AI OCR processes invoice uploads; second, Express stores invoice drafts in PostgreSQL; third, the CFO signs transactions client-side using MetaMask; fourth, Morph L2 settles payments atomically; and fifth, a background node Listener Daemon captures smart contract event emissions and synchronizes the Postgres database state."
+      },
+      {
+        "title": "Technology Stack",
+        "type": "stack",
+        "content": "A high-performance stack separating client-side zero-custody signature from heavy analytics and immutable Web3 settlements.",
+        "groups": [
+          { "label": "UI Workstation", "items": ["React 19", "Vite", "Tailwind CSS", "Recharts"] },
+          { "label": "Web3 / Blockchain", "items": ["Solidity ^0.8.24", "Hardhat", "Morph L2 Testnet", "Ethers.js", "MetaMask (EIP-1193)"] },
+          { "label": "Backend Services", "items": ["Node.js", "Express", "PostgreSQL (pg-pool)", "OCR Digitization Engine"] },
+          { "label": "AI Engine", "items": ["OpenAI GPT-4o", "Context-Aware RAG Prompting", "Runway JSON Structuring"] }
+        ]
+      },
+      {
+        "title": "Smart Contract: B2BSettlement.sol",
+        "type": "list",
+        "content": "Our central decentralized billing clearance protocol enforces atomic, non-custodial transactions directly on Morph L2:",
+        "items": [
+          "Implements stablecoin (mUSDC ERC-20) transfers mapping atomic clearance status to invoice UUIDs",
+          "Employs the Checks-Effects-Interactions pattern strictly to block double-spend and reentrancy exploits",
+          "Emits PaymentSettled logs carrying invoice, buyer, supplier, amount, and block timestamp telemetry"
+        ]
+      },
+      {
+        "title": "Background Gas Faucet Parameters",
+        "type": "stats",
+        "content": "Configuration variables utilized by the self-healing faucet node to eliminate onboarding barriers for non-crypto operators.",
+        "stats": [
+          { "label": "EVM Trigger", "value": "< 0.005 ETH", "note": "MetaMask wallet balance" },
+          { "label": "Dispense Amount", "value": "0.002 ETH", "note": "Transferred asynchronously" },
+          { "label": "Faucet Mechanism", "value": "Vault Private Key", "note": "Backend-signed on L2" },
+          { "label": "Average Finality", "value": "< 2.0 seconds", "note": "Morph block time" }
+        ]
+      },
+      {
+        "title": "Zero-Custody Principles",
+        "type": "callout",
+        "variant": "success",
+        "content": "Security is paramount: the Fehuvia API server has zero access to user seed phrases or private keys. The backend only manages a gas dispenser vault key; actual supplier-bound settlements are signed exclusively in the browser using the EIP-1193 provider injection standard."
+      }
+    ],
+    "links": {
+      "website": "https://www.fehuvia.app/",
+      "github": "https://github.com/Aera0908"
+    }
   }
 ]
