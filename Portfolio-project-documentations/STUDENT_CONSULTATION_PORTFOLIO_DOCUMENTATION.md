@@ -4,7 +4,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Live Demo](#live-demo)
@@ -24,7 +24,7 @@
 
 ---
 
-## 🎯 Overview
+## Overview
 
 The **Student Consultation System** is a comprehensive web platform designed to streamline the consultation process between students and professors. It provides separate, role-based interfaces for students and professors, enabling efficient scheduling, communication, and management of academic consultations.
 
@@ -40,7 +40,7 @@ The **Student Consultation System** is a comprehensive web platform designed to 
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
 ### Demo Credentials
 
@@ -64,7 +64,7 @@ Password: password123
 
 ---
 
-## 💻 Technology Stack
+## Technology Stack
 
 ### Frontend
 | Technology | Version | Purpose |
@@ -102,9 +102,9 @@ Password: password123
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 👨‍🎓 Student Features
+### Student Features
 
 #### 1. **Professor Discovery**
 - Browse all professors grouped by academic program
@@ -142,7 +142,7 @@ Password: password123
 - View consultation history
 - Notification preferences
 
-### 👨‍🏫 Professor Features
+### Professor Features
 
 #### 1. **Schedule Management**
 - Set weekly availability schedules
@@ -176,7 +176,7 @@ Password: password123
 - Edit and delete announcements
 - Visibility controls
 
-### 🔔 Notification System
+### Notification System
 - Real-time notifications for:
   - New consultation requests (professors)
   - Consultation approvals/rejections (students)
@@ -187,7 +187,7 @@ Password: password123
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### Architecture Pattern
 **Three-Tier Architecture**
@@ -270,7 +270,7 @@ server/
 
 ---
 
-## 🗄️ Database Design
+## Database Design
 
 ### Entity Relationship Diagram
 
@@ -366,7 +366,7 @@ Availability management
 
 ---
 
-## 🔌 API Architecture
+## API Architecture
 
 ### RESTful Endpoints
 
@@ -467,7 +467,7 @@ POST /api/consultation-requests
 
 ---
 
-## 🎨 User Interface
+## User Interface
 
 ### Design Principles
 
@@ -526,7 +526,7 @@ Border:     #E5E7EB
 
 ---
 
-## 🔐 Authentication & Security
+## Authentication & Security
 
 ### Authentication Flow
 
@@ -608,7 +608,7 @@ router.patch('/:id/availability',
 
 ---
 
-## 📁 File Management
+## File Management
 
 ### File Upload System
 
@@ -685,7 +685,7 @@ server/uploads/
 
 ---
 
-## ⚡ Real-Time Features
+## Real-Time Features
 
 ### Notification System
 
@@ -722,7 +722,7 @@ server/uploads/
 
 ---
 
-## 🛠️ Development Process
+## Development Process
 
 ### Development Workflow
 
@@ -774,7 +774,7 @@ server/uploads/
 
 ---
 
-## 🚧 Challenges & Solutions
+## Challenges & Solutions
 
 ### Challenge 1: Real-Time Updates Without WebSockets
 
@@ -829,7 +829,7 @@ server/uploads/
 
 ---
 
-## 📦 Installation & Setup
+## Installation & Setup
 
 ### Quick Start
 
@@ -911,7 +911,7 @@ NODE_ENV=production npm run server
 
 ---
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 ### Planned Features
 
@@ -977,7 +977,7 @@ NODE_ENV=production npm run server
 
 ---
 
-## 📊 Project Statistics
+## Project Statistics
 
 - **Total Files**: 100+ source files
 - **Lines of Code**: ~15,000+ lines
@@ -990,7 +990,7 @@ NODE_ENV=production npm run server
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 Comprehensive documentation is available in the `docs/` directory:
 
@@ -1003,7 +1003,7 @@ Comprehensive documentation is available in the `docs/` directory:
 
 ---
 
-## 👨‍💻 Developer Information
+## Developer Information
 
 **Project Type**: Full-Stack Web Application  
 **Repository**: [GitHub Link]  
@@ -1012,7 +1012,7 @@ Comprehensive documentation is available in the `docs/` directory:
 
 ---
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 This project demonstrates proficiency in:
 
@@ -1038,7 +1038,7 @@ This project demonstrates proficiency in:
 
 ---
 
-## 📝 License
+## License
 
 MIT License - feel free to use this project for learning purposes.
 

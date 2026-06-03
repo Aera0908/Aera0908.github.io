@@ -26,7 +26,7 @@ export interface ProjectSection {
   title: string
   content?: string
   paragraphs?: string[]
-  type?: 'list' | 'diagram' | 'callout' | 'stack' | 'stats' | 'steps'
+  type?: 'list' | 'diagram' | 'callout' | 'stack' | 'stats' | 'steps' | 'video'
   items?: string[]
   diagramId?:
     | 'aerovit-architecture'
@@ -38,6 +38,7 @@ export interface ProjectSection {
   groups?: StackGroup[]
   stats?: StatItem[]
   steps?: { title: string; detail?: string }[]
+  videoUrl?: string
 }
 
 export interface ProjectLinks {

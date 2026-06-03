@@ -1,3 +1,5 @@
+import { SECTION_PATHS } from '../hooks/useRoute'
+
 interface SidebarProps {
   activeSection: string
   onNavigate: (id: string) => void
@@ -6,17 +8,37 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'home', label: 'DASHBOARD', path: '/' },
-  { id: 'about', label: 'WHOAMI', path: '/whoami' },
-  { id: 'education', label: 'EDUCATION', path: '/edu' },
-  { id: 'tech-stack', label: 'TECH.STACK', path: '/stack' },
-  { id: 'certifications', label: 'CERTIFICATIONS', path: '/certs' },
-  { id: 'portfolio', label: 'PROJECTS', path: '/projects' },
-  { id: 'activity', label: 'PRESENCE', path: '/presence' },
-  { id: 'contact', label: 'COMMS', path: '/comms' },
+  { id: 'dashboard', label: 'DASHBOARD', path: '/' },
+  { id: 'whoami', label: 'WHOAMI', path: '/whoami' },
+  { id: 'edu', label: 'EDUCATION', path: '/edu' },
+  { id: 'journey', label: 'JOURNEY', path: '/journey' },
+  { id: 'stack', label: 'TECH.STACK', path: '/stack' },
+  { id: 'certs', label: 'CERTIFICATIONS', path: '/certs' },
+  { id: 'projects', label: 'PROJECTS', path: '/projects' },
+  { id: 'designs', label: 'SYSTEM.DESIGN', path: '/designs' },
+  { id: 'presence', label: 'PRESENCE', path: '/presence' },
+  { id: 'comms', label: 'COMMS', path: '/comms' },
 ]
 
 const Sidebar = ({ activeSection, onNavigate, isOpen, onClose }: SidebarProps) => {
+  const handleNav = (e: React.MouseEvent, item: typeof navItems[number]) => {
+    e.preventDefault()
+    onNavigate(item.id)
+    onClose()
+
+    // Push the clean URL
+    const sectionPath = SECTION_PATHS[item.id] || item.path
+    history.pushState(null, '', sectionPath)
+
+    // Scroll to the section
+    const el = document.getElementById(item.id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    } else if (item.id === 'dashboard') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
     <>
       {/* Mobile overlay */}
@@ -61,11 +83,8 @@ const Sidebar = ({ activeSection, onNavigate, isOpen, onClose }: SidebarProps) =
           {navItems.map((item) => (
             <a
               key={item.id}
-              href={`#${item.id}`}
-              onClick={() => {
-                onNavigate(item.id)
-                onClose()
-              }}
+              href={item.path}
+              onClick={(e) => handleNav(e, item)}
               className={`
                 flex items-center gap-3 px-4 py-3 rounded-lg font-mono text-sm transition-colors border-l-2
                 ${activeSection === item.id 

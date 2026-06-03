@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import projectsData from '../data/projects.json'
 import type { Project } from '../data/projectTypes'
-import { routeTo } from '../hooks/useHashRoute'
+import { routeTo } from '../hooks/useRoute'
 import WebTierBadge from './WebTierBadge'
 import { EngagementBadge, LimitedInfoBadge } from './ProjectTagBadges'
 import ProjectGallery from './ProjectGallery'
@@ -14,8 +14,10 @@ const Portfolio = () => {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const allProjects = projectsData as Project[]
-  const featured = allProjects.filter((p) => p.featured)
-  const projects = featured.length > 0 ? featured : allProjects
+  // Exclude highlighted projects (AeroVit & Fehuvia) from the carousel
+  const carouselProjects = allProjects.filter((p) => p.id !== 'aerovit' && p.id !== 'fehuvia')
+  const featured = carouselProjects.filter((p) => p.featured)
+  const projects = featured.length > 0 ? featured : carouselProjects
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % projects.length)
@@ -171,7 +173,7 @@ const Portfolio = () => {
   }
 
   return (
-    <section id="portfolio" className="py-16">
+    <section id="projects" className="py-16">
       <p className="font-mono text-sm text-slate-500 mb-4">&gt; PROJECTS / BEST_WORK</p>
       <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
         <div>
@@ -190,6 +192,151 @@ const Portfolio = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
+      </div>
+
+      {/* ── Highlighted Projects ── */}
+      {(() => {
+        const highlighted = allProjects.filter(
+          (p) => p.id === 'aerovit' || p.id === 'fehuvia',
+        )
+        if (highlighted.length === 0) return null
+        return (
+          <div className="mb-12">
+            <div className="flex items-center gap-2 mb-5">
+              <svg className="w-3.5 h-3.5 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <h3 className="font-mono text-xs tracking-wider text-amber-400/80 font-semibold">
+                HIGHLIGHTED PROJECTS
+              </h3>
+              <div className="flex-1 h-px bg-gradient-to-r from-amber-500/20 to-transparent" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {highlighted.map((project) => {
+                const liveUrl = project.links?.live || project.links?.website || project.websiteUrl
+                const accentClass =
+                  project.id === 'aerovit'
+                    ? 'border-violet-500/30 hover:border-violet-500/50 hover:shadow-[0_0_30px_-5px_rgba(139,92,246,0.15)]'
+                    : 'border-emerald-500/30 hover:border-emerald-500/50 hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.15)]'
+
+                return (
+                  <div
+                    key={project.id}
+                    className={`dashboard-card group relative overflow-hidden transition-all duration-300 cursor-pointer border ${accentClass}`}
+                    onClick={() => goToCaseStudy(project.id)}
+                    role="link"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        goToCaseStudy(project.id)
+                      }
+                    }}
+                    aria-label={`View case study: ${project.title}`}
+                  >
+                    {/* Highlighted badge */}
+                    <div className="absolute top-3 right-3 z-10">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono tracking-wider bg-amber-500/20 text-amber-300 rounded border border-amber-500/30 backdrop-blur-sm">
+                        <svg className="w-3 h-3 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        HIGHLIGHTED
+                      </span>
+                    </div>
+
+                    {/* Image */}
+                    <div className="relative overflow-hidden rounded-lg mb-4 aspect-video bg-slate-900/40">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+
+                    {/* Content */}
+                    {project.category && (
+                      <p className="font-mono text-[10px] text-blue-400/80 mb-1 tracking-wider">
+                        {project.category.toUpperCase()}
+                      </p>
+                    )}
+                    <h4 className="text-lg font-semibold text-slate-100 mb-2 group-hover:text-blue-400 transition-colors line-clamp-2">
+                      {project.title}
+                    </h4>
+
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {project.webTier && <WebTierBadge tier={project.webTier} size="sm" />}
+                      {project.engagement && (
+                        <EngagementBadge engagement={project.engagement} size="sm" />
+                      )}
+                      {project.ndaConstrained && <LimitedInfoBadge active size="sm" />}
+                    </div>
+
+                    <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed">
+                      {project.description}
+                    </p>
+
+                    {/* Tech tags */}
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {project.technologies.slice(0, 5).map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-2 py-0.5 text-[10px] text-slate-400 font-mono bg-white/5 rounded"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                      {project.technologies.length > 5 && (
+                        <span className="px-2 py-0.5 text-[10px] text-slate-500 font-mono">
+                          +{project.technologies.length - 5}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/5">
+                      <div className="flex flex-wrap gap-2">
+                        {liveUrl && (
+                          <a
+                            href={liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded font-mono text-[10px] tracking-wider border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition-colors"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M14 3h7v7m0-7L10 14M5 5v14h14v-6" />
+                            </svg>
+                            LIVE
+                          </a>
+                        )}
+                      </div>
+                      <span className="inline-flex items-center gap-1 text-sm font-medium text-blue-400 group-hover:gap-2 transition-all shrink-0">
+                        View case study
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })()}
+
+      <div className="flex items-center gap-2 mb-6 mt-4">
+        <svg className="w-3.5 h-3.5 text-blue-400 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-19.5 0A2.25 2.25 0 004.5 15h15a2.25 2.25 0 002.25-2.25m-19.5 0v.191m0-2.103V6.75A2.25 2.25 0 014.5 4.5h5.25a2.25 2.25 0 011.64.698l1.378 1.488a2.25 2.25 0 001.64.698h5.25a2.25 2.25 0 012.25 2.25v1.319" />
+        </svg>
+        <h3 className="font-mono text-xs tracking-wider text-slate-400/80 font-semibold">
+          OTHER NOTABLE PROJECTS
+        </h3>
+        <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
       </div>
 
       <div className="relative">
@@ -216,45 +363,53 @@ const Portfolio = () => {
         {/* Desktop: 3D Carousel — controls sit below the scene so dots never overlap the cards */}
         <div className="hidden md:block">
           <div className="relative h-[460px]" style={{ perspective: '2000px' }}>
-            <div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ perspectiveOrigin: 'center center', transformStyle: 'preserve-3d' }}
-            >
-              {projects.map((project, index) => {
-                let offset = index - currentIndex
-                if (offset > projects.length / 2) offset -= projects.length
-                else if (offset < -projects.length / 2) offset += projects.length
+            {(() => {
+              const radius = Math.max(380, projects.length * 85)
+              return (
+                <div
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                  style={{
+                    perspectiveOrigin: 'center center',
+                    transformStyle: 'preserve-3d',
+                    transform: `rotateX(-6deg) translateZ(${-radius}px)`,
+                  }}
+                >
+                  {projects.map((project, index) => {
+                    let offset = index - currentIndex
+                    if (offset > projects.length / 2) offset -= projects.length
+                    else if (offset < -projects.length / 2) offset += projects.length
 
-                const absOffset = Math.abs(offset)
-                const translateX = offset * 320
-                const translateZ = absOffset === 0 ? 0 : -absOffset * 180
-                const rotateY = offset * 25
-                const scale = absOffset === 0 ? 1 : Math.max(0.55, 0.85 - absOffset * 0.12)
-                const opacity = absOffset === 0 ? 1 : absOffset === 1 ? 0.7 : absOffset > 2 ? 0 : 0.45
-                const zIndex = projects.length - absOffset
-                const isVisible = absOffset <= 2
+                    const absOffset = Math.abs(offset)
+                    const theta = (360 / projects.length) * offset
+                    
+                    const scale = absOffset === 0 ? 0.9 : Math.max(0.65, 0.8 - absOffset * 0.08)
+                    const opacity = absOffset === 0 ? 1 : absOffset === 1 ? 0.75 : 0
+                    const zIndex = projects.length - absOffset
+                    const isVisible = absOffset < 2 // Only show front card and direct left/right neighbors
 
-                return (
-                  <div
-                    key={index}
-                    className={`absolute w-[380px] cursor-pointer transition-all duration-700 ease-out ${!isVisible ? 'hidden' : ''}`}
-                    style={{
-                      transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
-                      transformStyle: 'preserve-3d',
-                      opacity,
-                      zIndex,
-                      pointerEvents: absOffset === 0 ? 'auto' : 'none',
-                      perspective: 2000,
-                    }}
-                    onClick={() => absOffset === 0 && openModal(index)}
-                  >
-                    <div className="overflow-hidden rounded-lg" style={{ transform: 'translateZ(0)' }}>
-                      <ProjectCard project={project} onClick={() => openModal(index)} />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+                    return (
+                      <div
+                        key={index}
+                        className={`absolute w-[380px] cursor-pointer transition-all duration-700 ease-out ${!isVisible ? 'hidden' : ''}`}
+                        style={{
+                          transform: `rotateY(${theta}deg) translateZ(${radius}px) rotateY(${-theta * 0.65}deg) scale(${scale})`,
+                          transformStyle: 'preserve-3d',
+                          opacity,
+                          zIndex,
+                          pointerEvents: absOffset === 0 ? 'auto' : 'none',
+                          perspective: 2000,
+                        }}
+                        onClick={() => absOffset === 0 && openModal(index)}
+                      >
+                        <div className="overflow-hidden rounded-lg" style={{ transform: 'translateZ(0)' }}>
+                          <ProjectCard project={project} onClick={() => openModal(index)} />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )
+            })()}
           </div>
 
           <div className="flex items-center justify-center gap-4 pb-2 pt-10">

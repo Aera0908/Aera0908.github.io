@@ -148,6 +148,58 @@ const CompetencyCard = ({
 const techGridClass =
   'grid min-w-0 grid-cols-3 gap-1.5 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
 
+const CollapsibleSection = ({
+  title,
+  colorClass,
+  bulletColor,
+  children,
+}: {
+  title: string
+  colorClass: string
+  bulletColor: string
+  children: React.ReactNode
+}) => {
+  const [isOpen, setIsOpen] = useState(true)
+
+  return (
+    <div className="min-w-0 border-b border-white/[0.04] pb-6 last:border-0 last:pb-0">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] hover:border-white/[0.1] transition-all duration-200 shadow-sm backdrop-blur-sm group"
+        aria-expanded={isOpen}
+      >
+        <h3 className={`flex items-center gap-2 font-mono text-[11px] tracking-wider font-semibold ${colorClass}`}>
+          <span className={`inline-block h-1.5 w-1.5 rounded-full ${bulletColor}`} />
+          {title}
+        </h3>
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.04] group-hover:bg-white/[0.08] border border-white/[0.05] transition-colors">
+          <svg
+            className={`w-3 h-3 text-slate-400 group-hover:text-slate-200 transition-transform duration-200 ${
+              isOpen ? 'rotate-90' : ''
+            }`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </button>
+
+      <div
+        className={`grid transition-all duration-300 ease-in-out ${
+          isOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="overflow-hidden">
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const Skills = () => {
   const skills = useMemo(() => skillsData as Skill[], [])
   const layoutExpanded = useMinSm()
@@ -155,29 +207,29 @@ const Skills = () => {
   const hardware = useMemo(
     () =>
       skills
-        .filter((s) => s.category === 'hardware')
-        .slice()
-        .sort((a, b) => b.percentage - a.percentage),
+          .filter((s) => s.category === 'hardware')
+          .slice()
+          .sort((a, b) => b.percentage - a.percentage),
     [skills],
   )
 
   const software = useMemo(
     () =>
       skills
-        .filter((s) => s.category !== 'hardware')
-        .slice()
-        .sort((a, b) => b.percentage - a.percentage),
+          .filter((s) => s.category !== 'hardware')
+          .slice()
+          .sort((a, b) => b.percentage - a.percentage),
     [skills],
   )
 
   const techStackSr = useMemo(
     () =>
       [...hardware, ...software]
-        .map(
-          (s) =>
-            `${s.name} (${proficiencyFromPercentage(s.percentage)})`,
-        )
-        .join(', '),
+          .map(
+              (s) =>
+                  `${s.name} (${proficiencyFromPercentage(s.percentage)})`,
+          )
+          .join(', '),
     [hardware, software],
   )
 
@@ -189,7 +241,7 @@ const Skills = () => {
 
   return (
     <section
-      id="tech-stack"
+      id="stack"
       className="w-full min-w-0 max-w-full scroll-mt-24 py-16"
       aria-label="Technology stack and competencies"
     >
@@ -201,12 +253,12 @@ const Skills = () => {
         Languages, frameworks, and hardware tooling I use day-to-day — grounded in internships, PCB bring-up, flagship prototypes, and shipped Web2 surfaces.
       </p>
 
-      <div className="min-w-0 space-y-10">
-        <div className="min-w-0">
-          <h3 className="mb-3 flex items-center gap-2 font-mono text-[11px] tracking-wider text-amber-400/90">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400" />
-            HARDWARE &amp; EMBEDDED
-          </h3>
+      <div className="min-w-0 space-y-6">
+        <CollapsibleSection
+          title="HARDWARE & EMBEDDED"
+          colorClass="text-amber-400/90"
+          bulletColor="bg-amber-400"
+        >
           <div className={techGridClass}>
             {hardware.map((skill) => (
               <TechStackItem
@@ -216,13 +268,13 @@ const Skills = () => {
               />
             ))}
           </div>
-        </div>
+        </CollapsibleSection>
 
-        <div className="min-w-0">
-          <h3 className="mb-3 flex items-center gap-2 font-mono text-[11px] tracking-wider text-blue-400/90">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-blue-400" />
-            SOFTWARE &amp; WEB STACK
-          </h3>
+        <CollapsibleSection
+          title="SOFTWARE & WEB STACK"
+          colorClass="text-blue-400/90"
+          bulletColor="bg-blue-400"
+        >
           <div className={techGridClass}>
             {software.map((skill) => (
               <TechStackItem
@@ -232,13 +284,13 @@ const Skills = () => {
               />
             ))}
           </div>
-        </div>
+        </CollapsibleSection>
 
-        <div className="min-w-0">
-          <h3 className="mb-3 flex items-center gap-2 font-mono text-[11px] tracking-wider text-violet-400/90">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400" />
-            HARD SKILLS
-          </h3>
+        <CollapsibleSection
+          title="HARD SKILLS"
+          colorClass="text-violet-400/90"
+          bulletColor="bg-violet-400"
+        >
           <div className="grid min-w-0 grid-cols-2 gap-1.5 min-[360px]:grid-cols-3 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3">
             {peopleSkills.hardSkills.map((line) => (
               <CompetencyCard
@@ -249,13 +301,13 @@ const Skills = () => {
               />
             ))}
           </div>
-        </div>
+        </CollapsibleSection>
 
-        <div className="min-w-0">
-          <h3 className="mb-3 flex items-center gap-2 font-mono text-[11px] tracking-wider text-teal-400/90">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-400" />
-            SOFT SKILLS
-          </h3>
+        <CollapsibleSection
+          title="SOFT SKILLS"
+          colorClass="text-teal-400/90"
+          bulletColor="bg-teal-400"
+        >
           <div className="grid min-w-0 grid-cols-2 gap-1.5 min-[360px]:grid-cols-3 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3">
             {peopleSkills.softSkills.map((line) => (
               <CompetencyCard
@@ -266,7 +318,7 @@ const Skills = () => {
               />
             ))}
           </div>
-        </div>
+        </CollapsibleSection>
       </div>
 
       <p className="sr-only">{srSummary}</p>

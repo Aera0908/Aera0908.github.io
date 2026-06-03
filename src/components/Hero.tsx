@@ -26,7 +26,7 @@ const Hero = () => {
     )
 
   return (
-    <section id="home" className="py-12 lg:py-16 w-full min-w-0 max-w-full">
+    <section id="dashboard" className="py-12 lg:py-16 w-full min-w-0 max-w-full">
       <div
         className={`transition-all duration-700 w-full min-w-0 max-w-full ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
@@ -69,30 +69,8 @@ const Hero = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
-            View Resume
+            View Resume/CV
           </button>
-          <a
-            href={resumeSrc}
-            download="YNTE_Resume.pdf"
-            className="inline-flex w-full shrink-0 items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm border border-slate-500 text-slate-300 hover:bg-white/5 transition-colors sm:w-auto"
-            title="Download resume as PDF"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
-            </svg>
-            Download Resume
-          </a>
-          <a
-            href={cvSrc}
-            download="YNTE_CV.pdf"
-            className="inline-flex w-full shrink-0 items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 transition-colors sm:w-auto"
-            title="Download CV as PDF"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
-            </svg>
-            Download CV
-          </a>
           <a
             href={emailHref}
             className="inline-flex w-full shrink-0 items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm bg-blue-600/15 border border-blue-500/40 text-blue-300 hover:bg-blue-600/25 transition-colors sm:w-auto"
@@ -115,7 +93,7 @@ const Hero = () => {
           </a>
           <button
             type="button"
-            onClick={() => scrollToSection('about')}
+            onClick={() => scrollToSection('whoami')}
             className="w-full shrink-0 px-5 py-2.5 rounded-lg font-semibold text-sm border border-slate-500 text-slate-300 hover:bg-white/5 transition-colors sm:w-auto"
           >
             Learn More
@@ -126,8 +104,8 @@ const Hero = () => {
       <ResumePreviewModal
         open={resumeOpen}
         onClose={() => setResumeOpen(false)}
-        src={resumeSrc}
-        downloadName="YNTE_Resume.pdf"
+        resumeSrc={resumeSrc}
+        cvSrc={cvSrc}
       />
     </section>
   )

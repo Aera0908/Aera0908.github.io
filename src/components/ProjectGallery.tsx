@@ -8,6 +8,12 @@ interface ProjectGalleryProps {
   nested?: boolean
 }
 
+const getYoutubeId = (url: string) => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+  const match = url.match(regExp)
+  return (match && match[2].length === 11) ? match[2] : null
+}
+
 /** Image/video grid: thumbnails open in a modal; videos never autoplay inline—only inside the modal. */
 const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
@@ -55,14 +61,24 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
                 className="group relative w-full overflow-hidden rounded-lg bg-slate-900/40 ring-1 ring-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 aria-label={`Play video: ${item.caption}`}
               >
-                <video
-                  src={item.src}
-                  muted
-                  playsInline
-                  preload="metadata"
-                  className="pointer-events-none w-full aspect-video object-cover opacity-90 transition group-hover:opacity-100"
-                  tabIndex={-1}
-                />
+                {getYoutubeId(item.src) ? (
+                  <img
+                    src={`https://img.youtube.com/vi/${getYoutubeId(item.src)}/hqdefault.jpg`}
+                    alt={item.caption}
+                    loading="lazy"
+                    decoding="async"
+                    className="pointer-events-none w-full aspect-video object-cover opacity-90 transition group-hover:opacity-100"
+                  />
+                ) : (
+                  <video
+                    src={item.src}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="pointer-events-none w-full aspect-video object-cover opacity-90 transition group-hover:opacity-100"
+                    tabIndex={-1}
+                  />
+                )}
                 <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/35 transition group-hover:bg-black/45">
                   <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-black shadow-lg transition group-hover:scale-105">
                     <svg className="ml-1 h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -143,16 +159,28 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
 
               <div className="min-h-0 min-w-0 flex-1 overflow-hidden rounded-xl border border-white/10 bg-slate-950/90 shadow-2xl">
                 {openItem.type === 'video' ? (
-                  <video
-                    key={openItem.src}
-                    src={openItem.src}
-                    controls
-                    playsInline
-                    autoPlay
-                    className="max-h-[70vh] w-full bg-black sm:max-h-[75vh]"
-                  >
-                    Your browser does not support embedded video.
-                  </video>
+                  getYoutubeId(openItem.src) ? (
+                    <iframe
+                      key={openItem.src}
+                      src={`https://www.youtube.com/embed/${getYoutubeId(openItem.src)}?autoplay=1`}
+                      title={openItem.caption || "YouTube video player"}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="aspect-video w-full bg-black max-h-[70vh] sm:max-h-[75vh]"
+                    />
+                  ) : (
+                    <video
+                      key={openItem.src}
+                      src={openItem.src}
+                      controls
+                      playsInline
+                      autoPlay
+                      className="max-h-[70vh] w-full bg-black sm:max-h-[75vh]"
+                    >
+                      Your browser does not support embedded video.
+                    </video>
+                  )
                 ) : (
                   <img
                     src={openItem.src}

@@ -787,6 +787,13 @@
     "engagement": "Personal",
     "role": "Lead Web3 & Full-Stack Developer",
     "duration": "2026",
+    "gallery": [
+      {
+        "src": "https://www.youtube.com/watch?v=aDBoZOoOhd8",
+        "caption": "Fehuvia Workstation Features & Highlights Demo",
+        "type": "video"
+      }
+    ],
     "highlights": [
       "Web3 Settlements: Atomic sub-2 second payment clearance on Morph Layer 2 via custom Solidity contracts",
       "EVM Listener Daemon: Real-time logs syncing to PostgreSQL for robust dual-state financial auditing",
@@ -799,6 +806,13 @@
       {
         "title": "Overview",
         "content": "Fehuvia bridges B2B blockchain transparency and sub-second payment clearance with traditional relational database speed and analytics.\n\nThe system is built with React 19 and Vite for a custom glassmorphic workstation UI, an Express.js backend for AI orchestration and database sync, PostgreSQL for transactional persistence, and Solidity smart contracts compiled with Hardhat and deployed to Morph L2 Testnet."
+      },
+      {
+        "title": "Feature Highlights & Video Showcase",
+        "type": "video",
+        "videoUrl": "https://www.youtube.com/watch?v=aDBoZOoOhd8",
+        "caption": "Video highlighting Fehuvia's core workstation features and design.",
+        "content": "This video highlights the core features of the Fehuvia SME workstation, showing the user interface, design, and key functionalities."
       },
       {
         "title": "System Architecture",

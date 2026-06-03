@@ -36,7 +36,7 @@ const DeveloperPresence = () => {
 
   return (
     <section
-      id="activity"
+      id="presence"
       className="w-full min-w-0 max-w-full scroll-mt-24 py-16"
       aria-label="Coding activity and practice profiles"
     >

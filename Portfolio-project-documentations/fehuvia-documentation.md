@@ -3,7 +3,7 @@
 
 ---
 
-## 🚀 Executive Pitch & Portfolio Summary
+## Executive Pitch & Portfolio Summary
 
 **Fehuvia** is a high-fidelity Web3 B2B treasury workstation engineered to solve the silent killer of Southeast Asian SMEs: **liquidity dryouts and multi-day corporate settlement delays**. By merging traditional relational database state tracking with next-generation smart contract execution rails on **Morph Layer 2**, Fehuvia reduces settlement times from a 3-day standard to under **2 seconds (T+0)** while optimizing transaction costs to a fraction of a cent.
 
@@ -21,7 +21,7 @@ Stacked with an **AI Financial Co-Pilot (GPT-4o via context-aware RAG)** and **A
 
 ---
 
-## 🏗️ Core Architectural Modules
+## Core Architectural Modules
 
 Fehuvia coordinates five modular core architectures designed to unify traditional banking concepts with secure Web3 settlement rails:
 
@@ -66,9 +66,9 @@ flowchart TD
 * **RAG Prompt Assembly:** The Express backend retrieves a merchant's entire 30-day cashflow logs, unpaid obligations, and pending receipts from PostgreSQL.
 * **Structured Intelligence:** Rather than generic chatbots, it feeds this rich ledger context to GPT-4o through highly structured system prompts, returning actionable JSON outputs.
 * **Actionable Ratings:** Classifies pending invoices into three distinct statuses:
-  * 🟢 `Safe to Pay`: Cash reserves are projected to remain robust (>45 days runway) post-settlement.
-  * 🔴 `Delay`: Postpone payment due to impending liquidity stress (e.g. payroll mismatch).
-  * 🟡 `Review`: Manual audit advised (potential duplication, price deviations, or unlinked supplier details).
+  * [Safe to Pay]: Cash reserves are projected to remain robust (>45 days runway) post-settlement.
+  * [Delay]: Postpone payment due to impending liquidity stress (e.g. payroll mismatch).
+  * [Review]: Manual audit advised (potential duplication, price deviations, or unlinked supplier details).
 
 ### 3. Automated OCR Invoice Scanning
 * **Grid OCR Parsing:** Uploaded PDF and image invoices are fed into an intelligent character parsing model that automatically extracts supplier names, due dates, billing details, and total amounts.
@@ -80,7 +80,7 @@ flowchart TD
 
 ---
 
-## 🛠️ The Professional Technology Stack
+## The Professional Technology Stack
 
 | Architecture Layer | Technology Framework | Role & Integration | Rationale |
 | :--- | :--- | :--- | :--- |
@@ -93,7 +93,7 @@ flowchart TD
 
 ---
 
-## ⛓️ Smart Contract Implementation Details
+## Smart Contract Implementation Details
 
 Fehuvia's decentralized settlement protocol comprises two main smart contracts deployed on the **Morph L2 Testnet**:
 
@@ -175,7 +175,7 @@ contract MockUSDC is ERC20 {
 
 ---
 
-## 🗄️ Relational Database Engineering
+## Relational Database Engineering
 
 To preserve absolute ledger cleanliness, the relational schema in **PostgreSQL** separates accounts, invoice metadata, and audit records with strict key relationships and performance-oriented search patterns:
 
@@ -224,7 +224,7 @@ To avoid typical B2B database report problems, Fehuvia queries supplier records 
 
 ---
 
-## 🔄 End-to-End Sequence Diagram (EVM & DB Integration)
+## End-to-End Sequence Diagram (EVM & DB Integration)
 
 This visual sequence tracks the entire journey of a B2B transaction—from physical receipt ingest to AI evaluation, secure wallet clearance on Morph L2, background gas dispensing, and decentralized event-driven database synchronization.
 
@@ -269,7 +269,7 @@ sequenceDiagram
 
 ---
 
-## 🎨 Premium Design System & Micro-Animations
+## Premium Design System & Micro-Animations
 
 The Fehuvia application features a curated **glassmorphic dark theme** optimized for professional financial environments, incorporating sleek design details:
 
@@ -279,7 +279,7 @@ The Fehuvia application features a curated **glassmorphic dark theme** optimized
 
 ---
 
-## 💼 Key Portfolio Highlights & Engineering Strengths
+## Key Portfolio Highlights & Engineering Strengths
 
 * **Zero-Custody Architecture:** Server never handles, records, or stores seed phrases or private keys. Transaction signing occurs strictly client-side via secure EIP-1193 JSON-RPC calls.
 * **L2 Gas Optimization:** Uses Morph's sub-second block times and minimal execution fees to offer real-time corporate payments that are cheaper and faster than corporate wire bank transfers.

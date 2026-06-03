@@ -8,13 +8,13 @@ Each portfolio project has a dedicated folder. Drop new images in the matching f
 
 | Project                         | Folder                              | Referenced from `projects.json`           | Status            |
 | ------------------------------- | ----------------------------------- | ----------------------------------------- | ----------------- |
-| AeroVit                         | `Aerovit-images/`                   | `image`, `gallery[]`                      | ✅ has images     |
-| Plant.io                        | `plant-io-images/`                  | `image` (`plant-io-banner.png`)          | ✅ has banner     |
-| Safehouse                       | `safehouse-images/`                 | `image`, `gallery[]`                     | ✅ has hero + recording |
-| Student Consultation System     | `student-consultation-images/`      | currently placeholder — update `image`    | ⏳ needs images   |
-| Walang Basagan ng Thrift        | `walang-basagan-thrift-images/`     | currently placeholder — update `image`    | ⏳ needs images   |
-| EMG Interface Controller        | `project-emg/`                      | `image`                                   | ✅ has image      |
-| Manhwa Reader                   | `manhwa-reader-images/`             | `image` (`banner.png`)                   | ✅ has banner     |
+| AeroVit                         | `Aerovit-images/`                   | `image`, `gallery[]`                      | Yes, has images     |
+| Plant.io                        | `plant-io-images/`                  | `image` (`plant-io-banner.png`)          | Yes, has banner     |
+| Safehouse                       | `safehouse-images/`                 | `image`, `gallery[]`                     | Yes, has hero + recording |
+| Student Consultation System     | `student-consultation-images/`      | currently placeholder — update `image`    | Pending, needs images   |
+| Walang Basagan ng Thrift        | `walang-basagan-thrift-images/`     | currently placeholder — update `image`    | Pending, needs images   |
+| EMG Interface Controller        | `project-emg/`                      | `image`                                   | Yes, has image      |
+| Manhwa Reader                   | `manhwa-reader-images/`             | `image` (`banner.png`)                   | Yes, has banner     |
 
 ### Suggested filenames (optional)
 

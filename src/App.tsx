@@ -1,47 +1,77 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import HeaderBar from './components/HeaderBar'
 import Sidebar from './components/Sidebar'
 import Hero from './components/Hero'
 import About from './components/About'
 import Education from './components/Education'
+import Journey from './components/Journey'
 import Skills from './components/Skills'
 import Certifications from './components/Certifications'
 import Portfolio from './components/Portfolio'
+import SystemDesign from './components/SystemDesign'
 import DeveloperPresence from './components/DeveloperPresence'
 import Contact from './components/Contact'
 import FloatingDownloadButton from './components/FloatingDownloadButton'
 import PortfolioPage from './components/PortfolioPage'
 import ProjectDetailPage from './components/ProjectDetailPage'
-import { useHashRoute } from './hooks/useHashRoute'
+import { useRoute, SECTION_PATHS, PATH_TO_SECTION, replaceUrl } from './hooks/useRoute'
+
+const SECTION_IDS = [
+  'dashboard',
+  'whoami',
+  'edu',
+  'journey',
+  'stack',
+  'certs',
+  'projects',
+  'designs',
+  'presence',
+  'comms',
+] as const
 
 function App() {
-  const [activeSection, setActiveSection] = useState('home')
+  const [activeSection, setActiveSection] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { route } = useHashRoute()
+  const { route } = useRoute()
+  const hasScrolledOnMount = useRef(false)
 
   const isPortfolioRoute =
     route.segments[0] === 'portfolio' || route.path === '/portfolio'
   const isProjectDetail = isPortfolioRoute && route.segments.length >= 2
   const projectId = isProjectDetail ? route.segments[1] : null
 
+  // Deep-link: scroll to section on initial page load
+  useEffect(() => {
+    if (isPortfolioRoute || hasScrolledOnMount.current) return
+    hasScrolledOnMount.current = true
+
+    const sectionId = PATH_TO_SECTION[route.path]
+    if (sectionId && sectionId !== 'dashboard') {
+      // Small delay to ensure the DOM is ready
+      requestAnimationFrame(() => {
+        const el = document.getElementById(sectionId)
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' })
+        }
+      })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Scroll-spy: detect which section is in view and update URL
   useEffect(() => {
     if (isPortfolioRoute) return
 
     const handleScroll = () => {
-      const sections = [
-        'home',
-        'about',
-        'education',
-        'tech-stack',
-        'certifications',
-        'portfolio',
-        'activity',
-        'contact',
-      ]
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i])
+      for (let i = SECTION_IDS.length - 1; i >= 0; i--) {
+        const el = document.getElementById(SECTION_IDS[i])
         if (el && el.getBoundingClientRect().top < 200) {
-          setActiveSection(sections[i])
+          const newSection = SECTION_IDS[i]
+          setActiveSection(newSection)
+          // Sync URL with visible section
+          const sectionPath = SECTION_PATHS[newSection]
+          if (sectionPath) {
+            replaceUrl(sectionPath)
+          }
           break
         }
       }
@@ -89,9 +119,11 @@ function App() {
           <Hero />
           <About />
           <Education />
+          <Journey />
           <Skills />
           <Certifications />
           <Portfolio />
+          <SystemDesign />
           <DeveloperPresence />
           <Contact />
         </div>

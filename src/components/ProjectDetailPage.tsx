@@ -1,11 +1,17 @@
 import { useEffect } from 'react'
 import projectsData from '../data/projects.json'
 import type { Project, ProjectSection } from '../data/projectTypes'
-import { routeTo } from '../hooks/useHashRoute'
+import { routeTo } from '../hooks/useRoute'
 import { ProjectDiagram } from './diagrams/ProjectDiagrams'
 import WebTierBadge from './WebTierBadge'
 import { EngagementBadge, LimitedInfoBadge } from './ProjectTagBadges'
 import ProjectGallery from './ProjectGallery'
+
+const getYoutubeId = (url: string) => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+  const match = url.match(regExp)
+  return (match && match[2].length === 11) ? match[2] : null
+}
 
 interface ProjectDetailPageProps {
   projectId: string
@@ -143,6 +149,39 @@ const SectionBody = ({ section }: { section: ProjectSection }) => {
           ))}
         </ol>
       )
+
+    case 'video': {
+      const youtubeId = section.videoUrl ? getYoutubeId(section.videoUrl) : null
+      return (
+        <div className="space-y-4">
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-white/10 bg-black">
+            {youtubeId ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${youtubeId}`}
+                title={section.title || "Video player"}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="w-full h-full absolute inset-0"
+              />
+            ) : section.videoUrl ? (
+              <video
+                src={section.videoUrl}
+                controls
+                playsInline
+                className="w-full h-full"
+              />
+            ) : null}
+          </div>
+          {section.caption && (
+            <p className="text-xs text-slate-400 font-mono italic text-center">{section.caption}</p>
+          )}
+          {(section.content || section.paragraphs) && (
+            <Paragraphs text={section.content} items={section.paragraphs} />
+          )}
+        </div>
+      )
+    }
 
     default:
       return <Paragraphs text={section.content} items={section.paragraphs} />

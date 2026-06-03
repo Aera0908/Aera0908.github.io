@@ -90,7 +90,7 @@ const Certifications = () => {
   }, [selected])
 
   return (
-    <section id="certifications" className="py-16">
+    <section id="certs" className="py-16">
       <p className="font-mono text-sm text-slate-500 mb-4">&gt; CERTIFICATIONS</p>
       <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-8">Certifications</h2>
 

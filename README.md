@@ -1,4 +1,4 @@
-# 🌐 Web Resume - Aira Ynte
+# Web Resume - Aira Ynte
 
 An interactive, modern web resume built with React, TypeScript, and TailwindCSS. Featuring smooth animations, hover effects, and a beautiful gradient design.
 
@@ -7,7 +7,7 @@ An interactive, modern web resume built with React, TypeScript, and TailwindCSS.
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 
-##  Features
+## Features
 
 -  **Modern UI/UX** - Beautiful gradient backgrounds with glassmorphism effects
 -  **Interactive Elements** - Smooth animations, hover effects, and transitions
@@ -16,7 +16,7 @@ An interactive, modern web resume built with React, TypeScript, and TailwindCSS.
 -  **Type-Safe** - Written in TypeScript for better code quality
 -  **Custom Animations** - Tailwind custom animations for engaging user experience
 
-##  Project Structure
+## Project Structure
 
 ```
 web_resume/
@@ -44,7 +44,7 @@ web_resume/
 └── vite.config.ts
 ```
 
-##  Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -84,7 +84,7 @@ npm run build
 npm run preview
 ```
 
-## 🌐 Deployment to GitHub Pages
+## Deployment to GitHub Pages
 
 ### Method 1: Using GitHub Actions (Recommended)
 
@@ -116,7 +116,7 @@ npm run deploy
 
 This will build the project and deploy to the `gh-pages` branch.
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **React 18** - UI library
 - **TypeScript** - Type-safe JavaScript
@@ -125,7 +125,7 @@ This will build the project and deploy to the `gh-pages` branch.
 - **React Icons** - Icon library for beautiful social media icons
 - **Framer Motion** - Animation library (if needed)
 
-##  Customization
+## Customization
 
 ### Update Personal Information
 
@@ -163,7 +163,7 @@ To change it, simply replace `public/ynte_pic.jpg` with your new photo, or updat
 />
 ```
 
-##  Scripts
+## Scripts
 
 | Command | Description |
 |---------|-------------|
@@ -172,7 +172,7 @@ To change it, simply replace `public/ynte_pic.jpg` with your new photo, or updat
 | `npm run preview` | Preview production build |
 | `npm run deploy` | Deploy to GitHub Pages |
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Issue: Blank page after deployment
 
@@ -187,11 +187,11 @@ export default defineConfig({
 
 **Solution:** Ensure GitHub Pages is configured to use GitHub Actions or the correct branch.
 
-## 📄 License
+## License
 
 This project is open source and available under the MIT License.
 
-##  Author
+## Author
 
 **Aira Ynte**
 
@@ -201,7 +201,7 @@ This project is open source and available under the MIT License.
 - GitHub: [@Aera0908](https://github.com/Aera0908)
 - Discord: aeradynamics
 
-##  Acknowledgments
+## Acknowledgments
 
 - Design inspiration from modern portfolio websites
 - Social media icons from [react-icons](https://react-icons.github.io/react-icons/)

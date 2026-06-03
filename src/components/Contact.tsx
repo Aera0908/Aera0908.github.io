@@ -46,7 +46,7 @@ const Contact = () => {
   ]
 
   return (
-    <section id="contact" className="py-16">
+    <section id="comms" className="py-16">
       <p className="font-mono text-sm text-slate-500 mb-4">&gt; COMMS</p>
       <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-8">Contact</h2>
       <p className="text-slate-400 mb-8">Open to discussing new projects and opportunities.</p>

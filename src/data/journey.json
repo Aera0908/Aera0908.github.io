@@ -1,0 +1,57 @@
+[
+  {
+    "id": "fehuvia-launch",
+    "year": "2026",
+    "title": "Lead Web3 & Full-Stack Developer",
+    "company": "Fehuvia",
+    "description": "Architected and built Fehuvia, an Open Finance Web3 B2B treasury workstation on Morph Layer 2 featuring an automated background gas faucet, a PostgreSQL listener daemon, and an AI co-pilot.",
+    "type": "project",
+    "achievements": [
+      "Designed Solidity billing clearance protocol deployed to Morph L2, achieving T+0 settlements under 2 seconds.",
+      "Engineered an automated self-healing background gas faucet to eliminate onboarding friction.",
+      "Integrated context-aware RAG pipeline utilizing OpenAI GPT-4o for cashflow forecasting and invoice OCR parsing."
+    ],
+    "tags": ["Solidity", "Morph L2", "React 19", "Express", "PostgreSQL", "OpenAI GPT-4o"]
+  },
+  {
+    "id": "aerovit-dev",
+    "year": "2024 - 2026",
+    "title": "Lead Hardware & Software Engineer",
+    "company": "AeroVit",
+    "description": "Developed AeroVit, a fitness-gamified smartwatch prototype consisting of custom ESP32-S3 hardware, real-time ML pose estimation, and Web3 reward minting pipelines.",
+    "type": "project",
+    "achievements": [
+      "Designed and brought up custom smartwatch PCBs using ESP32-S3, IMU (QMI8658), and heart rate sensors (MAX30102).",
+      "Built a 33-landmark MediaPipe BlazePose pipeline with real-time rep and form-tracking state machines.",
+      "Deployed AERO ERC-20 token on Ethereum Sepolia for gamified off-chain to on-chain fitness rewards."
+    ],
+    "tags": ["ESP32-S3", "C++", "SolidWorks", "BLE 5.0", "React", "MediaPipe", "Sepolia"]
+  },
+  {
+    "id": "computer-engineering-bs",
+    "year": "2022 - July 2026 (Expected)",
+    "title": "B.S. in Computer Engineering",
+    "company": "University / College",
+    "description": "Expected graduation with specialization in Embedded Systems, Systems Design, and Digital Signal Processing.",
+    "achievements": [
+      "Hands-on research and prototyping in microcontrollers, RTOS, PCB layout, and high-performance computing.",
+      "Designed muscle bio-signal acquisition controller using surface electrodes and ESP32 analog-to-digital filtering."
+    ],
+    "type": "education",
+    "tags": ["Embedded Systems", "PCB Bring-up", "RTOS", "Signal Processing", "C/C++"]
+  },
+  {
+    "id": "freelance-web3-dev",
+    "year": "2023 - Present",
+    "title": "Freelance Web3 & Full-Stack Developer",
+    "company": "Various Clients",
+    "description": "Delivered custom high-performance Web2/Web3 dashboard interfaces and database systems, integrated custodial/non-custodial cryptocurrency payment rails, and optimized API payloads.",
+    "achievements": [
+      "Developed secure client-side signing modules using MetaMask and EIP-1193 provider injection standard.",
+      "Designed PostgreSQL database schemas using highly optimized EXISTS and subquery aggregations, reducing query times.",
+      "Built and deployed RESTful microservices using Node.js/Express with strict rate-limiting and audit logging."
+    ],
+    "type": "work",
+    "tags": ["React", "Node.js", "Express", "Solidity", "PostgreSQL", "MetaMask", "REST APIs"]
+  }
+]

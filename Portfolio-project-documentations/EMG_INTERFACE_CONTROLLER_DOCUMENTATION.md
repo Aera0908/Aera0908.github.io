@@ -4,7 +4,7 @@
 ![Platform](https://img.shields.io/badge/platform-ESP32S3-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-## 📖 Table of Contents
+## Table of Contents
 
 - [Project Overview](#-project-overview)
 - [Tech Stack](#-tech-stack)
@@ -22,7 +22,7 @@
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 The **EMG Controller** is a real-time electromyography (EMG) signal processing and visualization system designed for muscle activity monitoring and human-computer interaction. Built on the ESP32S3 microcontroller platform, it captures, processes, and visualizes EMG signals with professional-grade accuracy and provides multiple interaction modes including game control and data analysis.
 
@@ -35,7 +35,7 @@ The **EMG Controller** is a real-time electromyography (EMG) signal processing a
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Hardware
 | Component | Specification | Purpose |
@@ -73,7 +73,7 @@ The **EMG Controller** is a real-time electromyography (EMG) signal processing a
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -130,7 +130,7 @@ Serial Output ────────────▶ Python Visualizer
 
 ---
 
-## 🔌 Hardware Components
+## Hardware Components
 
 ### 1. Microcontroller: Seeed XIAO ESP32S3
 
@@ -185,7 +185,7 @@ Serial Output ────────────▶ Python Visualizer
 
 ---
 
-## 💻 Software Components
+## Software Components
 
 ### Firmware: `emg_function.ino`
 
@@ -266,44 +266,44 @@ python roblox_emg_controller.py
 
 ---
 
-## ✨ Features
+## Features
 
 ### Signal Processing
-- ✅ **500 Hz Sampling Rate**: Professional-grade temporal resolution
-- ✅ **Envelope Detection**: 16-sample moving average filter
-- ✅ **RMS Calculation**: 20-sample rolling RMS
-- ✅ **Two-Stage Smoothing**: Fast response + smooth display
-- ✅ **Noise Handling**: Baseline tracking and adaptive thresholds
+- **500 Hz Sampling Rate**: Professional-grade temporal resolution
+- **Envelope Detection**: 16-sample moving average filter
+- **RMS Calculation**: 20-sample rolling RMS
+- **Two-Stage Smoothing**: Fast response + smooth display
+- **Noise Handling**: Baseline tracking and adaptive thresholds
 
 ### Calibration
-- ✅ **Automatic Calibration**: Two-phase adaptive system
-- ✅ **User-Specific**: Adapts to individual muscle strength
-- ✅ **Position-Agnostic**: Works with different electrode placements
-- ✅ **Statistical Analysis**: Mean, variance, and standard deviation tracking
-- ✅ **One-Time Setup**: Calibrates at startup, no recalibration needed
+- **Automatic Calibration**: Two-phase adaptive system
+- **User-Specific**: Adapts to individual muscle strength
+- **Position-Agnostic**: Works with different electrode placements
+- **Statistical Analysis**: Mean, variance, and standard deviation tracking
+- **One-Time Setup**: Calibrates at startup, no recalibration needed
 
 ### Threshold Detection
-- ✅ **Binary State**: Clear ON/OFF muscle activation
-- ✅ **Hysteresis**: Separate spike and hold thresholds prevent flickering
-- ✅ **Adaptive**: Calculates thresholds from calibration data
-- ✅ **Configurable**: Easy adjustment via parameters
+- **Binary State**: Clear ON/OFF muscle activation
+- **Hysteresis**: Separate spike and hold thresholds prevent flickering
+- **Adaptive**: Calculates thresholds from calibration data
+- **Configurable**: Easy adjustment via parameters
 
 ### Visualization
-- ✅ **Real-Time Plotting**: Live signal display with matplotlib
-- ✅ **Dual Views**: Envelope + RMS display
-- ✅ **Threshold Lines**: Visual threshold indicators
-- ✅ **Statistics Panel**: Live numerical data
-- ✅ **State Indicator**: Visual muscle state feedback
+- **Real-Time Plotting**: Live signal display with matplotlib
+- **Dual Views**: Envelope + RMS display
+- **Threshold Lines**: Visual threshold indicators
+- **Statistics Panel**: Live numerical data
+- **State Indicator**: Visual muscle state feedback
 
 ### Interaction
-- ✅ **Game Control**: Roblox keyboard mapping
-- ✅ **Pattern Recognition**: Multi-flex gesture detection
-- ✅ **Flexible Mapping**: Customizable key bindings
-- ✅ **GUI Control**: Enable/disable via interface
+- **Game Control**: Roblox keyboard mapping
+- **Pattern Recognition**: Multi-flex gesture detection
+- **Flexible Mapping**: Customizable key bindings
+- **GUI Control**: Enable/disable via interface
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 project/
@@ -352,7 +352,7 @@ project/
 
 ---
 
-## 🔧 Development Tools
+## Development Tools
 
 ### Required Tools
 
@@ -385,7 +385,7 @@ project/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Quick Start (5 Minutes)
 
@@ -424,7 +424,7 @@ See `emg_function/SETUP_GUIDE.md` for comprehensive instructions.
 
 ---
 
-## 🎮 Use Cases
+## Use Cases
 
 ### 1. Biomedical Research
 - Muscle activity analysis
@@ -458,7 +458,7 @@ See `emg_function/SETUP_GUIDE.md` for comprehensive instructions.
 
 ---
 
-## 📊 Version History
+## Version History
 
 ### Current Version: 2.1 (October 2025)
 
@@ -484,7 +484,7 @@ See `emg_function/CHANGELOG.md` for complete history.
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 ### Planned Features
 - [ ] Bluetooth/WiFi connectivity
@@ -509,7 +509,7 @@ See `emg_function/IMPROVEMENTS.md` for detailed roadmap.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 ### How to Contribute
 
@@ -540,13 +540,13 @@ See `emg_function/IMPROVEMENTS.md` for detailed roadmap.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
 ---
 
-## 📞 Support & Contact
+## Support & Contact
 
 ### Documentation
 - **Main Guide**: `emg_function/README.md`
@@ -566,7 +566,7 @@ This project is licensed under the MIT License.
 
 ---
 
-## 🏆 Credits
+## Credits
 
 **Project by**: CPE4B - 1st Semester DSP Project
 
@@ -584,7 +584,7 @@ This project is licensed under the MIT License.
 
 ---
 
-## 📚 Technical Specifications Summary
+## Technical Specifications Summary
 
 | Category | Specification |
 |----------|--------------|
@@ -602,16 +602,16 @@ This project is licensed under the MIT License.
 
 ---
 
-## 🎯 Key Achievements
+## Key Achievements
 
-✅ Professional-grade EMG signal processing  
-✅ Real-time visualization with sub-100ms latency  
-✅ Adaptive calibration for different users  
-✅ Multiple interaction modes (visualization + game control)  
-✅ Clean, well-documented codebase  
-✅ Complete hardware design (PCB + enclosure)  
-✅ Cross-platform Python applications  
-✅ Comprehensive documentation  
+- Professional-grade EMG signal processing  
+- Real-time visualization with sub-100ms latency  
+- Adaptive calibration for different users  
+- Multiple interaction modes (visualization + game control)  
+- Clean, well-documented codebase  
+- Complete hardware design (PCB + enclosure)  
+- Cross-platform Python applications  
+- Comprehensive documentation  
 
 ---
 

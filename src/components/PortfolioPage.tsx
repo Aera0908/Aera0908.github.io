@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import projectsData from '../data/projects.json'
 import type { Engagement, Project, WebTier } from '../data/projectTypes'
-import { routeTo } from '../hooks/useHashRoute'
+import { routeTo } from '../hooks/useRoute'
 import WebTierBadge from './WebTierBadge'
 import { EngagementBadge, LimitedInfoBadge } from './ProjectTagBadges'
 

@@ -1352,28 +1352,28 @@ SYSTEM GENERATES ALERTS FOR:
 
 1. Plant Thirsty
    Triggered: Moisture < 30%
-   Title: "🌵 THIRSTY!"
+   Title: "THIRSTY!"
    Message: "Your plant needs water!"
    Sound: Alert tone
    Action: Open dashboard
 
 2. Plant Hot
    Triggered: Temperature > 35°C
-   Title: "🔥 HOT!"
+   Title: "HOT!"
    Message: "Temperature too high!"
    Sound: Warning tone
    Action: Open dashboard
 
 3. Critical Condition
    Triggered: Moisture < 20% OR Temp > 40°C
-   Title: "⚠️ CRITICAL!"
+   Title: "CRITICAL!"
    Message: "Plant in critical condition!"
    Sound: Urgent alert
    Action: Open dashboard with emergency controls
 
 4. Device Offline
    Triggered: No telemetry for 120+ seconds
-   Title: "📡 OFFLINE!"
+   Title: "OFFLINE!"
    Message: "{device} no longer responding"
    Sound: Connection lost
    Action: Device details

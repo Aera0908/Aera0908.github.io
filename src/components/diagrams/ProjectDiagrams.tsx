@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { useFocusTrap } from '../../hooks/useFocusTrap'
 
 const palette = {
@@ -489,6 +490,7 @@ type FitLayout = { vbW: number; vbH: number; fit: number }
 export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }) => {
   const Component = registry[id]
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
   /** Multiplier on top of viewport “fit” scale (1 = fit to window). */
   const [zoom, setZoom] = useState(1)
   const [fitLayout, setFitLayout] = useState<FitLayout | null>(null)
@@ -496,11 +498,27 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
   const dialogRef = useRef<HTMLDivElement>(null)
   useFocusTrap(dialogRef, lightboxOpen)
 
+  const openLightbox = () => {
+    setLightboxOpen(true)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setIsAnimating(true)
+      })
+    })
+  }
+
+  const closeLightbox = () => {
+    setIsAnimating(false)
+    setTimeout(() => {
+      setLightboxOpen(false)
+    }, 200)
+  }
+
   useEffect(() => {
     if (!lightboxOpen) return
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setLightboxOpen(false)
+      if (e.key === 'Escape') closeLightbox()
     }
     window.addEventListener('keydown', onKey)
     return () => {
@@ -572,7 +590,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
       <div className="relative overflow-hidden rounded-lg border border-white/5 bg-black/30">
         <button
           type="button"
-          onClick={() => setLightboxOpen(true)}
+          onClick={openLightbox}
           className="group relative block w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
           aria-label="Open diagram larger"
         >
@@ -588,9 +606,11 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
         <figcaption className="text-center font-mono text-xs leading-relaxed text-slate-400">{caption}</figcaption>
       )}
 
-      {lightboxOpen && (
+      {lightboxOpen && createPortal(
         <div
-          className="fixed inset-0 z-[70] flex flex-col bg-black/95 p-3 sm:p-5"
+          className={`fixed inset-0 z-[70] flex flex-col bg-black/95 p-3 sm:p-5 transition-opacity duration-200 ease-out ${
+            isAnimating ? 'opacity-100' : 'opacity-0'
+          }`}
           role="dialog"
           aria-modal="true"
           aria-label="Diagram viewer"
@@ -600,10 +620,13 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
           <button
             type="button"
             className="absolute inset-0 z-0 cursor-default sm:cursor-zoom-out"
-            onClick={() => setLightboxOpen(false)}
+            onClick={closeLightbox}
             aria-label="Close diagram"
           />
-          <div className="relative z-10 mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+          <div className={`relative z-10 flex flex-col flex-1 min-h-0 w-full transition-all duration-200 ease-out transform ${
+            isAnimating ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+          }`}>
+            <div className="relative z-10 mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">Zoom</span>
               <button
@@ -648,7 +671,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
               type="button"
               onClick={(e) => {
                 e.stopPropagation()
-                setLightboxOpen(false)
+                closeLightbox()
               }}
               className="rounded-lg border border-white/15 p-2 text-slate-400 hover:bg-white/10 hover:text-white"
               aria-label="Close"
@@ -711,7 +734,9 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
           <p className="relative z-10 mt-1 text-center font-mono text-[10px] text-slate-600">
             Default size fits the viewer. Ctrl/⌘ + scroll to zoom · drag to pan when zoomed
           </p>
-        </div>
+          </div>
+        </div>,
+        document.body
       )}
     </figure>
   )
