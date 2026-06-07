@@ -27,7 +27,7 @@ const FloatingDownloadButton = () => {
       <a
         href={`${base}YNTE_Resume.pdf`}
         download="YNTE_Resume.pdf"
-        className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-lg font-mono transition-colors shadow-lg"
+        className="cyber-btn-primary flex items-center justify-center gap-2 px-4 py-2.5 rounded-none text-xs shadow-lg shadow-cyber-yellow/10 border border-cyber-yellow"
         title="Download resume (PDF)"
       >
         Download Resume
@@ -35,7 +35,7 @@ const FloatingDownloadButton = () => {
       <a
         href={`${base}YNTE_CV.pdf`}
         download="YNTE_CV.pdf"
-        className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-lg font-mono transition-colors shadow-lg"
+        className="cyber-btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 rounded-none text-xs shadow-lg shadow-cyber-cyan/10 border border-cyber-cyan"
         title="Download CV (PDF)"
       >
         Download CV

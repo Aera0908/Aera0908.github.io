@@ -3,19 +3,19 @@ import { createPortal } from 'react-dom'
 import { useFocusTrap } from '../../hooks/useFocusTrap'
 
 const palette = {
-  stroke: '#334155',
-  strokeStrong: '#475569',
-  accent: '#3b82f6',
-  accentSoft: 'rgba(59, 130, 246, 0.12)',
-  emerald: '#10b981',
-  emeraldSoft: 'rgba(16, 185, 129, 0.12)',
-  amber: '#f59e0b',
-  amberSoft: 'rgba(245, 158, 11, 0.12)',
-  violet: '#a855f7',
-  violetSoft: 'rgba(168, 85, 247, 0.14)',
-  slateText: '#e2e8f0',
+  stroke: 'rgba(0, 240, 255, 0.25)',
+  strokeStrong: 'rgba(0, 240, 255, 0.45)',
+  accent: '#00f0ff',
+  accentSoft: 'rgba(0, 240, 255, 0.08)',
+  emerald: '#00ff66',
+  emeraldSoft: 'rgba(0, 255, 102, 0.08)',
+  amber: '#fcee0a',
+  amberSoft: 'rgba(252, 238, 10, 0.08)',
+  violet: '#ff0055',
+  violetSoft: 'rgba(255, 0, 85, 0.08)',
+  slateText: '#f8fafc',
   slateMuted: '#94a3b8',
-  neutralFill: 'rgba(255, 255, 255, 0.03)',
+  neutralFill: 'rgba(18, 19, 25, 0.85)',
 }
 
 interface NodeProps {
@@ -46,8 +46,8 @@ const DiagramNode = ({ x, y, w, h, label, sublabel, accent = 'neutral', variant 
         y={y}
         width={w}
         height={h}
-        rx={10}
-        ry={10}
+        rx={0}
+        ry={0}
         fill={c.fill}
         stroke={c.stroke}
         strokeWidth={1.4}
@@ -60,7 +60,7 @@ const DiagramNode = ({ x, y, w, h, label, sublabel, accent = 'neutral', variant 
         fontSize={14}
         fontWeight={600}
         fill={palette.slateText}
-        style={{ fontFamily: 'DM Sans, system-ui, sans-serif' }}
+        style={{ fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.03em' }}
       >
         {label}
       </text>
@@ -71,7 +71,7 @@ const DiagramNode = ({ x, y, w, h, label, sublabel, accent = 'neutral', variant 
           textAnchor="middle"
           fontSize={11}
           fill={palette.slateMuted}
-          style={{ fontFamily: 'JetBrains Mono, monospace' }}
+          style={{ fontFamily: 'Share Tech Mono, monospace' }}
         >
           {sublabel}
         </text>
@@ -86,8 +86,8 @@ const RowLabel = ({ x, y, text }: { x: number; y: number; text: string }) => (
     y={y}
     fontSize={10}
     letterSpacing={1.5}
-    fill={palette.slateMuted}
-    style={{ fontFamily: 'JetBrains Mono, monospace' }}
+    fill={palette.violet}
+    style={{ fontFamily: 'Share Tech Mono, monospace' }}
   >
     {text}
   </text>
@@ -573,7 +573,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
 
   if (!Component) {
     return (
-      <div className="rounded-lg border border-dashed border-white/10 bg-white/5 p-6 text-center font-mono text-xs text-slate-500">
+      <div className="rounded-none border border-dashed border-cyber-magenta/30 bg-cyber-magenta/5 p-6 text-center font-terminal text-xs text-cyber-magenta">
         Diagram `{id}` not found.
       </div>
     )
@@ -587,14 +587,14 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
 
   return (
     <figure className="space-y-3">
-      <div className="relative overflow-hidden rounded-lg border border-white/5 bg-black/30">
+      <div className="relative overflow-hidden rounded-none border border-cyber-cyan/35 bg-cyber-dark/45 hover:border-cyber-yellow transition-all duration-300">
         <button
           type="button"
           onClick={openLightbox}
-          className="group relative block w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
+          className="group relative block w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-cyber-yellow/40"
           aria-label="Open diagram larger"
         >
-          <span className="absolute right-2 top-2 z-10 rounded border border-white/15 bg-black/70 px-2 py-1 font-mono text-[10px] text-slate-300 opacity-90 backdrop-blur-sm transition group-hover:border-blue-500/40 group-hover:text-blue-300">
+          <span className="absolute right-2 top-2 z-10 rounded-none border border-cyber-cyan/30 bg-black/80 px-2 py-1 font-terminal text-[10px] text-cyber-cyan opacity-90 backdrop-blur-sm transition group-hover:border-cyber-yellow group-hover:text-cyber-yellow">
             Tap to enlarge
           </span>
           <div className="overflow-x-auto p-3 sm:p-4">
@@ -603,12 +603,12 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
         </button>
       </div>
       {caption && (
-        <figcaption className="text-center font-mono text-xs leading-relaxed text-slate-400">{caption}</figcaption>
+        <figcaption className="text-center font-terminal text-xs leading-relaxed text-cyber-cyan/70 mt-1">{caption}</figcaption>
       )}
 
       {lightboxOpen && createPortal(
         <div
-          className={`fixed inset-0 z-[70] flex flex-col bg-black/95 p-3 sm:p-5 transition-opacity duration-200 ease-out ${
+          className={`fixed inset-0 z-[70] flex flex-col bg-cyber-dark/95 p-3 sm:p-5 transition-opacity duration-200 ease-out ${
             isAnimating ? 'opacity-100' : 'opacity-0'
           }`}
           role="dialog"
@@ -625,10 +625,10 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
           />
           <div className={`relative z-10 flex flex-col flex-1 min-h-0 w-full transition-all duration-200 ease-out transform ${
             isAnimating ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-          }`}>
-            <div className="relative z-10 mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+          } cyber-card cyber-corner-brackets border border-cyber-yellow/45 p-4 sm:p-6 bg-cyber-dark/95`}>
+            <div className="relative z-10 mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-cyber-yellow/15 pb-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">Zoom</span>
+              <span className="font-terminal text-[10px] uppercase tracking-widest text-cyber-cyan">Zoom</span>
               <button
                 type="button"
                 onClick={(e) => {
@@ -636,12 +636,12 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
                   nudgeZoom(-ZOOM_STEP)
                 }}
                 disabled={zoom <= ZOOM_MIN}
-                className="rounded border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-sm text-slate-200 hover:bg-white/10 disabled:opacity-30"
+                className="rounded-none border border-cyber-cyan/35 bg-cyber-cyan/5 px-3 py-1 font-terminal text-sm text-cyber-cyan hover:bg-cyber-cyan/15 hover:border-cyber-yellow hover:text-cyber-yellow disabled:opacity-20 transition-colors duration-200"
                 aria-label="Zoom out"
               >
                 −
               </button>
-              <span className="min-w-[3rem] text-center font-mono text-xs text-slate-400" title="100% = fit to viewer">
+              <span className="min-w-[3rem] text-center font-terminal text-xs text-cyber-yellow font-bold" title="100% = fit to viewer">
                 {Math.round(zoom * 100)}%
               </span>
               <button
@@ -651,7 +651,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
                   nudgeZoom(ZOOM_STEP)
                 }}
                 disabled={zoom >= ZOOM_MAX}
-                className="rounded border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-sm text-slate-200 hover:bg-white/10 disabled:opacity-30"
+                className="rounded-none border border-cyber-cyan/35 bg-cyber-cyan/5 px-3 py-1 font-terminal text-sm text-cyber-cyan hover:bg-cyber-cyan/15 hover:border-cyber-yellow hover:text-cyber-yellow disabled:opacity-20 transition-colors duration-200"
                 aria-label="Zoom in"
               >
                 +
@@ -662,7 +662,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
                   e.stopPropagation()
                   setZoom(1)
                 }}
-                className="rounded border border-white/15 bg-white/5 px-2 py-1.5 font-mono text-[11px] text-slate-400 hover:bg-white/10"
+                className="rounded-none border border-cyber-cyan/35 bg-cyber-cyan/5 px-2.5 py-1 font-terminal text-[11px] text-cyber-cyan hover:bg-cyber-cyan/15 hover:border-cyber-yellow hover:text-cyber-yellow transition-colors duration-200"
               >
                 Reset
               </button>
@@ -673,7 +673,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
                 e.stopPropagation()
                 closeLightbox()
               }}
-              className="rounded-lg border border-white/15 p-2 text-slate-400 hover:bg-white/10 hover:text-white"
+              className="rounded-none border border-cyber-cyan/35 p-1.5 text-cyber-cyan hover:text-cyber-yellow hover:bg-cyber-yellow/15 hover:border-cyber-yellow transition-all duration-300"
               aria-label="Close"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -684,7 +684,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
 
           <div
             ref={viewportRef}
-            className="relative z-10 min-h-0 flex-1 overflow-auto rounded-lg border border-white/10 bg-[#0a0a0a]"
+            className="relative z-10 min-h-0 flex-1 overflow-auto rounded-none border border-cyber-cyan/35 bg-black"
             onClick={(e) => e.stopPropagation()}
             onWheel={(e) => {
               if (e.ctrlKey || e.metaKey) {
@@ -709,7 +709,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
                 }
               >
                 <div
-                  className="rounded border border-white/5 bg-black/40 shadow-xl"
+                  className="rounded-none border border-cyber-cyan/10 bg-black/40 shadow-xl"
                   style={
                     fitLayout
                       ? {
@@ -727,12 +727,12 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
             </div>
           </div>
           {caption && (
-            <p className="relative z-10 mt-2 text-center font-mono text-[11px] text-slate-500">
+            <p className="relative z-10 mt-2 text-center font-terminal text-[11px] text-cyber-cyan/80">
               {caption}
             </p>
           )}
-          <p className="relative z-10 mt-1 text-center font-mono text-[10px] text-slate-600">
-            Default size fits the viewer. Ctrl/⌘ + scroll to zoom · drag to pan when zoomed
+          <p className="relative z-10 mt-1 text-center font-terminal text-[10px] text-cyber-magenta/70 tracking-widest uppercase">
+            Default size fits the viewer. Ctrl/⌘ + scroll to zoom · drag to pan when zoomed // ESC TO CLOSE
           </p>
           </div>
         </div>,

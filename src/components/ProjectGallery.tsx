@@ -58,7 +58,7 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
               <button
                 type="button"
                 onClick={() => setOpenIndex(i)}
-                className="group relative w-full overflow-hidden rounded-lg bg-slate-900/40 ring-1 ring-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="group relative w-full overflow-hidden rounded-none bg-cyber-dark border border-cyber-cyan/35 hover:border-cyber-yellow transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-yellow/40"
                 aria-label={`Play video: ${item.caption}`}
               >
                 {getYoutubeId(item.src) ? (
@@ -79,9 +79,9 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
                     tabIndex={-1}
                   />
                 )}
-                <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/35 transition group-hover:bg-black/45">
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-black shadow-lg transition group-hover:scale-105">
-                    <svg className="ml-1 h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/45 transition group-hover:bg-black/55">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-none bg-cyber-yellow text-black shadow-lg transition group-hover:scale-105 group-hover:bg-cyber-cyan duration-300 border border-black">
+                    <svg className="ml-1 h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </span>
@@ -91,7 +91,7 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
               <button
                 type="button"
                 onClick={() => setOpenIndex(i)}
-                className="group block w-full overflow-hidden rounded-lg bg-slate-900/40 ring-1 ring-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="group block w-full overflow-hidden rounded-none bg-cyber-dark border border-cyber-cyan/35 hover:border-cyber-yellow transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-yellow/40"
                 aria-label={`Open image: ${item.caption}`}
               >
                 <img
@@ -103,7 +103,7 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
                 />
               </button>
             )}
-            <figcaption className="text-left text-xs leading-relaxed text-slate-400">{item.caption}</figcaption>
+            <figcaption className="text-left text-xs leading-relaxed text-slate-400 font-terminal mt-1">{item.caption}</figcaption>
           </figure>
         ))}
       </div>
@@ -119,21 +119,21 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
         >
           <button
             type="button"
-            className="absolute inset-0 bg-black/85 backdrop-blur-sm"
+            className="absolute inset-0 bg-cyber-dark/85 backdrop-blur-md"
             onClick={close}
             aria-label="Close gallery"
           />
 
           <div
-            className="relative z-10 flex max-h-[92vh] w-full max-w-5xl flex-col gap-2 sm:gap-3"
+            className="relative z-10 flex max-h-[92vh] w-full max-w-5xl flex-col gap-2 sm:gap-3 cyber-card cyber-corner-brackets border border-cyber-yellow/45 p-4 sm:p-6 bg-cyber-dark/95"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-3 px-1">
-              <p className="min-w-0 pr-2 text-sm text-slate-300">{openItem.caption}</p>
+            <div className="flex items-start justify-between gap-3 pb-3 border-b border-cyber-yellow/15 mb-2">
+              <p className="min-w-0 pr-2 text-sm text-slate-200 font-terminal">{openItem.caption}</p>
               <button
                 type="button"
                 onClick={close}
-                className="shrink-0 rounded-lg p-2 text-slate-400 transition hover:bg-white/10 hover:text-white"
+                className="shrink-0 rounded-none p-1 text-cyber-cyan hover:text-cyber-yellow hover:bg-cyber-yellow/15 transition-all duration-300"
                 aria-label="Close"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -142,13 +142,13 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
               </button>
             </div>
 
-            <div className="relative flex min-h-0 flex-1 items-center justify-center gap-1 sm:gap-2">
+            <div className="relative flex min-h-0 flex-1 items-center justify-center gap-2 sm:gap-4">
               {items.length > 1 && (
                 <button
                   type="button"
                   onClick={() => openIndex > 0 && setOpenIndex(openIndex - 1)}
                   disabled={openIndex === 0}
-                  className="shrink-0 rounded-full border border-white/10 bg-slate-900/90 p-2.5 text-slate-200 shadow-lg transition hover:bg-white/10 disabled:pointer-events-none disabled:opacity-30 sm:p-3"
+                  className="shrink-0 rounded-none border border-cyber-cyan/35 bg-cyber-dark p-2 text-cyber-cyan hover:text-cyber-yellow hover:border-cyber-yellow disabled:pointer-events-none disabled:opacity-30 transition-all duration-300"
                   aria-label="Previous item"
                 >
                   <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -157,7 +157,7 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
                 </button>
               )}
 
-              <div className="min-h-0 min-w-0 flex-1 overflow-hidden rounded-xl border border-white/10 bg-slate-950/90 shadow-2xl">
+              <div className="min-h-0 min-w-0 flex-1 overflow-hidden rounded-none border border-cyber-cyan/35 bg-black shadow-2xl">
                 {openItem.type === 'video' ? (
                   getYoutubeId(openItem.src) ? (
                     <iframe
@@ -186,7 +186,7 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
                     src={openItem.src}
                     alt={openItem.caption || 'Project image'}
                     decoding="async"
-                    className="max-h-[70vh] w-full object-contain sm:max-h-[75vh]"
+                    className="max-h-[70vh] w-full object-contain sm:max-h-[75vh] mx-auto"
                   />
                 )}
               </div>
@@ -198,7 +198,7 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
                     openIndex < items.length - 1 && setOpenIndex(openIndex + 1)
                   }
                   disabled={openIndex >= items.length - 1}
-                  className="shrink-0 rounded-full border border-white/10 bg-slate-900/90 p-2.5 text-slate-200 shadow-lg transition hover:bg-white/10 disabled:pointer-events-none disabled:opacity-30 sm:p-3"
+                  className="shrink-0 rounded-none border border-cyber-cyan/35 bg-cyber-dark p-2 text-cyber-cyan hover:text-cyber-yellow hover:border-cyber-yellow disabled:pointer-events-none disabled:opacity-30 transition-all duration-300"
                   aria-label="Next item"
                 >
                   <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -208,9 +208,9 @@ const ProjectGallery = ({ items, nested = false }: ProjectGalleryProps) => {
               )}
             </div>
 
-            <p className="text-center font-mono text-[10px] text-slate-500">
+            <p className="text-center font-terminal text-[10px] text-cyber-magenta tracking-widest mt-2 uppercase">
               {items.length > 1 ? 'Use arrows or keyboard ← → · ' : ''}
-              Esc to close
+              ESC TO CLOSE // SYSTEM_STABLE
             </p>
           </div>
         </div>

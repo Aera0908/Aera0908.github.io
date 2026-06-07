@@ -21,13 +21,13 @@ function proficiencyFromPercentage(p: number): Proficiency {
 
 const tierBadgeClass: Record<Proficiency, string> = {
   Expert:
-    'bg-emerald-500/15 text-emerald-300 border border-emerald-500/35',
+    'bg-cyber-green/15 text-cyber-green border border-cyber-green/35',
   Advanced:
-    'bg-sky-500/15 text-sky-300 border border-sky-500/35',
+    'bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/35',
   Intermediate:
-    'bg-amber-500/12 text-amber-200 border border-amber-500/30',
+    'bg-cyber-yellow/12 text-cyber-yellow border border-cyber-yellow/30',
   Beginner:
-    'bg-slate-600/20 text-slate-400 border border-slate-500/25',
+    'bg-slate-800/40 text-slate-400 border border-slate-700/40',
 }
 
 /** ≥ Tailwind `sm` — desktop-style expanded tech cards */
@@ -45,7 +45,7 @@ function useMinSm() {
 
 const tierBadge = (tier: Proficiency) => (
   <span
-    className={`inline-flex rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider ${tierBadgeClass[tier]}`}
+    className={`inline-flex rounded-none px-1.5 py-0.5 font-terminal text-[9px] uppercase tracking-wider ${tierBadgeClass[tier]}`}
   >
     {tier}
   </span>
@@ -62,8 +62,8 @@ const TechStackItem = ({
 
   if (layoutExpanded) {
     return (
-      <div className="flex h-full min-w-0 max-w-full flex-col gap-2 overflow-hidden rounded-lg border border-white/[0.08] bg-[#161616]/80 px-3 py-2.5">
-        <span className="break-words text-[13px] font-medium leading-snug text-slate-200">
+      <div className="flex h-full min-w-0 max-w-full flex-col gap-2 overflow-hidden rounded-none border border-cyber-cyan/30 bg-cyber-dark/80 px-3 py-2.5 hover:border-cyber-yellow hover:bg-cyber-dark/95 transition-all duration-300">
+        <span className="break-words text-[13px] font-terminal leading-snug text-slate-200">
           {skill.name}
         </span>
         <span className="mt-auto inline-flex self-start">{tierBadge(tier)}</span>
@@ -72,13 +72,13 @@ const TechStackItem = ({
   }
 
   return (
-    <details className="group min-w-0 max-w-full overflow-hidden rounded-lg border border-white/[0.08] bg-[#161616]/80 open:bg-[#1a1a1a]">
-      <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-center px-1 py-2 text-center [&::-webkit-details-marker]:hidden marker:content-none">
+    <details className="group min-w-0 max-w-full overflow-hidden rounded-none border border-cyber-cyan/30 bg-cyber-dark/80 open:bg-cyber-dark/95 open:border-cyber-yellow transition-all duration-300">
+      <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-center px-1 py-2 text-center [&::-webkit-details-marker]:hidden marker:content-none font-terminal">
         <span className="line-clamp-4 break-words px-0.5 text-[10px] font-semibold leading-tight text-slate-100">
           {skill.name}
         </span>
       </summary>
-      <div className="flex justify-center border-t border-white/[0.06] px-1 pb-2 pt-2">
+      <div className="flex justify-center border-t border-cyber-cyan/20 px-1 pb-2 pt-2 bg-black/20">
         {tierBadge(tier)}
       </div>
     </details>
@@ -115,14 +115,14 @@ const CompetencyCard = ({
 }) => {
   const shell =
     accent === 'violet'
-      ? 'border-violet-500/25 bg-violet-500/[0.06]'
-      : 'border-teal-500/25 bg-teal-500/[0.06]'
+      ? 'border-cyber-magenta/30 bg-cyber-magenta/5 text-slate-200 hover:border-cyber-magenta/60'
+      : 'border-cyber-cyan/30 bg-cyber-cyan/5 text-slate-200 hover:border-cyber-cyan/60'
   const headline = useMemo(() => competencyKeyword(text), [text])
 
   if (layoutExpanded) {
     return (
       <div
-        className={`min-w-0 max-w-full break-words rounded-lg border px-3 py-2.5 text-[13px] leading-snug text-slate-200 ${shell}`}
+        className={`min-w-0 max-w-full break-words rounded-none border px-3 py-2.5 text-[13px] leading-snug text-slate-300 font-terminal transition-all duration-300 ${shell}`}
       >
         {text}
       </div>
@@ -131,14 +131,14 @@ const CompetencyCard = ({
 
   return (
     <details
-      className={`min-w-0 max-w-full overflow-hidden rounded-lg border ${shell} open:bg-black/20`}
+      className={`min-w-0 max-w-full overflow-hidden rounded-none border transition-all duration-300 ${shell} open:bg-black/25 open:border-cyber-yellow`}
     >
-      <summary className="flex min-h-[44px] cursor-pointer list-none items-center px-1 py-2 text-left sm:px-2 [&::-webkit-details-marker]:hidden marker:content-none">
+      <summary className="flex min-h-[44px] cursor-pointer list-none items-center px-1 py-2 text-left sm:px-2 [&::-webkit-details-marker]:hidden marker:content-none font-terminal">
         <span className="line-clamp-4 break-words text-[10px] font-semibold leading-snug text-slate-100 sm:text-[11px]">
           {headline}
         </span>
       </summary>
-      <div className="border-t border-white/[0.06] px-1 pb-2 pt-2 text-[10px] leading-relaxed text-slate-300 sm:px-2 sm:text-[11px]">
+      <div className="border-t border-cyber-cyan/20 px-1 pb-2 pt-2 text-[10px] leading-relaxed text-slate-300 sm:px-2 sm:text-[11px] bg-black/20 font-terminal">
         {text}
       </div>
     </details>
@@ -162,19 +162,19 @@ const CollapsibleSection = ({
   const [isOpen, setIsOpen] = useState(true)
 
   return (
-    <div className="min-w-0 border-b border-white/[0.04] pb-6 last:border-0 last:pb-0">
+    <div className="min-w-0 border-b border-cyber-cyan/10 pb-6 last:border-0 last:pb-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] hover:border-white/[0.1] transition-all duration-200 shadow-sm backdrop-blur-sm group"
+        className="w-full flex items-center justify-between px-4 py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-yellow/40 rounded-none bg-cyber-dark/45 hover:bg-cyber-dark/70 border border-cyber-cyan/35 hover:border-cyber-yellow/60 transition-all duration-300 shadow-sm backdrop-blur-sm group"
         aria-expanded={isOpen}
       >
-        <h3 className={`flex items-center gap-2 font-mono text-[11px] tracking-wider font-semibold ${colorClass}`}>
-          <span className={`inline-block h-1.5 w-1.5 rounded-full ${bulletColor}`} />
+        <h3 className={`flex items-center gap-2 font-terminal text-xs tracking-wider font-semibold ${colorClass}`}>
+          <span className={`inline-block h-2 w-2 rounded-none ${bulletColor}`} />
           {title}
         </h3>
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.04] group-hover:bg-white/[0.08] border border-white/[0.05] transition-colors">
+        <div className="flex h-6 w-6 items-center justify-center rounded-none bg-cyber-cyan/5 group-hover:bg-cyber-yellow/10 border border-cyber-cyan/25 group-hover:border-cyber-yellow/45 transition-colors">
           <svg
-            className={`w-3 h-3 text-slate-400 group-hover:text-slate-200 transition-transform duration-200 ${
+            className={`w-3 h-3 text-cyber-cyan group-hover:text-cyber-yellow transition-transform duration-200 ${
               isOpen ? 'rotate-90' : ''
             }`}
             fill="none"
@@ -245,8 +245,8 @@ const Skills = () => {
       className="w-full min-w-0 max-w-full scroll-mt-24 py-16"
       aria-label="Technology stack and competencies"
     >
-      <p className="mb-4 font-mono text-sm text-slate-500">&gt; TECH.STACK</p>
-      <h2 className="mb-2 text-2xl font-bold text-slate-50 md:text-3xl">
+      <p className="mb-4 font-terminal text-sm text-cyber-magenta tracking-widest">&gt; TECH.STACK // DIAGNOSTICS</p>
+      <h2 className="mb-2 text-2xl font-bold text-slate-50 md:text-3xl tracking-wide cyber-glitch">
         Tech Stack
       </h2>
       <p className="mb-10 max-w-full text-sm leading-relaxed text-slate-400 sm:max-w-2xl">
@@ -256,8 +256,8 @@ const Skills = () => {
       <div className="min-w-0 space-y-6">
         <CollapsibleSection
           title="HARDWARE & EMBEDDED"
-          colorClass="text-amber-400/90"
-          bulletColor="bg-amber-400"
+          colorClass="text-cyber-yellow"
+          bulletColor="bg-cyber-yellow"
         >
           <div className={techGridClass}>
             {hardware.map((skill) => (
@@ -272,8 +272,8 @@ const Skills = () => {
 
         <CollapsibleSection
           title="SOFTWARE & WEB STACK"
-          colorClass="text-blue-400/90"
-          bulletColor="bg-blue-400"
+          colorClass="text-cyber-cyan"
+          bulletColor="bg-cyber-cyan"
         >
           <div className={techGridClass}>
             {software.map((skill) => (
@@ -288,8 +288,8 @@ const Skills = () => {
 
         <CollapsibleSection
           title="HARD SKILLS"
-          colorClass="text-violet-400/90"
-          bulletColor="bg-violet-400"
+          colorClass="text-cyber-magenta"
+          bulletColor="bg-cyber-magenta"
         >
           <div className="grid min-w-0 grid-cols-2 gap-1.5 min-[360px]:grid-cols-3 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3">
             {peopleSkills.hardSkills.map((line) => (
@@ -305,8 +305,8 @@ const Skills = () => {
 
         <CollapsibleSection
           title="SOFT SKILLS"
-          colorClass="text-teal-400/90"
-          bulletColor="bg-teal-400"
+          colorClass="text-cyber-cyan"
+          bulletColor="bg-cyber-cyan"
         >
           <div className="grid min-w-0 grid-cols-2 gap-1.5 min-[360px]:grid-cols-3 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3">
             {peopleSkills.softSkills.map((line) => (

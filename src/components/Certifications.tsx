@@ -91,23 +91,23 @@ const Certifications = () => {
 
   return (
     <section id="certs" className="py-16">
-      <p className="font-mono text-sm text-slate-500 mb-4">&gt; CERTIFICATIONS</p>
-      <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-8">Certifications</h2>
+      <p className="font-terminal text-sm text-cyber-magenta mb-4 tracking-widest">&gt; CERTIFICATIONS.DB // INDEX</p>
+      <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-8 tracking-wide cyber-glitch">Certifications</h2>
 
       <div className="grid md:grid-cols-2 gap-4">
         {certificates.map((cert, index) => (
           <button
             key={index}
             onClick={() => setSelected(cert)}
-            className="dashboard-card block text-left group focus:outline-none focus:ring-2 focus:ring-blue-500/40 rounded-lg"
+            className="cyber-card cyber-corner-brackets block text-left group focus:outline-none focus:ring-2 focus:ring-cyber-yellow/40"
           >
             <div className="flex items-start justify-between gap-3 mb-1">
-              <h3 className="text-base font-semibold text-slate-100 group-hover:text-blue-400 transition-colors">
+              <h3 className="text-base font-bold text-slate-100 group-hover:text-cyber-yellow transition-colors font-cyber tracking-wide">
                 {cert.name}
               </h3>
-              <span className="shrink-0 mt-0.5 inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-mono tracking-wider bg-white/5 text-slate-400 rounded border border-white/10 group-hover:text-blue-300 group-hover:border-blue-500/30 transition-colors">
+              <span className="shrink-0 mt-0.5 inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-terminal tracking-wider bg-cyber-cyan/5 text-cyber-cyan border border-cyber-cyan/25 group-hover:text-cyber-yellow group-hover:border-cyber-yellow/45 transition-colors">
                 <svg
-                  className="w-3 h-3"
+                  className="w-3 h-3 animate-pulse"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2}
@@ -128,7 +128,7 @@ const Certifications = () => {
                 PREVIEW
               </span>
             </div>
-            <p className="text-blue-400 text-sm mb-1">{cert.issuer}</p>
+            <p className="text-cyber-cyan font-bold font-cyber text-sm mb-1">{cert.issuer}</p>
             <p className="text-slate-400 text-sm">{cert.description}</p>
           </button>
         ))}
@@ -144,23 +144,23 @@ const Certifications = () => {
           tabIndex={-1}
         >
           <div
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-cyber-dark/80 backdrop-blur-md"
             onClick={() => setSelected(null)}
           />
 
           <div
-            className="relative w-full max-w-4xl h-[85vh] dashboard-card flex flex-col overflow-hidden"
+            className="relative w-full max-w-4xl h-[85vh] cyber-card cyber-corner-brackets border border-cyber-yellow/45 flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 pb-3 border-b border-white/5 mb-3">
+            <div className="flex items-start justify-between gap-4 pb-3 border-b border-cyber-yellow/15 mb-3">
               <div className="min-w-0">
-                <p className="font-mono text-[10px] text-slate-500 tracking-wider mb-1">
+                <p className="font-terminal text-[10px] text-cyber-magenta tracking-widest mb-1">
                   CERTIFICATE PREVIEW
                 </p>
-                <h3 className="text-base md:text-lg font-semibold text-slate-100 truncate">
+                <h3 className="text-base md:text-lg font-bold text-slate-100 truncate font-cyber">
                   {selected.name}
                 </h3>
-                <p className="text-blue-400 text-sm truncate">{selected.issuer}</p>
+                <p className="text-cyber-cyan text-sm truncate font-cyber font-bold">{selected.issuer}</p>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
@@ -169,13 +169,13 @@ const Certifications = () => {
                   download={selected.downloadName}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors border border-blue-500/20"
+                  className="cyber-btn-secondary inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-none"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth={2}
+                    strokeWidth={2.5}
                     viewBox="0 0 24 24"
                     aria-hidden="true"
                   >
@@ -191,14 +191,14 @@ const Certifications = () => {
                   href={selected.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium bg-white/5 text-slate-300 rounded-lg hover:bg-white/10 transition-colors border border-white/10"
+                  className="hidden sm:inline-flex cyber-btn-outline items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-none"
                   title="Open in new tab"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth={2}
+                    strokeWidth={2.5}
                     viewBox="0 0 24 24"
                     aria-hidden="true"
                   >
@@ -212,7 +212,7 @@ const Certifications = () => {
                 </a>
                 <button
                   onClick={() => setSelected(null)}
-                  className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+                  className="p-1.5 text-cyber-cyan hover:text-cyber-yellow rounded-none hover:bg-cyber-yellow/15 transition-colors"
                   aria-label="Close preview"
                 >
                   <svg
@@ -229,7 +229,7 @@ const Certifications = () => {
               </div>
             </div>
 
-            <div className="flex-1 min-h-0 rounded-lg overflow-hidden border border-white/5 bg-slate-900/60 flex items-center justify-center">
+            <div className="flex-1 min-h-0 rounded-none overflow-hidden border border-cyber-cyan/35 bg-cyber-dark flex items-center justify-center">
               {selected.url.match(/\.(jpg|jpeg|png|webp|gif)$/i) ? (
                 <img
                   src={selected.url}
@@ -245,8 +245,8 @@ const Certifications = () => {
               )}
             </div>
 
-            <p className="mt-3 font-mono text-[10px] text-slate-500 tracking-wider">
-              PRESS ESC OR CLICK OUTSIDE TO CLOSE
+            <p className="mt-3 font-terminal text-[10px] text-cyber-magenta/70 tracking-widest uppercase">
+              // PRESS ESC OR CLICK OUTSIDE TO CLOSE // SYSTEM_READY
             </p>
           </div>
         </div>

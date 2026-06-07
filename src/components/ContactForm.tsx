@@ -54,26 +54,26 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-cyber-dark/80 backdrop-blur-md"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-md dashboard-card overflow-hidden">
-        <div className="border-b border-white/5 p-4">
+      <div className="relative w-full max-w-md cyber-card cyber-corner-brackets overflow-hidden border border-cyber-yellow/45">
+        <div className="border-b border-cyber-yellow/15 p-4">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded"
+            className="absolute top-4 right-4 p-2 text-cyber-cyan hover:text-cyber-yellow rounded-none hover:bg-cyber-yellow/15 transition-all duration-300"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <p className="font-mono text-sm text-slate-500">SEND_MESSAGE</p>
-          <h2 className="text-lg font-semibold text-slate-100 mt-1">Contact</h2>
+          <p className="font-terminal text-sm text-cyber-magenta tracking-widest">SEND_MESSAGE.SYS</p>
+          <h2 className="text-lg font-bold text-slate-100 mt-1 font-cyber tracking-wider">Contact</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
-            <label htmlFor="name" className="block font-mono text-xs text-slate-500 mb-2">
+            <label htmlFor="name" className="block font-terminal text-xs text-cyber-cyan mb-2 tracking-widest">
               NAME
             </label>
             <input
@@ -83,13 +83,13 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
               required
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg text-slate-100 text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
+              className="w-full px-4 py-3 bg-cyber-dark/80 border border-cyber-cyan/35 rounded-none text-slate-100 text-sm font-terminal placeholder-cyber-cyan/30 focus:outline-none focus:border-cyber-yellow/50 transition-colors focus:ring-1 focus:ring-cyber-yellow/30"
               placeholder="Your name"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block font-mono text-xs text-slate-500 mb-2">
+            <label htmlFor="email" className="block font-terminal text-xs text-cyber-cyan mb-2 tracking-widest">
               EMAIL
             </label>
             <input
@@ -99,13 +99,13 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
               required
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg text-slate-100 text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
+              className="w-full px-4 py-3 bg-cyber-dark/80 border border-cyber-cyan/35 rounded-none text-slate-100 text-sm font-terminal placeholder-cyber-cyan/30 focus:outline-none focus:border-cyber-yellow/50 transition-colors focus:ring-1 focus:ring-cyber-yellow/30"
               placeholder="your.email@example.com"
             />
           </div>
 
           <div>
-            <label htmlFor="subject" className="block font-mono text-xs text-slate-500 mb-2">
+            <label htmlFor="subject" className="block font-terminal text-xs text-cyber-cyan mb-2 tracking-widest">
               SUBJECT
             </label>
             <input
@@ -115,13 +115,13 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
               required
               value={formData.subject}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg text-slate-100 text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
+              className="w-full px-4 py-3 bg-cyber-dark/80 border border-cyber-cyan/35 rounded-none text-slate-100 text-sm font-terminal placeholder-cyber-cyan/30 focus:outline-none focus:border-cyber-yellow/50 transition-colors focus:ring-1 focus:ring-cyber-yellow/30"
               placeholder="Subject"
             />
           </div>
 
           <div>
-            <label htmlFor="message" className="block font-mono text-xs text-slate-500 mb-2">
+            <label htmlFor="message" className="block font-terminal text-xs text-cyber-cyan mb-2 tracking-widest">
               MESSAGE
             </label>
             <textarea
@@ -131,27 +131,27 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
               rows={4}
               value={formData.message}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg text-slate-100 text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors resize-none"
+              className="w-full px-4 py-3 bg-cyber-dark/80 border border-cyber-cyan/35 rounded-none text-slate-100 text-sm font-terminal placeholder-cyber-cyan/30 focus:outline-none focus:border-cyber-yellow/50 transition-colors resize-none focus:ring-1 focus:ring-cyber-yellow/30"
               placeholder="Your message"
             />
           </div>
 
           {status === 'success' && (
-            <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
-              Message sent successfully.
+            <div className="p-3 bg-cyber-green/5 border border-cyber-green/30 rounded-none text-cyber-green text-sm font-terminal uppercase tracking-wider">
+              // Message sent successfully.
             </div>
           )}
 
           {status === 'error' && (
-            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
-              Something went wrong. Please try again or email directly.
+            <div className="p-3 bg-cyber-magenta/5 border border-cyber-magenta/30 rounded-none text-cyber-magenta text-sm font-terminal uppercase tracking-wider">
+              // Something went wrong. Please try again.
             </div>
           )}
 
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed py-3"
+            className="w-full cyber-btn-primary disabled:opacity-50 disabled:cursor-not-allowed py-3"
           >
             {status === 'loading' ? 'Sending...' : 'Send'}
           </button>

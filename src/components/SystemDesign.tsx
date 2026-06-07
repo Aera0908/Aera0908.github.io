@@ -72,22 +72,22 @@ const SystemDesign = () => {
 
   return (
     <section id="designs" className="w-full min-w-0 max-w-full scroll-mt-24 py-16">
-      <p className="mb-4 font-mono text-sm text-slate-500">&gt; SYSTEM.DESIGN</p>
-      <h2 className="mb-2 text-2xl font-bold text-slate-50 md:text-3xl">Architectural Showcases</h2>
+      <p className="mb-4 font-terminal text-sm text-cyber-magenta tracking-widest">&gt; SYSTEM.DESIGN // TOPOLOGY</p>
+      <h2 className="mb-2 text-2xl font-bold text-slate-50 md:text-3xl tracking-wide cyber-glitch">Architectural Showcases</h2>
       <p className="mb-10 max-w-full text-sm leading-relaxed text-slate-400 sm:max-w-2xl">
         Explore interactive system designs of my key platforms, highlighting end-to-end hardware interfaces, Web3 sync daemons, and signal pipelines.
       </p>
 
       {/* Tab Selector */}
-      <div className="flex flex-wrap gap-2 mb-8 border-b border-white/5 pb-4">
+      <div className="flex flex-wrap gap-2 mb-8 border-b border-cyber-yellow/20 pb-4">
         {designTabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
-            className={`px-4 py-2 font-mono text-[10px] sm:text-xs tracking-wider rounded-lg border transition-all duration-200 ${
+            className={`px-4 py-2 font-terminal text-[10px] sm:text-xs tracking-wider rounded-none border transition-all duration-200 ${
               activeTab === t.id
-                ? 'bg-blue-600/10 border-blue-500/50 text-blue-400 font-semibold'
-                : 'bg-white/[0.02] border-white/5 text-slate-400 hover:text-slate-200 hover:border-white/10'
+                ? 'bg-cyber-yellow/10 border-cyber-yellow text-cyber-yellow font-bold glow-cyber-yellow/15'
+                : 'bg-cyber-dark/40 border-cyber-cyan/35 text-cyber-cyan/70 hover:text-cyber-cyan hover:border-cyber-cyan/70'
             }`}
           >
             {t.label}
@@ -98,10 +98,10 @@ const SystemDesign = () => {
       {/* Main Layout (Vertical Stack) */}
       <div className="space-y-6">
         {/* Diagram Area (Above, Full Width) */}
-        <div className="dashboard-card p-4 sm:p-6 bg-[#121212]/80 backdrop-blur-sm rounded-xl border border-white/5 w-full">
+        <div className="cyber-card cyber-corner-brackets p-4 sm:p-6 w-full">
           <div className="flex justify-between items-center mb-3">
-            <span className="font-mono text-[10px] text-slate-500 tracking-widest">&gt; INTERACTIVE DIAGRAM</span>
-            <span className="font-mono text-[10px] text-blue-500 animate-pulse font-semibold">Zoomable</span>
+            <span className="font-terminal text-[10px] text-cyber-magenta tracking-widest">&gt; INTERACTIVE DIAGRAM</span>
+            <span className="font-terminal text-[10px] text-cyber-yellow animate-pulse font-bold">Zoomable</span>
           </div>
           <div className="w-full overflow-hidden">
             <ProjectDiagram id={current.diagramId} />
@@ -109,30 +109,30 @@ const SystemDesign = () => {
         </div>
 
         {/* Technical Explainer Area (Below, Full Width) */}
-        <div className="dashboard-card p-5 sm:p-8 bg-[#121212]/80 backdrop-blur-sm rounded-xl border border-white/5 w-full">
-          <span className="rounded bg-blue-600/15 border border-blue-500/25 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-blue-400 font-semibold">
+        <div className="cyber-card cyber-corner-brackets p-5 sm:p-8 w-full">
+          <span className="bg-cyber-magenta/15 border border-cyber-magenta/35 px-2.5 py-1 font-terminal text-[10px] uppercase tracking-wider text-cyber-magenta font-bold rounded-none">
             ARCHITECTURE OVERVIEW
           </span>
-          <h3 className="text-lg font-bold text-slate-100 mt-4 leading-snug">
+          <h3 className="text-lg font-bold text-slate-100 mt-4 leading-snug font-cyber tracking-wide">
             {current.title}
           </h3>
           <p className="text-sm leading-relaxed text-slate-400 mt-3 mb-6">
             {current.description}
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 border-t border-white/5 pt-6">
-            <div className="md:col-span-3 space-y-4">
-              <p className="font-mono text-[10px] text-slate-500 tracking-wider">&gt; TECHNICAL BULLETS</p>
-              <ul className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 border-t border-cyber-yellow/20 pt-6">
+            <div className="md:col-span-3 space-y-4 font-terminal">
+              <p className="font-terminal text-[10px] text-cyber-magenta tracking-widest">&gt; TECHNICAL BULLETS</p>
+              <ul className="space-y-3 font-sans">
                 {current.bullets.map((bullet, idx) => {
                   const [boldText, normalText] = bullet.split(': ')
                   return (
                     <li key={idx} className="flex gap-2.5 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                      <span className="text-blue-400 font-mono mt-0.5">▸</span>
+                      <span className="text-cyber-cyan font-terminal font-extrabold mt-0.5">&gt;</span>
                       <div>
                         {normalText ? (
                           <>
-                            <strong className="text-slate-200">{boldText}:</strong> {normalText}
+                            <strong className="text-cyber-cyan font-bold font-cyber tracking-wide">{boldText}:</strong> {normalText}
                           </>
                         ) : (
                           bullet
@@ -144,11 +144,11 @@ const SystemDesign = () => {
               </ul>
             </div>
 
-            <div className="md:col-span-1 space-y-4 md:border-l md:border-white/5 md:pl-6">
-              <p className="font-mono text-[10px] text-slate-500 tracking-wider mb-2.5">&gt; KEY ENABLERS</p>
+            <div className="md:col-span-1 space-y-4 md:border-l md:border-cyber-yellow/20 md:pl-6">
+              <p className="font-terminal text-[10px] text-cyber-cyan tracking-widest mb-2.5">&gt; KEY ENABLERS</p>
               <div className="flex flex-wrap gap-1.5">
                 {current.tags.map((t) => (
-                  <span key={t} className="px-2 py-0.5 text-[10px] text-slate-300 font-mono bg-white/5 rounded border border-white/5">
+                  <span key={t} className="px-2 py-0.5 text-[10px] text-cyber-cyan font-terminal bg-cyber-cyan/5 border border-cyber-cyan/25 hover:border-cyber-yellow/45 hover:text-cyber-yellow rounded-none transition-all duration-300">
                     {t}
                   </span>
                 ))}

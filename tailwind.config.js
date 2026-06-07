@@ -6,6 +6,21 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        cyber: {
+          yellow: '#fcee0a',
+          cyan: '#00f0ff',
+          magenta: '#ff0055',
+          dark: '#08080a',
+          gray: '#121319',
+          panel: '#151720',
+          green: '#00ff66',
+        }
+      },
+      fontFamily: {
+        cyber: ['Rajdhani', 'sans-serif'],
+        terminal: ['"Share Tech Mono"', 'monospace'],
+      },
       animation: {
         'fade-in': 'fadeIn 0.6s ease-in-out',
         'fade-out': 'fadeOut 0.3s ease-in-out',

@@ -90,21 +90,21 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] bg-grid-pattern flex flex-col overflow-x-hidden pt-8">
+    <div className="min-h-screen bg-cyber-dark bg-cyber-grid flex flex-col overflow-x-hidden pt-8">
       <HeaderBar />
       
       <div className="flex flex-1 relative min-w-0">
-        <div className="lg:hidden fixed top-8 left-0 right-0 h-12 bg-[#141414]/95 backdrop-blur border-b border-white/5 z-30 flex items-center px-4">
+        <div className="lg:hidden fixed top-8 left-0 right-0 h-12 bg-cyber-gray/95 backdrop-blur border-b border-cyber-yellow/20 z-30 flex items-center px-4">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 text-slate-400 hover:text-white"
+            className="p-2 text-cyber-cyan hover:text-cyber-yellow transition-colors"
             aria-label="Open menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <span className="font-mono text-sm text-slate-400 ml-2">AIRA.SYS</span>
+          <span className="font-terminal text-sm text-cyber-yellow ml-2 tracking-wider">AIRA.SYS</span>
         </div>
 
         <Sidebar 
@@ -128,9 +128,9 @@ function App() {
           <Contact />
         </div>
 
-        <footer className="py-8 px-4 border-t border-white/5">
-          <p className="font-mono text-center text-xs text-slate-500">
-            {new Date().getFullYear()} Aira Ynte
+        <footer className="py-8 px-4 border-t border-cyber-yellow/10 bg-cyber-gray/30">
+          <p className="font-terminal text-center text-xs text-cyber-cyan/50 tracking-wider">
+            // {new Date().getFullYear()} AIRA YNTE // SYSTEM ONLINE
           </p>
         </footer>
         </main>

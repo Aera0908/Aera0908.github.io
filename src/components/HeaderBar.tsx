@@ -19,13 +19,24 @@ const HeaderBar = () => {
   }, [])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-8 bg-[#1a1a1a] border-b border-white/5 flex items-center justify-between px-4 font-mono text-xs text-slate-400 shrink-0">
-      <div className="flex gap-3 sm:gap-6">
-        <span className="hidden sm:inline">MEM: 16GB OK</span>
-        <span className="hidden sm:inline">CPU: 3.2GHz</span>
-        <span>LOC: Manila, PH</span>
+    <header className="fixed top-0 left-0 right-0 z-50 h-8 bg-cyber-gray border-b border-cyber-yellow/35 flex items-center justify-between px-4 font-terminal text-xs shrink-0 select-none">
+      <div className="flex gap-3 sm:gap-6 items-center">
+        <span className="flex items-center gap-1.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-green opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyber-green"></span>
+          </span>
+          <span className="text-cyber-cyan">SYS:</span>
+          <span className="text-cyber-yellow font-bold">ONLINE</span>
+        </span>
+        <span className="hidden sm:inline text-cyber-cyan/80">CPU: <span className="text-cyber-yellow">3.2GHz</span></span>
+        <span className="hidden sm:inline text-cyber-cyan/80">LOC: <span className="text-cyber-yellow">MANILA, PH</span></span>
+        <span className="hidden md:inline text-cyber-cyan/80">TUNNEL: <span className="text-cyber-magenta font-semibold">ESTABLISHED</span></span>
       </div>
-      <span className="text-slate-500">{time}</span>
+      <div className="flex items-center gap-4">
+        <span className="hidden sm:inline text-cyber-cyan/40">// EDGERUNNER.NET</span>
+        <span className="text-cyber-yellow font-bold tracking-widest">{time}</span>
+      </div>
     </header>
   )
 }

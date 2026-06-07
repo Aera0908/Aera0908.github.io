@@ -3,11 +3,11 @@ import type { Engagement } from '../data/projectTypes'
 type Size = 'sm' | 'md'
 
 const engagementStyles: Record<Engagement, string> = {
-  Freelance: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
-  Client: 'bg-orange-500/15 text-orange-300 border border-orange-500/30',
-  Academic: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30',
-  Personal: 'bg-slate-500/15 text-slate-300 border border-slate-500/30',
-  'Open Source': 'bg-teal-500/15 text-teal-300 border border-teal-500/30',
+  Freelance: 'bg-cyber-yellow/15 text-cyber-yellow border border-cyber-yellow/30',
+  Client: 'bg-cyber-magenta/15 text-cyber-magenta border border-cyber-magenta/30',
+  Academic: 'bg-cyber-green/15 text-cyber-green border border-cyber-green/30',
+  Personal: 'bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/30',
+  'Open Source': 'bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/30',
 }
 
 const engagementTooltip: Record<Engagement, string> = {
@@ -37,10 +37,10 @@ export const EngagementBadge = ({
   if (!engagement) return null
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded font-mono tracking-wider ${engagementStyles[engagement]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center gap-1 rounded-none font-terminal tracking-wider ${engagementStyles[engagement]} ${sizes[size]} ${className}`}
       title={engagementTooltip[engagement]}
     >
-      <span className="w-1 h-1 rounded-full bg-current opacity-80" />
+      <span className="w-1.5 h-1.5 rounded-none bg-current opacity-80" />
       {engagement.toUpperCase()}
     </span>
   )
@@ -62,7 +62,7 @@ export const LimitedInfoBadge = ({
   if (!active) return null
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded font-mono tracking-wider bg-rose-500/10 text-rose-300 border border-dashed border-rose-500/40 ${sizes[size]} ${className}`}
+      className={`inline-flex items-center gap-1 rounded-none font-terminal tracking-wider bg-cyber-magenta/10 text-cyber-magenta border border-dashed border-cyber-magenta/40 ${sizes[size]} ${className}`}
       title="Public information is limited per a client contract / NDA"
     >
       <svg

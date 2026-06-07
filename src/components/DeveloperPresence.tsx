@@ -40,8 +40,8 @@ const DeveloperPresence = () => {
       className="w-full min-w-0 max-w-full scroll-mt-24 py-16"
       aria-label="Coding activity and practice profiles"
     >
-      <p className="font-mono text-sm text-slate-500 mb-4">&gt; PRESENCE</p>
-      <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-2">
+      <p className="font-terminal text-sm text-cyber-magenta mb-4 tracking-widest">&gt; PRESENCE.SYS // LOG_STREAM</p>
+      <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-2 tracking-wide cyber-glitch">
         Activity
       </h2>
       <p className="mb-8 max-w-full text-sm leading-relaxed text-slate-400 sm:max-w-2xl">
@@ -49,15 +49,15 @@ const DeveloperPresence = () => {
       </p>
 
       <div className="grid min-w-0 gap-6 lg:grid-cols-2">
-        <div className="dashboard-card flex min-w-0 max-w-full flex-col overflow-hidden">
+        <div className="cyber-card cyber-corner-brackets flex min-w-0 max-w-full flex-col overflow-hidden">
           <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
             <div className="flex items-center gap-2">
-              <FaGithub className="text-slate-300 text-xl" aria-hidden />
+              <FaGithub className="text-cyber-cyan text-xl" aria-hidden />
               <div>
-                <h3 className="text-lg font-semibold text-sky-300 font-mono">
+                <h3 className="text-lg font-bold text-cyber-cyan font-terminal tracking-wider">
                   GitHub
                 </h3>
-                <p className="text-xs text-slate-500 font-mono">
+                <p className="text-xs text-cyber-magenta/70 font-terminal">
                   @{profile.githubLogin}
                 </p>
               </div>
@@ -66,7 +66,7 @@ const DeveloperPresence = () => {
               href={ghProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-blue-400 hover:text-blue-300"
+              className="inline-flex items-center gap-1.5 text-xs font-terminal text-cyber-cyan hover:text-cyber-yellow"
             >
               Profile <FaExternalLinkAlt className="text-[10px]" aria-hidden />
             </a>
@@ -75,7 +75,7 @@ const DeveloperPresence = () => {
           {stats.github ? (
             <>
               <p className="text-sm text-slate-300 mb-3">
-                <span className="font-semibold text-slate-100">
+                <span className="font-bold text-cyber-yellow font-terminal text-base">
                   {stats.github.totalContributions.toLocaleString()}
                 </span>{' '}
                 contributions in the last year on GitHub
@@ -90,21 +90,21 @@ const DeveloperPresence = () => {
               </div>
             </>
           ) : (
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 font-terminal">
               GitHub activity could not be loaded.
             </p>
           )}
         </div>
 
-        <div className="dashboard-card flex min-w-0 max-w-full flex-col overflow-hidden">
+        <div className="cyber-card cyber-corner-brackets flex min-w-0 max-w-full flex-col overflow-hidden">
           <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
             <div className="flex items-center gap-2">
-              <SiLeetcode className="text-[#ffa116] text-xl" aria-hidden />
+              <SiLeetcode className="text-cyber-yellow text-xl" aria-hidden />
               <div>
-                <h3 className="text-lg font-semibold text-amber-200 font-mono">
+                <h3 className="text-lg font-bold text-cyber-yellow font-terminal tracking-wider">
                   LeetCode
                 </h3>
-                <p className="text-xs text-slate-500 font-mono">
+                <p className="text-xs text-cyber-magenta/70 font-terminal">
                   @{profile.leetcodeUsername}
                 </p>
               </div>
@@ -113,56 +113,56 @@ const DeveloperPresence = () => {
               href={lcProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-blue-400 hover:text-blue-300"
+              className="inline-flex items-center gap-1.5 text-xs font-terminal text-cyber-cyan hover:text-cyber-yellow"
             >
               Profile <FaExternalLinkAlt className="text-[10px]" aria-hidden />
             </a>
           </div>
 
           {!lc ? (
-            <p className="text-sm text-slate-500 font-mono">
+            <p className="text-sm text-slate-500 font-terminal">
               Stats unavailable — rebuild failed to fetch LeetCode data.
             </p>
           ) : (
             <>
               <div className="flex flex-wrap gap-2 mb-4">
                 {lc.streak != null && (
-                  <span className="px-2.5 py-1 rounded-md text-xs font-mono bg-amber-500/10 text-amber-200 border border-amber-500/25">
+                  <span className="px-2.5 py-1 rounded-none text-xs font-terminal bg-cyber-yellow/10 text-cyber-yellow border border-cyber-yellow/30">
                     Streak: {lc.streak} day{lc.streak === 1 ? '' : 's'}
                   </span>
                 )}
                 {lc.totalActiveDays != null && (
-                  <span className="px-2.5 py-1 rounded-md text-xs font-mono bg-white/5 text-slate-300 border border-white/10">
+                  <span className="px-2.5 py-1 rounded-none text-xs font-terminal bg-cyber-cyan/5 text-cyber-cyan border border-cyber-cyan/25">
                     Active days ({new Date().getFullYear()}):{' '}
                     {lc.totalActiveDays}
                   </span>
                 )}
                 {lc.solved.Easy != null && (
-                  <span className="px-2.5 py-1 rounded-md text-xs font-mono bg-emerald-500/10 text-emerald-200 border border-emerald-500/20">
+                  <span className="px-2.5 py-1 rounded-none text-xs font-terminal bg-cyber-green/5 text-cyber-green border border-cyber-green/25">
                     Easy {lc.solved.Easy}
                   </span>
                 )}
                 {lc.solved.Medium != null && (
-                  <span className="px-2.5 py-1 rounded-md text-xs font-mono bg-amber-500/10 text-amber-100 border border-amber-500/20">
+                  <span className="px-2.5 py-1 rounded-none text-xs font-terminal bg-cyber-yellow/5 text-cyber-yellow border border-cyber-yellow/25">
                     Medium {lc.solved.Medium}
                   </span>
                 )}
                 {lc.solved.Hard != null && (
-                  <span className="px-2.5 py-1 rounded-md text-xs font-mono bg-rose-500/10 text-rose-200 border border-rose-500/20">
+                  <span className="px-2.5 py-1 rounded-none text-xs font-terminal bg-cyber-magenta/5 text-cyber-magenta border border-cyber-magenta/25">
                     Hard {lc.solved.Hard}
                   </span>
                 )}
               </div>
 
-              <div className="flex flex-wrap gap-x-3 gap-y-1 mb-3 text-[11px] font-mono text-slate-500">
+              <div className="flex flex-wrap gap-x-3 gap-y-1 mb-3 text-[11px] font-terminal text-cyber-cyan/50">
                 {lc.solved.All != null && (
                   <span>
                     Accepted problems (total):{' '}
-                    <span className="text-slate-300">{lc.solved.All}</span>
+                    <span className="text-cyber-cyan font-bold">{lc.solved.All}</span>
                   </span>
                 )}
                 {lc.activeYears && lc.activeYears.length > 0 && (
-                  <span className="text-slate-600">
+                  <span className="text-cyber-cyan/40">
                     Years active: {lc.activeYears.join(', ')}
                   </span>
                 )}

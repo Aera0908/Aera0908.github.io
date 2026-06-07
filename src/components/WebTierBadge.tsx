@@ -9,9 +9,9 @@ interface Props {
 }
 
 const styles: Record<WebTier, string> = {
-  Web2: 'bg-sky-500/15 text-sky-300 border border-sky-500/30',
-  Web3: 'bg-violet-500/15 text-violet-300 border border-violet-500/30',
-  Hybrid: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30',
+  Web2: 'bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/30',
+  Web3: 'bg-cyber-magenta/15 text-cyber-magenta border border-cyber-magenta/30',
+  Hybrid: 'bg-cyber-green/15 text-cyber-green border border-cyber-green/30',
 }
 
 const titles: Record<WebTier, string> = {
@@ -29,10 +29,10 @@ const WebTierBadge = ({ tier, size = 'sm', className = '' }: Props) => {
   if (!tier) return null
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded font-mono tracking-wider ${styles[tier]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center gap-1 rounded-none font-terminal tracking-wider ${styles[tier]} ${sizes[size]} ${className}`}
       title={titles[tier]}
     >
-      <span className="w-1 h-1 rounded-full bg-current opacity-80" />
+      <span className="w-1.5 h-1.5 rounded-none bg-current opacity-80" />
       {tier.toUpperCase()}
     </span>
   )
