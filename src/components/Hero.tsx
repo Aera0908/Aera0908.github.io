@@ -37,9 +37,9 @@ const Hero = () => {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
-          <span className="min-w-0 whitespace-nowrap sm:hidden">OPEN TO SW/HW ROLES · MNL / REMOTE</span>
+          <span className="min-w-0 whitespace-nowrap sm:hidden">OPEN TO SW/ARCH ROLES · MNL / REMOTE</span>
           <span className="hidden min-w-0 sm:inline">
-            OPEN TO SOFTWARE / HARDWARE ENGINEERING ROLES · METRO MANILA / REMOTE
+            OPEN TO SOFTWARE ENGINEERING &amp; ARCHITECTURE ROLES · METRO MANILA / REMOTE
           </span>
         </div>
 
@@ -49,8 +49,8 @@ const Hero = () => {
         </h1>
         <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-6 max-w-full sm:max-w-2xl break-words">
           I am a{' '}
-          <span className="font-semibold text-blue-400">Software & Hardware Engineer (Computer Engineering)</span>{' '}
-          bridging hardware and software to build systems that think, interact, and solve real-world problems. Expected graduation: July 2026.
+          <span className="font-semibold text-blue-400">Software Engineer &amp; System Architect</span>{' '}
+          specializing in modular software planning, layout design, and robust full-stack systems that think, interact, and scale. Expected graduation: July 2026.
         </p>
         <div className="flex flex-wrap gap-2 mb-8 w-full max-w-full">
           <span className="hashtag-tag text-blue-400 border border-blue-500/40 bg-blue-500/10">#ICDesign</span>

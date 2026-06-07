@@ -81,7 +81,7 @@ const Contact = () => {
           Engineering Opportunities
         </h3>
         <p className="text-slate-400 text-sm mb-6">
-          Open to software and hardware engineering roles in digital systems, IC design, web development, and AI integration. Expected graduation: July 2026.
+          Open to software engineering and system architecture roles in web development, database planning, and AI integration. Expected graduation: July 2026.
         </p>
         <button
           onClick={() => setIsFormOpen(true)}

@@ -57,7 +57,7 @@ const Education = () => {
             <p>
               <span className="text-slate-500">Focus:</span>{' '}
               <span className="text-slate-300">
-                IC design, IoT &amp; embedded systems, AI integration, Web2/Web3 application development
+                Software architecture, full-stack systems design, Web2/Web3 application planning, applied AI orchestration
               </span>
             </p>
             <p>
@@ -66,7 +66,7 @@ const Education = () => {
             </p>
             <p>
               <span className="text-slate-500">Availability:</span>{' '}
-              <span className="text-green-400 font-medium">Open for software / hardware engineering roles</span>
+              <span className="text-green-400 font-medium">Open for software engineering &amp; system architecture roles</span>
             </p>
           </div>
         </div>

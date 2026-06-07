@@ -14,8 +14,8 @@ const Portfolio = () => {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const allProjects = projectsData as Project[]
-  // Exclude highlighted projects (AeroVit & Fehuvia) from the carousel
-  const carouselProjects = allProjects.filter((p) => p.id !== 'aerovit' && p.id !== 'fehuvia')
+  // Exclude highlighted projects (AeroVit, Fehuvia & Plant.io) from the carousel
+  const carouselProjects = allProjects.filter((p) => p.id !== 'aerovit' && p.id !== 'fehuvia' && p.id !== 'plantio')
   const featured = carouselProjects.filter((p) => p.featured)
   const projects = featured.length > 0 ? featured : carouselProjects
 
@@ -196,9 +196,10 @@ const Portfolio = () => {
 
       {/* ── Highlighted Projects ── */}
       {(() => {
-        const highlighted = allProjects.filter(
-          (p) => p.id === 'aerovit' || p.id === 'fehuvia',
-        )
+        const highlightedOrder = ['fehuvia', 'aerovit', 'plantio']
+        const highlighted = allProjects
+          .filter((p) => highlightedOrder.includes(p.id))
+          .sort((a, b) => highlightedOrder.indexOf(a.id) - highlightedOrder.indexOf(b.id))
         if (highlighted.length === 0) return null
         return (
           <div className="mb-12">
@@ -211,13 +212,15 @@ const Portfolio = () => {
               </h3>
               <div className="flex-1 h-px bg-gradient-to-r from-amber-500/20 to-transparent" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {highlighted.map((project) => {
                 const liveUrl = project.links?.live || project.links?.website || project.websiteUrl
                 const accentClass =
                   project.id === 'aerovit'
                     ? 'border-violet-500/30 hover:border-violet-500/50 hover:shadow-[0_0_30px_-5px_rgba(139,92,246,0.15)]'
-                    : 'border-emerald-500/30 hover:border-emerald-500/50 hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.15)]'
+                    : project.id === 'fehuvia'
+                    ? 'border-emerald-500/30 hover:border-emerald-500/50 hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.15)]'
+                    : 'border-amber-500/30 hover:border-amber-500/50 hover:shadow-[0_0_30px_-5px_rgba(245,158,11,0.15)]'
 
                 return (
                   <div
@@ -566,6 +569,61 @@ const Portfolio = () => {
                   <h4 className="text-slate-500 font-mono text-xs mb-2">DURATION</h4>
                   <p className="text-slate-300">{projects[selectedProject].duration}</p>
                 </div>
+                {projects[selectedProject].collaborators && projects[selectedProject].collaborators!.length > 0 && (
+                  <div>
+                    <h4 className="text-slate-500 font-mono text-xs mb-2">COLLABORATORS</h4>
+                    <div className="space-y-2">
+                      {projects[selectedProject].collaborators!.map((collab, ci) => {
+                        const avatarSrc = collab.avatar
+                          || (collab.github
+                            ? `https://github.com/${collab.github.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '')}.png?size=80`
+                            : undefined)
+
+                        const profileUrl = collab.github
+                          ? (collab.github.startsWith('http') ? collab.github : `https://github.com/${collab.github}`)
+                          : undefined
+
+                        const inner = (
+                          <div className="flex items-center gap-2">
+                            {avatarSrc ? (
+                              <img
+                                src={avatarSrc}
+                                alt={collab.name}
+                                className="w-6 h-6 rounded-full ring-1 ring-white/10 object-cover shrink-0"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <span className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500/30 to-violet-500/30 ring-1 ring-white/10 flex items-center justify-center text-[10px] font-semibold text-slate-300 shrink-0">
+                                {collab.name.charAt(0).toUpperCase()}
+                              </span>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-slate-300 text-sm leading-tight truncate">{collab.name}</p>
+                              <p className="text-slate-500 text-[10px] font-mono leading-tight truncate">{collab.role}</p>
+                            </div>
+                          </div>
+                        )
+
+                        return profileUrl ? (
+                          <a
+                            key={ci}
+                            href={profileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block rounded-md px-1.5 py-1 -mx-1.5 transition-colors hover:bg-white/5"
+                            title={`View ${collab.name} on GitHub`}
+                          >
+                            {inner}
+                          </a>
+                        ) : (
+                          <div key={ci} className="px-1.5 py-1 -mx-1.5">
+                            {inner}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div>
                   <h4 className="text-slate-500 font-mono text-xs mb-2">TECHNOLOGIES</h4>
                   <div className="flex flex-wrap gap-2">

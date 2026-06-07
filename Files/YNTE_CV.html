@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aira Josh C. Ynte — Curriculum Vitae</title>
+  <style>
+    /* ATS-friendly: no columns, no tables for layout, standard fonts, plain structure */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page {
+      size: letter;
+      margin: 0.5in 0.6in;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.45;
+      color: #1a1a1a;
+      max-width: 7.5in;
+      margin: 0 auto;
+      padding: 0.5in 0.6in;
+      text-align: justify;
+    }
+
+    @media print {
+      body { padding: 0; }
+      .page-break { page-break-before: always; }
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 14pt; }
+    .header h1 {
+      font-size: 22pt;
+      font-weight: 700;
+      letter-spacing: 0.5pt;
+      margin-bottom: 2pt;
+      color: #111;
+    }
+    .header .doc-type {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2pt;
+      color: #888;
+      margin-bottom: 6pt;
+    }
+    .header .subtitle {
+      font-size: 10.5pt;
+      color: #444;
+      margin-bottom: 4pt;
+    }
+    .header .contact {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9pt;
+      color: #333;
+    }
+    .header .contact a { color: #333; text-decoration: none; }
+    .header .contact .sep { margin: 0 6pt; color: #aaa; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 14pt; }
+    .section-title {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2pt;
+      color: #111;
+      border-bottom: 1.5pt solid #111;
+      padding-bottom: 2pt;
+      margin-bottom: 8pt;
+    }
+
+    /* ── Entry ── */
+    .entry { margin-bottom: 12pt; }
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4pt;
+    }
+    .entry-title { font-weight: 700; font-size: 10.5pt; color: #111; }
+    .entry-org { font-style: italic; color: #333; }
+    .entry-meta {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9pt;
+      color: #555;
+      margin-top: 1pt;
+    }
+    .entry-date {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9pt;
+      color: #555;
+      white-space: nowrap;
+    }
+    .entry-desc {
+      margin-top: 3pt;
+      color: #333;
+    }
+
+    ul {
+      margin-left: 16pt;
+      margin-top: 3pt;
+    }
+    ul li {
+      margin-bottom: 2pt;
+      color: #222;
+    }
+
+    .tech-note {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9pt;
+      color: #555;
+      margin-top: 3pt;
+    }
+
+    /* ── Skills ── */
+    .skills-group { margin-bottom: 5pt; }
+    .skills-label {
+      font-weight: 700;
+      font-size: 9.5pt;
+      color: #111;
+    }
+    .skills-list {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5pt;
+      color: #333;
+    }
+
+    /* ── Soft Skills ── */
+    .soft-skills-list { margin-top: 6pt; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>AIRA JOSH C. YNTE</h1>
+    <p class="doc-type">Curriculum Vitae</p>
+    <p class="subtitle">Software Engineer &amp; System Architect · Computer Engineering</p>
+    <p class="contact">
+      08airajosh@gmail.com
+      <span class="sep">|</span>
+      linkedin.com/in/aira-josh-ynte-755353322
+      <span class="sep">|</span>
+      Metro Manila, Philippines
+    </p>
+  </div>
+
+  <!-- ════════════════ PROFESSIONAL SUMMARY ════════════════ -->
+  <div class="section">
+    <div class="section-title">Professional Summary</div>
+    <p>
+      Detail-oriented Computer Engineering graduate (expected July 2026) specializing in software architecture, planning,
+      and design. Proven track record delivering production-ready freelance systems, secure blockchain payment rails,
+      IoT monitoring dashboards, and robust full-stack web systems (Web2 &amp; Web3). Experienced in modular system planning,
+      database optimization, API design, and modern frontend/backend development with React, TypeScript, and Node.js.
+      Seeking roles in software engineering, system architecture, full-stack development, and applied AI design.
+    </p>
+  </div>
+
+  <!-- ════════════════ EDUCATION ════════════════ -->
+  <div class="section">
+    <div class="section-title">Education</div>
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Bachelor of Science in Computer Engineering</span>
+        <span class="entry-date">2022 – July 2026 (Expected)</span>
+      </div>
+      <div class="entry-org">Colegio de Muntinlupa — Muntinlupa City, Metro Manila, Philippines</div>
+      <p class="entry-meta">Specialization: Software Architecture &amp; System Design</p>
+      <ul>
+        <li>Core coursework: Software engineering, computer architecture, database systems, networks, robotics, system simulation.</li>
+        <li>Hands-on research and prototyping in microcontrollers, RTOS, embedded software, and high-performance computing.</li>
+        <li>Designed muscle bio-signal acquisition controller using surface electrodes and ESP32 digital filtering.</li>
+        <li>Capstone: AeroVit — end-to-end fitness prototype spanning mobile, wearable, AI, and Web3.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════════════ PROFESSIONAL EXPERIENCE ════════════════ -->
+  <div class="section">
+    <div class="section-title">Professional Experience</div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">IC Design Intern (On-the-Job Training)</span>
+        <span class="entry-date">2025</span>
+      </div>
+      <div class="entry-org">Xinyx Design Consultancy and Services Inc.</div>
+      <ul>
+        <li>Designed and verified AMBA APB3 peripheral interfaces using SystemVerilog RTL modeling.</li>
+        <li>Gained hands-on exposure in hardware/electronics design, IC design workflows, and circuit simulation.</li>
+        <li>Completed training in industry-standard design and verification methodologies.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Freelance Web3 &amp; Full-Stack Developer</span>
+        <span class="entry-date">2023 – Present</span>
+      </div>
+      <div class="entry-org">Various Clients</div>
+      <ul>
+        <li>Delivered custom high-performance Web2/Web3 dashboard interfaces and database systems for multiple clients.</li>
+        <li>Developed secure client-side signing modules using MetaMask and EIP-1193 provider injection standard.</li>
+        <li>Designed PostgreSQL database schemas using highly optimized EXISTS and subquery aggregations, reducing query times.</li>
+        <li>Built and deployed RESTful microservices using Node.js/Express with strict rate-limiting and audit logging.</li>
+        <li>Integrated custodial and non-custodial cryptocurrency payment rails.</li>
+        <li>Managed iterative stakeholder feedback cycles across freelance engagements.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════════════ PROJECTS ════════════════ -->
+  <div class="section">
+    <div class="section-title">Projects</div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Fehuvia — Open Finance Web3 B2B Treasury Workstation</span>
+        <span class="entry-date">2026</span>
+      </div>
+      <p class="entry-meta">Role: Lead Web3 &amp; Full-Stack Developer</p>
+      <p class="entry-desc">
+        B2B treasury workstation on Morph Layer 2 featuring automated background gas faucet, PostgreSQL listener
+        daemon for dual-state financial auditing, and an AI co-pilot for cashflow analytics.
+      </p>
+      <ul>
+        <li>Designed Solidity billing clearance protocol deployed to Morph L2, achieving T+0 settlements under 2 seconds.</li>
+        <li>Engineered an automated self-healing background gas faucet eliminating onboarding friction for non-crypto operators.</li>
+        <li>Integrated context-aware RAG pipeline utilizing OpenAI GPT-4o for cashflow forecasting and invoice OCR parsing.</li>
+        <li>Built real-time EVM listener daemon syncing smart contract event emissions to PostgreSQL for financial auditing.</li>
+        <li>Implemented zero-custody architecture: client-side signing via MetaMask (EIP-1193), no server-held private keys.</li>
+      </ul>
+      <p class="tech-note">Stack: React 19, Vite, Tailwind CSS, Recharts, Solidity, Hardhat, Morph L2, Ethers.js, Express, PostgreSQL, OpenAI GPT-4o</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">AeroVit — Gamified AI Fitness Platform</span>
+        <span class="entry-date">September 2024 – April 2026</span>
+      </div>
+      <p class="entry-meta">Role: Lead Developer &amp; Hardware Engineer</p>
+      <p class="entry-desc">
+        Hybrid fitness ecosystem pairing a Flutter mobile app with a custom ESP32-S3 smartwatch, MediaPipe BlazePose
+        pose tracking, adaptive AI coaching, and an ERC-20 reward token on Ethereum Sepolia.
+      </p>
+      <ul>
+        <li>Designed and brought up custom smartwatch PCBs using ESP32-S3, QMI8658 IMU, MAX30102 heart rate/SpO2 sensor, and BLE 5.0.</li>
+        <li>Built 33-landmark MediaPipe BlazePose pipeline with EMA smoothing, joint-angle scoring, phase state machines, and rep counting for 22+ exercises.</li>
+        <li>Developed 20-floor turn-based dungeon RPG (Flame 2D) with skills, economy, and boss milestones as gamification layer.</li>
+        <li>Deployed AERO ERC-20 token on Ethereum Sepolia with off-chain accrual, 100-AERO minimum withdrawal, 24h cooldown, and 5% burn.</li>
+        <li>Implemented AI coaching layer with ChromaDB RAG, STT/TTS, pre-recorded audio, and RL-style intensity adaptation.</li>
+        <li>Built Next.js product showcase (Three.js, Framer Motion) and Vite technical documentation website (aerovit.dev).</li>
+      </ul>
+      <p class="tech-note">Stack: ESP32-S3, Flutter/Dart, Flame, Firebase, Cloud Functions, Firestore, MediaPipe, ChromaDB, BLE 5.0, Next.js, Ethereum Sepolia, ERC-20</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Plant.io — 8-Bit IoT Nursery Dashboard</span>
+        <span class="entry-date">2025</span>
+      </div>
+      <p class="entry-meta">Role: Full-Stack Mobile &amp; IoT Developer · Freelance (NDA)</p>
+      <p class="entry-desc">
+        Cross-platform Flutter dashboard for ESP32-based plant nurseries with real-time sensor telemetry,
+        remote actuator control, plant-mood scoring, and retro 8-bit UI.
+      </p>
+      <ul>
+        <li>Built real-time multi-device monitoring for soil moisture, temperature, humidity, EC, and pH sensors.</li>
+        <li>Implemented remote actuator control: pump, fans, and fertilizer dispensing per garden bed.</li>
+        <li>Designed plant-mood scoring system rendering live health via animated avatar with configurable thresholds.</li>
+        <li>Integrated weather data via Open-Meteo API for environmental context and location-aware recommendations.</li>
+        <li>Implemented offline caching, connectivity monitoring, and local push alerts for critical conditions.</li>
+        <li>Cross-platform deployment: iOS, Android, Web, macOS, Linux, Windows.</li>
+      </ul>
+      <p class="tech-note">Stack: Flutter, Dart, Provider, Firebase Realtime DB, Cloud Firestore, fl_chart, Open-Meteo API, ESP32</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">The Safehouse — Community Showcase &amp; Pitch Site</span>
+        <span class="entry-date">2025 – Present</span>
+      </div>
+      <p class="entry-meta">Role: Frontend &amp; 3D Web Developer</p>
+      <p class="entry-desc">
+        Narrative showcase website delivered as a guided 3D scroll journey using React Three Fiber, GSAP, and Lenis.
+      </p>
+      <ul>
+        <li>Built interactive 3D journey scene (forest, signposts, gate, campfire) in React Three Fiber with procedural terrain generation.</li>
+        <li>Wired GSAP timelines and ScrollTrigger to Lenis smooth scroll via shared Tempus clock for 13 scroll-driven narrative sections.</li>
+        <li>Implemented accessibility-first MotionModeContext respecting prefers-reduced-motion with static fallbacks.</li>
+      </ul>
+      <p class="tech-note">Stack: React 19, Vite, Tailwind CSS 4, Three.js, @react-three/fiber, GSAP, Framer Motion, Lenis, Rive</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Student Consultation System</span>
+        <span class="entry-date">2025</span>
+      </div>
+      <p class="entry-meta">Role: Full-Stack Developer · Freelance (NDA)</p>
+      <ul>
+        <li>Built full-stack web platform with role-based interfaces (student, professor, admin) for managing consultations.</li>
+        <li>Implemented real-time messaging with file attachments, interactive scheduling calendar, and consultation lifecycle tracking.</li>
+        <li>Secured with JWT authentication, bcrypt hashing, parameterized PostgreSQL queries, and Sharp-based image pipeline.</li>
+      </ul>
+      <p class="tech-note">Stack: React, TypeScript, Vite, Tailwind CSS, Node.js, Express, PostgreSQL, JWT, Multer, Sharp</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Walang Basagan ng Thrift — Y2K E-commerce Platform</span>
+        <span class="entry-date">2025</span>
+      </div>
+      <p class="entry-meta">Role: Full-Stack Web Developer · Freelance (NDA)</p>
+      <ul>
+        <li>Built Y2K-themed thrift e-commerce platform with full storefront, role-based auth (admin/moderator/buyer), and admin dashboard.</li>
+        <li>Implemented in-app support inbox with threaded messaging and moderator assignment.</li>
+        <li>Designed dual storage backend: SQLite-first with JSON fallback mode for cross-platform portability.</li>
+      </ul>
+      <p class="tech-note">Stack: React 19, TypeScript, Vite, Tailwind CSS, Node.js, Express, better-sqlite3, bcryptjs, multer</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">EMG Interface Controller</span>
+        <span class="entry-date">Academic Project</span>
+      </div>
+      <p class="entry-meta">Role: Embedded Systems Developer &amp; Hardware Designer</p>
+      <ul>
+        <li>Built real-time EMG signal processing and visualization system on ESP32-S3 sampling at 500 Hz.</li>
+        <li>Implemented multi-stage DSP pipeline with adaptive threshold calibration per user and muscle group.</li>
+        <li>Designed custom KiCad PCB integrating EMG Candy front-end with ESP32-S3 core.</li>
+        <li>Created Fusion 360 3D-printed enclosure and Python GUI for research-grade visualization.</li>
+        <li>Built game controller bridge enabling Roblox control via EMG gestures (pynput).</li>
+      </ul>
+      <p class="tech-note">Stack: ESP32-S3, C/C++, Python, Arduino, KiCad, Fusion 360, PySerial, Matplotlib, NumPy, pynput</p>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Manhwa Reader — Web Application</span>
+        <span class="entry-date">2026</span>
+      </div>
+      <p class="entry-meta">Role: Frontend Developer · Personal Project</p>
+      <ul>
+        <li>Built single-page web app for discovering and reading manhwa via MangaDex API with search, detail, and chapter reader.</li>
+        <li>Handled inconsistent API payloads with defensive defaults, chapter deduplication, and robust error states.</li>
+      </ul>
+      <p class="tech-note">Stack: React 19, TypeScript, Vite, React Router DOM, Tailwind CSS, MangaDex API</p>
+    </div>
+  </div>
+
+  <!-- ════════════════ TECHNICAL SKILLS ════════════════ -->
+  <div class="section">
+    <div class="section-title">Technical Skills</div>
+
+    <div class="skills-group">
+      <span class="skills-label">Programming Languages: </span>
+      <span class="skills-list">JavaScript, TypeScript, Python, C/C++, Java, PHP, Dart, Solidity, SystemVerilog, HTML5, CSS3</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Frontend Development: </span>
+      <span class="skills-list">React, Tailwind CSS, Bootstrap, Three.js, @react-three/fiber, Framer Motion, GSAP, Flutter, Flame 2D, Rive</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Backend &amp; Databases: </span>
+      <span class="skills-list">Node.js, Express, Django, Firebase (Auth, Firestore, RTDB, Cloud Functions), PostgreSQL, MySQL, MongoDB, SQLite</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Web3 &amp; Blockchain: </span>
+      <span class="skills-list">Solidity, Hardhat, Ethers.js, MetaMask/EIP-1193, ERC-20, Morph Layer 2, Ethereum Sepolia</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Hardware &amp; Embedded: </span>
+      <span class="skills-list">ESP32-S3, Arduino, BLE 5.0, KiCad (PCB design), Fusion 360 (3D modeling), TINA (circuit simulation), SolidWorks</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">AI &amp; ML: </span>
+      <span class="skills-list">MediaPipe BlazePose, ChromaDB (RAG), OpenAI GPT-4o, STT/TTS, PPO (reinforcement learning)</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">IC Design: </span>
+      <span class="skills-list">SystemVerilog RTL modeling, AMBA APB3, digital circuit design, logic simulation</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Tools &amp; Platforms: </span>
+      <span class="skills-list">Git, Vite, Figma, Firebase, REST APIs, Multer, Sharp, PySerial, Matplotlib, NumPy</span>
+    </div>
+  </div>
+
+  <!-- ════════════════ CERTIFICATIONS ════════════════ -->
+  <div class="section">
+    <div class="section-title">Certifications &amp; Training</div>
+    <ul>
+      <li><strong>On-the-Job Training Certificate</strong> — Xinyx Design Engineering, Inc. (Hardware / electronics design exposure)</li>
+      <li><strong>TINA Design Suite Workshop</strong> — Hytec Power &amp; Inc. (Circuit simulation and PCB design)</li>
+      <li><strong>Understanding EDR: Protecting Endpoints Against Modern Threats</strong> — Cybersecurity Training</li>
+      <li><strong>Learn React Certificate</strong> — Scrimba (Comprehensive React.js course)</li>
+      <li><strong>Learn TailwindCSS Certificate</strong> — Scrimba (Utility-first CSS framework mastery)</li>
+      <li><strong>The AI Engineer Path Certificate</strong> — Scrimba (AI integration and engineering)</li>
+      <li><strong>Blockchain4Youth Certificate</strong> — Bitget Blockchain4Youth (Blockchain, smart contracts, Web3)</li>
+      <li><strong>Basic Web Development Workshop</strong> — Zuitt</li>
+    </ul>
+  </div>
+
+  <!-- ════════════════ SOFT SKILLS ════════════════ -->
+  <div class="section">
+    <div class="section-title">Soft Skills &amp; Competencies</div>
+    <ul>
+      <li>Detail-oriented execution across hardware and software scopes.</li>
+      <li>Cross-functional teaming — collaborative experience in booking systems and robotics builds.</li>
+      <li>Freelance client management with iterative stakeholder feedback cycles.</li>
+      <li>Translating architecture intent into concise, clear rationale.</li>
+      <li>Structured troubleshooting across heterogeneous stacks.</li>
+      <li>Self-directed upskilling on unfamiliar tooling when project specs shift.</li>
+    </ul>
+  </div>
+
+  <!-- ════════════════ ONLINE PRESENCE ════════════════ -->
+  <div class="section">
+    <div class="section-title">Online Presence &amp; Links</div>
+    <ul>
+      <li><strong>Portfolio:</strong> aera0908.github.io</li>
+      <li><strong>GitHub:</strong> github.com/Aera0908</li>
+      <li><strong>LinkedIn:</strong> linkedin.com/in/aira-josh-ynte-755353322</li>
+      <li><strong>LeetCode:</strong> leetcode.com/u/Aera0908</li>
+      <li><strong>AeroVit Project:</strong> aerovit.dev</li>
+      <li><strong>Fehuvia Project:</strong> fehuvia.app</li>
+    </ul>
+  </div>
+
+</body>
+</html>

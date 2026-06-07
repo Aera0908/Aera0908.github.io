@@ -47,6 +47,13 @@ export interface ProjectLinks {
   live?: string
 }
 
+export interface Collaborator {
+  name: string
+  role: string
+  github?: string
+  avatar?: string
+}
+
 export type WebTier = 'Web2' | 'Web3' | 'Hybrid'
 
 export type Engagement = 'Freelance' | 'Client' | 'Academic' | 'Personal' | 'Open Source'
@@ -71,4 +78,5 @@ export interface Project {
   highlights?: string[]
   sections?: ProjectSection[]
   links?: ProjectLinks
+  collaborators?: Collaborator[]
 }

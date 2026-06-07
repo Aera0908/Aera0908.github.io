@@ -374,6 +374,68 @@ const ProjectDetailPage = ({ projectId }: ProjectDetailPageProps) => {
                 <p className="text-slate-200 text-sm">{project.duration}</p>
               </div>
 
+              {project.collaborators && project.collaborators.length > 0 && (
+                <div>
+                  <h3 className="font-mono text-[10px] text-slate-500 tracking-wider mb-2">
+                    COLLABORATORS
+                  </h3>
+                  <div className="space-y-2.5">
+                    {project.collaborators.map((collab, ci) => {
+                      const avatarSrc = collab.avatar
+                        || (collab.github
+                          ? `https://github.com/${collab.github.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '')}.png?size=80`
+                          : undefined)
+
+                      const profileUrl = collab.github
+                        ? (collab.github.startsWith('http') ? collab.github : `https://github.com/${collab.github}`)
+                        : undefined
+
+                      const inner = (
+                        <div className="flex items-center gap-2.5">
+                          {avatarSrc ? (
+                            <img
+                              src={avatarSrc}
+                              alt={collab.name}
+                              className="w-7 h-7 rounded-full ring-1 ring-white/10 object-cover shrink-0"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500/30 to-violet-500/30 ring-1 ring-white/10 flex items-center justify-center text-[11px] font-semibold text-slate-300 shrink-0">
+                              {collab.name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                          <div className="min-w-0">
+                            <p className="text-slate-200 text-sm font-medium leading-tight truncate">
+                              {collab.name}
+                            </p>
+                            <p className="text-slate-500 text-[11px] font-mono leading-tight truncate">
+                              {collab.role}
+                            </p>
+                          </div>
+                        </div>
+                      )
+
+                      return profileUrl ? (
+                        <a
+                          key={ci}
+                          href={profileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block rounded-lg px-2 py-1.5 -mx-2 transition-colors hover:bg-white/5 group"
+                          title={`View ${collab.name} on GitHub`}
+                        >
+                          {inner}
+                        </a>
+                      ) : (
+                        <div key={ci} className="rounded-lg px-2 py-1.5 -mx-2">
+                          {inner}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
               {project.webTier && (
                 <div>
                   <h3 className="font-mono text-[10px] text-slate-500 tracking-wider mb-2">

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aira Josh C. Ynte — Resume</title>
+  <style>
+    /* ATS-friendly: no columns, no tables for layout, standard fonts, plain structure */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page {
+      size: letter;
+      margin: 0.4in 0.5in;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5pt;
+      line-height: 1.35;
+      color: #222;
+      max-width: 7.5in;
+      margin: 0 auto;
+      padding: 0.4in 0.5in;
+      text-align: justify;
+    }
+
+    @media print {
+      body { padding: 0; }
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 10pt; }
+    .header h1 {
+      font-size: 18pt;
+      font-weight: 700;
+      letter-spacing: 0.5pt;
+      margin-bottom: 2pt;
+      color: #111;
+    }
+    .header .subtitle {
+      font-size: 9.5pt;
+      color: #444;
+      margin-bottom: 3pt;
+    }
+    .header .contact {
+      font-size: 8.5pt;
+      color: #333;
+    }
+    .header .contact a { color: #333; text-decoration: none; }
+    .header .contact .sep { margin: 0 5pt; color: #aaa; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 10pt; }
+    .section-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1pt;
+      color: #111;
+      border-bottom: 1.5pt solid #111;
+      padding-bottom: 1pt;
+      margin-bottom: 5pt;
+    }
+
+    /* ── Entry (job / project) ── */
+    .entry { margin-bottom: 6pt; }
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4pt;
+    }
+    .entry-title { font-weight: 700; font-size: 9.5pt; color: #111; }
+    .entry-org { font-style: italic; color: #333; }
+    .entry-date {
+      font-size: 8.5pt;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    ul {
+      margin-left: 14pt;
+      margin-top: 2pt;
+    }
+    ul li {
+      margin-bottom: 2pt;
+      color: #333;
+    }
+
+    /* ── Skills ── */
+    .skills-group { margin-bottom: 3pt; }
+    .skills-label {
+      font-weight: 700;
+      font-size: 9pt;
+      color: #111;
+    }
+    .skills-list {
+      font-size: 9pt;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>AIRA JOSH C. YNTE</h1>
+    <p class="subtitle">Software Engineer &amp; System Architect · Computer Engineering</p>
+    <p class="contact">
+      08airajosh@gmail.com
+      <span class="sep">|</span>
+      linkedin.com/in/aira-josh-ynte-755353322
+      <span class="sep">|</span>
+      Metro Manila, Philippines
+    </p>
+  </div>
+
+  <!-- ════════════════ SUMMARY ════════════════ -->
+  <div class="section">
+    <div class="section-title">Professional Summary</div>
+    <p>
+      Detail-oriented Computer Engineering graduate (July 2026) specializing in software architecture, planning, and design.
+      Experienced in full-stack Web2/Web3 applications, embedded software, and applied AI. Proven freelance track record
+      designing production-ready systems, secure payment rails, and database architectures.
+    </p>
+  </div>
+
+  <!-- ════════════════ EXPERIENCE ════════════════ -->
+  <div class="section">
+    <div class="section-title">Experience</div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">IC Design Intern</span>
+        <span class="entry-date">2025</span>
+      </div>
+      <div class="entry-org">Xinyx Design Consultancy and Services Inc.</div>
+      <ul>
+        <li>Designed and verified AMBA APB3 peripheral interfaces using SystemVerilog RTL modeling.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Freelance Web3 &amp; Full-Stack Developer</span>
+        <span class="entry-date">2023 – Present</span>
+      </div>
+      <div class="entry-org">Various Clients</div>
+      <ul>
+        <li>Built custom web dashboards, PostgreSQL schemas, and secure MetaMask/EIP-1193 modules.</li>
+        <li>Deployed RESTful backend microservices in Node.js/Express with rate-limiting and audit logging.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════════════ EDUCATION ════════════════ -->
+  <div class="section">
+    <div class="section-title">Education</div>
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Bachelor of Science in Computer Engineering</span>
+        <span class="entry-date">2022 – July 2026 (Expected)</span>
+      </div>
+      <div class="entry-org">Colegio de Muntinlupa — Muntinlupa City, Metro Manila, Philippines</div>
+      <ul>
+        <li>Focusing on Software Architecture &amp; System Design; coursework in database design and computer architecture.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════════════ KEY PROJECTS ════════════════ -->
+  <div class="section">
+    <div class="section-title">Key Projects</div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Fehuvia — Open Finance Web3 B2B Treasury Workstation</span>
+        <span class="entry-date">2026</span>
+      </div>
+      <ul>
+        <li>Deployed Solidity billing clearance on Morph L2 with T+0 settlements under 2 seconds.</li>
+        <li>Integrated context-aware GPT-4o RAG pipeline for cashflow analytics and invoice OCR.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">AeroVit — Gamified AI Fitness Platform</span>
+        <span class="entry-date">2024 – 2026</span>
+      </div>
+      <ul>
+        <li>Developed custom ESP32-S3 smartwatch firmware with BLE 5.0 and real-time biometric streaming.</li>
+        <li>Built 33-landmark MediaPipe BlazePose pipeline with real-time pose tracking &amp; ERC-20 rewards.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Plant.io — IoT Nursery Dashboard (Freelance)</span>
+        <span class="entry-date">2025</span>
+      </div>
+      <ul>
+        <li>Built cross-platform Flutter IoT dashboard with real-time ESP32 sensor telemetry and push alerts.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════════════ TECHNICAL SKILLS ════════════════ -->
+  <div class="section">
+    <div class="section-title">Skills &amp; Competencies</div>
+
+    <div class="skills-group">
+      <span class="skills-label">Languages &amp; Web3: </span>
+      <span class="skills-list">TypeScript, JavaScript, Python, C/C++, Dart, Solidity, SystemVerilog, SQL, HTML5/CSS3</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Frontend &amp; Mobile: </span>
+      <span class="skills-list">React, Next.js, Flutter, Tailwind CSS, Three.js, GSAP, Framer Motion</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Backend &amp; Databases: </span>
+      <span class="skills-list">Node.js, Express, PostgreSQL, MySQL, SQLite, MongoDB, Firebase (Firestore, Cloud Functions)</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Tools &amp; Architecture: </span>
+      <span class="skills-list">Git, Vite, Docker, Hardhat, Ethers.js, MetaMask, BLE 5.0, MediaPipe, ChromaDB RAG, REST APIs</span>
+    </div>
+    <div class="skills-group">
+      <span class="skills-label">Soft Skills: </span>
+      <span class="skills-list">Systems planning, database design, technical layout, client communication, cross-functional collaboration</span>
+    </div>
+  </div>
+
+  <!-- ════════════════ CERTIFICATIONS ════════════════ -->
+  <div class="section">
+    <div class="section-title">Certifications &amp; Training</div>
+    <p class="skills-list" style="line-height: 1.45;">
+      On-the-Job Training Certificate (Xinyx Design Engineering) · TINA Design Suite Workshop · Learn React, Learn TailwindCSS, &amp; The AI Engineer Path (Scrimba) · Blockchain4Youth Certificate (Bitget) · Basic Web Development Workshop (Zuitt) · Understanding EDR Cybersecurity
+    </p>
+  </div>
+
+</body>
+</html>

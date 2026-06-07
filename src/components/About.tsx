@@ -8,12 +8,12 @@ const About = () => {
         <div className="dashboard-card">
           <h3 className="text-lg font-semibold text-blue-400 mb-3">Background</h3>
           <p className="text-slate-300 text-base leading-relaxed">
-            Detail-oriented software/hardware engineer with a strong foundation in{' '}
-            <span className="text-slate-100 font-medium">digital circuit design</span>,{' '}
-            <span className="text-slate-100 font-medium">logic simulation</span>,{' '}
-            <span className="text-slate-100 font-medium">hardware programming</span>,{' '}
-            <span className="text-slate-100 font-medium">software development</span>, and{' '}
-            <span className="text-slate-100 font-medium">architecture design</span>.
+            Detail-oriented software engineer and system architect with a strong foundation in{' '}
+            <span className="text-slate-100 font-medium">software architecture planning</span>,{' '}
+            <span className="text-slate-100 font-medium">system modularity</span>,{' '}
+            <span className="text-slate-100 font-medium">database design</span>,{' '}
+            <span className="text-slate-100 font-medium">full-stack web engineering</span>, and{' '}
+            <span className="text-slate-100 font-medium">interactive system layout</span>.
           </p>
         </div>
 

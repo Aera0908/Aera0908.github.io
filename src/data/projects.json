@@ -17,7 +17,7 @@
       { "src": "/Aerovit-images/watch-worn.jpg", "caption": "Smartwatch worn on wrist during fitness tracking" },
       { "src": "/Aerovit-images/video-demo.mp4", "caption": "Product walkthrough / demo recording", "type": "video" }
     ],
-    "role": "Lead Developer & Hardware Engineer",
+    "role": "Lead Developer & Embedded Systems Architect",
     "duration": "September 2024 - April 2026",
     "highlights": [
       "End-to-end prototype: pairing, workouts, pose pipeline, wearable BLE, quests, dungeon, website, and showcase",
@@ -107,12 +107,15 @@
       },
       {
         "title": "My Role",
-        "content": "Lead Developer & Hardware Engineer — smartwatch firmware and BLE integration, co-design of fitness and game systems, ML/vision and backend touchpoints, and coordination of the web stack and token flows across the prototype."
+        "content": "Lead Developer & Embedded Systems Architect — smartwatch firmware and BLE integration, co-design of fitness and game systems, ML/vision and backend touchpoints, and coordination of the web stack and token flows across the prototype."
       }
     ],
     "links": {
       "website": "https://aerovit.dev"
-    }
+    },
+    "collaborators": [
+      { "name": "Yancy Arguedo", "role": "Collaborator", "github": "crispychili" }
+    ]
   },
   {
     "id": "plantio",
@@ -418,7 +421,7 @@
         "title": "Confidentiality",
         "type": "callout",
         "variant": "warn",
-        "content": "This is a client project covered by an NDA — screenshots and code samples cannot be shared publicly. A high-level description is provided for context only."
+        "content": "This is a freelance engagement. Per contract, screenshots, client-facing copy, final assets, and some implementation details are withheld from the public case study. The case study above is limited to non-sensitive architectural and feature-level information."
       }
     ],
     "links": {}
@@ -862,7 +865,12 @@
     ],
     "links": {
       "website": "https://www.fehuvia.app/",
-      "github": "https://github.com/Aera0908"
-    }
+      "github": "https://github.com/Aera0908/Project_Fehuvia"
+    },
+    "collaborators": [
+      { "name": "Milbert De Paz", "role": "Collaborator", "github": "milbertxd" },
+      { "name": "Mico Alano", "role": "Collaborator", "github": "okimsz" },
+      { "name": "Yancy Arguedo", "role": "Collaborator", "github": "crispychili" }
+    ]
   }
 ]
