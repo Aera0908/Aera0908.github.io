@@ -255,6 +255,7 @@
     "category": "Showcase Website",
     "status": "Work in progress",
     "featured": true,
+    "websiteUrl": "https://safehouse-inky.vercel.app/",
     "role": "Frontend & 3D Web Developer",
     "duration": "2025 — Present",
     "highlights": [
@@ -355,7 +356,10 @@
         "content": "This is a showcase website, not a product. It is actively in development (April 2026): the 3D journey, scroll choreography, and narrative sections are in place; polish, final copy, and production deployment are still ongoing."
       }
     ],
-    "links": {}
+    "links": {
+      "website": "https://safehouse-inky.vercel.app/",
+      "github": "https://github.com/Aera0908/safe-house"
+    }
   },
   {
     "id": "student-consultation",
