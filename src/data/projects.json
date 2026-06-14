@@ -15,7 +15,7 @@
       { "src": "/Aerovit-images/watch_on_case.jpg", "caption": "Custom ESP32-S3 smartwatch on its case" },
       { "src": "/Aerovit-images/watch.jpg", "caption": "AeroVit smartwatch display and interface" },
       { "src": "/Aerovit-images/watch-worn.jpg", "caption": "Smartwatch worn on wrist during fitness tracking" },
-      { "src": "/Aerovit-images/video-demo.mp4", "caption": "Product walkthrough / demo recording", "type": "video" }
+      { "src": "https://youtu.be/rqx192_81zA", "caption": "Product walkthrough / demo recording", "type": "video" }
     ],
     "role": "Lead Developer & Embedded Systems Architect",
     "duration": "September 2024 - April 2026",
@@ -31,6 +31,13 @@
       {
         "title": "Overview",
         "content": "AeroVit delivers workouts, biomechanical and biometric feedback, Hunter-rank progression, and rewards that bridge in-app points to on-chain AERO withdrawals.\n\nThe runtime spans a Flutter mobile app, a custom ESP32-S3 smartwatch streaming biometrics over BLE, a Next.js marketing showcase, and the Vite-powered technical website at aerovit.dev. Together they describe a single coherent prototype, not a production deployment."
+      },
+      {
+        "title": "Feature Highlights & Video Showcase",
+        "type": "video",
+        "videoUrl": "https://youtu.be/rqx192_81zA",
+        "caption": "Video showcasing the AeroVit hybrid fitness ecosystem.",
+        "content": "This video walkthrough presents the core surface-level features of AeroVit, including the smartwatch hardware and biometrics, AI form coaching via pose tracking, turn-based dungeon gamification, and Web3 AERO token rewards."
       },
       {
         "title": "System Architecture",
@@ -637,7 +644,9 @@
         ]
       }
     ],
-    "links": {}
+    "links": {
+      "github": "https://github.com/Aera0908/emg-game-controller"
+    }
   },
   {
     "id": "manhwa-reader",
