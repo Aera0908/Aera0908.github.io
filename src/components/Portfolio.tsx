@@ -490,6 +490,63 @@ const Portfolio = () => {
         </div>
       </div>
 
+      {/* ── Video Editing & Adobe Suite Samples ── */}
+      <div className="flex items-center gap-2 mb-6 mt-16">
+        <svg className="w-3.5 h-3.5 text-cyber-magenta shrink-0 animate-pulse" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+        </svg>
+        <h3 className="font-terminal text-xs tracking-widest text-cyber-magenta/80 font-bold">
+          VIDEO EDITING &amp; ADOBE SUITE SAMPLES
+        </h3>
+        <div className="flex-1 h-px bg-gradient-to-r from-cyber-magenta/35 to-transparent" />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        {/* Fehuvia Video Card */}
+        <div className="cyber-card cyber-corner-brackets border border-cyber-magenta/25 bg-cyber-dark/60 p-4 hover:border-cyber-magenta/65 hover:shadow-[0_0_15px_rgba(255,0,85,0.15)] transition-all duration-300">
+          <div className="relative aspect-video w-full overflow-hidden border border-cyber-magenta/20 bg-black mb-4">
+            <iframe
+              src="https://www.youtube.com/embed/aDBoZOoOhd8"
+              title="Fehuvia Workstation Video Demo"
+              className="w-full h-full border-0 absolute inset-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+          <h4 className="text-base font-bold text-slate-100 font-cyber tracking-wide mb-1">
+            Fehuvia Workstation Showcase
+          </h4>
+          <p className="font-terminal text-[10px] text-cyber-magenta mb-3 tracking-widest uppercase">
+            FIGMA // ADOBE ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO
+          </p>
+          <p className="text-slate-400 text-xs leading-relaxed">
+            High-fidelity workstation highlights video demonstrating interface functionalities, dual-state data flows, and AI OCR capabilities. Designed custom visual assets in Figma and Adobe Illustrator, with editing, motion graphics animations, and audio syncing completed in Premiere Pro and After Effects.
+          </p>
+        </div>
+
+        {/* AeroVit Video Card */}
+        <div className="cyber-card cyber-corner-brackets border border-cyber-magenta/25 bg-cyber-dark/60 p-4 hover:border-cyber-magenta/65 hover:shadow-[0_0_15px_rgba(255,0,85,0.15)] transition-all duration-300">
+          <div className="relative aspect-video w-full overflow-hidden border border-cyber-magenta/20 bg-black mb-4">
+            <iframe
+              src="https://www.youtube.com/embed/rqx192_81zA"
+              title="AeroVit Hybrid Fitness Walkthrough"
+              className="w-full h-full border-0 absolute inset-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+          <h4 className="text-base font-bold text-slate-100 font-cyber tracking-wide mb-1">
+            AeroVit Ecosystem Walkthrough
+          </h4>
+          <p className="font-terminal text-[10px] text-cyber-magenta mb-3 tracking-widest uppercase">
+            ADOBE ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO
+          </p>
+          <p className="text-slate-400 text-xs leading-relaxed">
+            Curated walkthrough video of the hybrid fitness ecosystem showcasing ESP32-S3 smartwatch pairing, MediaPipe BlazePose form tracking, Flame 2D dungeon RPG, and AERO Web3 withdrawals. Crafted vector design components in Adobe Illustrator, keyframed animations in After Effects, and edited the final sequence in Premiere Pro.
+          </p>
+        </div>
+      </div>
+
       {selectedProject !== null && (
         <div
           ref={modalRef}

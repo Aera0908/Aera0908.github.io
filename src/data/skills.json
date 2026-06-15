@@ -166,5 +166,19 @@
     "icon": "https://img.shields.io/badge/Web3-%233F62AD.svg?style=for-the-badge&logo=ethereum&logoColor=white",
     "color": "3F62AD",
     "category": "software"
+  },
+  {
+    "name": "Adobe Suite",
+    "percentage": 60,
+    "icon": "https://img.shields.io/badge/adobe-%23FF0000.svg?style=for-the-badge&logo=adobe&logoColor=white",
+    "color": "FF0000",
+    "category": "software"
+  },
+  {
+    "name": "Figma",
+    "percentage": 65,
+    "icon": "https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white",
+    "color": "F24E1E",
+    "category": "software"
   }
 ]

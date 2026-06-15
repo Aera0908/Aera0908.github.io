@@ -8,7 +8,9 @@
     "Backend APIs & persistence layers (Express/SQLite patterns)",
     "Realtime telemetry orchestration (Firebase-style stacks)",
     "Applied sensing hooks — biomechanical pose pipelines at the edge",
-    "Decentralized Web3 execution — Solidity smart contracts & sub-second EVM settlement rails (Morph L2)"
+    "Decentralized Web3 execution — Solidity smart contracts & sub-second EVM settlement rails (Morph L2)",
+    "UI/UX design & prototyping — Figma workflows, wireframing & high-fidelity interactive mockups",
+    "Design engineering — pixel-perfect UI translation, micro-interactions & motion design (GSAP, Framer Motion)"
   ],
   "softSkills": [
     "Detail-oriented execution across hardware ↔ software scopes",

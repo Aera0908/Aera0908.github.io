@@ -1,4 +1,6 @@
 
+import { routeTo } from '../hooks/useRoute'
+
 const About = () => {
   return (
     <section id="whoami" className="py-16 relative overflow-hidden">
@@ -15,27 +17,27 @@ const About = () => {
               <span className="text-cyber-cyan font-semibold">system modularity</span>,{' '}
               <span className="text-cyber-yellow font-semibold">database design</span>,{' '}
               <span className="text-cyber-cyan font-semibold">full-stack web engineering</span>, and{' '}
-              <span className="text-cyber-yellow font-semibold">interactive system layout</span>.
+              <span className="text-cyber-yellow font-semibold">interactive UI/UX layout</span>.
             </p>
           </div>
-
+ 
           <div className="cyber-card cyber-corner-brackets">
             <h3 className="text-lg font-bold text-cyber-cyan mb-3 font-cyber tracking-wider">Expertise</h3>
             <p className="text-slate-300 text-base leading-relaxed">
               IC design, embedded &amp; IoT, and full-stack software—spanning Web2 and Web3. I go from RTL and PCBs
-              to React, mobile, and on-chain prototypes, with an eye on applied AI and edge systems.
+              to React, mobile, and on-chain prototypes, with an eye on applied AI, edge systems, and immersive, user-centered digital experiences.
             </p>
           </div>
 
           <div className="cyber-card cyber-corner-brackets">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <h3 className="text-lg font-bold text-cyber-yellow font-cyber tracking-wider">Experiences</h3>
-              <a
-                href="#/portfolio"
-                className="inline-flex items-center gap-1 bg-cyber-cyan/5 border border-cyber-cyan/40 px-3 py-1.5 font-terminal text-[11px] tracking-wider text-cyber-cyan transition-colors hover:bg-cyber-cyan/15 hover:text-cyber-yellow hover:border-cyber-yellow/45"
+              <button
+                onClick={() => routeTo('/portfolio')}
+                className="inline-flex items-center gap-1 bg-cyber-cyan/5 border border-cyber-cyan/40 px-3 py-1.5 font-terminal text-[11px] tracking-wider text-cyber-cyan transition-colors hover:bg-cyber-cyan/15 hover:text-cyber-yellow hover:border-cyber-yellow/45 cursor-pointer"
               >
                 PROJECTS ARCHIVE
-              </a>
+              </button>
             </div>
             <ul className="space-y-5 text-slate-300 text-base">
               <li className="flex gap-2">

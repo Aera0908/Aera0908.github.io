@@ -121,7 +121,10 @@ const PortfolioPage = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div 
+          key={`${activeCategory}-${activeTier}-${activeEngagement}`}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in"
+        >
           {filtered.map((project) => {
             const liveUrl = project.links?.live || project.links?.website || project.websiteUrl
             const githubUrl = project.links?.github

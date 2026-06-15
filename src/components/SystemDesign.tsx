@@ -68,7 +68,20 @@ const designTabs: DesignTab[] = [
 
 const SystemDesign = () => {
   const [activeTab, setActiveTab] = useState('fehuvia')
-  const current = designTabs.find((t) => t.id === activeTab) || designTabs[0]
+  const [displayedTab, setDisplayedTab] = useState('fehuvia')
+  const [isFading, setIsFading] = useState(false)
+
+  const handleTabChange = (tabId: string) => {
+    if (tabId === activeTab || isFading) return
+    setActiveTab(tabId)
+    setIsFading(true)
+    setTimeout(() => {
+      setDisplayedTab(tabId)
+      setIsFading(false)
+    }, 200)
+  }
+
+  const current = designTabs.find((t) => t.id === displayedTab) || designTabs[0]
 
   return (
     <section id="designs" className="w-full min-w-0 max-w-full scroll-mt-24 py-16">
@@ -83,7 +96,7 @@ const SystemDesign = () => {
         {designTabs.map((t) => (
           <button
             key={t.id}
-            onClick={() => setActiveTab(t.id)}
+            onClick={() => handleTabChange(t.id)}
             className={`px-4 py-2 font-terminal text-[10px] sm:text-xs tracking-wider rounded-none border transition-all duration-200 ${
               activeTab === t.id
                 ? 'bg-cyber-yellow/10 border-cyber-yellow text-cyber-yellow font-bold glow-cyber-yellow/15'
@@ -96,7 +109,7 @@ const SystemDesign = () => {
       </div>
 
       {/* Main Layout (Vertical Stack) */}
-      <div className="space-y-6">
+      <div className={`space-y-6 transition-all duration-200 ease-in-out ${isFading ? 'opacity-0 scale-[0.995]' : 'opacity-100 scale-100'}`}>
         {/* Diagram Area (Above, Full Width) */}
         <div className="cyber-card cyber-corner-brackets p-4 sm:p-6 w-full">
           <div className="flex justify-between items-center mb-3">
