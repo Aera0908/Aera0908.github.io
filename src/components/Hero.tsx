@@ -129,7 +129,7 @@ const Hero = () => {
             Email Me
           </a>
           <a
-            href="https://linkedin.com/in/aira-josh-ynte-755353322"
+            href="https://linkedin.com/in/aira-josh-ynte"
             target="_blank"
             rel="noopener noreferrer me"
             className="cyber-btn-outline inline-flex w-full shrink-0 items-center justify-center gap-2 sm:w-auto"

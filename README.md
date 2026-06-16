@@ -195,7 +195,7 @@ This project is open source and available under the MIT License.
 
 **Aira Ynte**
 
-- LinkedIn: [Aira Ynte](https://linkedin.com/in/aira-josh-ynte-755353322)
+- LinkedIn: [Aira Ynte](https://linkedin.com/in/aira-josh-ynte)
 - Instagram: [@area0908](https://instagram.com/area0908)
 - Email: 08airajosh@gmail.com
 - GitHub: [@Aera0908](https://github.com/Aera0908)
