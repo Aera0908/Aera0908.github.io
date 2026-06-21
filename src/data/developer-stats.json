@@ -1,45 +1,13 @@
 {
-  "fetchedAt": "2026-06-16T13:21:06.005Z",
+  "fetchedAt": "2026-06-21T16:27:23.169Z",
   "profile": {
     "githubLogin": "Aera0908",
     "leetcodeUsername": "Aera0908"
   },
   "github": {
     "login": "Aera0908",
-    "totalContributions": 72,
+    "totalContributions": 75,
     "weeks": [
-      {
-        "contributionDays": [
-          {
-            "date": "2025-06-15",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-16",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-17",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-18",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-19",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-20",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-21",
-            "contributionCount": 0
-          }
-        ]
-      },
       {
         "contributionDays": [
           {
@@ -940,7 +908,7 @@
         "contributionDays": [
           {
             "date": "2026-01-04",
-            "contributionCount": 72
+            "contributionCount": 75
           },
           {
             "date": "2026-01-05",
@@ -1703,56 +1671,56 @@
             "contributionCount": 0
           }
         ]
+      },
+      {
+        "contributionDays": [
+          {
+            "date": "2026-06-21",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-22",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-23",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-24",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-25",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-26",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-27",
+            "contributionCount": 0
+          }
+        ]
       }
     ]
   },
   "leetcode": {
     "username": "Aera0908",
     "streak": 17,
-    "totalActiveDays": 22,
+    "totalActiveDays": 23,
     "activeYears": [
       2024,
       2026
     ],
     "solved": {
-      "All": 30,
+      "All": 31,
       "Easy": 10,
-      "Medium": 18,
+      "Medium": 19,
       "Hard": 2
     },
     "weeks": [
-      {
-        "contributionDays": [
-          {
-            "date": "2025-06-15",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-16",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-17",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-18",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-19",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-20",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-21",
-            "contributionCount": 0
-          }
-        ]
-      },
       {
         "contributionDays": [
           {
@@ -3397,7 +3365,7 @@
           },
           {
             "date": "2026-06-16",
-            "contributionCount": 0
+            "contributionCount": 1
           },
           {
             "date": "2026-06-17",
@@ -3413,6 +3381,38 @@
           },
           {
             "date": "2026-06-20",
+            "contributionCount": 0
+          }
+        ]
+      },
+      {
+        "contributionDays": [
+          {
+            "date": "2026-06-21",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-22",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-23",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-24",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-25",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-26",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-27",
             "contributionCount": 0
           }
         ]
