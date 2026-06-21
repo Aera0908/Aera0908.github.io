@@ -1,0 +1,14 @@
+📄 Resume PDF
+
+The live site downloads **`YNTE_Resume.pdf`** from this folder (`public/YNTE_Resume.pdf`).
+
+To replace it:
+
+1. Export your resume as PDF.
+2. Save as **`YNTE_Resume.pdf`** in **`public/`** (overwrite the existing file).
+3. No code changes needed — Hero and the floating download button already point to this path.
+
+Tips:
+
+- Keep file size reasonable (under about 5 MB) for fast loads.
+- Optimize for screen viewing if possible.
