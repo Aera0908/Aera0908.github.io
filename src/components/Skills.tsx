@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import skillsData from '../data/skills.json'
 import peopleSkillsData from '../data/people-skills.json'
 
@@ -10,93 +10,6 @@ interface Skill {
   category?: 'hardware' | 'software'
 }
 
-type Proficiency = 'Expert' | 'Advanced' | 'Intermediate' | 'Beginner'
-
-function proficiencyFromPercentage(p: number): Proficiency {
-  if (p >= 80) return 'Expert'
-  if (p >= 60) return 'Advanced'
-  if (p >= 40) return 'Intermediate'
-  return 'Beginner'
-}
-
-const tierBadgeClass: Record<Proficiency, string> = {
-  Expert:
-    'bg-cyber-green/15 text-cyber-green border border-cyber-green/35',
-  Advanced:
-    'bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/35',
-  Intermediate:
-    'bg-cyber-yellow/12 text-cyber-yellow border border-cyber-yellow/30',
-  Beginner:
-    'bg-slate-800/40 text-slate-400 border border-slate-700/40',
-}
-
-/** ≥ Tailwind `sm` — desktop-style expanded tech cards */
-function useMinSm() {
-  const [matches, setMatches] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 640px)')
-    const fn = () => setMatches(mq.matches)
-    fn()
-    mq.addEventListener('change', fn)
-    return () => mq.removeEventListener('change', fn)
-  }, [])
-  return matches
-}
-
-const tierBadge = (tier: Proficiency) => (
-  <span
-    className={`inline-flex rounded-none px-1.5 py-0.5 font-terminal text-[9px] uppercase tracking-wider ${tierBadgeClass[tier]}`}
-  >
-    {tier}
-  </span>
-)
-
-const TechStackItem = ({
-  skill,
-  layoutExpanded,
-}: {
-  skill: Skill
-  layoutExpanded: boolean
-}) => {
-  const tier = proficiencyFromPercentage(skill.percentage)
-
-  if (layoutExpanded) {
-    return (
-      <div className="flex h-full min-w-0 max-w-full flex-col gap-2 overflow-hidden rounded-none border border-cyber-cyan/30 bg-cyber-dark/80 px-3 py-2.5 hover:border-cyber-yellow hover:bg-cyber-dark/95 transition-all duration-300">
-        <span className="break-words text-[13px] font-terminal leading-snug text-slate-200">
-          {skill.name}
-        </span>
-        <span className="mt-auto inline-flex self-start">{tierBadge(tier)}</span>
-      </div>
-    )
-  }
-
-  return (
-    <details className="group min-w-0 max-w-full overflow-hidden rounded-none border border-cyber-cyan/30 bg-cyber-dark/80 open:bg-cyber-dark/95 open:border-cyber-yellow transition-all duration-300">
-      <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-center px-1 py-2 text-center [&::-webkit-details-marker]:hidden marker:content-none font-terminal">
-        <span className="line-clamp-4 break-words px-0.5 text-[10px] font-semibold leading-tight text-slate-100">
-          {skill.name}
-        </span>
-      </summary>
-      <div className="flex justify-center border-t border-cyber-cyan/20 px-1 pb-2 pt-2 bg-black/20">
-        {tierBadge(tier)}
-      </div>
-    </details>
-  )
-}
-
-function competencyKeyword(text: string): string {
-  const em = text.split(' — ')
-  if (em.length >= 2 && em[0].trim().length <= 52) {
-    return em[0].trim()
-  }
-  if (text.length <= 44) return text
-  const cut = text.slice(0, 42).trimEnd()
-  const sp = cut.lastIndexOf(' ')
-  const base = sp > 18 ? cut.slice(0, sp) : cut
-  return `${base}…`
-}
-
 interface PeopleSkillsFile {
   hardSkills: string[]
   softSkills: string[]
@@ -104,49 +17,52 @@ interface PeopleSkillsFile {
 
 const peopleSkills = peopleSkillsData as PeopleSkillsFile
 
+const TechStackItem = ({
+  skill,
+}: {
+  skill: Skill
+}) => {
+  const isHardware = skill.category === 'hardware'
+  const hoverBorderColor = isHardware ? 'hover:border-cyber-yellow/65' : 'hover:border-cyber-cyan/65'
+  const accentText = isHardware ? 'text-cyber-yellow' : 'text-cyber-cyan'
+  const glowShadow = isHardware ? 'hover:shadow-[0_0_12px_rgba(252,238,10,0.2)]' : 'hover:shadow-[0_0_12px_rgba(0,240,255,0.2)]'
+  const bulletSymbol = isHardware ? '▲' : '■'
+
+  return (
+    <div className={`flex items-center gap-2.5 rounded-none border border-cyber-cyan/15 bg-cyber-dark/70 px-3.5 py-2 hover:bg-cyber-dark/95 transition-all duration-300 ${hoverBorderColor} ${glowShadow} shrink-0`}>
+      <span className={`text-[10px] font-mono select-none shrink-0 ${accentText}`}>
+        {bulletSymbol}
+      </span>
+      <span className="text-xs sm:text-sm font-terminal font-semibold tracking-wider text-slate-200 whitespace-nowrap">
+        {skill.name}
+      </span>
+    </div>
+  )
+}
+
 const CompetencyCard = ({
   text,
   accent,
-  layoutExpanded,
 }: {
   text: string
   accent: 'violet' | 'teal'
-  layoutExpanded: boolean
 }) => {
-  const shell =
-    accent === 'violet'
-      ? 'border-cyber-magenta/30 bg-cyber-magenta/5 text-slate-200 hover:border-cyber-magenta/60'
-      : 'border-cyber-cyan/30 bg-cyber-cyan/5 text-slate-200 hover:border-cyber-cyan/60'
-  const headline = useMemo(() => competencyKeyword(text), [text])
-
-  if (layoutExpanded) {
-    return (
-      <div
-        className={`min-w-0 max-w-full break-words rounded-none border px-3 py-2.5 text-[13px] leading-snug text-slate-300 font-terminal transition-all duration-300 ${shell}`}
-      >
-        {text}
-      </div>
-    )
-  }
+  const isViolet = accent === 'violet'
+  const textColor = isViolet ? 'text-cyber-magenta' : 'text-cyber-cyan'
+  const borderColor = isViolet ? 'border-cyber-magenta/20' : 'border-cyber-cyan/20'
+  const bgColor = isViolet ? 'bg-cyber-magenta/5' : 'bg-cyber-cyan/5'
+  const statusLabel = isViolet ? '[ HARD_SYS ]' : '[ SOFT_COM ]'
 
   return (
-    <details
-      className={`min-w-0 max-w-full overflow-hidden rounded-none border transition-all duration-300 ${shell} open:bg-black/25 open:border-cyber-yellow`}
-    >
-      <summary className="flex min-h-[44px] cursor-pointer list-none items-center px-1 py-2 text-left sm:px-2 [&::-webkit-details-marker]:hidden marker:content-none font-terminal">
-        <span className="line-clamp-4 break-words text-[10px] font-semibold leading-snug text-slate-100 sm:text-[11px]">
-          {headline}
-        </span>
-      </summary>
-      <div className="border-t border-cyber-cyan/20 px-1 pb-2 pt-2 text-[10px] leading-relaxed text-slate-300 sm:px-2 sm:text-[11px] bg-black/20 font-terminal">
-        {text}
-      </div>
-    </details>
+    <div className={`min-w-0 max-w-full break-words rounded-none border px-3 py-2.5 text-[11px] leading-relaxed text-slate-300 font-terminal transition-all duration-300 hover:border-cyber-yellow hover:bg-black/35 flex gap-2 items-start ${borderColor} ${bgColor}`}>
+      <span className={`font-bold shrink-0 mt-0.5 ${textColor}`}>{statusLabel}</span>
+      <span className="font-sans text-xs text-slate-300 leading-relaxed">{text}</span>
+    </div>
   )
 }
 
 const techGridClass =
-  'grid min-w-0 grid-cols-3 gap-1.5 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
+  'flex flex-wrap gap-2 sm:gap-3'
 
 const CollapsibleSection = ({
   title,
@@ -202,34 +118,30 @@ const CollapsibleSection = ({
 
 const Skills = () => {
   const skills = useMemo(() => skillsData as Skill[], [])
-  const layoutExpanded = useMinSm()
 
   const hardware = useMemo(
     () =>
       skills
-          .filter((s) => s.category === 'hardware')
-          .slice()
-          .sort((a, b) => b.percentage - a.percentage),
+        .filter((s) => s.category === 'hardware')
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name)),
     [skills],
   )
 
   const software = useMemo(
     () =>
       skills
-          .filter((s) => s.category !== 'hardware')
-          .slice()
-          .sort((a, b) => b.percentage - a.percentage),
+        .filter((s) => s.category !== 'hardware')
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name)),
     [skills],
   )
 
   const techStackSr = useMemo(
     () =>
       [...hardware, ...software]
-          .map(
-              (s) =>
-                  `${s.name} (${proficiencyFromPercentage(s.percentage)})`,
-          )
-          .join(', '),
+        .map((s) => s.name)
+        .join(', '),
     [hardware, software],
   )
 
@@ -264,7 +176,6 @@ const Skills = () => {
               <TechStackItem
                 key={skill.name}
                 skill={skill}
-                layoutExpanded={layoutExpanded}
               />
             ))}
           </div>
@@ -280,7 +191,6 @@ const Skills = () => {
               <TechStackItem
                 key={skill.name}
                 skill={skill}
-                layoutExpanded={layoutExpanded}
               />
             ))}
           </div>
@@ -291,13 +201,12 @@ const Skills = () => {
           colorClass="text-cyber-magenta"
           bulletColor="bg-cyber-magenta"
         >
-          <div className="grid min-w-0 grid-cols-2 gap-1.5 min-[360px]:grid-cols-3 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3">
+          <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {peopleSkills.hardSkills.map((line) => (
               <CompetencyCard
                 key={line}
                 text={line}
                 accent="violet"
-                layoutExpanded={layoutExpanded}
               />
             ))}
           </div>
@@ -308,13 +217,12 @@ const Skills = () => {
           colorClass="text-cyber-cyan"
           bulletColor="bg-cyber-cyan"
         >
-          <div className="grid min-w-0 grid-cols-2 gap-1.5 min-[360px]:grid-cols-3 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3">
+          <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {peopleSkills.softSkills.map((line) => (
               <CompetencyCard
                 key={line}
                 text={line}
                 accent="teal"
-                layoutExpanded={layoutExpanded}
               />
             ))}
           </div>
@@ -327,3 +235,4 @@ const Skills = () => {
 }
 
 export default Skills
+

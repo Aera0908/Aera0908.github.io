@@ -232,7 +232,7 @@ const ProjectDetailPage = ({ projectId }: ProjectDetailPageProps) => {
     project.links?.live
 
   return (
-    <div className="min-h-screen bg-cyber-dark bg-cyber-grid">
+    <div className="min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav className="font-terminal text-xs text-cyber-cyan/60 mb-6 flex items-center gap-1 flex-wrap">
           <button onClick={() => routeTo('/')} className="hover:text-cyber-yellow transition-colors">

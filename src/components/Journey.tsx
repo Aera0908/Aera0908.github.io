@@ -42,7 +42,7 @@ const typeConfig: Record<string, { label: string; bg: string; text: string; bord
     border: 'border-cyber-magenta/20 hover:border-cyber-magenta/45 hover:shadow-[0_0_15px_rgba(255,0,85,0.15)]',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.62 48.62 0 0112 20.9c2.79 0 5.428-.707 7.74-1.909a60.363 60.363 0 00-.49-6.348N8.25 8.25 0 0012 2.25a8.25 8.25 0 00-7.74 7.897zm0 0L12 15l7.74-4.853M1 9l11-4 11 4-11 4L1 9z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.62 48.62 0 0112 20.9c2.79 0 5.428-.707 7.74-1.909a60.363 60.363 0 00-.49-6.348a8.25 8.25 0 0012 2.25a8.25 8.25 0 00-7.74 7.897zm0 0L12 15l7.74-4.853M1 9l11-4 11 4-11 4L1 9z" />
       </svg>
     ),
   },
@@ -66,7 +66,8 @@ const Journey = () => {
         An interactive timeline tracing my engineering growth, combining hardware PCB bring-ups, Web3 contract deployments, and freelance client systems.
       </p>
 
-      <div className="relative border-l-2 border-cyber-cyan/25 ml-4 md:ml-32 space-y-12 pl-6 sm:pl-8">
+      {/* Vertical timeline container with a glowing multi-color gradient line */}
+      <div className="relative ml-4 md:ml-32 space-y-12 pl-6 sm:pl-8 before:absolute before:top-2 before:bottom-2 before:left-0 before:w-[2.5px] before:bg-gradient-to-b before:from-cyber-cyan before:via-cyber-magenta before:to-cyber-yellow before:shadow-[0_0_8px_rgba(0,240,255,0.3)]">
         {milestones.map((m) => {
           const config = typeConfig[m.type] || typeConfig.project
           const isExpanded = !!expandedIds[m.id]
@@ -74,7 +75,9 @@ const Journey = () => {
           return (
             <div key={m.id} className="relative group/item">
               {/* Timeline dot */}
-              <div className="absolute -left-[35px] sm:-left-[43px] top-1.5 flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-none bg-cyber-dark border-2 border-cyber-cyan/35 group-hover/item:border-cyber-yellow transition-all duration-300">
+              <div className={`absolute -left-[30px] sm:-left-[39px] top-1.5 flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-none bg-cyber-dark border-2 border-cyber-cyan/35 group-hover/item:border-cyber-yellow transition-all duration-300 ${
+                isExpanded ? 'border-cyber-yellow shadow-[0_0_10px_rgba(252,238,10,0.4)]' : ''
+              }`}>
                 <span className={`flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-none ${config.bg} ${config.text} text-[10px] sm:text-xs`}>
                   {config.icon}
                 </span>
@@ -86,7 +89,7 @@ const Journey = () => {
               </div>
 
               {/* Milestone Card */}
-              <div className={`cyber-card cyber-corner-brackets flex flex-col p-5 sm:p-6 transition-all duration-300 border ${config.border}`}>
+              <div className={`cyber-card cyber-corner-brackets flex flex-col p-5 sm:p-6 transition-all duration-300 border hover:-translate-y-0.5 ${config.border}`}>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-cyber-yellow/10 pb-4">
                   <div>
                     {/* Date label for mobile */}
@@ -112,8 +115,8 @@ const Journey = () => {
                       <p className="font-terminal text-[10px] text-cyber-magenta tracking-widest mb-2.5">&gt; KEY ACHIEVEMENTS</p>
                       <ul className="space-y-2">
                         {m.achievements.map((ach, idx) => (
-                          <li key={idx} className="flex gap-2.5 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                            <span className="text-cyber-cyan font-terminal font-extrabold mt-0.5">&gt;</span>
+                          <li key={idx} className="flex gap-2.5 text-xs text-slate-300 leading-relaxed items-start">
+                            <span className={`font-terminal font-extrabold mt-0.5 ${config.text}`}>&gt;</span>
                             <span>{ach}</span>
                           </li>
                         ))}

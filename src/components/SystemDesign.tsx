@@ -63,6 +63,19 @@ const designTabs: DesignTab[] = [
       'Adaptive Calibration: Calculates threshold levels dynamically per-session to adjust to muscle fatigue and sensor placement.'
     ],
     tags: ['DSP', 'Microcontrollers', 'ADC Filtering', 'Roblox API', 'Python']
+  },
+  {
+    id: 'stickdiagram',
+    label: 'STICKDIAGRAM EDA',
+    title: 'Model-View-Controller Front-End Flow',
+    diagramId: 'stickdiagram-architecture',
+    description: 'A client-side Electronic Design Automation (EDA) editor utilizing React 19 to govern layout models and drawing states on a raw HTML5 Canvas 2D infinite workspace.',
+    bullets: [
+      'Infinite Math Viewport: Maps screen coordinates to world dimensions, allowing zoom scaling (0.1x to 5.0x) and grid pitch snapping.',
+      'Auto-Bridging Wire Solver: Intersects orthogonal wires of the same layer to dynamically split horizontal paths and render arc bridges.',
+      'GPU Opacity Blending: Utilizes canvas z-indexing and alpha transparency mixing to display overlapping metal, active, and via regions.'
+    ],
+    tags: ['React 19', 'HTML5 Canvas', 'Vite 8', 'VLSI Design', 'EDA Tooling']
   }
 ]
 

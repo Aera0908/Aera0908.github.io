@@ -15,7 +15,7 @@
   }
 
   p {
-    text-align: justify;
+    text-align: left;
   }
 }
 
@@ -116,12 +116,22 @@
   }
 }
 
+@keyframes cyber-grid-scroll {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 32px 32px;
+  }
+}
+
 /* Grid background pattern - cyan tinted cyber grid */
 .bg-cyber-grid {
   background-image: 
     linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
   background-size: 32px 32px;
+  animation: cyber-grid-scroll 45s linear infinite;
 }
 
 /* Cyber hazard stripes */
@@ -272,4 +282,13 @@ button, a, input, textarea, select {
 
 .animate-fade-in {
   animation: cyber-fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cyber-cell-glow {
+  0%, 100% {
+    opacity: 0;
+  }
+  35%, 65% {
+    opacity: var(--max-opacity, 0.2);
+  }
 }

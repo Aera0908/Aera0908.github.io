@@ -471,6 +471,96 @@ const FehuviaArchitecture = () => {
 }
 
 // =====================================================================
+// StickDiagram — System Architecture
+// =====================================================================
+const StickDiagramArchitecture = () => {
+  const rowH = 78
+  const rowGap = 26
+  const padX = 40
+  const width = 1200
+  const labelCol = 130
+
+  const rows = [
+    {
+      label: 'APPLICATION ENTRY',
+      accent: 'blue' as const,
+      nodes: [
+        { label: 'Vite / React Application', sub: 'React 19 Frontend SPA' },
+      ],
+    },
+    {
+      label: 'STATE ENGINE',
+      accent: 'violet' as const,
+      nodes: [
+        { label: 'App.jsx Coordinator', sub: 'Central state manager' },
+      ],
+    },
+    {
+      label: 'VIEWPORTS & UI',
+      accent: 'emerald' as const,
+      nodes: [
+        { label: 'CanvasArea Component', sub: 'HTML5 Canvas 2D View' },
+        { label: 'Sidebar Panels', sub: 'Layers panel & Properties panel' },
+        { label: 'Toolbar & MenuBar', sub: 'Cursor tools, swatches & File commands' },
+      ],
+    },
+    {
+      label: 'CORES & STACKS',
+      accent: 'amber' as const,
+      nodes: [
+        { label: 'helpers.js Math Utilities', sub: 'Coordinates snap, bridges & scale' },
+        { label: 'Undo / Redo stack', sub: '50-level state history' },
+        { label: 'Auto-save system', sub: 'LocalStorage stk serialization' },
+      ],
+    },
+  ]
+
+  const height = rows.length * rowH + (rows.length - 1) * rowGap + 40
+
+  return (
+    <DiagramFrame viewBox={`0 0 ${width} ${height}`}>
+      {rows.map((row, rIdx) => {
+        const y = 20 + rIdx * (rowH + rowGap)
+        const available = width - padX * 2 - labelCol
+        const gap = 18
+        const totalGap = gap * (row.nodes.length - 1)
+        const boxW = (available - totalGap) / row.nodes.length
+
+        return (
+          <g key={rIdx}>
+            <RowLabel x={padX} y={y + rowH / 2 + 3} text={`> ${row.label}`} />
+            {row.nodes.map((n, i) => (
+              <DiagramNode
+                key={i}
+                x={padX + labelCol + i * (boxW + gap)}
+                y={y}
+                w={boxW}
+                h={rowH}
+                label={n.label}
+                sublabel={n.sub}
+                accent={row.accent}
+              />
+            ))}
+            {rIdx < rows.length - 1 && (
+              <line
+                x1={width / 2}
+                x2={width / 2}
+                y1={y + rowH + 2}
+                y2={y + rowH + rowGap - 2}
+                stroke={palette.strokeStrong}
+                strokeWidth={1.4}
+                strokeDasharray="3 4"
+                markerEnd="url(#arrow-muted)"
+              />
+            )}
+          </g>
+        )
+      })}
+    </DiagramFrame>
+  )
+}
+
+// =====================================================================
 // Registry + public component
 // =====================================================================
 const registry: Record<string, () => JSX.Element> = {
@@ -478,6 +568,7 @@ const registry: Record<string, () => JSX.Element> = {
   'aerovit-dataflow': AeroVitDataFlow,
   'emg-pipeline': EmgPipeline,
   'fehuvia-architecture': FehuviaArchitecture,
+  'stickdiagram-architecture': StickDiagramArchitecture,
 }
 
 const ZOOM_MIN = 0.25
