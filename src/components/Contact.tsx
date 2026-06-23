@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FaLinkedin, FaGithub, FaDiscord, FaFacebook } from 'react-icons/fa'
+import { FaLinkedin, FaGithub, FaDiscord, FaFacebook, FaDonate } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { HiMail } from 'react-icons/hi'
 import ContactForm from './ContactForm'
@@ -42,6 +42,12 @@ const Contact = () => {
       value: 'aeradynamics',
       url: 'https://discord.com/users/aeradynamics',
       Icon: FaDiscord,
+    },
+    {
+      name: 'Donation',
+      value: 'ganknow.com/aera0908',
+      url: 'https://ganknow.com/aera0908',
+      Icon: FaDonate,
     },
   ]
 

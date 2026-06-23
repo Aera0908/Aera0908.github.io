@@ -117,7 +117,7 @@ const ResumePreviewModal = ({
               <div className="flex items-center gap-1.5">
                 <a
                   href={resumeSrc}
-                  download="YNTE_Resume.pdf"
+                  download="YNTE_RESUME.pdf"
                   className="cyber-btn-primary inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-bold rounded-none"
                   title="Download Resume"
                 >

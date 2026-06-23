@@ -8,7 +8,7 @@
     "dev": "vite",
     "build-pdf": "node scripts/build-pdfs.mjs",
     "fetch-stats": "node scripts/fetch-developer-stats.mjs",
-    "build": "npm run build-pdf && npm run fetch-stats && tsc && vite build",
+    "build": "npm run fetch-stats && tsc && vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"

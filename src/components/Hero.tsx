@@ -52,7 +52,7 @@ const ScrambledText = ({ targetText, delay = 100, speed = 35 }: { targetText: st
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [resumeOpen, setResumeOpen] = useState(false)
-  const resumeSrc = `${import.meta.env.BASE_URL}YNTE_Resume.pdf`
+  const resumeSrc = `${import.meta.env.BASE_URL}YNTE_RESUME.pdf`
   const cvSrc = `${import.meta.env.BASE_URL}YNTE_CV.pdf`
 
   useEffect(() => {

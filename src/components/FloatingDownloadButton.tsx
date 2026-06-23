@@ -25,8 +25,8 @@ const FloatingDownloadButton = () => {
       }`}
     >
       <a
-        href={`${base}YNTE_Resume.pdf`}
-        download="YNTE_Resume.pdf"
+        href={`${base}YNTE_RESUME.pdf`}
+        download="YNTE_RESUME.pdf"
         className="cyber-btn-primary flex items-center justify-center gap-2 px-4 py-2.5 rounded-none text-xs shadow-lg shadow-cyber-yellow/10 border border-cyber-yellow"
         title="Download resume (PDF)"
       >
