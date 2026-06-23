@@ -65,10 +65,10 @@ const designTabs: DesignTab[] = [
     tags: ['DSP', 'Microcontrollers', 'ADC Filtering', 'Roblox API', 'Python']
   },
   {
-    id: 'stickdiagram',
-    label: 'STICKDIAGRAM EDA',
+    id: 'stickout',
+    label: 'STICKOUT EDA',
     title: 'Model-View-Controller Front-End Flow',
-    diagramId: 'stickdiagram-architecture',
+    diagramId: 'stickout-architecture',
     description: 'A client-side Electronic Design Automation (EDA) editor utilizing React 19 to govern layout models and drawing states on a raw HTML5 Canvas 2D infinite workspace.',
     bullets: [
       'Infinite Math Viewport: Maps screen coordinates to world dimensions, allowing zoom scaling (0.1x to 5.0x) and grid pitch snapping.',

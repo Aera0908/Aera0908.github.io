@@ -125,19 +125,19 @@
     ]
   },
   {
-    "id": "stick-diagram",
-    "title": "StickDiagram — Interactive VLSI EDA Editor",
-    "description": "Browser-based VLSI stick diagram EDA editor featuring an infinite 2D HTML5 canvas viewport, auto-bridging wire crossovers, a Photoshop-style layer stack, and LaTeX subscript rendering.",
-    "fullDescription": "StickDiagram is an open-source, interactive, browser-based Electronic Design Automation (EDA) tool designed for creating, editing, and validating Very-Large-Scale Integration (VLSI) stick diagrams.\n\nIt features a custom 2D math viewport built on raw HTML5 Canvas with infinite panning and zoom, a layered canvas manager with opacity and visibility sliders, and automated VLSI design rule assistants like same-layer wire crossovers (auto-bridging). Built with React 19 and Vite 8, the tool allows designers to export layouts, save projects in .stk JSON formats, and trace logic paths in real-time.",
+    "id": "stickout",
+    "title": "StickOut — Interactive VLSI EDA Editor",
+    "description": "Browser-based StickOut VLSI EDA editor featuring an infinite 2D HTML5 canvas viewport, auto-bridging wire crossovers, a Photoshop-style layer stack, and LaTeX subscript rendering.",
+    "fullDescription": "StickOut is an open-source, interactive, browser-based Electronic Design Automation (EDA) tool designed for creating, editing, and validating Very-Large-Scale Integration (VLSI) stick diagrams.\n\nIt features a custom 2D math viewport built on raw HTML5 Canvas with infinite panning and zoom, a layered canvas manager with opacity and visibility sliders, and automated VLSI design rule assistants like same-layer wire crossovers (auto-bridging). Built with React 19 and Vite 8, the tool allows designers to export layouts, save projects in .stk JSON formats, and trace logic paths in real-time.",
     "technologies": ["React 19", "Vite 8", "HTML5 Canvas", "Pure CSS3", "Lucide Icons", "LaTeX Rendering", "VLSI Layout", "EDA Tooling"],
-    "image": "/stick-diagram-images/cover.png",
+    "image": "/stickout-images/cover.png",
     "category": "EDA / VLSI / Web",
     "status": "Complete — production depth",
     "featured": true,
     "webTier": "Frontend",
-    "websiteUrl": "https://stick-diagram.vercel.app",
+    "websiteUrl": "https://stickout.vercel.app",
     "gallery": [
-      { "src": "/stick-diagram-images/cover.png", "caption": "StickDiagram VLSI EDA viewport and layers sidebar" }
+      { "src": "/stickout-images/cover.png", "caption": "StickOut VLSI EDA viewport and layers sidebar" }
     ],
     "role": "Creator & Lead Frontend Engineer",
     "duration": "May 2026 - June 2026",
@@ -152,11 +152,11 @@
     "sections": [
       {
         "title": "Overview",
-        "content": "StickDiagram is an interactive web EDA editor that enables engineers to sketch, inspect, and share VLSI stick layouts.\n\nThe app runs entirely client-side using React 19 and a raw HTML5 Canvas context 2D. Wires, contacts, and labels snap to pitch layouts, and horizontal/vertical metal intersections automatically create bridge loops unless manually joined."
+        "content": "StickOut is an interactive web EDA editor that enables engineers to sketch, inspect, and share VLSI stick layouts.\n\nThe app runs entirely client-side using React 19 and a raw HTML5 Canvas context 2D. Wires, contacts, and labels snap to pitch layouts, and horizontal/vertical metal intersections automatically create bridge loops unless manually joined."
       },
       {
         "title": "VLSI Design & Auto-Bridging",
-        "content": "Traditional VLSI diagrams represent different layers (diffusion, polysilicon, metal1, metal2). Wires on different layers cross without connecting. Wires on the same layer, however, would short-circuit unless an insulation bridge is explicitly drawn.\n\nStickDiagram automates this rule: when orthogonal lines sharing the same layer intersect, the vertical path remains straight while the horizontal path segments around it with an arc bridge. Right-clicking the bridge registers the intersection as an override, turning it into a solid junction."
+        "content": "Traditional VLSI diagrams represent different layers (diffusion, polysilicon, metal1, metal2). Wires on different layers cross without connecting. Wires on the same layer, however, would short-circuit unless an insulation bridge is explicitly drawn.\n\nStickOut automates this rule: when orthogonal lines sharing the same layer intersect, the vertical path remains straight while the horizontal path segments around it with an arc bridge. Right-clicking the bridge registers the intersection as an override, turning it into a solid junction."
       },
       {
         "title": "Custom Double-Pass LaTeX Renderer",
@@ -165,8 +165,8 @@
       {
         "title": "System Architecture",
         "type": "diagram",
-        "diagramId": "stickdiagram-architecture",
-        "caption": "StickDiagram Model-View-Controller Front-End Flow.",
+        "diagramId": "stickout-architecture",
+        "caption": "StickOut Model-View-Controller Front-End Flow.",
         "content": "The application is built on a clean front-end MVC model. React handles the document model state (elements, layer stack, undo/redo, selected IDs), the CanvasArea receives user inputs and coordinates them through viewport transforms, and raw HTML5 canvas rendering functions paint the world coordinates onto screen pixels at up to 60fps."
       },
       {
@@ -186,8 +186,8 @@
       }
     ],
     "links": {
-      "website": "https://stick-diagram.vercel.app",
-      "github": "https://github.com/Aera0908/stick-diagram"
+      "website": "https://stickout.vercel.app",
+      "github": "https://github.com/Aera0908/stickOut"
     }
   },
   {

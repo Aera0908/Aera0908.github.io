@@ -471,9 +471,9 @@ const FehuviaArchitecture = () => {
 }
 
 // =====================================================================
-// StickDiagram — System Architecture
+// StickOut — System Architecture
 // =====================================================================
-const StickDiagramArchitecture = () => {
+const StickOutArchitecture = () => {
   const rowH = 78
   const rowGap = 26
   const padX = 40
@@ -568,7 +568,7 @@ const registry: Record<string, () => JSX.Element> = {
   'aerovit-dataflow': AeroVitDataFlow,
   'emg-pipeline': EmgPipeline,
   'fehuvia-architecture': FehuviaArchitecture,
-  'stickdiagram-architecture': StickDiagramArchitecture,
+  'stickout-architecture': StickOutArchitecture,
 }
 
 const ZOOM_MIN = 0.25
