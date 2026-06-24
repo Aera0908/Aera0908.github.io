@@ -158,12 +158,9 @@ const Skills = () => {
       aria-label="Technology stack and competencies"
     >
       <p className="mb-4 font-terminal text-sm text-cyber-magenta tracking-widest">&gt; TECH.STACK // DIAGNOSTICS</p>
-      <h2 className="mb-2 text-2xl font-bold text-slate-50 md:text-3xl tracking-wide cyber-glitch">
+      <h2 className="mb-10 text-2xl font-bold text-slate-50 md:text-3xl tracking-wide cyber-glitch">
         Tech Stack
       </h2>
-      <p className="mb-10 max-w-full text-sm leading-relaxed text-slate-400 sm:max-w-2xl">
-        Languages, frameworks, and hardware tooling I use day-to-day — grounded in internships, PCB bring-up, flagship prototypes, and shipped Web2 surfaces.
-      </p>
 
       <div className="min-w-0 space-y-6">
         <CollapsibleSection

@@ -14,8 +14,14 @@ interface GlowCell {
 export const GridGlow = () => {
   const [cells, setCells] = useState<GlowCell[]>([])
   const nextIndexRef = useRef(0)
+  const isFrozenRef = useRef(false)
 
   useEffect(() => {
+    const handleSande = (e: Event) => {
+      isFrozenRef.current = (e as CustomEvent).detail.active
+    }
+    window.addEventListener('sandevistan-state', handleSande)
+
     const getGridConfig = () => {
       const cols = Math.max(10, Math.floor(window.innerWidth / 32))
       const rows = Math.max(10, Math.floor(window.innerHeight / 32))
@@ -69,6 +75,8 @@ export const GridGlow = () => {
     // Constant relocations: update a subset of cells every 100ms
     // With 3s animation duration, updating cells sequentially keeps the entire grid active constantly
     const interval = setInterval(() => {
+      if (isFrozenRef.current) return // Stop cell relocation/state changes while frozen
+      
       setCells((prev) => {
         if (prev.length === 0) return prev
         const next = [...prev]
@@ -99,6 +107,7 @@ export const GridGlow = () => {
     return () => {
       clearInterval(interval)
       window.removeEventListener('resize', handleResize)
+      window.removeEventListener('sandevistan-state', handleSande)
     }
   }, [])
 
@@ -113,7 +122,7 @@ export const GridGlow = () => {
         return (
           <div
             key={`${cell.id}-${cell.key}`}
-            className={`absolute transition-opacity ${bgClass} ${glowClass}`}
+            className={`absolute ${bgClass} ${glowClass}`}
             style={{
               left: `${cell.x * 32}px`,
               top: `${cell.y * 32}px`,

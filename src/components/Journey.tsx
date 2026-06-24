@@ -61,10 +61,7 @@ const Journey = () => {
   return (
     <section id="journey" className="w-full min-w-0 max-w-full scroll-mt-24 py-16">
       <p className="mb-4 font-terminal text-sm text-cyber-magenta tracking-widest">&gt; CAREER.JOURNEY // FILE_LOG</p>
-      <h2 className="mb-2 text-2xl font-bold text-slate-50 md:text-3xl tracking-wide cyber-glitch">Journey &amp; Milestones</h2>
-      <p className="mb-12 max-w-full text-sm leading-relaxed text-slate-400 sm:max-w-2xl">
-        An interactive timeline tracing my engineering growth, combining hardware PCB bring-ups, Web3 contract deployments, and freelance client systems.
-      </p>
+      <h2 className="mb-12 text-2xl font-bold text-slate-50 md:text-3xl tracking-wide cyber-glitch">Journey &amp; Milestones</h2>
 
       {/* Vertical timeline container with a glowing multi-color gradient line */}
       <div className="relative ml-4 md:ml-32 space-y-12 pl-6 sm:pl-8 before:absolute before:top-2 before:bottom-2 before:left-0 before:w-[2.5px] before:bg-gradient-to-b before:from-cyber-cyan before:via-cyber-magenta before:to-cyber-yellow before:shadow-[0_0_8px_rgba(0,240,255,0.3)]">

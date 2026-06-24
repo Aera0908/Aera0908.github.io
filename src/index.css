@@ -292,3 +292,8 @@ button, a, input, textarea, select {
     opacity: var(--max-opacity, 0.2);
   }
 }
+
+/* Sandevistan Time Stop: Pause all animations except the avatar entry animation */
+.sande-active *:not(.sande-anim-allowed, .sande-anim-allowed *) {
+  animation-play-state: paused !important;
+}

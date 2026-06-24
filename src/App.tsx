@@ -195,18 +195,18 @@ function App() {
               />
 
               <main className="flex-1 pt-20 lg:pt-0 min-h-screen min-w-0 w-full max-w-full overflow-x-hidden lg:ml-64">
-              <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full min-w-0 box-border">
                 <Hero />
-                <About />
-                <Education />
-                <Journey />
-                <Skills />
-                <Certifications />
-                <Portfolio />
-                <SystemDesign />
-                <DeveloperPresence />
-                <Contact />
-              </div>
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full min-w-0 box-border">
+                  <About />
+                  <Education />
+                  <Journey />
+                  <Skills />
+                  <Certifications />
+                  <Portfolio />
+                  <SystemDesign />
+                  <DeveloperPresence />
+                  <Contact />
+                </div>
 
               <footer className="py-8 px-4 border-t border-cyber-yellow/10 bg-cyber-gray/30">
                 <p className="font-terminal text-center text-xs text-cyber-cyan/50 tracking-wider">
