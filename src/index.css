@@ -297,3 +297,9 @@ button, a, input, textarea, select {
 .sande-active *:not(.sande-anim-allowed, .sande-anim-allowed *) {
   animation-play-state: paused !important;
 }
+
+html.sande-active,
+body.sande-active {
+  overflow: hidden !important;
+  height: 100vh !important;
+}

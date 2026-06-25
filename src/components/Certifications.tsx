@@ -1,73 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useFocusTrap } from '../hooks/useFocusTrap'
-
-interface Certificate {
-  name: string
-  issuer: string
-  description: string
-  url: string
-  downloadName?: string
-}
+import { routeTo } from '../hooks/useRoute'
+import { certificatesData, Certificate } from '../data/certificates'
 
 const Certifications = () => {
-  const certificates: Certificate[] = [
-    {
-      name: 'On-the-Job Training Certificate',
-      issuer: 'Xinyx Design Engineering, Inc.',
-      description: 'Completion of OJT engagement — hardware / electronics design exposure.',
-      url: '/CERTIFICATE-PREVIEWS/YNTE-XINYX-OJT-CERTIFICATE.pdf',
-      downloadName: 'YNTE-XINYX-OJT-CERTIFICATE.pdf',
-    },
-    {
-      name: 'TINA DESIGN SUITE WORKSHOP',
-      issuer: 'Hytec Power & Inc.',
-      description: 'Workshop on the TINA circuit simulation and PCB design suite.',
-      url: '/CERTIFICATE-PREVIEWS/YNTE-DESIGNSOFT-TINA.pdf',
-      downloadName: 'YNTE-DESIGNSOFT-TINA.pdf',
-    },
-    {
-      name: 'Understanding EDR: Protecting Endpoints Against Modern Threats',
-      issuer: 'Cybersecurity Training',
-      description: 'Endpoint Detection & Response (EDR) fundamentals and modern endpoint threat protection.',
-      url: '/CERTIFICATE-PREVIEWS/YNTE%20-%20Understanding%20EDR%20Protecting%20Endpoints%20Against%20Modern%20Threats.pdf',
-      downloadName: 'YNTE-Understanding-EDR.pdf',
-    },
-    {
-      name: 'Zuitt Game Dev Certificate',
-      issuer: 'Zuitt',
-      description: 'Basic Web Development Workshop (June 15)',
-      url: '/CERTIFICATE-PREVIEWS/Aira%20Josh%20C.%20Ynte%20Basic%20Web%20Development%20Workshop%20(June%2015)%20-%20Certificate%20of%20Participation%20(1).pdf',
-      downloadName: 'YNTE-Zuitt-Basic-Web-Dev-Workshop.pdf',
-    },
-    {
-      name: 'Learn React Certificate',
-      issuer: 'Scrimba',
-      description: 'Comprehensive React.js course completion',
-      url: '/CERTIFICATE-PREVIEWS/Learn%20React%20Certificate.pdf',
-      downloadName: 'YNTE-Scrimba-Learn-React.pdf',
-    },
-    {
-      name: 'Learn TailwindCSS Certificate',
-      issuer: 'Scrimba',
-      description: 'Modern utility-first CSS framework mastery',
-      url: '/CERTIFICATE-PREVIEWS/Learn%20Tailwind%20CSS.pdf',
-      downloadName: 'YNTE-Scrimba-Learn-Tailwind-CSS.pdf',
-    },
-    {
-      name: 'The AI Engineer Path Certificate',
-      issuer: 'Scrimba',
-      description: 'AI integration and engineering fundamentals',
-      url: '/CERTIFICATE-PREVIEWS/The%20AI%20Engineer%20Path.pdf',
-      downloadName: 'YNTE-Scrimba-AI-Engineer-Path.pdf',
-    },
-    {
-      name: 'Blockchain4Youth Certificate',
-      issuer: 'Bitget Blockchain4Youth',
-      description: 'Certification in blockchain technology, smart contract development, and Web3 fundamentals.',
-      url: '/CERTIFICATE-PREVIEWS/B4Y-Certificate-Aira-Josh-C.-Ynte.jpg',
-      downloadName: 'B4Y-Certificate-Aira-Josh-C.-Ynte.jpg',
-    },
-  ]
+  const featuredCertificates = certificatesData.filter((cert) => cert.featured)
 
   const [selected, setSelected] = useState<Certificate | null>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -91,45 +28,39 @@ const Certifications = () => {
 
   return (
     <section id="certs" className="py-16">
-      <p className="font-terminal text-sm text-cyber-magenta mb-4 tracking-widest">&gt; CERTIFICATIONS.DB // INDEX</p>
-      <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-8 tracking-wide cyber-glitch">Certifications</h2>
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+        <div>
+          <p className="font-terminal text-sm text-cyber-magenta mb-2 tracking-widest">&gt; CERTIFICATIONS.DB // INDEX</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-50 tracking-wide cyber-glitch">Featured Certifications</h2>
+        </div>
+        <button
+          onClick={() => routeTo('/certificates')}
+          className="cyber-btn-outline inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-none border-cyber-cyan/45 text-cyber-cyan hover:bg-cyber-cyan/10 hover:border-cyber-yellow hover:text-cyber-yellow"
+        >
+          View all certificates
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {certificates.map((cert, index) => (
+      <div className="grid md:grid-cols-3 gap-4">
+        {featuredCertificates.map((cert, index) => (
           <button
             key={index}
             onClick={() => setSelected(cert)}
             className="cyber-card cyber-corner-brackets block text-left group focus:outline-none focus:ring-2 focus:ring-cyber-yellow/40"
           >
             <div className="flex items-start justify-between gap-3 mb-1">
-              <h3 className="text-base font-bold text-slate-100 group-hover:text-cyber-yellow transition-colors font-cyber tracking-wide">
+              <h3 className="text-[13px] md:text-sm font-bold text-slate-100 group-hover:text-cyber-yellow transition-colors font-cyber tracking-wide line-clamp-2 min-h-[2.5rem]">
                 {cert.name}
               </h3>
-              <span className="shrink-0 mt-0.5 inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-terminal tracking-wider bg-cyber-cyan/5 text-cyber-cyan border border-cyber-cyan/25 group-hover:text-cyber-yellow group-hover:border-cyber-yellow/45 transition-colors">
-                <svg
-                  className="w-3 h-3 animate-pulse"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  />
-                </svg>
+              <span className="shrink-0 mt-0.5 inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-terminal tracking-wider bg-cyber-cyan/5 text-cyber-cyan border border-cyber-cyan/25 group-hover:text-cyber-yellow group-hover:border-cyber-yellow/45 transition-colors">
                 PREVIEW
               </span>
             </div>
-            <p className="text-cyber-cyan font-bold font-cyber text-sm mb-1">{cert.issuer}</p>
-            <p className="text-slate-400 text-sm">{cert.description}</p>
+            <p className="text-cyber-cyan font-bold font-cyber text-xs mb-1 truncate">{cert.issuer}</p>
+            <p className="text-slate-400 text-xs line-clamp-2">{cert.description}</p>
           </button>
         ))}
       </div>

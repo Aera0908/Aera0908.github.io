@@ -14,6 +14,7 @@ import Contact from './components/Contact'
 import FloatingDownloadButton from './components/FloatingDownloadButton'
 import PortfolioPage from './components/PortfolioPage'
 import ProjectDetailPage from './components/ProjectDetailPage'
+import CertificatesPage from './components/CertificatesPage'
 import { useRoute, SECTION_PATHS, PATH_TO_SECTION, replaceUrl } from './hooks/useRoute'
 import projectsData from './data/projects.json'
 import GridGlow from './components/GridGlow'
@@ -42,10 +43,18 @@ function App() {
   const isProjectDetail = isPortfolioRoute && route.segments.length >= 2
   const projectId = isProjectDetail ? route.segments[1] : null
 
+  const isCertificatesRoute =
+    route.segments[0] === 'certificates' || route.path === '/certificates'
+
   // Deep-link: scroll to section on initial page load
   useEffect(() => {
-    if (isPortfolioRoute || hasScrolledOnMount.current) return
+    if (isPortfolioRoute || isCertificatesRoute || hasScrolledOnMount.current) return
     hasScrolledOnMount.current = true
+
+    // Disable browser automatic scroll restoration to ensure clean animations from top
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual'
+    }
 
     const sectionId = PATH_TO_SECTION[route.path]
     if (sectionId && sectionId !== 'dashboard') {
@@ -56,12 +65,17 @@ function App() {
           el.scrollIntoView({ behavior: 'smooth' })
         }
       })
+    } else {
+      // If root/dashboard, explicitly scroll to the very top
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0)
+      })
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Scroll-spy: detect which section is in view and update URL
   useEffect(() => {
-    if (isPortfolioRoute) return
+    if (isPortfolioRoute || isCertificatesRoute) return
 
     const handleScroll = () => {
       for (let i = SECTION_IDS.length - 1; i >= 0; i--) {
@@ -81,7 +95,7 @@ function App() {
     window.addEventListener('scroll', handleScroll)
     handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isPortfolioRoute])
+  }, [isPortfolioRoute, isCertificatesRoute])
 
   // Dynamic SEO metadata updates (document title, meta description, canonical, and project structured data)
   useEffect(() => {
@@ -94,6 +108,9 @@ function App() {
         title = `${project.title} | Aira Ynte Case Study`
         description = `${project.description} Detailed software architecture, technologies, and achievements.`
       }
+    } else if (isCertificatesRoute) {
+      title = 'Certifications Portfolio | Aira Ynte'
+      description = 'Browse the certifications, coursework, and technical training completed by Aira Ynte.'
     } else if (isPortfolioRoute) {
       title = 'Portfolio Archive | Aira Ynte'
       description = 'Browse the complete archive of full-stack engineering, Web3, and embedded IoT projects developed by Aira Ynte.'
@@ -167,6 +184,8 @@ function App() {
       <div className="relative z-10 w-full min-h-screen flex flex-col">
         {isProjectDetail && projectId ? (
           <ProjectDetailPage projectId={projectId} />
+        ) : isCertificatesRoute ? (
+          <CertificatesPage />
         ) : isPortfolioRoute ? (
           <PortfolioPage />
         ) : (

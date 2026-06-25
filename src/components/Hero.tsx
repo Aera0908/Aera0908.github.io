@@ -61,57 +61,86 @@ const Hero = () => {
   useEffect(() => {
     setIsVisible(true)
 
-    let audio: HTMLAudioElement | null = null
-    let hasPlayed = false
+    const base = import.meta.env.BASE_URL
+    const audio = new Audio(`${base}sfx/entry-sfx.mp3`)
+    audio.volume = 0.4
+    audio.preload = 'auto'
 
-    const playAudio = () => {
-      if (hasPlayed) return
-      if (!audio) {
-        const base = import.meta.env.BASE_URL
-        audio = new Audio(`${base}sfx/entry-sfx.mp3`)
-        audio.volume = 0.4
-      }
-      audio.play()
-        .then(() => {
-          hasPlayed = true
-          window.removeEventListener('click', playAudio)
-          window.removeEventListener('keydown', playAudio)
-          window.removeEventListener('touchstart', playAudio)
-        })
-        .catch((err) => {
-          console.warn('SFX play attempt failed:', err)
-        })
+    let hasStarted = false
+    let sequenceTimer: any
+    let endTimer: any
+
+    const playFallback = () => {
+      audio.play().then(() => {
+        window.removeEventListener('click', playFallback)
+        window.removeEventListener('touchstart', playFallback)
+      }).catch((err) => {
+        console.error('SFX play failed in fallback:', err)
+      })
     }
 
-    // Delayed sequence: starts after text scrambles (approx 1200ms)
-    const sequenceTimer = setTimeout(() => {
+    const triggerSequenceEffects = () => {
       setShowGreenTint(true)
       document.body.classList.add('sande-active')
       window.dispatchEvent(new CustomEvent('sandevistan-state', { detail: { active: true } }))
-      playAudio()
 
-      // Add one-time interaction listeners if autoplay was blocked
-      if (!hasPlayed) {
-        window.addEventListener('click', playAudio)
-        window.addEventListener('keydown', playAudio)
-        window.addEventListener('touchstart', playAudio)
-      }
+      endTimer = setTimeout(() => {
+        setShowGreenTint(false)
+        document.body.classList.remove('sande-active')
+        window.dispatchEvent(new CustomEvent('sandevistan-state', { detail: { active: false } }))
+      }, 3000)
+    }
+
+    const startSequence = () => {
+      if (hasStarted) return
+      hasStarted = true
+
+      // Clean up start listeners
+      cleanupListeners()
+
+      if (sequenceTimer) clearTimeout(sequenceTimer)
+
+      // Try playing the audio immediately
+      audio.play().catch((err) => {
+        console.warn('SFX autoplay blocked, registering gesture fallback during time stop:', err)
+        window.addEventListener('click', playFallback)
+        window.addEventListener('touchstart', playFallback)
+      })
+
+      // Always trigger visual effects
+      triggerSequenceEffects()
+    }
+
+    const handleInteraction = () => {
+      startSequence()
+    }
+
+    const cleanupListeners = () => {
+      window.removeEventListener('click', handleInteraction)
+      window.removeEventListener('keydown', handleInteraction)
+      window.removeEventListener('touchstart', handleInteraction)
+      window.removeEventListener('mousedown', handleInteraction)
+    }
+
+    // Auto-start in 1.2s
+    sequenceTimer = setTimeout(() => {
+      startSequence()
     }, 1200)
 
-    // Turn off green tint instantly after 3 seconds of sequence (1200ms delay + 3000ms duration = 4200ms)
-    const endTimer = setTimeout(() => {
-      setShowGreenTint(false)
-      document.body.classList.remove('sande-active')
-      window.dispatchEvent(new CustomEvent('sandevistan-state', { detail: { active: false } }))
-    }, 4200)
+    // Interaction triggers sequence immediately
+    window.addEventListener('click', handleInteraction)
+    window.addEventListener('keydown', handleInteraction)
+    window.addEventListener('touchstart', handleInteraction)
+    window.addEventListener('mousedown', handleInteraction)
 
     return () => {
       clearTimeout(sequenceTimer)
-      clearTimeout(endTimer)
+      if (endTimer) clearTimeout(endTimer)
+      cleanupListeners()
+      window.removeEventListener('click', playFallback)
+      window.removeEventListener('touchstart', playFallback)
       document.body.classList.remove('sande-active')
-      window.removeEventListener('click', playAudio)
-      window.removeEventListener('keydown', playAudio)
-      window.removeEventListener('touchstart', playAudio)
+      audio.pause()
     }
   }, [])
 
@@ -133,7 +162,7 @@ const Hero = () => {
     <section id="dashboard" className="min-h-[calc(100vh-5rem)] lg:min-h-screen flex flex-col justify-center px-4 sm:px-10 lg:px-16 py-12 lg:py-16 w-full min-w-0 max-w-full relative overflow-hidden">
       {showGreenTint && (
         <div 
-          className="fixed inset-0 z-[9999] pointer-events-none bg-[rgba(0,255,90,0.06)] shadow-[inset_0_0_120px_rgba(0,255,90,0.25)]"
+          className="fixed inset-0 z-[9999] pointer-events-auto bg-[rgba(0,255,90,0.06)] shadow-[inset_0_0_120px_rgba(0,255,90,0.25)] cursor-not-allowed select-none"
         />
       )}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-12 w-full min-w-0 max-w-full relative z-10">

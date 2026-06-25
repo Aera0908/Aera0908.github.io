@@ -296,7 +296,7 @@
         "title": "Confidentiality",
         "type": "callout",
         "variant": "warn",
-        "content": "Plant.io is a freelance engagement. Under the client contract, screenshots, full UI walkthroughs, and some implementation details are withheld. The description above is limited to non-sensitive architectural and feature-level information."
+        "content": "Plant.io is a freelance engagement. Under a verbal agreement, screenshots, full UI walkthroughs, and some implementation details are withheld. The description above is limited to non-sensitive architectural and feature-level information."
       }
     ],
     "links": {}
@@ -438,7 +438,7 @@
     "id": "student-consultation",
     "title": "Student Consultation System",
     "description": "A modern, full-stack web application for managing student-professor consultations with real-time messaging, scheduling, and comprehensive user management.",
-    "fullDescription": "The Student Consultation System is a full-stack web platform that turns ad-hoc student–professor consultations into a structured, trackable workflow.\n\nIt features role-based interfaces with real-time messaging, an interactive scheduling calendar, consultation request management, and a notification system. A three-tier architecture separates the React frontend, an Express API, and a PostgreSQL database. Features include professor discovery, consultation booking with a clear status lifecycle (pending → approved → ongoing → completed), file attachments, profile management with photo cropping, dashboard analytics, and announcement posting.\n\nSecurity and performance: JWT authentication, bcrypt password hashing, parameterized PostgreSQL queries, and a Sharp-based image pipeline for profile photos.\n\nNote: client project — screenshots are not available per a confidentiality agreement.",
+    "fullDescription": "The Student Consultation System is a full-stack web platform that turns ad-hoc student–professor consultations into a structured, trackable workflow.\n\nIt features role-based interfaces with real-time messaging, an interactive scheduling calendar, consultation request management, and a notification system. A three-tier architecture separates the React frontend, an Express API, and a PostgreSQL database. Features include professor discovery, consultation booking with a clear status lifecycle (pending → approved → ongoing → completed), file attachments, profile management with photo cropping, dashboard analytics, and announcement posting.\n\nSecurity and performance: JWT authentication, bcrypt password hashing, parameterized PostgreSQL queries, and a Sharp-based image pipeline for profile photos.\n\nNote: client project — screenshots are not available.",
     "technologies": ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "JWT", "Tailwind CSS", "Vite", "Multer", "Sharp"],
     "image": "https://placehold.co/1200x675/1e293b/ef4444?text=Student+Consultation+System",
     "category": "Web / Full-Stack",
@@ -454,7 +454,7 @@
       "Real-time messaging and interactive scheduling calendar",
       "JWT auth, bcrypt hashing, and Sharp-based image processing",
       "Dashboard analytics and announcement posting",
-      "Client project — screenshots not available per NDA"
+      "Client project — screenshots not available"
     ],
     "sections": [
       {
@@ -498,7 +498,7 @@
         "title": "Confidentiality",
         "type": "callout",
         "variant": "warn",
-        "content": "This is a freelance engagement. Per contract, screenshots, client-facing copy, final assets, and some implementation details are withheld from the public case study. The case study above is limited to non-sensitive architectural and feature-level information."
+        "content": "This is a freelance engagement. Per verbal agreement, screenshots, client-facing copy, final assets, and some implementation details are withheld from the public case study. The case study above is limited to non-sensitive architectural and feature-level information."
       }
     ],
     "links": {}
@@ -636,7 +636,7 @@
         "title": "Confidentiality",
         "type": "callout",
         "variant": "warn",
-        "content": "This is a freelance engagement. Per contract, screenshots, client-facing copy, final assets, and some implementation details are withheld from the public case study. The case study above is limited to non-sensitive architectural and feature-level information."
+        "content": "This is a freelance engagement. Per verbal agreement, screenshots, client-facing copy, final assets, and some implementation details are withheld from the public case study. The case study above is limited to non-sensitive architectural and feature-level information."
       }
     ],
     "links": {}

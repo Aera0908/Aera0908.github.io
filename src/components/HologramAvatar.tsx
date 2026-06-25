@@ -2,29 +2,43 @@ import React, { useEffect, useState } from 'react'
 
 export const HologramAvatar: React.FC = () => {
   const [active, setActive] = useState(false)
+  const [zoomedIn, setZoomedIn] = useState(false)
+  const [edgesVisible, setEdgesVisible] = useState(false)
   const [hudVisible, setHudVisible] = useState(false)
   
   const base = import.meta.env.BASE_URL
   const [imgSrc, setImgSrc] = useState(`${base}aera-full-body.png`)
 
   useEffect(() => {
-    // Trigger photo entry animation at 1.2s to start simultaneously with the green tint sequence
-    const entryTimer = setTimeout(() => {
-      setActive(true)
-    }, 1200)
+    let hudTimer: any
 
-    return () => clearTimeout(entryTimer)
+    const handleSande = (e: Event) => {
+      const isSandeActive = (e as CustomEvent).detail.active
+      if (isSandeActive) {
+        // Sandevistan active: trigger slide-in immediately (zoomed out, full-body view)
+        setActive(true)
+        setZoomedIn(false)
+        setEdgesVisible(false)
+        setHudVisible(false)
+      } else {
+        // Sandevistan inactive:
+        // 1. Instantly show edges (corner brackets) and start zoom-in (cropping body)
+        setEdgesVisible(true)
+        setZoomedIn(true)
+
+        // 2. Delay the card outline, background, and HUD rings until the crop transition completes (1000ms)
+        hudTimer = setTimeout(() => {
+          setHudVisible(true)
+        }, 1000)
+      }
+    }
+
+    window.addEventListener('sandevistan-state', handleSande)
+    return () => {
+      window.removeEventListener('sandevistan-state', handleSande)
+      if (hudTimer) clearTimeout(hudTimer)
+    }
   }, [])
-
-  useEffect(() => {
-    if (!active) return
-
-    const hudTimer = setTimeout(() => {
-      setHudVisible(true)
-    }, 1500) // Fade in the vector outline HUD after 1.5s slide-in completes
-
-    return () => clearTimeout(hudTimer)
-  }, [active])
 
   return (
     <div className="relative w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[420px] aspect-[3/4] flex items-center justify-center overflow-visible py-8 px-6">
@@ -50,7 +64,28 @@ export const HologramAvatar: React.FC = () => {
         </defs>
       </svg>
 
-      {/* Cyber HUD Vector Background (Fades in after slide-in settles) */}
+      {/* Translucent Card Background and Neon Outline (Fades in after crop settles) */}
+      <div 
+        className={`absolute inset-0 transition-all duration-1000 ease-out border rounded-lg z-0 ${
+          hudVisible 
+            ? 'bg-cyber-gray/35 border-cyber-cyan/40 shadow-[0_0_15px_rgba(0,240,255,0.25)]' 
+            : 'bg-transparent border-transparent'
+        }`}
+      />
+
+      {/* Bounding Box Corner Brackets ("edges") - Appears instantly when time stop ends */}
+      <div 
+        className={`absolute inset-0 transition-all duration-300 pointer-events-none z-20 ${
+          edgesVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        }`}
+      >
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyber-cyan/70 shadow-[0_0_8px_rgba(0,240,255,0.4)]" />
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyber-cyan/70 shadow-[0_0_8px_rgba(0,240,255,0.4)]" />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyber-cyan/70 shadow-[0_0_8px_rgba(0,240,255,0.4)]" />
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyber-cyan/70 shadow-[0_0_8px_rgba(0,240,255,0.4)]" />
+      </div>
+
+      {/* Cyber HUD Vector Background (Fades in after zoom-in completes) */}
       <div 
         className={`absolute w-[105%] h-[105%] flex items-center justify-center pointer-events-none transition-all duration-1000 ease-out z-0 ${
           hudVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
@@ -60,14 +95,6 @@ export const HologramAvatar: React.FC = () => {
         <div className="absolute w-[90%] h-[90%] rounded-full border border-dashed border-cyber-cyan/35 animate-hud-spin-slow" />
         <div className="absolute w-[80%] h-[80%] rounded-full border border-double border-cyber-cyan/15 animate-hud-spin-reverse" />
         
-        {/* Bounding Box Corner Brackets */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyber-cyan/70 shadow-[0_0_8px_rgba(0,240,255,0.4)]" />
-          <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyber-cyan/70 shadow-[0_0_8px_rgba(0,240,255,0.4)]" />
-          <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyber-cyan/70 shadow-[0_0_8px_rgba(0,240,255,0.4)]" />
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyber-cyan/70 shadow-[0_0_8px_rgba(0,240,255,0.4)]" />
-        </div>
-
         {/* HUD Data Labels */}
         <div className="absolute top-[-20px] left-2 font-terminal text-[9px] text-cyber-yellow/70 tracking-wider">
           [ SUBJECT: AIRA_YNTE ]
@@ -80,11 +107,14 @@ export const HologramAvatar: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Image Container with overflow-hidden to crop lower body at the upper knee */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden rounded-b-lg pointer-events-none z-10">
+      {/* Main Image Container (Slices crop from bottom after time stop) */}
+      <div className={`avatar-crop-container ${
+        zoomedIn ? 'overflow-hidden rounded-b-lg zoomed' : 'overflow-visible'
+      }`}>
         
-        {/* Layout Wrapper (Centering & Sizing) */}
-        <div className="absolute left-1/2 -translate-x-1/2 w-[250%] top-[-65%] aspect-[3/4] origin-top pointer-events-none sande-anim-allowed">
+        <div className={`absolute left-1/2 -translate-x-1/2 aspect-[3/4] origin-top pointer-events-none sande-anim-allowed transition-all duration-1000 ease-in-out w-[250%] ${
+          zoomedIn ? 'top-[-65%]' : 'top-[-40%]'
+        }`}>
           {/* Sandevistan Rainbow Trails (Translucent colored silhouettes trailing behind) */}
           {active && (
             <>
@@ -146,6 +176,21 @@ export const HologramAvatar: React.FC = () => {
 
       {/* Scoped Styles for Cyber HUD and Sandevistan Animations */}
       <style>{`
+        /* Dynamic crop container that shrivels height from bottom to top */
+        .avatar-crop-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          pointer-events: none;
+          z-index: 10;
+          height: 215%;
+          transition: height 1s cubic-bezier(0.16, 1, 0.3, 1), border-radius 1s ease-in-out;
+        }
+        .avatar-crop-container.zoomed {
+          height: 100%;
+        }
+
         /* Slow HUD rotations */
         @keyframes hudSpin {
           from { transform: rotate(0deg); }

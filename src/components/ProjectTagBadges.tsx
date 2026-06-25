@@ -63,7 +63,7 @@ export const LimitedInfoBadge = ({
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-none font-terminal tracking-wider bg-cyber-magenta/10 text-cyber-magenta border border-dashed border-cyber-magenta/40 ${sizes[size]} ${className}`}
-      title="Public information is limited per a client contract / NDA"
+      title="Public information is limited per a client agreement"
     >
       <svg
         className="w-2.5 h-2.5"
