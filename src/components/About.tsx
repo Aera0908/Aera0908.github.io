@@ -10,7 +10,7 @@ const About = () => {
         <div className="space-y-8 w-full min-w-0">
           {/* Interactive Stack Visualizer */}
           <div className="w-full min-w-0">
-            <h3 className="text-base font-bold text-cyber-yellow mb-4 font-cyber tracking-wider">Interactive Engineering Stack</h3>
+            <h3 className="text-base font-bold text-cyber-yellow mb-4 font-cyber tracking-wider">Engineering Stack</h3>
             <VerticalEngineeringStack />
           </div>
 

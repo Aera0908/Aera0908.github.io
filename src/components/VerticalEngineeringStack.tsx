@@ -13,8 +13,8 @@ interface StackLayer {
 
 const stackLayers: StackLayer[] = [
   {
-    id: 'l5',
-    level: 'L5',
+    id: 'l4',
+    level: 'L4',
     title: 'Application & AI Integration',
     shortDesc: 'Interactive frontends, AI orchestration, and multi-platform client applications.',
     longDesc: 'Focuses on designing high-fidelity user experiences, client-side state management, and real-time AI computer vision/LLM integrations. Connects frontend clients to distributed networks and edge devices.',
@@ -27,8 +27,8 @@ const stackLayers: StackLayer[] = [
     color: 'magenta',
   },
   {
-    id: 'l4',
-    level: 'L4',
+    id: 'l3',
+    level: 'L3',
     title: 'Web3 & Backend Infrastructure',
     shortDesc: 'Secure smart contract protocols, low-latency sync daemons, and database design.',
     longDesc: 'Covers decentralized ledger logic, RPC event-listening daemons, and secure backend microservices that synchronize off-chain operations with on-chain states.',
@@ -41,8 +41,8 @@ const stackLayers: StackLayer[] = [
     color: 'cyan',
   },
   {
-    id: 'l3',
-    level: 'L3',
+    id: 'l2',
+    level: 'L2',
     title: 'Edge Systems & Firmware',
     shortDesc: 'Low-level microcontroller firmware, sensor packet telemetry, and RTOS threads.',
     longDesc: 'Spans hardware-software boundary layers, focusing on deterministic real-time tasks, power management, and serial communication protocols.',
@@ -53,20 +53,6 @@ const stackLayers: StackLayer[] = [
       'Programmed ADC reading filters with custom moving-average smoothing for clean muscle signal input.'
     ],
     color: 'yellow',
-  },
-  {
-    id: 'l2',
-    level: 'L2',
-    title: 'Hardware PCB & DSP',
-    shortDesc: 'Printed circuit board layout, analog signal conditioning, and signal processing.',
-    longDesc: 'Focuses on structural circuit layouts, schematic design, signal filtering, and real-time biological/biometric signal analysis on-device.',
-    tools: ['KiCad', 'Altium Designer', 'DSP (moving-average, RMS)', 'Analog Op-Amps', 'Fusion 360', 'Circuit Simulation'],
-    achievements: [
-      'Designed dual-layer custom smart watch PCBs in KiCad featuring ESP32-S3 cores, IMUs, and PPG sensors.',
-      'Created a custom muscle biosignal (EMG) acquisition board with instrument amplifier stages.',
-      'Implemented real-time moving average, RMS, and peak envelope algorithms running at 500 Hz on-chip.'
-    ],
-    color: 'green',
   },
   {
     id: 'l1',
@@ -138,7 +124,7 @@ const colorConfig = {
 }
 
 export const VerticalEngineeringStack = () => {
-  const [activeId, setActiveId] = useState('l5')
+  const [activeId, setActiveId] = useState('l4')
 
   const activeLayer = stackLayers.find(l => l.id === activeId) || stackLayers[0]
   const activeCfg = colorConfig[activeLayer.color]

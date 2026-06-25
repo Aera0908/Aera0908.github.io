@@ -61,23 +61,13 @@ const Hero = () => {
   useEffect(() => {
     setIsVisible(true)
 
-    const base = import.meta.env.BASE_URL
-    const audio = new Audio(`${base}sfx/entry-sfx.mp3`)
-    audio.volume = 0.4
-    audio.preload = 'auto'
+    // Skip the Sandevistan effect entirely on mobile (below lg breakpoint)
+    const isMobile = window.matchMedia('(max-width: 1023px)').matches
+    if (isMobile) return
 
     let hasStarted = false
     let sequenceTimer: any
     let endTimer: any
-
-    const playFallback = () => {
-      audio.play().then(() => {
-        window.removeEventListener('click', playFallback)
-        window.removeEventListener('touchstart', playFallback)
-      }).catch((err) => {
-        console.error('SFX play failed in fallback:', err)
-      })
-    }
 
     const triggerSequenceEffects = () => {
       setShowGreenTint(true)
@@ -94,20 +84,8 @@ const Hero = () => {
     const startSequence = () => {
       if (hasStarted) return
       hasStarted = true
-
-      // Clean up start listeners
-      cleanupListeners()
-
+      cleanupInteractionListeners()
       if (sequenceTimer) clearTimeout(sequenceTimer)
-
-      // Try playing the audio immediately
-      audio.play().catch((err) => {
-        console.warn('SFX autoplay blocked, registering gesture fallback during time stop:', err)
-        window.addEventListener('click', playFallback)
-        window.addEventListener('touchstart', playFallback)
-      })
-
-      // Always trigger visual effects
       triggerSequenceEffects()
     }
 
@@ -115,11 +93,9 @@ const Hero = () => {
       startSequence()
     }
 
-    const cleanupListeners = () => {
-      window.removeEventListener('click', handleInteraction)
-      window.removeEventListener('keydown', handleInteraction)
-      window.removeEventListener('touchstart', handleInteraction)
-      window.removeEventListener('mousedown', handleInteraction)
+    const interactionEvents = ['click', 'keydown', 'touchstart', 'mousedown'] as const
+    const cleanupInteractionListeners = () => {
+      interactionEvents.forEach((e) => window.removeEventListener(e, handleInteraction))
     }
 
     // Auto-start in 1.2s
@@ -128,19 +104,13 @@ const Hero = () => {
     }, 1200)
 
     // Interaction triggers sequence immediately
-    window.addEventListener('click', handleInteraction)
-    window.addEventListener('keydown', handleInteraction)
-    window.addEventListener('touchstart', handleInteraction)
-    window.addEventListener('mousedown', handleInteraction)
+    interactionEvents.forEach((e) => window.addEventListener(e, handleInteraction))
 
     return () => {
       clearTimeout(sequenceTimer)
       if (endTimer) clearTimeout(endTimer)
-      cleanupListeners()
-      window.removeEventListener('click', playFallback)
-      window.removeEventListener('touchstart', playFallback)
+      cleanupInteractionListeners()
       document.body.classList.remove('sande-active')
-      audio.pause()
     }
   }, [])
 
@@ -242,8 +212,8 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Right column - Hologram Avatar */}
-        <div className="w-full lg:w-[45%] xl:w-[40%] flex justify-center items-center shrink-0 z-20">
+        {/* Right column - Hologram Avatar (hidden on mobile) */}
+        <div className="hidden lg:flex w-full lg:w-[45%] xl:w-[40%] justify-center items-center shrink-0 z-20">
           <HologramAvatar />
         </div>
 
