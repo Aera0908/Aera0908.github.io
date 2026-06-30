@@ -11,7 +11,6 @@ export const SECTION_PATHS: Record<string, string> = {
   whoami: '/whoami',
   edu: '/edu',
   journey: '/journey',
-  stack: '/stack',
   certs: '/certs',
   projects: '/projects',
   designs: '/designs',

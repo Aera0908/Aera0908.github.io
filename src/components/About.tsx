@@ -1,6 +1,5 @@
 
 import { routeTo } from '../hooks/useRoute'
-import { VerticalEngineeringStack } from './VerticalEngineeringStack'
 
 const About = () => {
   return (
@@ -8,12 +7,6 @@ const About = () => {
       <div className="relative z-10 w-full min-w-0 max-w-full">
         <p className="font-terminal text-sm text-cyber-magenta mb-4 tracking-widest">&gt; WHOAMI.LOG // EXTENDED</p>
         <div className="space-y-8 w-full min-w-0">
-          {/* Interactive Stack Visualizer */}
-          <div className="w-full min-w-0">
-            <h3 className="text-base font-bold text-cyber-yellow mb-4 font-cyber tracking-wider">Engineering Stack</h3>
-            <VerticalEngineeringStack />
-          </div>
-
           {/* Project Navigation Banner */}
           <div className="cyber-card cyber-corner-brackets flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>

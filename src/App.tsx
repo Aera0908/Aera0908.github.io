@@ -5,7 +5,6 @@ import Hero from './components/Hero'
 import About from './components/About'
 import Education from './components/Education'
 import Journey from './components/Journey'
-import Skills from './components/Skills'
 import Certifications from './components/Certifications'
 import Portfolio from './components/Portfolio'
 import SystemDesign from './components/SystemDesign'
@@ -24,7 +23,6 @@ const SECTION_IDS = [
   'whoami',
   'edu',
   'journey',
-  'stack',
   'certs',
   'projects',
   'designs',
@@ -118,7 +116,7 @@ function App() {
       // Main dashboard sections
       const sectionId = PATH_TO_SECTION[route.path]
       if (sectionId && sectionId !== 'dashboard') {
-        const readableSection = sectionId === 'whoami' ? 'About' : sectionId === 'edu' ? 'Education' : sectionId === 'stack' ? 'Tech Stack' : sectionId === 'journey' ? 'Journey' : sectionId === 'certs' ? 'Certifications' : sectionId === 'projects' ? 'Portfolio' : sectionId === 'designs' ? 'System Designs' : sectionId === 'presence' ? 'Activity' : sectionId === 'comms' ? 'Contact' : '';
+        const readableSection = sectionId === 'whoami' ? 'About' : sectionId === 'edu' ? 'Education' : sectionId === 'journey' ? 'Journey' : sectionId === 'certs' ? 'Certifications' : sectionId === 'projects' ? 'Portfolio' : sectionId === 'designs' ? 'System Designs' : sectionId === 'presence' ? 'Activity' : sectionId === 'comms' ? 'Contact' : '';
         if (readableSection) {
           title = `${readableSection} | Aira Ynte - Web Resume`
         }
@@ -219,7 +217,6 @@ function App() {
                   <About />
                   <Education />
                   <Journey />
-                  <Skills />
                   <Certifications />
                   <Portfolio />
                   <SystemDesign />

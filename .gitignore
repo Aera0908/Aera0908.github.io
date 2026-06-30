@@ -41,3 +41,10 @@ PROJECT_OVERVIEW.md
 
 # Resume/CV source files (kept local only)
 Files/
+
+# Ignore all markdown files except README.md
+*.md
+**/*.md
+!README.md
+!**/README.md
+

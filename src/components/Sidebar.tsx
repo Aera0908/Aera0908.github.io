@@ -12,7 +12,6 @@ const navItems = [
   { id: 'whoami', label: 'WHOAMI', path: '/whoami' },
   { id: 'edu', label: 'EDUCATION', path: '/edu' },
   { id: 'journey', label: 'JOURNEY', path: '/journey' },
-  { id: 'stack', label: 'TECH.STACK', path: '/stack' },
   { id: 'certs', label: 'CERTIFICATIONS', path: '/certs' },
   { id: 'projects', label: 'PROJECTS', path: '/projects' },
   { id: 'designs', label: 'SYSTEM.DESIGN', path: '/designs' },

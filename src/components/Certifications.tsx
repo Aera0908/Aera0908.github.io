@@ -4,7 +4,7 @@ import { routeTo } from '../hooks/useRoute'
 import { certificatesData, Certificate } from '../data/certificates'
 
 const Certifications = () => {
-  const featuredCertificates = certificatesData.filter((cert) => cert.featured)
+  const featuredCertificates = certificatesData.filter((cert) => cert.featured).slice(0, 3)
 
   const [selected, setSelected] = useState<Certificate | null>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -44,23 +44,23 @@ const Certifications = () => {
         </button>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-3 gap-6">
         {featuredCertificates.map((cert, index) => (
           <button
             key={index}
             onClick={() => setSelected(cert)}
-            className="cyber-card cyber-corner-brackets block text-left group focus:outline-none focus:ring-2 focus:ring-cyber-yellow/40"
+            className="cyber-card cyber-corner-brackets block text-left group focus:outline-none focus:ring-2 focus:ring-cyber-yellow/40 p-8"
           >
-            <div className="flex items-start justify-between gap-3 mb-1">
-              <h3 className="text-[13px] md:text-sm font-bold text-slate-100 group-hover:text-cyber-yellow transition-colors font-cyber tracking-wide line-clamp-2 min-h-[2.5rem]">
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h3 className="text-sm md:text-base font-bold text-slate-100 group-hover:text-cyber-yellow transition-colors font-cyber tracking-wide line-clamp-2 min-h-[3rem] leading-snug">
                 {cert.name}
               </h3>
-              <span className="shrink-0 mt-0.5 inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-terminal tracking-wider bg-cyber-cyan/5 text-cyber-cyan border border-cyber-cyan/25 group-hover:text-cyber-yellow group-hover:border-cyber-yellow/45 transition-colors">
+              <span className="shrink-0 mt-0.5 inline-flex items-center gap-1.5 px-2 py-0.5 text-[9px] font-terminal tracking-wider bg-cyber-cyan/5 text-cyber-cyan border border-cyber-cyan/35 group-hover:text-cyber-yellow group-hover:border-cyber-yellow/60 transition-colors">
                 PREVIEW
               </span>
             </div>
-            <p className="text-cyber-cyan font-bold font-cyber text-xs mb-1 truncate">{cert.issuer}</p>
-            <p className="text-slate-400 text-xs line-clamp-2">{cert.description}</p>
+            <p className="text-cyber-cyan font-bold font-cyber text-sm mb-3 truncate">{cert.issuer}</p>
+            <p className="text-slate-300 text-xs md:text-sm line-clamp-3 leading-relaxed">{cert.description}</p>
           </button>
         ))}
       </div>

@@ -9,6 +9,7 @@ import ProjectGallery from './ProjectGallery'
 const Portfolio = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedProject, setSelectedProject] = useState<number | null>(null)
+  const [activeTab, setActiveTab] = useState<'highlights' | 'notable' | 'videos'>('highlights')
   const [isClosing, setIsClosing] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -179,7 +180,7 @@ const Portfolio = () => {
         <div>
           <h2 className="text-2xl md:text-3xl font-bold text-slate-50 mb-2 tracking-wide cyber-glitch">Portfolio</h2>
           <p className="text-slate-400 text-sm max-w-xl">
-            A curated carousel of my best projects. Open the full archive for every project on file.
+            A curated dashboard of my work. Toggle the modules below or open the full archive.
           </p>
         </div>
         <button
@@ -193,359 +194,407 @@ const Portfolio = () => {
         </button>
       </div>
 
-      {/* ── Highlighted Projects ── */}
-      {(() => {
-        const highlightedOrder = ['fehuvia', 'aerovit', 'plantio']
-        const highlighted = allProjects
-          .filter((p) => highlightedOrder.includes(p.id))
-          .sort((a, b) => highlightedOrder.indexOf(a.id) - highlightedOrder.indexOf(b.id))
-        if (highlighted.length === 0) return null
-        return (
-          <div className="mb-12">
-            <div className="flex items-center gap-2 mb-5">
-              <svg className="w-3.5 h-3.5 text-cyber-yellow shrink-0 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-              </svg>
-              <h3 className="font-terminal text-xs tracking-widest text-cyber-yellow font-bold">
-                HIGHLIGHTED PROJECTS
-              </h3>
-              <div className="flex-1 h-px bg-gradient-to-r from-cyber-yellow/45 to-transparent" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {highlighted.map((project) => {
-                const liveUrl = project.links?.live || project.links?.website || project.websiteUrl
-                const accentClass =
-                  project.id === 'aerovit'
-                    ? 'border-cyber-magenta/30 hover:border-cyber-magenta/75 hover:shadow-[0_0_20px_rgba(255,0,85,0.2)]'
-                    : project.id === 'fehuvia'
-                    ? 'border-cyber-cyan/30 hover:border-cyber-cyan/75 hover:shadow-[0_0_20px_rgba(0,240,255,0.2)]'
-                    : 'border-cyber-yellow/30 hover:border-cyber-yellow/75 hover:shadow-[0_0_20px_rgba(252,238,10,0.2)]'
-
-                return (
-                  <div
-                    key={project.id}
-                    className={`cyber-card cyber-corner-brackets group relative overflow-hidden transition-all duration-300 cursor-pointer border ${accentClass}`}
-                    onClick={() => goToCaseStudy(project.id)}
-                    role="link"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        goToCaseStudy(project.id)
-                      }
-                    }}
-                    aria-label={`View case study: ${project.title}`}
-                  >
-                    {/* Highlighted badge */}
-                    <div className="absolute top-3 right-3 z-10">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-terminal tracking-wider bg-cyber-yellow/10 text-cyber-yellow border border-cyber-yellow/35 backdrop-blur-sm">
-                        <svg className="w-3 h-3 text-cyber-yellow shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                        </svg>
-                        HIGHLIGHTED
-                      </span>
-                    </div>
-
-                    {/* Image */}
-                    <div className="relative overflow-hidden border border-cyber-cyan/25 mb-4 aspect-video bg-cyber-dark">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-
-                    {/* Content */}
-                    {project.category && (
-                      <p className="font-terminal text-[10px] text-cyber-cyan mb-1 tracking-widest">
-                        {project.category.toUpperCase()}
-                      </p>
-                    )}
-                    <h4 className="text-lg font-bold text-slate-100 mb-2 group-hover:text-cyber-yellow font-cyber tracking-wide line-clamp-2">
-                      {project.title}
-                    </h4>
-
-                    {/* Badges */}
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {project.webTier && <WebTierBadge tier={project.webTier} size="sm" />}
-                      {project.engagement && (
-                        <EngagementBadge engagement={project.engagement} size="sm" />
-                      )}
-                      {project.ndaConstrained && <LimitedInfoBadge active size="sm" />}
-                    </div>
-
-                    <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed">
-                      {project.description}
-                    </p>
-
-                    {/* Tech tags */}
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {project.technologies.slice(0, 5).map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-2 py-0.5 text-[10px] text-cyber-cyan font-terminal bg-cyber-cyan/5 border border-cyber-cyan/20"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                      {project.technologies.length > 5 && (
-                        <span className="px-2 py-0.5 text-[10px] text-slate-500 font-mono">
-                          +{project.technologies.length - 5}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center justify-between gap-3 pt-3 border-t border-cyber-yellow/15">
-                      <div className="flex flex-wrap gap-2">
-                        {liveUrl && (
-                          <a
-                            href={liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="cyber-btn-secondary inline-flex items-center gap-1 px-2.5 py-1 font-terminal text-[9px] tracking-wider rounded-none"
-                          >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M14 3h7v7m0-7L10 14M5 5v14h14v-6" />
-                            </svg>
-                            LIVE
-                          </a>
-                        )}
-                      </div>
-                      <span className="inline-flex items-center gap-1 text-sm font-medium text-cyber-cyan group-hover:text-cyber-yellow group-hover:gap-2 transition-all shrink-0">
-                        View case study
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })()}
-
-      <div className="flex items-center gap-2 mb-6 mt-4">
-        <svg className="w-3.5 h-3.5 text-cyber-cyan shrink-0 animate-pulse" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-19.5 0A2.25 2.25 0 004.5 15h15a2.25 2.25 0 002.25-2.25m-19.5 0v.191m0-2.103V6.75A2.25 2.25 0 014.5 4.5h5.25a2.25 2.25 0 011.64.698l1.378 1.488a2.25 2.25 0 001.64.698h5.25a2.25 2.25 0 012.25 2.25v1.319" />
-        </svg>
-        <h3 className="font-terminal text-xs tracking-widest text-cyber-cyan/80 font-bold">
-          OTHER NOTABLE PROJECTS
-        </h3>
-        <div className="flex-1 h-px bg-gradient-to-r from-cyber-cyan/35 to-transparent" />
+      {/* Portfolio Tab Selector */}
+      <div className="flex flex-wrap gap-2 mb-8 border-b border-cyber-yellow/20 pb-4">
+        <button
+          onClick={() => setActiveTab('highlights')}
+          className={`px-4 py-2 font-terminal text-[10px] sm:text-xs tracking-wider rounded-none border transition-all duration-200 cursor-pointer ${
+            activeTab === 'highlights'
+              ? 'bg-cyber-yellow/10 border-cyber-yellow text-cyber-yellow font-bold glow-cyber-yellow/15'
+              : 'bg-cyber-dark/40 border-cyber-cyan/35 text-cyber-cyan/70 hover:text-cyber-cyan hover:border-cyber-cyan/70'
+          }`}
+        >
+          FEATURED PROJECTS
+        </button>
+        <button
+          onClick={() => setActiveTab('notable')}
+          className={`px-4 py-2 font-terminal text-[10px] sm:text-xs tracking-wider rounded-none border transition-all duration-200 cursor-pointer ${
+            activeTab === 'notable'
+              ? 'bg-cyber-cyan/10 border-cyber-cyan text-cyber-cyan font-bold glow-cyber-cyan/15'
+              : 'bg-cyber-dark/40 border-cyber-cyan/35 text-cyber-cyan/70 hover:text-cyber-cyan hover:border-cyber-cyan/70'
+          }`}
+        >
+          NOTABLE ARCHIVE
+        </button>
+        <button
+          onClick={() => setActiveTab('videos')}
+          className={`px-4 py-2 font-terminal text-[10px] sm:text-xs tracking-wider rounded-none border transition-all duration-200 cursor-pointer ${
+            activeTab === 'videos'
+              ? 'bg-cyber-magenta/10 border-cyber-magenta text-cyber-magenta font-bold glow-cyber-magenta/15'
+              : 'bg-cyber-dark/40 border-cyber-cyan/35 text-cyber-cyan/70 hover:text-cyber-cyan hover:border-cyber-cyan/70'
+          }`}
+        >
+          VIDEO &amp; MEDIA DEMOS
+        </button>
       </div>
 
-      <div className="relative">
-        {/* Mobile: Simple 2D carousel */}
-        <div className="md:hidden">
-          <div className="relative flex min-h-[440px] w-full flex-col items-center justify-center">
-            {projects.map((project, index) => (
-              <div
-                key={index}
-                className={`w-full max-w-[380px] transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'relative z-10 opacity-100'
-                    : 'pointer-events-none absolute inset-0 z-0 flex items-center justify-center opacity-0'
-                }`}
-              >
-                <div className="mx-auto w-full max-w-[380px]">
-                  <ProjectCard project={project} onClick={() => openModal(index)} />
+      {/* Tab Contents */}
+      {activeTab === 'highlights' && (
+        <div className="mb-6 animate-fadeIn">
+          {/* ── Highlighted Projects ── */}
+          {(() => {
+            const highlightedOrder = ['fehuvia', 'aerovit', 'plantio']
+            const highlighted = allProjects
+              .filter((p) => highlightedOrder.includes(p.id))
+              .sort((a, b) => highlightedOrder.indexOf(a.id) - highlightedOrder.indexOf(b.id))
+            if (highlighted.length === 0) return null
+            return (
+              <div className="mb-12">
+                <div className="flex items-center gap-2 mb-5">
+                  <svg className="w-3.5 h-3.5 text-cyber-yellow shrink-0 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
+                  <h3 className="font-terminal text-xs tracking-widest text-cyber-yellow font-bold">
+                    HIGHLIGHTED PROJECTS
+                  </h3>
+                  <div className="flex-1 h-px bg-gradient-to-r from-cyber-yellow/45 to-transparent" />
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Desktop: 3D Carousel — controls sit below the scene so dots never overlap the cards */}
-        <div className="hidden md:block">
-          <div className="relative h-[460px]" style={{ perspective: '2000px' }}>
-            {(() => {
-              const radius = Math.max(380, projects.length * 85)
-              return (
-                <div
-                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                  style={{
-                    perspectiveOrigin: 'center center',
-                    transformStyle: 'preserve-3d',
-                    transform: `rotateX(-6deg) translateZ(${-radius}px)`,
-                  }}
-                >
-                  {projects.map((project, index) => {
-                    let offset = index - currentIndex
-                    if (offset > projects.length / 2) offset -= projects.length
-                    else if (offset < -projects.length / 2) offset += projects.length
-
-                    const absOffset = Math.abs(offset)
-                    const theta = (360 / projects.length) * offset
-                    
-                    const scale = absOffset === 0 ? 0.9 : Math.max(0.65, 0.8 - absOffset * 0.08)
-                    const opacity = absOffset === 0 ? 1 : absOffset === 1 ? 0.75 : 0
-                    const zIndex = projects.length - absOffset
-                    const isVisible = absOffset < 2 // Only show front card and direct left/right neighbors
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {highlighted.map((project) => {
+                    const liveUrl = project.links?.live || project.links?.website || project.websiteUrl
+                    const accentClass =
+                      project.id === 'aerovit'
+                        ? 'border-cyber-magenta/30 hover:border-cyber-magenta/75 hover:shadow-[0_0_20px_rgba(255,0,85,0.2)]'
+                        : project.id === 'fehuvia'
+                        ? 'border-cyber-cyan/30 hover:border-cyber-cyan/75 hover:shadow-[0_0_20px_rgba(0,240,255,0.2)]'
+                        : 'border-cyber-yellow/30 hover:border-cyber-yellow/75 hover:shadow-[0_0_20px_rgba(252,238,10,0.2)]'
 
                     return (
                       <div
-                        key={index}
-                        className={`absolute w-[380px] cursor-pointer transition-all duration-700 ease-out ${!isVisible ? 'hidden' : ''}`}
-                        style={{
-                          transform: `rotateY(${theta}deg) translateZ(${radius}px) rotateY(${-theta * 0.65}deg) scale(${scale})`,
-                          transformStyle: 'preserve-3d',
-                          opacity,
-                          zIndex,
-                          pointerEvents: absOffset === 0 ? 'auto' : 'none',
-                          perspective: 2000,
+                        key={project.id}
+                        className={`cyber-card cyber-corner-brackets group relative overflow-hidden transition-all duration-300 cursor-pointer border ${accentClass}`}
+                        onClick={() => goToCaseStudy(project.id)}
+                        role="link"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            goToCaseStudy(project.id)
+                          }
                         }}
-                        onClick={() => absOffset === 0 && openModal(index)}
+                        aria-label={`View case study: ${project.title}`}
                       >
-                        <div className="overflow-hidden rounded-lg" style={{ transform: 'translateZ(0)' }}>
-                          <ProjectCard project={project} onClick={() => openModal(index)} />
+                        {/* Highlighted badge */}
+                        <div className="absolute top-3 right-3 z-10">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-terminal tracking-wider bg-cyber-yellow/10 text-cyber-yellow border border-cyber-yellow/35 backdrop-blur-sm">
+                            <svg className="w-3 h-3 text-cyber-yellow shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                            </svg>
+                            HIGHLIGHTED
+                          </span>
+                        </div>
+
+                        {/* Image */}
+                        <div className="relative overflow-hidden border border-cyber-cyan/25 mb-4 aspect-video bg-cyber-dark">
+                          <img
+                            src={project.image}
+                            alt={project.title}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
+
+                        {/* Content */}
+                        {project.category && (
+                          <p className="font-terminal text-[10px] text-cyber-cyan mb-1 tracking-widest">
+                            {project.category.toUpperCase()}
+                          </p>
+                        )}
+                        <h4 className="text-lg font-bold text-slate-100 mb-2 group-hover:text-cyber-yellow font-cyber tracking-wide line-clamp-2">
+                          {project.title}
+                        </h4>
+
+                        {/* Badges */}
+                        <div className="flex flex-wrap gap-1.5 mb-3">
+                          {project.webTier && <WebTierBadge tier={project.webTier} size="sm" />}
+                          {project.engagement && (
+                            <EngagementBadge engagement={project.engagement} size="sm" />
+                          )}
+                          {project.ndaConstrained && <LimitedInfoBadge active size="sm" />}
+                        </div>
+
+                        <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed">
+                          {project.description}
+                        </p>
+
+                        {/* Tech tags */}
+                        <div className="flex flex-wrap gap-1.5 mb-4">
+                          {project.technologies.slice(0, 5).map((tech) => (
+                            <span
+                              key={tech}
+                              className="px-2 py-0.5 text-[10px] text-cyber-cyan font-terminal bg-cyber-cyan/5 border border-cyber-cyan/20"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                          {project.technologies.length > 5 && (
+                            <span className="px-2 py-0.5 text-[10px] text-slate-500 font-mono">
+                              +{project.technologies.length - 5}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center justify-between gap-3 pt-3 border-t border-cyber-yellow/15">
+                          <div className="flex flex-wrap gap-2">
+                            {liveUrl && (
+                              <a
+                                href={liveUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="cyber-btn-secondary inline-flex items-center gap-1 px-2.5 py-1 font-terminal text-[9px] tracking-wider rounded-none"
+                              >
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 3h7v7m0-7L10 14M5 5v14h14v-6" />
+                                </svg>
+                                LIVE
+                              </a>
+                            )}
+                          </div>
+                          <span className="inline-flex items-center gap-1 text-sm font-medium text-cyber-cyan group-hover:text-cyber-yellow group-hover:gap-2 transition-all shrink-0">
+                            View case study
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
                         </div>
                       </div>
-                    )
+                    );
                   })}
                 </div>
-              )
-            })()}
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
+      {activeTab === 'notable' && (
+        <div className="mb-6 animate-fadeIn">
+          {/* ── Other Notable Projects ── */}
+          <div className="flex items-center gap-2 mb-6 mt-4">
+            <svg className="w-3.5 h-3.5 text-cyber-cyan shrink-0 animate-pulse" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-19.5 0A2.25 2.25 0 004.5 15h15a2.25 2.25 0 002.25-2.25m-19.5 0v.191m0-2.103V6.75A2.25 2.25 0 014.5 4.5h5.25a2.25 2.25 0 011.64.698l1.378 1.488a2.25 2.25 0 001.64.698h5.25a2.25 2.25 0 012.25 2.25v1.319" />
+            </svg>
+            <h3 className="font-terminal text-xs tracking-widest text-cyber-cyan/80 font-bold">
+              OTHER NOTABLE PROJECTS
+            </h3>
+            <div className="flex-1 h-px bg-gradient-to-r from-cyber-cyan/35 to-transparent" />
           </div>
 
-          <div className="flex items-center justify-center gap-4 pb-2 pt-10">
-            <button
-              type="button"
-              onClick={prevSlide}
-              className="rounded-none p-3 text-cyber-cyan transition-colors hover:bg-cyber-cyan/10 hover:text-cyber-yellow border border-transparent hover:border-cyber-cyan/30"
-              aria-label="Previous project"
-            >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <div className="flex gap-2">
-              {projects.map((_, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setCurrentIndex(index)}
-                  className={`h-2 rounded-none transition-all ${
-                    index === currentIndex
-                      ? 'w-8 bg-cyber-yellow'
-                      : 'w-2 bg-cyber-cyan/30 hover:bg-cyber-cyan/60'
-                  }`}
-                  aria-label={`Go to project ${index + 1}`}
-                />
-              ))}
+          <div className="relative">
+            {/* Mobile: Simple 2D carousel */}
+            <div className="md:hidden">
+              <div className="relative flex min-h-[440px] w-full flex-col items-center justify-center">
+                {projects.map((project, index) => (
+                  <div
+                    key={index}
+                    className={`w-full max-w-[380px] transition-all duration-300 ${
+                      index === currentIndex
+                        ? 'relative z-10 opacity-100'
+                        : 'pointer-events-none absolute inset-0 z-0 flex items-center justify-center opacity-0'
+                    }`}
+                  >
+                    <div className="mx-auto w-full max-w-[380px]">
+                      <ProjectCard project={project} onClick={() => openModal(index)} />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={nextSlide}
-              className="rounded-none p-3 text-cyber-cyan transition-colors hover:bg-cyber-cyan/10 hover:text-cyber-yellow border border-transparent hover:border-cyber-cyan/30"
-              aria-label="Next project"
-            >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </div>
 
-        {/* Mobile navigation */}
-        <div className="mt-12 flex justify-center items-center gap-4 md:hidden">
-          <button
-            onClick={prevSlide}
-            className="p-2 text-cyber-cyan hover:text-cyber-yellow transition-colors"
-            aria-label="Previous project"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <div className="flex gap-2">
-            {projects.map((_, index) => (
+            {/* Desktop: 3D Carousel — controls sit below the scene so dots never overlap the cards */}
+            <div className="hidden md:block">
+              <div className="relative h-[460px]" style={{ perspective: '2000px' }}>
+                {(() => {
+                  const radius = Math.max(380, projects.length * 85)
+                  return (
+                    <div
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                      style={{
+                        perspectiveOrigin: 'center center',
+                        transformStyle: 'preserve-3d',
+                        transform: `rotateX(-6deg) translateZ(${-radius}px)`,
+                      }}
+                    >
+                      {projects.map((project, index) => {
+                        let offset = index - currentIndex
+                        if (offset > projects.length / 2) offset -= projects.length
+                        else if (offset < -projects.length / 2) offset += projects.length
+
+                        const absOffset = Math.abs(offset)
+                        const theta = (360 / projects.length) * offset
+                        
+                        const scale = absOffset === 0 ? 0.9 : Math.max(0.65, 0.8 - absOffset * 0.08)
+                        const opacity = absOffset === 0 ? 1 : absOffset === 1 ? 0.75 : 0
+                        const zIndex = projects.length - absOffset
+                        const isVisible = absOffset < 2 // Only show front card and direct left/right neighbors
+
+                        return (
+                          <div
+                            key={index}
+                            className={`absolute w-[380px] cursor-pointer transition-all duration-700 ease-out ${!isVisible ? 'hidden' : ''}`}
+                            style={{
+                              transform: `rotateY(${theta}deg) translateZ(${radius}px) rotateY(${-theta * 0.65}deg) scale(${scale})`,
+                              transformStyle: 'preserve-3d',
+                              opacity,
+                              zIndex,
+                              pointerEvents: absOffset === 0 ? 'auto' : 'none',
+                              perspective: 2000,
+                            }}
+                            onClick={() => absOffset === 0 && openModal(index)}
+                          >
+                            <div className="overflow-hidden rounded-lg" style={{ transform: 'translateZ(0)' }}>
+                              <ProjectCard project={project} onClick={() => openModal(index)} />
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )
+                })()}
+              </div>
+
+              <div className="flex items-center justify-center gap-4 pb-2 pt-10">
+                <button
+                  type="button"
+                  onClick={prevSlide}
+                  className="rounded-none p-3 text-cyber-cyan transition-colors hover:bg-cyber-cyan/10 hover:text-cyber-yellow border border-transparent hover:border-cyber-cyan/30"
+                  aria-label="Previous project"
+                >
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <div className="flex gap-2">
+                  {projects.map((_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setCurrentIndex(index)}
+                      className={`h-2 rounded-none transition-all ${
+                        index === currentIndex
+                          ? 'w-8 bg-cyber-yellow'
+                          : 'w-2 bg-cyber-cyan/30 hover:bg-cyber-cyan/60'
+                      }`}
+                      aria-label={`Go to project ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={nextSlide}
+                  className="rounded-none p-3 text-cyber-cyan transition-colors hover:bg-cyber-cyan/10 hover:text-cyber-yellow border border-transparent hover:border-cyber-cyan/30"
+                  aria-label="Next project"
+                >
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile navigation */}
+            <div className="mt-12 flex justify-center items-center gap-4 md:hidden">
               <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`h-2 rounded-none transition-all ${
-                  index === currentIndex
-                    ? 'bg-cyber-yellow w-8'
-                    : 'bg-cyber-cyan/30 w-2 hover:bg-cyber-cyan/60'
-                }`}
-                aria-label={`Go to project ${index + 1}`}
-              />
-            ))}
+                onClick={prevSlide}
+                className="p-2 text-cyber-cyan hover:text-cyber-yellow transition-colors"
+                aria-label="Previous project"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="flex gap-2">
+                {projects.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`h-2 rounded-none transition-all ${
+                      index === currentIndex
+                        ? 'bg-cyber-yellow w-8'
+                        : 'bg-cyber-cyan/30 w-2 hover:bg-cyber-cyan/60'
+                    }`}
+                    aria-label={`Go to project ${index + 1}`}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={nextSlide}
+                className="p-2 text-cyber-cyan hover:text-cyber-yellow transition-colors"
+                aria-label="Next project"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <button
-            onClick={nextSlide}
-            className="p-2 text-cyber-cyan hover:text-cyber-yellow transition-colors"
-            aria-label="Next project"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </div>
+      )}
+
+      {activeTab === 'videos' && (
+        <div className="mb-6 animate-fadeIn">
+          {/* ── Video Editing & Adobe Suite Samples ── */}
+          <div className="flex items-center gap-2 mb-6 mt-4">
+            <svg className="w-3.5 h-3.5 text-cyber-magenta shrink-0 animate-pulse" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
             </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* ── Video Editing & Adobe Suite Samples ── */}
-      <div className="flex items-center gap-2 mb-6 mt-16">
-        <svg className="w-3.5 h-3.5 text-cyber-magenta shrink-0 animate-pulse" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
-        </svg>
-        <h3 className="font-terminal text-xs tracking-widest text-cyber-magenta/80 font-bold">
-          VIDEO EDITING &amp; ADOBE SUITE SAMPLES
-        </h3>
-        <div className="flex-1 h-px bg-gradient-to-r from-cyber-magenta/35 to-transparent" />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        {/* Fehuvia Video Card */}
-        <div className="cyber-card cyber-corner-brackets border border-cyber-magenta/25 bg-cyber-dark/60 p-4 hover:border-cyber-magenta/65 hover:shadow-[0_0_15px_rgba(255,0,85,0.15)] transition-all duration-300">
-          <div className="relative aspect-video w-full overflow-hidden border border-cyber-magenta/20 bg-black mb-4">
-            <iframe
-              src="https://www.youtube.com/embed/aDBoZOoOhd8"
-              title="Fehuvia Workstation Video Demo"
-              className="w-full h-full border-0 absolute inset-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
+            <h3 className="font-terminal text-xs tracking-widest text-cyber-magenta/80 font-bold">
+              VIDEO EDITING &amp; ADOBE SUITE SAMPLES
+            </h3>
+            <div className="flex-1 h-px bg-gradient-to-r from-cyber-magenta/35 to-transparent" />
           </div>
-          <h4 className="text-base font-bold text-slate-100 font-cyber tracking-wide mb-1">
-            Fehuvia Workstation Showcase
-          </h4>
-          <p className="font-terminal text-[10px] text-cyber-magenta mb-3 tracking-widest uppercase">
-            FIGMA // ADOBE ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO
-          </p>
-          <p className="text-slate-400 text-xs leading-relaxed">
-            High-fidelity workstation highlights video demonstrating interface functionalities, dual-state data flows, and AI OCR capabilities. Designed custom visual assets in Figma and Adobe Illustrator, with editing, motion graphics animations, and audio syncing completed in Premiere Pro and After Effects.
-          </p>
-        </div>
 
-        {/* AeroVit Video Card */}
-        <div className="cyber-card cyber-corner-brackets border border-cyber-magenta/25 bg-cyber-dark/60 p-4 hover:border-cyber-magenta/65 hover:shadow-[0_0_15px_rgba(255,0,85,0.15)] transition-all duration-300">
-          <div className="relative aspect-video w-full overflow-hidden border border-cyber-magenta/20 bg-black mb-4">
-            <iframe
-              src="https://www.youtube.com/embed/rqx192_81zA"
-              title="AeroVit Hybrid Fitness Walkthrough"
-              className="w-full h-full border-0 absolute inset-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* Fehuvia Video Card */}
+            <div className="cyber-card cyber-corner-brackets border border-cyber-magenta/25 bg-cyber-dark/60 p-4 hover:border-cyber-magenta/65 hover:shadow-[0_0_15px_rgba(255,0,85,0.15)] transition-all duration-300">
+              <div className="relative aspect-video w-full overflow-hidden border border-cyber-magenta/20 bg-black mb-4">
+                <iframe
+                  src="https://www.youtube.com/embed/aDBoZOoOhd8"
+                  title="Fehuvia Workstation Video Demo"
+                  className="w-full h-full border-0 absolute inset-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+              <h4 className="text-base font-bold text-slate-100 font-cyber tracking-wide mb-1">
+                Fehuvia Workstation Showcase
+              </h4>
+              <p className="font-terminal text-[10px] text-cyber-magenta mb-3 tracking-widest uppercase">
+                FIGMA // ADOBE ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO
+              </p>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                High-fidelity workstation highlights video demonstrating interface functionalities, dual-state data flows, and AI OCR capabilities. Designed custom visual assets in Figma and Adobe Illustrator, with editing, motion graphics animations, and audio syncing completed in Premiere Pro and After Effects.
+              </p>
+            </div>
+
+            {/* AeroVit Video Card */}
+            <div className="cyber-card cyber-corner-brackets border border-cyber-magenta/25 bg-cyber-dark/60 p-4 hover:border-cyber-magenta/65 hover:shadow-[0_0_15px_rgba(255,0,85,0.15)] transition-all duration-300">
+              <div className="relative aspect-video w-full overflow-hidden border border-cyber-magenta/20 bg-black mb-4">
+                <iframe
+                  src="https://www.youtube.com/embed/rqx192_81zA"
+                  title="AeroVit Hybrid Fitness Walkthrough"
+                  className="w-full h-full border-0 absolute inset-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+              <h4 className="text-base font-bold text-slate-100 font-cyber tracking-wide mb-1">
+                AeroVit Ecosystem Walkthrough
+              </h4>
+              <p className="font-terminal text-[10px] text-cyber-magenta mb-3 tracking-widest uppercase">
+                ADOBE ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO
+              </p>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Curated walkthrough video of the hybrid fitness ecosystem showcasing ESP32-S3 smartwatch pairing, MediaPipe BlazePose form tracking, Flame 2D dungeon RPG, and AERO Web3 withdrawals. Crafted vector design components in Adobe Illustrator, keyframed animations in After Effects, and edited the final sequence in Premiere Pro.
+              </p>
+            </div>
           </div>
-          <h4 className="text-base font-bold text-slate-100 font-cyber tracking-wide mb-1">
-            AeroVit Ecosystem Walkthrough
-          </h4>
-          <p className="font-terminal text-[10px] text-cyber-magenta mb-3 tracking-widest uppercase">
-            ADOBE ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO
-          </p>
-          <p className="text-slate-400 text-xs leading-relaxed">
-            Curated walkthrough video of the hybrid fitness ecosystem showcasing ESP32-S3 smartwatch pairing, MediaPipe BlazePose form tracking, Flame 2D dungeon RPG, and AERO Web3 withdrawals. Crafted vector design components in Adobe Illustrator, keyframed animations in After Effects, and edited the final sequence in Premiere Pro.
-          </p>
         </div>
-      </div>
+      )}
 
       {selectedProject !== null && (
         <div

@@ -118,7 +118,7 @@ const Education = () => {
       <div className="cyber-card cyber-corner-brackets p-6 border border-cyber-yellow/20 bg-cyber-dark/60">
         <div className="flex items-center gap-2 mb-4 border-b border-cyber-yellow/10 pb-3">
           <svg className="w-4 h-4 text-cyber-yellow shrink-0 animate-pulse" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
           <h3 className="text-sm font-bold text-slate-100 font-cyber tracking-wider">
             Diagnostics: Focus &amp; Status
@@ -126,25 +126,49 @@ const Education = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm font-terminal">
-          <div className="space-y-1.5">
+          <div className="space-y-3">
             <p className="text-cyber-cyan/70 text-[10px] tracking-widest uppercase">&gt; SPECIALIZATION_FOCUS</p>
-            <p className="text-slate-300 font-sans text-xs leading-relaxed">
-              Software planning, full-stack modular architecture, digital logic design, and applied AI systems.
-            </p>
+            <div className="flex flex-col gap-1.5 font-sans text-xs">
+              <span className="flex items-center gap-2 text-slate-300">
+                <span className="text-[10px] text-cyber-cyan">▲</span> Full-Stack Systems Architecture
+              </span>
+              <span className="flex items-center gap-2 text-slate-300">
+                <span className="text-[10px] text-cyber-cyan">▲</span> Digital Logic &amp; RTL Design
+              </span>
+              <span className="flex items-center gap-2 text-slate-300">
+                <span className="text-[10px] text-cyber-cyan">▲</span> Applied AI Edge Pipelines
+              </span>
+            </div>
           </div>
           
-          <div className="space-y-1.5 border-t border-slate-900 pt-4 md:border-t-0 md:pt-0 md:border-l md:border-slate-800 md:pl-6">
+          <div className="space-y-3 border-t border-slate-900 pt-4 md:border-t-0 md:pt-0 md:border-l md:border-slate-800 md:pl-6">
             <p className="text-cyber-cyan/70 text-[10px] tracking-widest uppercase">&gt; ONGOING_RESEARCH</p>
-            <p className="text-slate-300 font-sans text-xs leading-relaxed">
-              Decentralized Web3 protocols, Sepolia smart contracts, and micro-interaction UX frameworks.
-            </p>
+            <div className="flex flex-col gap-1.5 font-sans text-xs">
+              <span className="flex items-center gap-2 text-slate-300">
+                <span className="text-[10px] text-cyber-magenta">■</span> Dec. Web3 Protocols (Sepolia)
+              </span>
+              <span className="flex items-center gap-2 text-slate-300">
+                <span className="text-[10px] text-cyber-magenta">■</span> Smart Contract Gas Optimizations
+              </span>
+              <span className="flex items-center gap-2 text-slate-300">
+                <span className="text-[10px] text-cyber-magenta">■</span> Micro-Interaction UX Frameworks
+              </span>
+            </div>
           </div>
           
-          <div className="space-y-1.5 border-t border-slate-900 pt-4 md:border-t-0 md:pt-0 md:border-l md:border-slate-800 md:pl-6">
+          <div className="space-y-3 border-t border-slate-900 pt-4 md:border-t-0 md:pt-0 md:border-l md:border-slate-800 md:pl-6">
             <p className="text-cyber-cyan/70 text-[10px] tracking-widest uppercase">&gt; DEPLOYMENT_STATUS</p>
-            <p className="text-cyber-green font-bold uppercase tracking-wider animate-pulse text-xs leading-snug">
-              Open for full-stack engineering, system architecture, &amp; hardware-firmware interface roles
-            </p>
+            <div className="flex flex-col gap-1.5 font-sans text-xs">
+              <span className="flex items-center gap-2 text-cyber-green font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyber-green animate-pulse" /> Software Engineer Roles
+              </span>
+              <span className="flex items-center gap-2 text-cyber-green font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyber-green animate-pulse" /> System Architecture Roles
+              </span>
+              <span className="flex items-center gap-2 text-cyber-green font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyber-green animate-pulse" /> Firmware &amp; HW Interface Roles
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -27,15 +27,40 @@ const TechStackItem = ({
   const accentText = isHardware ? 'text-cyber-yellow' : 'text-cyber-cyan'
   const glowShadow = isHardware ? 'hover:shadow-[0_0_12px_rgba(252,238,10,0.2)]' : 'hover:shadow-[0_0_12px_rgba(0,240,255,0.2)]'
   const bulletSymbol = isHardware ? '▲' : '■'
+  const activeBlocks = Math.round((skill.percentage || 50) / 20)
 
   return (
-    <div className={`flex items-center gap-2.5 rounded-none border border-cyber-cyan/15 bg-cyber-dark/70 px-3.5 py-2 hover:bg-cyber-dark/95 transition-all duration-300 ${hoverBorderColor} ${glowShadow} shrink-0`}>
+    <div className={`flex items-center gap-3 rounded-none border border-cyber-cyan/15 bg-cyber-dark/70 px-3.5 py-2 hover:bg-cyber-dark/95 transition-all duration-300 ${hoverBorderColor} ${glowShadow} shrink-0`}>
       <span className={`text-[10px] font-mono select-none shrink-0 ${accentText}`}>
         {bulletSymbol}
       </span>
-      <span className="text-xs sm:text-sm font-terminal font-semibold tracking-wider text-slate-200 whitespace-nowrap">
-        {skill.name}
-      </span>
+      <div className="flex flex-col gap-0.5">
+        <span className="text-xs sm:text-sm font-terminal font-semibold tracking-wider text-slate-200 whitespace-nowrap">
+          {skill.name}
+        </span>
+        <div className="flex items-center gap-2 mt-0.5">
+          <div className="flex gap-[2px] h-1 w-12 items-center">
+            {Array.from({ length: 5 }).map((_, idx) => {
+              const isBlockActive = idx < activeBlocks
+              return (
+                <div
+                  key={idx}
+                  className={`flex-1 h-[3px] ${
+                    isBlockActive
+                      ? isHardware
+                        ? 'bg-cyber-yellow shadow-[0_0_3px_rgba(252,238,10,0.6)]'
+                        : 'bg-cyber-cyan shadow-[0_0_3px_rgba(0,240,255,0.6)]'
+                      : 'bg-black/40 border border-slate-900/50'
+                  }`}
+                />
+              )
+            })}
+          </div>
+          <span className="text-[8px] font-mono text-slate-400 font-bold select-none">
+            {skill.percentage}%
+          </span>
+        </div>
+      </div>
     </div>
   )
 }
