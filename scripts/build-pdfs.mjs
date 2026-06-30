@@ -76,11 +76,11 @@ console.log(`Using browser: ${browser}\n`)
 
 const jobs = [
   {
-    html: resolve(ROOT, 'Files', 'YNTE_Resume.html'),
-    pdf: resolve(ROOT, 'public', 'YNTE_Resume.pdf'),
+    html: resolve(ROOT, 'public', 'YNTE_Resume.html'),
+    pdf: resolve(ROOT, 'public', 'YNTE_RESUME.pdf'),
   },
   {
-    html: resolve(ROOT, 'Files', 'YNTE_CV.html'),
+    html: resolve(ROOT, 'public', 'YNTE_CV.html'),
     pdf: resolve(ROOT, 'public', 'YNTE_CV.pdf'),
   },
 ]

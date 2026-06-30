@@ -27,7 +27,7 @@ const Education = () => {
                 <div>
                   <p className="font-terminal text-[10px] text-cyber-cyan/70 tracking-widest uppercase mb-1">DEGREE OBJECTIVE</p>
                   <p className="text-sm font-bold text-cyber-yellow font-cyber tracking-wide">
-                    Bachelor of Science in Computer Engineering
+                    Bachelor of Science in Computer Engineering (Magna Cum Laude)
                   </p>
                 </div>
 

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-25T13:37:36.990Z",
+  "fetchedAt": "2026-06-30T03:19:54.852Z",
   "profile": {
     "githubLogin": "Aera0908",
     "leetcodeUsername": "Aera0908"
@@ -8,38 +8,6 @@
     "login": "Aera0908",
     "totalContributions": 76,
     "weeks": [
-      {
-        "contributionDays": [
-          {
-            "date": "2025-06-22",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-23",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-24",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-25",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-26",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-27",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-28",
-            "contributionCount": 0
-          }
-        ]
-      },
       {
         "contributionDays": [
           {
@@ -1703,6 +1671,38 @@
             "contributionCount": 0
           }
         ]
+      },
+      {
+        "contributionDays": [
+          {
+            "date": "2026-06-28",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-29",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-30",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-07-01",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-07-02",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-07-03",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-07-04",
+            "contributionCount": 0
+          }
+        ]
       }
     ]
   },
@@ -1721,38 +1721,6 @@
       "Hard": 2
     },
     "weeks": [
-      {
-        "contributionDays": [
-          {
-            "date": "2025-06-22",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-23",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-24",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-25",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-26",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-27",
-            "contributionCount": 0
-          },
-          {
-            "date": "2025-06-28",
-            "contributionCount": 0
-          }
-        ]
-      },
       {
         "contributionDays": [
           {
@@ -3413,6 +3381,38 @@
           },
           {
             "date": "2026-06-27",
+            "contributionCount": 0
+          }
+        ]
+      },
+      {
+        "contributionDays": [
+          {
+            "date": "2026-06-28",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-29",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-06-30",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-07-01",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-07-02",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-07-03",
+            "contributionCount": 0
+          },
+          {
+            "date": "2026-07-04",
             "contributionCount": 0
           }
         ]
