@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+/* ============================================================
+   KPR-INSPIRED EDITORIAL SYSTEM
+   Tokens per .claude/skills/kprverse-design-spec/SKILL.md §1–2
+   Flat, printed-poster feel: depth comes from parallax + the 3D
+   world, never from glow/blur effects.
+   ============================================================ */
+
+:root {
+  /* Brand core — primary accent per user spec */
+  --iris: #6064a3;
+  --iris-bright: #8b90d9;
+  --periwinkle: #c7caf0;
+
+  /* World (dark immersive layers, WebGL clear color) */
+  --world: #141630;
+  --world-2: #23264d;
+
+  /* Editorial (light layers) */
+  --paper: #f4f3ee;
+  --ink: #131318;
+  --ink-soft: #55555f;
+
+  /* Signal */
+  --signal: #d9ff3f;
+  --alert: #ff5470;
+}
+
+@theme inline {
+  --color-iris: var(--iris);
+  --color-iris-bright: var(--iris-bright);
+  --color-periwinkle: var(--periwinkle);
+  --color-world: var(--world);
+  --color-world-2: var(--world-2);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-signal: var(--signal);
+  --color-alert: var(--alert);
+
+  --font-display: var(--font-archivo);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+/* ---------- base ---------- */
+
+html {
+  scrollbar-color: var(--iris) var(--world);
+}
+
+body {
+  background: var(--world);
+  color: var(--periwinkle);
+  font-family: var(--font-archivo), sans-serif;
+  overflow-x: hidden;
+}
+
+/* the crosshair cursor replaces the native one on precise pointers */
+@media (pointer: fine) {
+  body,
+  a,
+  button,
+  [role="button"] {
+    cursor: none;
+  }
+}
+
+::selection {
+  background: var(--iris);
+  color: var(--paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+/* ---------- typography scale (spec §2) ---------- */
+
+.t-hero {
+  font-size: clamp(3rem, 11vw, 9.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.t-h2 {
+  font-size: clamp(2rem, 5.5vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.t-label {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.t-micro {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* numbered section marker: ● 001 */
+.index-marker {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  color: var(--iris);
+}
+
+/* ---------- KPR notched card: one clipped corner ---------- */
+
+.card-notch {
+  --notch: 22px;
+  border-radius: 10px;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--notch)) 0,
+    100% var(--notch),
+    100% 100%,
+    0 100%
+  );
+}
+
+/* ---------- viewport frame: thin inset border + readouts ----------
+   difference blend keeps it visible over both paper and world */
+
+.viewport-frame {
+  position: fixed;
+  inset: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 80;
+}
+
+/* ---------- film grain (SVG turbulence, no asset) ---------- */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 85;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- nav link: sliding underline ---------- */
+
+.nav-link {
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.nav-link:hover::after,
+.nav-link[aria-current="true"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---------- hero word reveal: lines are masked and slide up ---------- */
+
+.line-mask {
+  overflow: hidden;
+  display: block;
+}
+
+/* ---------- accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

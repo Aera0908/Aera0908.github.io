@@ -1,0 +1,202 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1783429044.8473158,
+    "ast_hash": "1287eafad0bab6a81a675045ea0f7ec7",
+    "semantic_hash": ""
+  },
+  ".claude/settings.local.json": {
+    "mtime": 1783436156.7254417,
+    "ast_hash": "719ce8698842b9d134b9b30dc1b8b49e",
+    "semantic_hash": ""
+  },
+  "eslint.config.mjs": {
+    "mtime": 1783431444.4536302,
+    "ast_hash": "dfa1f5f6a7037bf39dc510f30b180002",
+    "semantic_hash": ""
+  },
+  "next.config.ts": {
+    "mtime": 1783431444.8242805,
+    "ast_hash": "9b77af189a21a7a64e4bd7a426f64176",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1783431698.7997253,
+    "ast_hash": "f63ba62d094a88b80dcbd38d4201f8f2",
+    "semantic_hash": ""
+  },
+  "postcss.config.mjs": {
+    "mtime": 1783431444.5352683,
+    "ast_hash": "239f3ebf717465dc636818a1a619398d",
+    "semantic_hash": ""
+  },
+  "src/app/layout.tsx": {
+    "mtime": 1783434368.243881,
+    "ast_hash": "20adf5c8582b4fe3e54aaa44f2c13fd3",
+    "semantic_hash": ""
+  },
+  "src/app/page.tsx": {
+    "mtime": 1783434613.3118324,
+    "ast_hash": "00094f615a80eb07ea17eab18108f80a",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1783431588.4410079,
+    "ast_hash": "ee17fd1c97c735e9f3564e3f5251f125",
+    "semantic_hash": ""
+  },
+  ".claude/skills/kprverse-design-spec/SKILL.md": {
+    "mtime": 1783434286.3360982,
+    "ast_hash": "c1a8ec673130f93882ef84b4079007a4",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1783431633.011863,
+    "ast_hash": "9e09241799026ac05be315a2f0b50055",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1783431739.0211353,
+    "ast_hash": "03e3d38ba74cf8886d3d8fc322d9da8a",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1783431444.386738,
+    "ast_hash": "f15aaa42d5d299d091b1171097ea56ad",
+    "semantic_hash": ""
+  },
+  "public/file.svg": {
+    "mtime": 1783431444.561738,
+    "ast_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71",
+    "semantic_hash": ""
+  },
+  "public/globe.svg": {
+    "mtime": 1783431444.6025856,
+    "ast_hash": "2aaafa6a49b6563925fe440891e32717",
+    "semantic_hash": ""
+  },
+  "public/next.svg": {
+    "mtime": 1783431444.6412456,
+    "ast_hash": "8e061864f388b47f33a1c3780831193e",
+    "semantic_hash": ""
+  },
+  "public/vercel.svg": {
+    "mtime": 1783431444.683455,
+    "ast_hash": "c0af2f507b369b085b35ef4bbe3bcf1e",
+    "semantic_hash": ""
+  },
+  "public/window.svg": {
+    "mtime": 1783431444.7227015,
+    "ast_hash": "a2760511c65806022ad20adf74370ff3",
+    "semantic_hash": ""
+  },
+  ".claude/launch.json": {
+    "mtime": 1783432536.0878386,
+    "ast_hash": "de095783b03f7ff790c7bff22628f306",
+    "semantic_hash": ""
+  },
+  "src/components/providers/HudAudioProvider.tsx": {
+    "mtime": 1783432505.1136613,
+    "ast_hash": "a93e31f252d36399e48550b87bc41458",
+    "semantic_hash": ""
+  },
+  "src/lib/audio.ts": {
+    "mtime": 1783432492.3434243,
+    "ast_hash": "5f7a3c785f76aee27326b6a4b1e54738",
+    "semantic_hash": ""
+  },
+  "src/components/providers/SmoothScrollProvider.tsx": {
+    "mtime": 1783432893.8265338,
+    "ast_hash": "40be5ad2199847cead9b5c4430618596",
+    "semantic_hash": ""
+  },
+  "src/components/webgl/CameraRig.tsx": {
+    "mtime": 1783433782.4002047,
+    "ast_hash": "08507c7026ee2042f286725d01cd7390",
+    "semantic_hash": ""
+  },
+  "src/components/webgl/ParticleField.tsx": {
+    "mtime": 1783434422.629584,
+    "ast_hash": "cfd4f6937f986eb39ced42ab5f938a0a",
+    "semantic_hash": ""
+  },
+  "src/components/webgl/SceneCanvas.tsx": {
+    "mtime": 1783443933.3976529,
+    "ast_hash": "1f7c8cc41bb15aa10ffb488db4477a43",
+    "semantic_hash": ""
+  },
+  "src/lib/gsap.ts": {
+    "mtime": 1783432888.671147,
+    "ast_hash": "f1acff47474b7b09f476ea4fa42d5007",
+    "semantic_hash": ""
+  },
+  "src/lib/hud-state.ts": {
+    "mtime": 1783433193.8949673,
+    "ast_hash": "a2d965bff1d0b782281934beeabfb9e4",
+    "semantic_hash": ""
+  },
+  "src/lib/scene.ts": {
+    "mtime": 1783443924.4039052,
+    "ast_hash": "f4051fd892c89649230ccf5a5619b9d3",
+    "semantic_hash": ""
+  },
+  "src/components/chrome/Cursor.tsx": {
+    "mtime": 1783434441.8755171,
+    "ast_hash": "b4cecc8d8281c29fd2d6d30ba6a5c54f",
+    "semantic_hash": ""
+  },
+  "src/components/chrome/FrameBorder.tsx": {
+    "mtime": 1783434827.289954,
+    "ast_hash": "b509009cd6bd50c15a932dd0a196db53",
+    "semantic_hash": ""
+  },
+  "src/components/chrome/Loader.tsx": {
+    "mtime": 1783441919.6938307,
+    "ast_hash": "13078b7565be0c63e56a081963f057ff",
+    "semantic_hash": ""
+  },
+  "src/components/chrome/Navbar.tsx": {
+    "mtime": 1783434456.8683376,
+    "ast_hash": "bab92be9fa76fd56662b7e3354137f78",
+    "semantic_hash": ""
+  },
+  "src/components/sections/Contact.tsx": {
+    "mtime": 1783434830.8579698,
+    "ast_hash": "2f5766036254e4e494aaa3cb62141bef",
+    "semantic_hash": ""
+  },
+  "src/components/sections/Experience.tsx": {
+    "mtime": 1783434563.2987697,
+    "ast_hash": "f569575d6c81141a497d784060bf0373",
+    "semantic_hash": ""
+  },
+  "src/components/sections/Hero.tsx": {
+    "mtime": 1783442709.1937895,
+    "ast_hash": "6b92018c40b49442ffadcd35441b7c25",
+    "semantic_hash": ""
+  },
+  "src/components/sections/Projects.tsx": {
+    "mtime": 1783434587.7156749,
+    "ast_hash": "870b7df9ed322a06abe860a76647b73f",
+    "semantic_hash": ""
+  },
+  "src/components/ui/HoldToReveal.tsx": {
+    "mtime": 1783434521.1362984,
+    "ast_hash": "3d11446d1a08d0eead9aa075589f9683",
+    "semantic_hash": ""
+  },
+  "public/kpr_portrait.png": {
+    "mtime": 1783439256.2041752,
+    "ast_hash": "fbed103587a4bda571056bcc8906a18c",
+    "semantic_hash": ""
+  },
+  "src/components/webgl/MoonScene.tsx": {
+    "mtime": 1783444176.6822221,
+    "ast_hash": "4a00e87ba99092e62848490e1023a2ed",
+    "semantic_hash": ""
+  },
+  "public/cyberpunk_earth.png": {
+    "mtime": 1783443891.5187678,
+    "ast_hash": "6bd9816c3fb7ac582dedf8dfb1490818",
+    "semantic_hash": ""
+  }
+}
