@@ -5,15 +5,15 @@
 import * as THREE from "three";
 
 /** deep indigo night — WebGL clear color + fog (matches --world token) */
-export const WORLD = "#141630";
+export const WORLD = "#000000";
 
 export const CAMERA_PATH = new THREE.CatmullRomCurve3(
   [
-    new THREE.Vector3(0.0, -2.5, 12.0),  // p=0.00 Hero — sitting on the moon surface, looking at Earth
-    new THREE.Vector3(2.0, -2.0, 4.0),   // p≈0.30 About — camera shifts Z forward
-    new THREE.Vector3(0.0, -1.5, -2.0),  // p≈0.45 — crossing the threshold
-    new THREE.Vector3(-4.0, -1.0, -8.0), // p≈0.70 — lower level shadow view
-    new THREE.Vector3(0.0, -2.0, -14.0), // p=1.00 — street/crater level on the dark side
+    new THREE.Vector3(0.0, -2.5, 12.0),
+    new THREE.Vector3(0.0, -2.5, 12.0),
+    new THREE.Vector3(0.0, -2.5, 12.0),
+    new THREE.Vector3(0.0, -2.5, 12.0),
+    new THREE.Vector3(0.0, -2.5, 12.0),
   ],
   false,
   "catmullrom",
@@ -22,10 +22,10 @@ export const CAMERA_PATH = new THREE.CatmullRomCurve3(
 
 /** what the camera looks at per section; blended by scroll progress */
 export const LOOK_TARGETS = [
-  new THREE.Vector3(0.0, 7.0, -38.0),  // hero: looking up at the giant Earth in the sky
-  new THREE.Vector3(0.0, 2.0, -20.0),  // about: looking down/forward
-  new THREE.Vector3(0.0, -1.0, 5.0),   // projects: panning backward
-  new THREE.Vector3(0.0, -3.0, 30.0),  // uplink: looking back into deep space starry void (dark side)
+  new THREE.Vector3(0.0, 7.0, -38.0),
+  new THREE.Vector3(0.0, 7.0, -38.0),
+  new THREE.Vector3(0.0, 7.0, -38.0),
+  new THREE.Vector3(0.0, 7.0, -38.0),
 ];
 
 /** progress stops where each LOOK_TARGET fully applies */

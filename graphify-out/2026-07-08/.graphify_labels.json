@@ -13,5 +13,7 @@
   "11": "next.config.ts",
   "12": "postcss.config.mjs",
   "13": "SceneCanvas.tsx",
-  "14": "ParallaxCity.tsx"
+  "14": "Loader.tsx",
+  "15": "page.tsx",
+  "16": "AERA.DEV — Asset Image Sizing Guide"
 }

@@ -24,6 +24,16 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       anchors: true,
     });
 
+    if (typeof window !== "undefined") {
+      (window as any).lenis = lenis;
+      if (
+        document.documentElement.classList.contains("overflow-hidden") ||
+        document.body.classList.contains("overflow-hidden")
+      ) {
+        lenis.stop();
+      }
+    }
+
     lenis.on("scroll", ScrollTrigger.update);
 
     const raf = (time: number) => lenis.raf(time * 1000);
@@ -31,6 +41,9 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      if (typeof window !== "undefined") {
+        (window as any).lenis = undefined;
+      }
       gsap.ticker.remove(raf);
       lenis.destroy();
     };

@@ -4,7 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { hudAudio } from "@/lib/audio";
 
-type Phase = "loading" | "ready" | "gone";
+type Phase = "loading" | "waiting" | "revealing" | "ready" | "gone";
+
+/** scramble charset per kprverse-design-spec §4 */
+const SCRAMBLE_CHARS = "!<>-_\\/[]{}—=+*^?#01";
+const FINAL_LETTERS = ["A", "E", "R", "A"];
+/** orbit ellipse geometry (viewBox units, matches the SVG below) */
+const ORBIT = { cx: 50, cy: 22, rx: 46, ry: 16 };
 
 /** boot log lines, revealed when the progress passes their threshold */
 const BOOT_LINES: Array<{ at: number; text: string; status?: string }> = [
@@ -26,11 +32,171 @@ export function Loader({ onDone }: { onDone: () => void }) {
   const pctRef = useRef<HTMLSpanElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
+  const canvasBackRef = useRef<HTMLCanvasElement>(null);
+  const canvasFrontRef = useRef<HTMLCanvasElement>(null);
+  const captionRef = useRef<HTMLParagraphElement>(null);
   const enteredRef = useRef(false);
-  
+  const revealTlRef = useRef<gsap.core.Timeline | null>(null);
+  const promptRef = useRef<HTMLDivElement>(null);
+  const scrambleTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const scrambleIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const canvasState = useRef({
+    angle: Math.PI / 2,
+    drawProgress: 0,
+    moonX: 1200,
+    moonY: 580,
+    opacity: 0,
+    moonOpacity: 0,
+    exitOpacity: 1,
+    isExiting: false,
+    trail: [] as { x: number; y: number }[]
+  });
+
+  const draw = () => {
+    const canvasBack = canvasBackRef.current;
+    const canvasFront = canvasFrontRef.current;
+    if (!canvasBack || !canvasFront) return;
+
+    const ctxBack = canvasBack.getContext("2d");
+    const ctxFront = canvasFront.getContext("2d");
+    if (!ctxBack || !ctxFront) return;
+
+    // Clear both
+    ctxBack.clearRect(0, 0, 2400, 800);
+    ctxFront.clearRect(0, 0, 2400, 800);
+
+    const state = canvasState.current;
+    const centerX = 1200;
+    const centerY = 400;
+    const rx = 720; // Original path size (horizontal)
+    const ry = 180; // Original path size (vertical)
+
+    // 1. Calculate moon position
+    let moonX = 0;
+    let moonY = 0;
+
+    if (!state.isExiting) {
+      moonX = centerX + rx * Math.cos(state.angle);
+      moonY = centerY + ry * Math.sin(state.angle);
+      
+      // Update trail history
+      state.trail.push({ x: moonX, y: moonY });
+      if (state.trail.length > 500) {
+        state.trail.shift();
+      }
+    } else {
+      moonX = state.moonX;
+      moonY = state.moonY;
+
+      // Update trail history with the animated moon position
+      state.trail.push({ x: moonX, y: moonY });
+      
+      // The speed up should ONLY happen once the moon is already outside the view (moonX < -60).
+      if (moonX >= -60) {
+        if (state.trail.length > 500) {
+          state.trail.shift();
+        }
+      } else {
+        // Once the moon is off-screen, speed up trail shrinking:
+        // Shift out multiple points from the tail per frame so it zips off-screen!
+        for (let k = 0; k < 15; k++) {
+          if (state.trail.length > 0) {
+            state.trail.shift();
+          }
+        }
+      }
+    }
+
+    // 2. Draw solid line trail of the moon (no static orbit line, constant thickness)
+    if (state.trail.length > 1) {
+      const baseOpacity = state.isExiting ? state.exitOpacity : state.opacity;
+      const lineWidth = 6;
+
+      let currentCanvas: "back" | "front" | null = null;
+      let pathPoints: { x: number; y: number }[] = [];
+
+      const flushPath = () => {
+        if (pathPoints.length < 2 || !currentCanvas) return;
+        const ctx = currentCanvas === "back" ? ctxBack : ctxFront;
+        ctx.beginPath();
+        ctx.moveTo(pathPoints[0].x, pathPoints[0].y);
+        for (let i = 1; i < pathPoints.length; i++) {
+          ctx.lineTo(pathPoints[i].x, pathPoints[i].y);
+        }
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        if (currentCanvas === "back") {
+          ctx.strokeStyle = `rgba(0, 0, 0, ${0.4 * baseOpacity})`;
+        } else {
+          ctx.strokeStyle = `rgba(255, 255, 255, ${baseOpacity})`;
+        }
+        ctx.stroke();
+        pathPoints = [];
+      };
+
+      for (let i = 0; i < state.trail.length; i++) {
+        const pt = state.trail[i];
+        const canvasType = (state.isExiting || pt.y < centerY) ? "back" : "front";
+
+        if (canvasType !== currentCanvas) {
+          if (pathPoints.length > 0) {
+            pathPoints.push(pt); // Connect path to boundary
+            flushPath();
+          }
+          currentCanvas = canvasType;
+        }
+        pathPoints.push(pt);
+      }
+      flushPath();
+    }
+
+    // 3. Draw moon dot (back when upper-half or exiting, front when lower-half for color inversion)
+    // Moon size is enlarged 3x (from radius 20 to 60) and filled with solid color
+    if (state.moonOpacity > 0) {
+      if (state.isExiting || moonY < centerY) {
+        ctxBack.beginPath();
+        ctxBack.arc(moonX, moonY, 60, 0, 2 * Math.PI);
+        ctxBack.fillStyle = `rgba(0, 0, 0, ${state.moonOpacity})`;
+        ctxBack.fill();
+      } else {
+        ctxFront.beginPath();
+        ctxFront.arc(moonX, moonY, 60, 0, 2 * Math.PI);
+        ctxFront.fillStyle = `rgba(255, 255, 255, ${state.moonOpacity})`;
+        ctxFront.fill();
+      }
+    }
+  };
+
   const [phase, setPhase] = useState<Phase>("loading");
   const [activeLineCount, setActiveLineCount] = useState(0);
   const activeCountRef = useRef(0);
+
+  useEffect(() => {
+    if (phase === "waiting") {
+      const prompt = promptRef.current;
+      if (prompt) {
+        gsap.fromTo(prompt,
+          { opacity: 0, y: 20, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: "power2.out" }
+        );
+      }
+    }
+  }, [phase]);
+
+  /** stop the letter scramble and lock in the final wordmark */
+  const settleScramble = () => {
+    if (scrambleIntervalRef.current) {
+      clearInterval(scrambleIntervalRef.current);
+      scrambleIntervalRef.current = null;
+    }
+    scrambleTimersRef.current.forEach(clearTimeout);
+    scrambleTimersRef.current = [];
+    logoRef.current
+      ?.querySelectorAll(".aera-letter")
+      .forEach((el, i) => (el.textContent = FINAL_LETTERS[i]));
+  };
 
   /* progress tween drives the % readouts and reveals boot lines */
   useEffect(() => {
@@ -60,11 +226,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
         }
       },
       onComplete: () => {
-        setPhase("ready");
-        // Automatically proceed after logo reveal completes (1.8s delay)
-        gsap.delayedCall(1.8, () => {
-          enter(true);
-        });
+        setPhase("waiting");
       },
     });
     return () => {
@@ -72,41 +234,87 @@ export function Loader({ onDone }: { onDone: () => void }) {
     };
   }, []);
 
-  /* Clean reveal for "AERA" text when ready */
+  /* "AERA" orbital reveal — letters decode while rising, a thin orbit ring
+     draws around the wordmark and a satellite dot sweeps over it (flat
+     ink-on-paper per spec §0; scramble charset per §4) */
   useEffect(() => {
-    if (phase !== "ready") return;
+    if (phase !== "revealing") return;
 
-    if (logoRef.current) {
-      logoRef.current.style.display = "flex";
+    const logo = logoRef.current;
+    if (!logo) return;
+    logo.style.display = "flex";
+
+    const letters = Array.from(logo.querySelectorAll<HTMLElement>(".aera-letter"));
+    if (letters.length === 0) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      // spec §7: reveals become fades, no scramble loops
+      gsap.set(letters, { yPercent: 0, opacity: 0 });
+      gsap.to(letters, { opacity: 1, duration: 0.6, ease: "power2.out" });
+      if (captionRef.current) {
+        gsap.fromTo(captionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.6 });
+      }
+      return;
     }
 
-    const letters = logoRef.current?.querySelectorAll(".aera-letter");
-    if (letters && letters.length > 0) {
-      // Set initial state below the mask with full opacity (no fade)
-      gsap.set(letters, { yPercent: 110, opacity: 1 });
+    const tl = gsap.timeline({
+      onComplete: () => {
+        enter(true);
+      }
+    });
+    revealTlRef.current = tl;
 
-      gsap.to(
-        letters,
-        {
-          yPercent: 0,
-          duration: 1.15,
-          stagger: 0.12,
-          ease: "power4.out",
-        }
-      );
+    // -- letters rise from below the mask together (no scramble, no stagger)
+    gsap.set(letters, { yPercent: 130, opacity: 1, x: 0 });
+    tl.to(letters, {
+      yPercent: 0,
+      duration: 1.15,
+      stagger: 0,
+      ease: "power3.out",
+    }, 0);
+
+    // -- canvas properties animation (draws and sweeps clockwise starting at t = 0)
+    // Initialize canvasState values
+    canvasState.current.angle = Math.PI / 2; // bottom center
+    canvasState.current.drawProgress = 0;
+    canvasState.current.opacity = 0;
+    canvasState.current.moonOpacity = 0;
+    canvasState.current.isExiting = false;
+    canvasState.current.exitOpacity = 1;
+    canvasState.current.trail = [];
+
+    tl.to(canvasState.current, {
+      opacity: 1,
+      moonOpacity: 1,
+      drawProgress: 1,
+      angle: 2.5 * Math.PI, // 1 full clockwise rotation
+      duration: 3.2,
+      ease: "power2.inOut",
+      onUpdate: draw,
+    }, 0);
+
+    // -- mono caption under the wordmark
+    if (captionRef.current) {
+      tl.fromTo(captionRef.current,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.15);
     }
-  }, [phase]);
 
-  /* ESC enters without sound (optional fallback, but is auto now) */
-  useEffect(() => {
-    if (phase !== "ready") return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") enter(false);
+    // -- one tiny registration "misprint" jitter once everything settles
+    if (letters[1] && letters[2]) {
+      tl.to(letters[1], { x: -3, duration: 0.09, ease: "steps(2)", yoyo: true, repeat: 1 }, 1.55);
+      tl.to(letters[2], { x: 3, duration: 0.09, ease: "steps(2)", yoyo: true, repeat: 1 }, 1.55);
+    }
+
+    return () => {
+      tl.kill();
+      revealTlRef.current = null;
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
+
+
 
   const enter = (withSound: boolean) => {
     if (enteredRef.current) return;
@@ -131,8 +339,13 @@ export function Loader({ onDone }: { onDone: () => void }) {
     const source = logo.querySelector(".aera-letters-wrapper");
     const letters = logo.querySelectorAll(".aera-letter");
 
-    // Kill any active reveal animations to prevent visual conflicts
+    // Kill any active reveal animations to prevent visual conflicts, and
+    // make sure the wordmark reads AERA (not mid-scramble) before it morphs
+    settleScramble();
+    revealTlRef.current?.kill();
+    revealTlRef.current = null;
     gsap.killTweensOf([logo, letters]);
+    gsap.set(letters, { yPercent: 0, x: 0, opacity: 1 });
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -141,11 +354,44 @@ export function Loader({ onDone }: { onDone: () => void }) {
       },
     });
 
-    // 1. Fade out the loader elements (terminal log and progress bar)
+    // 1. Fade out the loader elements (terminal log and progress bar),
+    //    the orbit ring and the caption — the logo must morph alone
     tl.to(".pointer-events-none.absolute.inset-0.flex.flex-col.justify-between", {
       opacity: 0,
       duration: 0.45,
     });
+    // Set canvas exit state
+    canvasState.current.isExiting = true;
+    canvasState.current.exitOpacity = 1;
+    canvasState.current.moonX = 1200;
+    canvasState.current.moonY = 580;
+
+    // 1. Animate moon position off-screen in 0.5s
+    tl.to(canvasState.current, {
+      moonX: -400,
+      moonY: 580,
+      duration: 0.5,
+      ease: "power2.in",
+    }, 0);
+
+    // 2. Keep drawing and fade out exitOpacity over 1.0 second (gives time for trail to zip off)
+    tl.to(canvasState.current, {
+      exitOpacity: 0,
+      duration: 1.0,
+      ease: "power1.out",
+      onUpdate: draw,
+    }, 0);
+
+    // Fade out both canvases only after the exit animation completes (1.0s)
+    if (canvasFrontRef.current) {
+      tl.to(canvasFrontRef.current, { opacity: 0, duration: 0.1 }, 1.0);
+    }
+    if (canvasBackRef.current) {
+      tl.to(canvasBackRef.current, { opacity: 0, duration: 0.1 }, 1.0);
+    }
+    if (captionRef.current) {
+      tl.to(captionRef.current, { opacity: 0, duration: 0.3 }, 0);
+    }
 
     // 2. Perform FLIP transition: move the loader's black AERA logo to the Hero target logo position
     tl.addLabel("morph", "+=0.1");
@@ -183,24 +429,89 @@ export function Loader({ onDone }: { onDone: () => void }) {
     );
   };
 
+  const handleOverlayClick = () => {
+    if (phase !== "waiting" || enteredRef.current) return;
+
+    try {
+      hudAudio.boot();
+    } catch (e) {}
+
+    const prompt = promptRef.current;
+    if (prompt) {
+      gsap.to(prompt, {
+        opacity: 0,
+        y: -20,
+        scale: 0.95,
+        duration: 0.45,
+        ease: "power2.inOut",
+        onComplete: () => {
+          setPhase("revealing");
+        }
+      });
+    } else {
+      setPhase("revealing");
+    }
+  };
+
   if (phase === "gone") return null;
 
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[100] bg-paper text-ink"
+      className={`fixed inset-0 z-[100] bg-paper text-ink ${phase === "waiting" ? "cursor-pointer" : ""}`}
       style={{ clipPath: "inset(0% 0% 0% 0%)" }}
+      onClick={handleOverlayClick}
     >
-      {/* HUGE centered "AERA" logo */}
+      {phase === "waiting" && (
+        <div
+          ref={promptRef}
+          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-[10] select-none"
+          style={{ opacity: 0, fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace" }}
+        >
+          <div className="text-center px-6">
+            <h2 className="font-bold text-4xl md:text-5xl tracking-wide text-ink uppercase animate-pulse">
+              CLICK TO PROCEED
+            </h2>
+          </div>
+        </div>
+      )}
+      {/* HUGE centered "AERA" logo with orbit ring + satellite dot */}
       <div
         ref={logoRef}
-        className="pointer-events-none absolute inset-0 hidden items-center justify-center z-[102]"
+        className="pointer-events-none absolute inset-0 hidden items-center justify-center"
       >
-        <div className="aera-letters-wrapper flex gap-[0.15em] font-display font-black tracking-[-0.06em] text-ink text-[16vw] md:text-[12vw] uppercase select-none overflow-hidden py-2 px-4">
-          <span className="aera-letter inline-block">A</span>
-          <span className="aera-letter inline-block">E</span>
-          <span className="aera-letter inline-block">R</span>
-          <span className="aera-letter inline-block">A</span>
+        <div className="relative flex items-center justify-center">
+          {/* Back Orbit layer (drawn behind text, normal blend mode, dark color) */}
+          <canvas
+            ref={canvasBackRef}
+            width={2400}
+            height={800}
+            className="absolute pointer-events-none z-[1] max-w-none"
+            style={{ width: "100vw", height: "33.33vw" }}
+          />
+
+          {/* AERA Wordmark in the middle */}
+          <div className="aera-letters-wrapper relative z-[2] flex gap-[0.02em] font-display font-black tracking-[-0.08em] text-ink text-[16vw] md:text-[12vw] uppercase select-none overflow-hidden py-2 px-6">
+            <span className="aera-letter inline-block">A</span>
+            <span className="aera-letter inline-block">E</span>
+            <span className="aera-letter inline-block">R</span>
+            <span className="aera-letter inline-block">A</span>
+          </div>
+
+          {/* Front Orbit layer (drawn in front of text, difference blend mode, white color) */}
+          <canvas
+            ref={canvasFrontRef}
+            width={2400}
+            height={800}
+            className="absolute pointer-events-none z-[3] max-w-none"
+            style={{ mixBlendMode: "difference", width: "100vw", height: "33.33vw" }}
+          />
+          <p
+            ref={captionRef}
+            className="t-micro absolute bottom-full mb-6 whitespace-nowrap text-ink-soft opacity-0"
+          >
+            LUNAR ORBIT INSERTION // 384,400 KM // SECTOR AERA
+          </p>
         </div>
       </div>
 
@@ -208,7 +519,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
         {/* Top rule */}
         <div className="flex items-baseline justify-between border-t border-ink/25 pt-2">
           <span className="t-micro text-ink-soft">
-            HTTPS://PORTFOLIO.DEV/AJ/FULL-STACK/EMBEDDED/AI
+            GITHUB.COM/AERA0908 // AIRA YNTE // SOFTWARE ENGINEER & SYSTEM ARCHITECT
           </span>
         </div>
 
@@ -224,10 +535,10 @@ export function Loader({ onDone }: { onDone: () => void }) {
                   text={line.text}
                   status={line.status}
                   active={activeLineCount > i}
-                  isComplete={phase === "ready"}
+                  isComplete={phase === "waiting" || phase === "revealing" || phase === "ready"}
                 />
               ))}
-              {phase === "ready" && (
+              {(phase === "waiting" || phase === "revealing") && (
                 <p className="text-ink-soft mt-1">
                   $ awaiting operator input <span className="animate-pulse">▊</span>
                 </p>
@@ -252,10 +563,7 @@ export function Loader({ onDone }: { onDone: () => void }) {
             </div>
           </div>
 
-          {/* silent path hint */}
-          <p className="t-micro self-center text-ink-soft">
-            PRESS [ESC] TO CONTINUE WITHOUT SOUND
-          </p>
+
         </div>
       </div>
     </div>
@@ -274,74 +582,50 @@ function TypingLine({
   active: boolean;
   isComplete: boolean;
 }) {
-  const [displayedText, setDisplayedText] = useState("");
-  const [showStatus, setShowStatus] = useState(false);
-  const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const elRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
+    const el = elRef.current;
+    if (!el) return;
+
     if (isComplete) {
-      setDisplayedText(text);
-      setShowStatus(true);
-      if (typingTimerRef.current) {
-        clearInterval(typingTimerRef.current);
-        typingTimerRef.current = null;
-      }
+      el.innerHTML = `${text}${status ? `<span class="${status === "READY" ? "font-bold text-iris" : "text-iris/80"}"> ${status}</span>` : ""}`;
       return;
     }
 
     if (!active) {
-      setDisplayedText("");
-      setShowStatus(false);
+      el.innerHTML = "";
       return;
     }
 
-    if (displayedText.length === text.length) {
-      setShowStatus(true);
-      return;
-    }
+    let currentLen = 0;
+    let timer: number;
 
-    let currentIndex = displayedText.length;
-    if (typingTimerRef.current) {
-      clearInterval(typingTimerRef.current);
-    }
+    const typeFast = () => {
+      const isFinished = currentLen >= text.length;
+      const sliced = text.slice(0, currentLen);
+      const cursor = !isFinished ? '<span class="animate-pulse">▊</span>' : '';
+      const statusHTML = isFinished && status 
+        ? `<span class="${status === "READY" ? "font-bold text-iris" : "text-iris/80"}"> ${status}</span>`
+        : "";
+      el.innerHTML = `${sliced}${cursor}${statusHTML}`;
 
-    typingTimerRef.current = setInterval(() => {
-      if (currentIndex < text.length) {
-        setDisplayedText(text.slice(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        if (typingTimerRef.current) {
-          clearInterval(typingTimerRef.current);
-          typingTimerRef.current = null;
-        }
-        setShowStatus(true);
-      }
-    }, 8);
-
-    return () => {
-      if (typingTimerRef.current) {
-        clearInterval(typingTimerRef.current);
-        typingTimerRef.current = null;
+      if (!isFinished) {
+        currentLen += 2; // Type 2 characters at a time for snappiness
+        setTimeout(() => {
+          timer = requestAnimationFrame(typeFast);
+        }, 16); // Throttle slightly to limit DOM updates to ~30fps
       }
     };
-  }, [active, isComplete, text]);
+
+    typeFast();
+
+    return () => {
+      cancelAnimationFrame(timer);
+    };
+  }, [active, isComplete, text, status]);
 
   if (!active && !isComplete) return null;
 
-  return (
-    <p>
-      {displayedText}
-      {!showStatus && active && <span className="animate-pulse">▊</span>}
-      {showStatus && status && (
-        <span
-          className={
-            status === "READY" ? "font-bold text-iris" : "text-iris/80"
-          }
-        >
-          {" "}
-          {status}
-        </span>
-      )}
-    </p>
-  );
+  return <p ref={elRef} />;
 }

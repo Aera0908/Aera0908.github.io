@@ -12,5 +12,9 @@
   "10": "eslint.config.mjs",
   "11": "next.config.ts",
   "12": "postcss.config.mjs",
-  "13": "SceneCanvas.tsx"
+  "13": "SceneCanvas.tsx",
+  "14": "Loader.tsx",
+  "15": "page.tsx",
+  "16": "AERA.DEV — Asset Image Sizing Guide",
+  "17": "Credentials.tsx"
 }

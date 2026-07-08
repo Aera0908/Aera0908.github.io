@@ -8,23 +8,25 @@
    ============================================================ */
 
 :root {
-  /* Brand core — primary accent per user spec */
-  --iris: #6064a3;
-  --iris-bright: #8b90d9;
-  --periwinkle: #c7caf0;
+  /* Brand core — cyberpunk white/black/yellow per user spec.
+     Token NAMES are kept (iris/periwinkle/world) so every utility class
+     keeps working; only the values changed. */
+  --iris: #e8d90c; /* deep electric yellow — markers, links, progress */
+  --iris-bright: #fcee0a; /* hot yellow — hover states, highlights */
+  --periwinkle: #eceae2; /* bone white — light text on dark */
 
   /* World (dark immersive layers, WebGL clear color) */
-  --world: #141630;
-  --world-2: #23264d;
+  --world: #0a0a0c;
+  --world-2: #17171b;
 
   /* Editorial (light layers) */
   --paper: #f4f3ee;
-  --ink: #131318;
-  --ink-soft: #55555f;
+  --ink: #0d0d10;
+  --ink-soft: #55555a;
 
   /* Signal */
-  --signal: #d9ff3f;
-  --alert: #ff5470;
+  --signal: #fcee0a;
+  --alert: #ff2e55;
 }
 
 @theme inline {
@@ -130,6 +132,50 @@ body {
   );
 }
 
+/* ---------- per-section shape families ----------
+   One silhouette per section: hero keeps .card-notch, the journey uses
+   .clip-bevel-br, the vault uses .clip-tab-tl, credentials .clip-step-tr */
+
+/* journey: 45° bevel on the bottom-right */
+.clip-bevel-br {
+  border-radius: 10px;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 28px),
+    calc(100% - 28px) 100%,
+    0 100%
+  );
+}
+
+/* vault: raised folder tab on the top-left (reference: collectible cards) */
+.clip-tab-tl {
+  border-radius: 10px;
+  clip-path: polygon(
+    0 0,
+    132px 0,
+    156px 16px,
+    100% 16px,
+    100% 100%,
+    0 100%
+  );
+}
+
+/* credentials: pixel staircase on the top-right */
+.clip-step-tr {
+  border-radius: 10px;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 36px) 0,
+    calc(100% - 36px) 12px,
+    calc(100% - 12px) 12px,
+    calc(100% - 12px) 36px,
+    100% 36px,
+    100% 100%,
+    0 100%
+  );
+}
+
 /* ---------- viewport frame: thin inset border + readouts ----------
    difference blend keeps it visible over both paper and world */
 
@@ -186,10 +232,45 @@ body {
   display: block;
 }
 
-/* ---------- accessibility ---------- */
+/* ---------- accessibility & scrollbar hiding ---------- */
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+}
+
+/* ---------- modal zoom-in entrance animation ---------- */
+@keyframes zoom-in {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ---------- credentials console loader animation ---------- */
+@keyframes loader-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
   }
 }

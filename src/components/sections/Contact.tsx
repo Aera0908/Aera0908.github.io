@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
+import { CyberLines } from "@/components/ui/CyberLines";
 
 /**
  * Uplink: the camera rises into the particle streams; one big CTA.
@@ -29,10 +30,11 @@ export function Contact() {
     <section
       id="contact"
       ref={rootRef}
-      className="relative z-10 flex min-h-screen flex-col px-6 pt-[24vh] pb-10 md:px-16"
+      className="relative z-10 flex min-h-screen flex-col overflow-hidden bg-world-2 px-6 pt-[24vh] pb-10 md:px-16"
     >
+      <CyberLines flip />
       <p className="contact-reveal t-label mb-6 text-periwinkle/60">
-        ● 003 — UPLINK
+        ● 004 — UPLINK
       </p>
       <h2 className="contact-reveal t-hero mb-10 text-paper">
         LET&apos;S
@@ -42,23 +44,29 @@ export function Contact() {
 
       <div className="contact-reveal flex flex-wrap items-center gap-8">
         <a
-          href="mailto:hello@example.dev" /* [placeholder email] */
+          href="mailto:08airajosh@gmail.com"
           className="card-notch bg-signal px-8 py-4 font-bold tracking-tight text-ink uppercase transition-transform hover:scale-[1.03]"
           onMouseEnter={fx.blip}
           onClick={fx.confirm}
         >
-          OPEN UPLINK → HELLO@EXAMPLE.DEV
+          OPEN UPLINK → 08AIRAJOSH@GMAIL.COM
         </a>
         <div className="flex gap-6">
-          {["GITHUB", "LINKEDIN", "X"].map((s) => (
+          {[
+            { label: "GITHUB", href: "https://github.com/Aera0908" },
+            { label: "LINKEDIN", href: "https://linkedin.com/in/aira-josh-ynte" },
+            { label: "X", href: "https://x.com/aera0908" },
+          ].map((s) => (
             <a
-              key={s}
-              href="#" /* [placeholder links] */
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer me"
               className="nav-link t-label text-periwinkle"
               onMouseEnter={fx.blip}
               onClick={fx.click}
             >
-              {s}
+              {s.label}
             </a>
           ))}
         </div>
@@ -66,7 +74,7 @@ export function Contact() {
 
       <footer className="contact-reveal mt-auto flex items-baseline justify-between border-t border-periwinkle/15 pt-4">
         <span className="t-micro text-periwinkle/50">
-          © 2026 AJ.DEV — BUILT WITH NEXT.JS / R3F / GSAP
+          © 2026 AIRA YNTE
         </span>
         <span className="t-micro text-periwinkle/50">END OF TRANSMISSION</span>
       </footer>

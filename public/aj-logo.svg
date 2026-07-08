@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="24" fill="#0a0a0c"/>
+  <g transform="translate(0, 28)">
+    {/* A */}
+    <path
+      d="M 30,58 L 30,16 L 50,16 L 70,36 L 70,58 L 58,58 L 58,44 L 42,44 L 42,58 Z M 42,32 L 42,26 L 50,26 L 56,32 Z"
+      fill="#f4f3ee"
+      fill-rule="evenodd"
+    />
+    {/* J */}
+    <path
+      d="M 74,16 L 98,16 L 98,58 L 74,58 L 74,44 L 86,44 L 86,28 Z"
+      fill="#fcee0a"
+    />
+  </g>
+</svg>

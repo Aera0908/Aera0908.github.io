@@ -84,11 +84,11 @@ const VERTEX = /* glsl */ `
 const FRAGMENT = /* glsl */ `
   varying float vIntensity;
 
-  // iris palette: world -> iris -> periwinkle -> white (spec §5)
+  // cyberpunk ramp: near-black -> electric yellow -> bone white (spec §5)
   vec3 irisRamp(float x){
-    vec3 world = vec3(.078,.086,.188);   // #141630
-    vec3 iris  = vec3(.376,.392,.639);   // #6064a3
-    vec3 peri  = vec3(.780,.792,.941);   // #c7caf0
+    vec3 world = vec3(.039,.039,.047);   // #0a0a0c
+    vec3 iris  = vec3(.910,.851,.047);   // #e8d90c
+    vec3 peri  = vec3(.925,.918,.886);   // #eceae2
     vec3 c = mix(world, iris, smoothstep(0.0, 0.45, x));
     c = mix(c, peri, smoothstep(0.45, 0.8, x));
     return mix(c, vec3(1.0), smoothstep(0.85, 1.0, x));

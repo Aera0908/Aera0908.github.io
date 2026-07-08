@@ -24,23 +24,24 @@ Never hardcode ad-hoc colors, easings, or camera values — pull them from here.
 
 ```css
 :root {
-  /* Brand core — user-specified primary #6064A3 */
-  --iris: #6064a3;         /* primary accent, links, markers, progress */
-  --iris-bright: #8b90d9;  /* hover states, particle highlights */
-  --periwinkle: #c7caf0;   /* light text/tints on dark world */
+  /* Brand core — cyberpunk white/black/yellow (user-specified 2026-07).
+     Token NAMES are legacy (iris/periwinkle) — values are the palette. */
+  --iris: #e8d90c;         /* deep electric yellow — markers, links, progress */
+  --iris-bright: #fcee0a;  /* hot yellow — hover states, particle highlights */
+  --periwinkle: #eceae2;   /* bone white — light text/tints on dark world */
 
   /* World (dark immersive layers, WebGL clear color) */
-  --world: #141630;        /* deep indigo night */
-  --world-2: #23264d;      /* elevated dark surface / dark cards */
+  --world: #0a0a0c;        /* near-black night */
+  --world-2: #17171b;      /* elevated dark surface / dark cards */
 
   /* Editorial (light layers) */
   --paper: #f4f3ee;        /* editorial panel background */
-  --ink: #131318;          /* text on paper */
-  --ink-soft: #55555f;     /* secondary text on paper */
+  --ink: #0d0d10;          /* text on paper */
+  --ink-soft: #55555a;     /* secondary text on paper */
 
   /* Signal */
-  --signal: #d9ff3f;       /* electric lime — CTAs, hold-progress, one per view max */
-  --alert: #ff5470;        /* errors only */
+  --signal: #fcee0a;       /* electric yellow — CTAs, hold-progress, one per view max */
+  --alert: #ff2e55;        /* errors only */
 }
 ```
 
@@ -50,6 +51,9 @@ Rules:
 - `--signal` is loud: max one signal element visible per viewport.
 - No glows/scanlines/CRT — this design is flat, editorial, printed-poster feel.
   Depth comes from parallax and the 3D world, not from blur/glow.
+- Shape families (one silhouette per section): hero `.card-notch`,
+  journey `.clip-bevel-br`, vault `.clip-tab-tl`, credentials `.clip-step-tr`.
+  Containers within a section share the same shape; sections never share.
 
 ## 2. Typography
 

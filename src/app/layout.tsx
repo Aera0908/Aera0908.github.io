@@ -6,6 +6,8 @@ import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvide
 import { Cursor } from "@/components/chrome/Cursor";
 import { FrameBorder } from "@/components/chrome/FrameBorder";
 import { Navbar } from "@/components/chrome/Navbar";
+import { StickyDownloadButton } from "@/components/chrome/StickyDownloadButton";
+import { ResumePreviewModal } from "@/components/chrome/ResumePreviewModal";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -18,9 +20,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AJ — Full-Stack · Embedded · AI",
+  title: "Aira Ynte — Software Engineer & System Architect",
   description:
-    "Immersive scrollytelling portfolio — engineering experience, full-stack builds, and hardware/AI projects rendered in an interactive 3D world.",
+    "Immersive scrollytelling portfolio of Aira Ynte (@Aera0908) — full-stack systems, hardware-firmware integration, Web3 settlement rails, and AI copilots. Computer Engineering '26, Metro Manila.",
+  icons: { icon: "/aj-logo.svg" },
 };
 
 export default function RootLayout({
@@ -38,6 +41,8 @@ export default function RootLayout({
           <HudAudioProvider>
             <Navbar />
             {children}
+            <StickyDownloadButton />
+            <ResumePreviewModal />
           </HudAudioProvider>
         </SmoothScrollProvider>
         <FrameBorder />
