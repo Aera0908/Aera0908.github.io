@@ -32,11 +32,13 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        # --ignore-scripts skips native postinstalls (sharp, unrs-resolver)
-        # that fail on the Linux runner and aren't needed for the static
-        # build — @next/swc, tailwind-oxide and lightningcss are prebuilt
-        # binaries with no install script, so the export is unaffected.
-        run: npm ci --no-audit --no-fund --ignore-scripts
+        # `npm install` (not `npm ci`): the lockfile is generated on Windows,
+        # which never resolves unrs-resolver's wasm binding, so it omits its
+        # transitive @emnapi/* deps that Linux DOES pull in — strict `npm ci`
+        # then rejects the tree ("Missing @emnapi/* from lock file"). install
+        # reconciles it on the runner. --ignore-scripts skips native
+        # postinstalls (sharp, unrs-resolver) the static build never needs.
+        run: npm install --no-audit --no-fund --ignore-scripts
 
       - name: Build static export
         run: npm run build
