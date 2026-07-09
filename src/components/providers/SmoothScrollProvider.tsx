@@ -12,6 +12,10 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
  * With prefers-reduced-motion, native scrolling is left untouched —
  * ScrollTrigger still works off the native scroll events.
  */
+interface LenisWindow extends Window {
+  lenis?: Lenis;
+}
+
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -25,7 +29,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     });
 
     if (typeof window !== "undefined") {
-      (window as any).lenis = lenis;
+      (window as unknown as LenisWindow).lenis = lenis;
       if (
         document.documentElement.classList.contains("overflow-hidden") ||
         document.body.classList.contains("overflow-hidden")
@@ -42,7 +46,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
 
     return () => {
       if (typeof window !== "undefined") {
-        (window as any).lenis = undefined;
+        (window as unknown as LenisWindow).lenis = undefined;
       }
       gsap.ticker.remove(raf);
       lenis.destroy();

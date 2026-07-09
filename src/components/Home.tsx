@@ -18,6 +18,14 @@ const SceneCanvas = dynamic(() => import("@/components/webgl/SceneCanvas"), {
 
 const SECTION_IDS = ["journey", "vault", "credentials", "contact"];
 
+interface LenisWindow extends Window {
+  lenis?: {
+    stop: () => void;
+    start: () => void;
+    scrollTo: (target: unknown, options: unknown) => void;
+  };
+}
+
 /**
  * The scrollytelling one-pager. `initialSection` comes from the route
  * (/contact, /projects, …): deep links skip the intro loader entirely and
@@ -26,19 +34,21 @@ const SECTION_IDS = ["journey", "vault", "credentials", "contact"];
 export function Home({ initialSection = null }: { initialSection?: string | null }) {
   const [entered, setEntered] = useState(!!initialSection);
   const [mountCanvas, setMountCanvas] = useState(!!initialSection);
-  const barRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (entered) {
-      setMountCanvas(true);
-      return;
-    }
-    // Delay canvas mount so WebGL loading/shader compilation doesn't block the intro typing
-    const t = setTimeout(() => {
-      setMountCanvas(true);
-    }, 1800);
-    return () => clearTimeout(t);
-  }, [entered]);
+  const handleLoaderWaiting = () => {
+    setMountCanvas(true);
+  };
+
+  const handleLoaderDone = () => {
+    setEntered(true);
+    setMountCanvas(true);
+  };
+
+  const barRef = useRef<HTMLDivElement>(null);
+  // the scroll-spy stays muzzled on deep links until the jump lands —
+  // otherwise its first toggle rewrites the restored URL while the pinned
+  // layout is still settling (breaks back-navigation targets)
+  const spyArmedRef = useRef(!initialSection);
 
   /**
    * Master timeline (spec §4): one scrubbed tween drives a 0→1 proxy;
@@ -82,7 +92,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
 
     const html = document.documentElement;
     const body = document.body;
-    const lenis = () => (window as any).lenis;
+    const lenis = () => (window as unknown as LenisWindow).lenis;
 
     html.classList.add("overflow-hidden");
     body.classList.add("overflow-hidden");
@@ -146,12 +156,34 @@ export function Home({ initialSection = null }: { initialSection?: string | null
     try {
       history.scrollRestoration = "manual";
     } catch {}
+    // The visible URL is the source of truth, NOT the route param: a
+    // back-navigation restores a history entry whose path the scroll-spy
+    // rewrote (e.g. /vault), while Next still hands us the param of the
+    // originally-requested route (e.g. credentials). Capture it NOW,
+    // synchronously — this effect runs before the scroll-spy effect, whose
+    // very first toggle would clobber the restored path back to "/" while
+    // the pinned layout is still shorter than the restored scroll offset.
+    const restoredSeg = window.location.pathname.replace(/^\/+|\/+$/g, "");
+    const target = SECTION_IDS.includes(restoredSeg)
+      ? restoredSeg
+      : restoredSeg === ""
+        ? null // restored to "/" — stay at the top
+        : initialSection;
+
     const jump = () => {
-      const el = document.getElementById(initialSection);
+      if (!target) {
+        spyArmedRef.current = true;
+        return;
+      }
+      const el = document.getElementById(target);
       if (!el) return;
-      const lenis = (window as any).lenis;
+      const lenis = (window as unknown as LenisWindow).lenis;
       if (lenis) lenis.scrollTo(el, { immediate: true, force: true });
       else el.scrollIntoView({ behavior: "auto" });
+      // restore the path the spy may have transiently overwritten, then
+      // let it take over again
+      window.history.replaceState(null, "", `/${target}`);
+      spyArmedRef.current = true;
     };
     const t1 = setTimeout(() => {
       ScrollTrigger.refresh();
@@ -176,7 +208,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
   useEffect(() => {
     const onPop = () => {
       const seg = window.location.pathname.replace(/^\/+|\/+$/g, "");
-      const lenis = (window as any).lenis;
+      const lenis = (window as unknown as LenisWindow).lenis;
       if (!seg) {
         if (lenis) lenis.scrollTo(0, {});
         else window.scrollTo(0, 0);
@@ -205,17 +237,24 @@ export function Home({ initialSection = null }: { initialSection?: string | null
       { id: "contact", selector: "#contact" },
     ];
 
+    // paths the one-pager owns; anything else (/vault/archive, case files)
+    // was navigated to and must NOT be clobbered by a stray scroll event
+    // firing during the route transition.
+    const OWNED = new Set(["/", "/journey", "/vault", "/credentials", "/contact"]);
+
     const scrollTriggers = sections.map((sec) => {
       return ScrollTrigger.create({
         trigger: sec.selector,
         start: "top 45%",
         end: "bottom 45%",
         onToggle: (self) => {
-          if (self.isActive) {
-            const targetPath = sec.id ? `/${sec.id}` : "/";
-            if (window.location.pathname !== targetPath) {
-              window.history.replaceState(null, "", targetPath);
-            }
+          if (!self.isActive) return;
+          if (!spyArmedRef.current) return; // deep-link jump hasn't landed yet
+          const cur = window.location.pathname;
+          if (!OWNED.has(cur)) return; // we've left the one-pager
+          const targetPath = sec.id ? `/${sec.id}` : "/";
+          if (cur !== targetPath) {
+            window.history.replaceState(null, "", targetPath);
           }
         },
       });
@@ -228,7 +267,9 @@ export function Home({ initialSection = null }: { initialSection?: string | null
 
   return (
     <div id="scroll-space" className="relative">
-      {!initialSection && <Loader onDone={() => setEntered(true)} />}
+       {!initialSection && (
+        <Loader onDone={handleLoaderDone} onWaiting={handleLoaderWaiting} />
+      )}
 
       {mountCanvas && <SceneCanvas />}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import type { MouseEvent } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { AJLogo } from "@/components/chrome/AJLogo";
@@ -54,7 +55,7 @@ export function Navbar() {
   return (
     <header className="fixed top-0 left-0 z-[70] w-full mix-blend-difference">
       <nav className="flex items-center justify-between px-6 py-5 md:px-10">
-        <a
+        <Link
           href="/"
           className="flex items-center gap-3 text-white"
           onMouseEnter={fx.blip}
@@ -65,11 +66,11 @@ export function Navbar() {
           <span className="t-label hidden font-bold sm:inline">
             AERA<span className="text-iris-bright">.</span>DEV
           </span>
-        </a>
+        </Link>
 
         <div className="flex items-center gap-6 md:gap-10">
           {LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="nav-link t-label text-white"
@@ -78,7 +79,7 @@ export function Navbar() {
             >
               <span className="mr-1.5 opacity-50">{link.index}</span>
               <span className="hidden sm:inline">{link.label}</span>
-            </a>
+            </Link>
           ))}
 
           {booted && (

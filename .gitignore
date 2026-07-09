@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agent and documentation files (not needed for live deployment)
+.claude/
+.gemini/
+.agents/
+CLAUDE.md
+AGENTS.md
+IMAGE_SIZING_GUIDE.md
+graphify-out/
+

@@ -4,6 +4,7 @@ import { CASE_STUDIES, getCaseStudy } from "@/lib/case-studies";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { CaseStudyBackButton } from "@/components/ui/CaseStudyBackButton";
 import { CaseEnter } from "@/components/ui/CaseEnter";
+import Link from "next/link";
 
 export function generateStaticParams() {
   return CASE_STUDIES.map((c) => ({ slug: c.slug }));
@@ -159,9 +160,9 @@ export default async function CaseStudyPage({
           <span className="t-micro text-periwinkle/50">
             AERA.DEV // CASE FILE {cs.slug.toUpperCase()}
           </span>
-          <a href="/vault/archive" className="nav-link t-micro text-periwinkle/70">
+          <Link href="/vault/archive" className="nav-link t-micro text-periwinkle/70">
             ← RETURN TO ARCHIVE
-          </a>
+          </Link>
         </footer>
       </div>
     </main>

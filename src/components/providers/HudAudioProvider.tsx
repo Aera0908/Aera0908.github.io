@@ -34,7 +34,10 @@ export function HudAudioProvider({ children }: { children: ReactNode }) {
 
   // hydrate persisted mute preference after mount (SSR-safe)
   useEffect(() => {
-    setMuted(localStorage.getItem(AUDIO_STORAGE_KEY) === "muted");
+    const timer = setTimeout(() => {
+      setMuted(localStorage.getItem(AUDIO_STORAGE_KEY) === "muted");
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const boot = useCallback(() => {

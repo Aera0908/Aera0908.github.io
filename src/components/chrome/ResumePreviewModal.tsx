@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
+interface LenisWindow extends Window {
+  lenis?: {
+    stop: () => void;
+    start: () => void;
+  };
+}
+
 export function ResumePreviewModal() {
   const [type, setType] = useState<"resume" | "cv" | null>(null);
   const { fx } = useHudAudio();
@@ -21,16 +28,16 @@ export function ResumePreviewModal() {
     if (type) {
       document.documentElement.classList.add("overflow-hidden");
       document.body.classList.add("overflow-hidden");
-      (window as any).lenis?.stop();
+      (window as unknown as LenisWindow).lenis?.stop();
     } else {
       document.documentElement.classList.remove("overflow-hidden");
       document.body.classList.remove("overflow-hidden");
-      (window as any).lenis?.start();
+      (window as unknown as LenisWindow).lenis?.start();
     }
     return () => {
       document.documentElement.classList.remove("overflow-hidden");
       document.body.classList.remove("overflow-hidden");
-      (window as any).lenis?.start();
+      (window as unknown as LenisWindow).lenis?.start();
     };
   }, [type]);
 

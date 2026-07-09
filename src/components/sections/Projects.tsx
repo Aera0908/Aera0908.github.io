@@ -104,13 +104,16 @@ export function Projects() {
 
       {/* fanned collectible cards (desktop) */}
       <div className="group/vault relative mx-auto hidden h-[460px] max-w-4xl md:block">
-        <div className="proj-card absolute left-1/2 top-12 w-[250px] -translate-x-[132%] rotate-[-8deg] transition-all duration-500 ease-out group-hover/vault:-translate-x-[155%] group-hover/vault:rotate-[-14deg]">
-          <VaultCard {...PROJECTS[0]} />
-        </div>
-        <div className="proj-card absolute left-1/2 top-0 z-10 w-[280px] -translate-x-1/2 transition-all duration-500 ease-out group-hover/vault:-translate-y-4">
+        {/* hover:z-40 lifts the hovered folder above the center card and
+            snaps back to the fan order on unhover. AEROVIT (the pilot
+            project) holds the elevated center slot. */}
+        <div className="proj-card absolute left-1/2 top-12 w-[250px] -translate-x-[132%] rotate-[-8deg] transition-all duration-500 ease-out group-hover/vault:-translate-x-[155%] group-hover/vault:rotate-[-14deg] hover:z-40">
           <VaultCard {...PROJECTS[1]} />
         </div>
-        <div className="proj-card absolute left-1/2 top-12 w-[250px] translate-x-[32%] rotate-[8deg] transition-all duration-500 ease-out group-hover/vault:translate-x-[55%] group-hover/vault:rotate-[14deg]">
+        <div className="proj-card absolute left-1/2 top-0 z-10 w-[280px] -translate-x-1/2 transition-all duration-500 ease-out group-hover/vault:-translate-y-4 hover:z-40">
+          <VaultCard {...PROJECTS[0]} />
+        </div>
+        <div className="proj-card absolute left-1/2 top-12 w-[250px] translate-x-[32%] rotate-[8deg] transition-all duration-500 ease-out group-hover/vault:translate-x-[55%] group-hover/vault:rotate-[14deg] hover:z-40">
           <VaultCard {...PROJECTS[2]} />
         </div>
       </div>

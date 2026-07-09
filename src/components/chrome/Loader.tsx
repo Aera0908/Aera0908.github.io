@@ -6,11 +6,7 @@ import { hudAudio } from "@/lib/audio";
 
 type Phase = "loading" | "waiting" | "revealing" | "ready" | "gone";
 
-/** scramble charset per kprverse-design-spec §4 */
-const SCRAMBLE_CHARS = "!<>-_\\/[]{}—=+*^?#01";
 const FINAL_LETTERS = ["A", "E", "R", "A"];
-/** orbit ellipse geometry (viewBox units, matches the SVG below) */
-const ORBIT = { cx: 50, cy: 22, rx: 46, ry: 16 };
 
 /** boot log lines, revealed when the progress passes their threshold */
 const BOOT_LINES: Array<{ at: number; text: string; status?: string }> = [
@@ -25,9 +21,72 @@ const BOOT_LINES: Array<{ at: number; text: string; status?: string }> = [
 ];
 
 /**
+ * 2.5D moon: an offset radial-gradient sphere with flat crater discs and a
+ * terminator crescent — reads as 3D while staying flat/printed (spec §0).
+ * "light" is inverted by the front canvas' difference blend; "dark" draws
+ * as ink on the back canvas.
+ */
+function drawMoon(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  mode: "dark" | "light",
+  alpha: number,
+) {
+  // base sphere — highlight up-left, falloff to the rim
+  const g = ctx.createRadialGradient(x - r * 0.35, y - r * 0.35, r * 0.15, x, y, r);
+  if (mode === "light") {
+    g.addColorStop(0, `rgba(255,255,255,${alpha})`);
+    g.addColorStop(0.72, `rgba(214,214,208,${alpha})`);
+    g.addColorStop(1, `rgba(152,152,148,${alpha})`);
+  } else {
+    g.addColorStop(0, `rgba(74,74,80,${alpha})`);
+    g.addColorStop(0.72, `rgba(28,28,32,${alpha})`);
+    g.addColorStop(1, `rgba(2,2,3,${alpha})`);
+  }
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = g;
+  ctx.fill();
+
+  // flat crater discs (x offset, y offset, radius — all relative to r)
+  const CRATERS: Array<[number, number, number]> = [
+    [-0.32, -0.12, 0.2],
+    [0.26, 0.22, 0.15],
+    [0.02, -0.42, 0.11],
+    [-0.12, 0.4, 0.09],
+    [0.42, -0.18, 0.08],
+  ];
+  ctx.fillStyle =
+    mode === "light"
+      ? `rgba(128,128,124,${0.45 * alpha})`
+      : `rgba(0,0,0,${0.6 * alpha})`;
+  for (const [cx, cy, cr] of CRATERS) {
+    ctx.beginPath();
+    ctx.arc(x + cx * r, y + cy * r, cr * r, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  // terminator crescent — an offset disc clipped to the moon
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.clip();
+  ctx.beginPath();
+  ctx.arc(x + r * 0.5, y + r * 0.42, r, 0, 2 * Math.PI);
+  ctx.fillStyle =
+    mode === "light"
+      ? `rgba(0,0,0,${0.16 * alpha})`
+      : `rgba(0,0,0,${0.4 * alpha})`;
+  ctx.fill();
+  ctx.restore();
+}
+
+/**
  * White terminal boot screen.
  */
-export function Loader({ onDone }: { onDone: () => void }) {
+export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: () => void }) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const pctRef = useRef<HTMLSpanElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -152,19 +211,14 @@ export function Loader({ onDone }: { onDone: () => void }) {
       flushPath();
     }
 
-    // 3. Draw moon dot (back when upper-half or exiting, front when lower-half for color inversion)
-    // Moon size is enlarged 3x (from radius 20 to 60) and filled with solid color
+    // 3. Draw the 2.5D moon (shaded sphere + flat craters) — back canvas when
+    // upper-half or exiting (ink), front canvas when lower-half (light,
+    // inverted by the difference blend for the color flip over the wordmark)
     if (state.moonOpacity > 0) {
       if (state.isExiting || moonY < centerY) {
-        ctxBack.beginPath();
-        ctxBack.arc(moonX, moonY, 60, 0, 2 * Math.PI);
-        ctxBack.fillStyle = `rgba(0, 0, 0, ${state.moonOpacity})`;
-        ctxBack.fill();
+        drawMoon(ctxBack, moonX, moonY, 60, "dark", state.moonOpacity);
       } else {
-        ctxFront.beginPath();
-        ctxFront.arc(moonX, moonY, 60, 0, 2 * Math.PI);
-        ctxFront.fillStyle = `rgba(255, 255, 255, ${state.moonOpacity})`;
-        ctxFront.fill();
+        drawMoon(ctxFront, moonX, moonY, 60, "light", state.moonOpacity);
       }
     }
   };
@@ -173,17 +227,44 @@ export function Loader({ onDone }: { onDone: () => void }) {
   const [activeLineCount, setActiveLineCount] = useState(0);
   const activeCountRef = useRef(0);
 
+  /* terminal treatment for the proceed prompt: the command line types on,
+     the headline scramble-decodes left→right, a block cursor keeps blinking */
   useEffect(() => {
-    if (phase === "waiting") {
-      const prompt = promptRef.current;
-      if (prompt) {
-        gsap.fromTo(prompt,
-          { opacity: 0, y: 20, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: "power2.out" }
-        );
-      }
+    if (phase !== "waiting") return;
+    const prompt = promptRef.current;
+    if (!prompt) return;
+
+    gsap.fromTo(
+      prompt,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+    );
+
+    const headEl = prompt.querySelector<HTMLElement>(".proceed-head");
+    const HEAD = "CLICK TO PROCEED";
+    const timers: ReturnType<typeof setInterval>[] = [];
+
+    if (headEl) {
+      let idx = 0;
+      const typeTimer = setInterval(() => {
+        idx++;
+        headEl.textContent = HEAD.slice(0, idx);
+        if (idx >= HEAD.length) {
+          clearInterval(typeTimer);
+        }
+      }, 40);
+      timers.push(typeTimer);
     }
+
+    return () => timers.forEach(clearInterval);
   }, [phase]);
+
+  /* sci-fi reticle cursor while the intro is up — Cursor.tsx swaps designs
+     based on this body class (removed automatically when the Loader leaves) */
+  useEffect(() => {
+    document.body.classList.add("intro-cursor");
+    return () => document.body.classList.remove("intro-cursor");
+  }, []);
 
   /** stop the letter scramble and lock in the final wordmark */
   const settleScramble = () => {
@@ -227,96 +308,16 @@ export function Loader({ onDone }: { onDone: () => void }) {
       },
       onComplete: () => {
         setPhase("waiting");
+        onWaiting?.();
       },
     });
     return () => {
       tween.kill();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* "AERA" orbital reveal — letters decode while rising, a thin orbit ring
-     draws around the wordmark and a satellite dot sweeps over it (flat
-     ink-on-paper per spec §0; scramble charset per §4) */
-  useEffect(() => {
-    if (phase !== "revealing") return;
-
-    const logo = logoRef.current;
-    if (!logo) return;
-    logo.style.display = "flex";
-
-    const letters = Array.from(logo.querySelectorAll<HTMLElement>(".aera-letter"));
-    if (letters.length === 0) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      // spec §7: reveals become fades, no scramble loops
-      gsap.set(letters, { yPercent: 0, opacity: 0 });
-      gsap.to(letters, { opacity: 1, duration: 0.6, ease: "power2.out" });
-      if (captionRef.current) {
-        gsap.fromTo(captionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.6 });
-      }
-      return;
-    }
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        enter(true);
-      }
-    });
-    revealTlRef.current = tl;
-
-    // -- letters rise from below the mask together (no scramble, no stagger)
-    gsap.set(letters, { yPercent: 130, opacity: 1, x: 0 });
-    tl.to(letters, {
-      yPercent: 0,
-      duration: 1.15,
-      stagger: 0,
-      ease: "power3.out",
-    }, 0);
-
-    // -- canvas properties animation (draws and sweeps clockwise starting at t = 0)
-    // Initialize canvasState values
-    canvasState.current.angle = Math.PI / 2; // bottom center
-    canvasState.current.drawProgress = 0;
-    canvasState.current.opacity = 0;
-    canvasState.current.moonOpacity = 0;
-    canvasState.current.isExiting = false;
-    canvasState.current.exitOpacity = 1;
-    canvasState.current.trail = [];
-
-    tl.to(canvasState.current, {
-      opacity: 1,
-      moonOpacity: 1,
-      drawProgress: 1,
-      angle: 2.5 * Math.PI, // 1 full clockwise rotation
-      duration: 3.2,
-      ease: "power2.inOut",
-      onUpdate: draw,
-    }, 0);
-
-    // -- mono caption under the wordmark
-    if (captionRef.current) {
-      tl.fromTo(captionRef.current,
-        { opacity: 0, y: 8 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.15);
-    }
-
-    // -- one tiny registration "misprint" jitter once everything settles
-    if (letters[1] && letters[2]) {
-      tl.to(letters[1], { x: -3, duration: 0.09, ease: "steps(2)", yoyo: true, repeat: 1 }, 1.55);
-      tl.to(letters[2], { x: 3, duration: 0.09, ease: "steps(2)", yoyo: true, repeat: 1 }, 1.55);
-    }
-
-    return () => {
-      tl.kill();
-      revealTlRef.current = null;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
-
-
-
-  const enter = (withSound: boolean) => {
+  function enter(withSound: boolean) {
     if (enteredRef.current) return;
     enteredRef.current = true;
     
@@ -427,14 +428,95 @@ export function Loader({ onDone }: { onDone: () => void }) {
         ease: "power3.inOut",
       }
     );
-  };
+  }
+
+  /* "AERA" orbital reveal — letters decode while rising, a thin orbit ring
+     draws around the wordmark and a satellite dot sweeps over it (flat
+     ink-on-paper per spec §0; scramble charset per §4) */
+  useEffect(() => {
+    if (phase !== "revealing") return;
+
+    const logo = logoRef.current;
+    if (!logo) return;
+    logo.style.display = "flex";
+
+    const letters = Array.from(logo.querySelectorAll<HTMLElement>(".aera-letter"));
+    if (letters.length === 0) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      // spec §7: reveals become fades, no scramble loops
+      gsap.set(letters, { yPercent: 0, opacity: 0 });
+      gsap.to(letters, { opacity: 1, duration: 0.6, ease: "power2.out" });
+      if (captionRef.current) {
+        gsap.fromTo(captionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.6 });
+      }
+      return;
+    }
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        enter(true);
+      }
+    });
+    revealTlRef.current = tl;
+
+    // -- letters rise from below the mask together (no scramble, no stagger)
+    gsap.set(letters, { yPercent: 130, opacity: 1, x: 0 });
+    tl.to(letters, {
+      yPercent: 0,
+      duration: 1.15,
+      stagger: 0,
+      ease: "power3.out",
+    }, 0);
+
+    // -- canvas properties animation (draws and sweeps clockwise starting at t = 0)
+    // Initialize canvasState values
+    canvasState.current.angle = Math.PI / 2; // bottom center
+    canvasState.current.drawProgress = 0;
+    canvasState.current.opacity = 0;
+    canvasState.current.moonOpacity = 0;
+    canvasState.current.isExiting = false;
+    canvasState.current.exitOpacity = 1;
+    canvasState.current.trail = [];
+
+    tl.to(canvasState.current, {
+      opacity: 1,
+      moonOpacity: 1,
+      drawProgress: 1,
+      angle: 2.5 * Math.PI, // 1 full clockwise rotation
+      duration: 3.2,
+      ease: "power2.inOut",
+      onUpdate: draw,
+    }, 0);
+
+    // -- mono caption under the wordmark
+    if (captionRef.current) {
+      tl.fromTo(captionRef.current,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.15);
+    }
+
+    // -- one tiny registration "misprint" jitter once everything settles
+    if (letters[1] && letters[2]) {
+      tl.to(letters[1], { x: -3, duration: 0.09, ease: "steps(2)", yoyo: true, repeat: 1 }, 1.55);
+      tl.to(letters[2], { x: 3, duration: 0.09, ease: "steps(2)", yoyo: true, repeat: 1 }, 1.55);
+    }
+
+    return () => {
+      tl.kill();
+      revealTlRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   const handleOverlayClick = () => {
     if (phase !== "waiting" || enteredRef.current) return;
 
     try {
       hudAudio.boot();
-    } catch (e) {}
+    } catch {
+    }
 
     const prompt = promptRef.current;
     if (prompt) {
@@ -466,12 +548,16 @@ export function Loader({ onDone }: { onDone: () => void }) {
         <div
           ref={promptRef}
           className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-[10] select-none"
-          style={{ opacity: 0, fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace" }}
+          style={{ opacity: 0 }}
         >
-          <div className="text-center px-6">
-            <h2 className="font-bold text-4xl md:text-5xl tracking-wide text-ink uppercase animate-pulse">
-              CLICK TO PROCEED
+          <div className="flex flex-col items-center gap-5 px-6 text-center">
+            <h2 className="font-mono text-3xl font-bold uppercase tracking-[0.08em] text-ink md:text-5xl">
+              <span className="proceed-head" />
+              <span className="animate-pulse text-ink">▊</span>
             </h2>
+            <p className="t-micro animate-pulse text-ink-soft">
+              ■ CLICK ANYWHERE TO BOOT SYSTEM
+            </p>
           </div>
         </div>
       )}

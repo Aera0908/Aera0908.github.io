@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { hudState } from "@/lib/hud-state";
 import { expDampAlpha } from "@/lib/scene";
 import { CyberLines } from "@/components/ui/CyberLines";
@@ -58,6 +57,17 @@ export function Hero({ entered }: { entered: boolean }) {
         width: placeholderRect.width,
         height: placeholderRect.height,
       });
+
+      const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
+      const parentEl = wrapEl?.parentElement;
+      if (parentEl) {
+        gsap.set(wrapEl, {
+          left: 0,
+          width: parentEl.clientWidth,
+          top: parentEl.clientHeight * 0.15,
+          height: parentEl.clientHeight * 0.70,
+        });
+      }
     };
 
     // Initialize layout position
@@ -77,6 +87,29 @@ export function Hero({ entered }: { entered: boolean }) {
           top: rect.top - rootRect.top,
           width: rect.width,
           height: rect.height,
+        };
+      };
+
+      const getWrapCollapsedBounds = () => {
+        const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
+        const parentEl = wrapEl?.parentElement;
+        if (parentEl) {
+          return {
+            left: 0,
+            width: parentEl.clientWidth,
+            top: parentEl.clientHeight * 0.15,
+            height: parentEl.clientHeight * 0.70,
+          };
+        }
+        const rect = placeholder.getBoundingClientRect();
+        // card has p-5 = 1.25rem = 20px padding on all sides
+        const pWidth = rect.width - 40;
+        const pHeight = rect.height - 40;
+        return {
+          left: 0,
+          width: pWidth,
+          top: pHeight * 0.15,
+          height: pHeight * 0.70,
         };
       };
 
@@ -102,17 +135,32 @@ export function Hero({ entered }: { entered: boolean }) {
             stagger: 0.05,
           }, 0);
 
-        // Step B: Morph the exact same card container to cover the full viewport
-        tl.to(card, {
+        // Step B: Morph the exact same card container to cover the full
+        // viewport. All repeated-target steps use explicit fromTo: with
+        // lazy .to() starts, invalidateOnRefresh + entering the pin from
+        // BELOW (deep link / back-nav) captured mid-scrub values and
+        // corrupted the whole morph.
+        tl.fromTo(card, {
+          left: () => getCardBounds().left,
+          top: () => getCardBounds().top,
+          width: () => getCardBounds().width,
+          height: () => getCardBounds().height,
+          borderRadius: "10px",
+          padding: "1.25rem",
+          "--notch": "22px",
+        }, {
           left: 0,
           top: 0,
-          width: "100%",
-          height: "100%",
+          // viewport units, NOT "100%": percentages resolve against the
+          // section (min-h-screen + padding ≈ 146vh) and oversize the card
+          width: "100vw",
+          height: "100vh",
           borderRadius: 0,
           padding: 0,
           "--notch": "0px",
           duration: 1.0,
           ease: "power2.inOut",
+          immediateRender: false,
         }, 0.1)
         .to(hudState, {
           earthY: 24.0, // Earth slides up slowly
@@ -122,17 +170,26 @@ export function Hero({ entered }: { entered: boolean }) {
           duration: 1.0,
           ease: "power2.inOut",
         }, 0.1)
-        .to(".hero-card-meta", {
+        .fromTo(".hero-card-meta", {
+          opacity: 1,
+        }, {
           opacity: 0,
           duration: 0.3,
+          immediateRender: false,
         }, 0.1)
-        .to(".hero-card-img-wrap", {
+        .fromTo(".hero-card-img-wrap", {
+          left: 0,
+          width: () => getWrapCollapsedBounds().width,
+          top: () => getWrapCollapsedBounds().top,
+          height: () => getWrapCollapsedBounds().height,
+        }, {
           left: "58vw",
           width: "35vw",
           top: 0,
           height: "100%",
           duration: 1.0,
           ease: "power2.inOut",
+          immediateRender: false,
         }, 0.1);
 
         // Step C: Reveal the one-screen intro collage (no inner scrolling —
@@ -156,7 +213,15 @@ export function Hero({ entered }: { entered: boolean }) {
         }, 3.0);
 
         // Step F: Shrink card back to placeholder bounds, slide up, & transition background parallax layers
-        tl.to(card, {
+        tl.fromTo(card, {
+          left: 0,
+          top: 0,
+          width: "100vw",
+          height: "100vh",
+          borderRadius: 0,
+          padding: 0,
+          "--notch": "0px",
+        }, {
           left: () => getCardBounds().left,
           top: () => getCardBounds().top - window.innerHeight,
           width: () => getCardBounds().width,
@@ -166,6 +231,7 @@ export function Hero({ entered }: { entered: boolean }) {
           "--notch": "22px",
           duration: 1.1,
           ease: "power2.inOut",
+          immediateRender: false,
         }, 3.4)
         .to(hudState, {
           earthY: 24.0, // Keep Earth out of view
@@ -175,17 +241,26 @@ export function Hero({ entered }: { entered: boolean }) {
           duration: 1.1,
           ease: "power2.inOut",
         }, 3.4)
-        .to(".hero-card-meta", {
+        .fromTo(".hero-card-meta", {
+          opacity: 0,
+        }, {
           opacity: 1,
           duration: 0.35,
+          immediateRender: false,
         }, 3.4)
-        .to(".hero-card-img-wrap", {
+        .fromTo(".hero-card-img-wrap", {
+          left: "58vw",
+          width: "35vw",
+          top: 0,
+          height: "100%",
+        }, {
           left: 0,
-          width: "100%",
-          top: "15%",
-          height: "70%",
+          width: () => getWrapCollapsedBounds().width,
+          top: () => getWrapCollapsedBounds().top,
+          height: () => getWrapCollapsedBounds().height,
           duration: 1.1,
           ease: "power2.inOut",
+          immediateRender: false,
         }, 3.4)
 
 
@@ -294,17 +369,16 @@ export function Hero({ entered }: { entered: boolean }) {
       {/* Pinned Card: Used for both layout and scrollytelling expansion */}
       <div
         ref={cardRef}
-        className="card-notch absolute z-30 bg-paper text-ink p-5 flex flex-col justify-between overflow-hidden opacity-0"
+        className="card-notch absolute z-30 bg-paper text-ink p-5 flex flex-col justify-between overflow-hidden opacity-0 transform-gpu will-change-transform"
         style={{ pointerEvents: entered ? "auto" : "none" }}
       >
         <CyberLines tone="ink" />
         <div className="hero-card-meta flex justify-between t-micro text-ink-soft">
-          <span>● SYSTEM // ACTIVE_PORTRAIT</span>
-          <span>CPE &apos;26 // MNL·REMOTE</span>
+          <span>● SYSTEM {"//"} ACTIVE_PORTRAIT</span>
+          <span>CPE &apos;26 {"//"} MNL·REMOTE</span>
         </div>
 
         <div className="flex-grow flex items-center justify-center relative w-full h-full">
-          {/* one-screen intro collage — no inner scrolling; keeps scrolling = card collapses */}
           <div className="hero-intro pointer-events-none absolute inset-0 select-none text-ink opacity-0">
             <span className="t-micro absolute left-[6%] top-[9%] text-ink/50">
               ■ 001 — OPERATOR PROFILE
@@ -316,24 +390,23 @@ export function Hero({ entered }: { entered: boolean }) {
               <span className="ml-[8%] inline-block">FLUENT IN SOFTWARE.</span>
             </h3>
 
-            {/* event-photo slots — placeholders until the real shots land */}
             <figure className="absolute left-[6%] top-[44%] w-[15%]">
               <div className="card-notch flex aspect-[4/3] w-full flex-col items-center justify-center gap-1.5 border border-dashed border-ink/30 bg-ink/[0.04]">
                 <span className="text-lg text-ink/35">▣</span>
-                <span className="t-micro text-ink/50">EVENT PHOTO // 01</span>
+                <span className="t-micro text-ink/50">EVENT PHOTO {"//"} 01</span>
               </div>
               <figcaption className="t-micro mt-2 text-ink/60">
-                ■ FIELD LOG // EVENT 01
+                ■ FIELD LOG {"//"} EVENT 01
               </figcaption>
             </figure>
 
             <figure className="absolute left-[34%] top-[52%] w-[19%]">
               <div className="card-notch flex aspect-video w-full flex-col items-center justify-center gap-1.5 border border-dashed border-ink/30 bg-ink/[0.04]">
                 <span className="text-lg text-ink/35">▣</span>
-                <span className="t-micro text-ink/50">EVENT PHOTO // 02</span>
+                <span className="t-micro text-ink/50">EVENT PHOTO {"//"} 02</span>
               </div>
               <figcaption className="t-micro mt-2 text-ink/60">
-                ■ FIELD LOG // EVENT 02
+                ■ FIELD LOG {"//"} EVENT 02
               </figcaption>
             </figure>
 
@@ -346,12 +419,12 @@ export function Hero({ entered }: { entered: boolean }) {
             </span>
           </div>
 
-          <div className="hero-card-img-wrap card-notch absolute left-0 right-0 top-[15%] bottom-[15%] w-full h-[70%] [--notch:38px] border border-ink/15 overflow-hidden bg-world-2 flex items-center justify-center">
+          <div className="hero-card-img-wrap card-notch absolute left-0 right-0 top-[15%] bottom-[15%] w-full h-[70%] [--notch:38px] border border-ink/15 overflow-hidden bg-world-2 flex items-center justify-center transform-gpu will-change-transform">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/kpr_portrait.png"
               alt="AERA Portrait — Aira Josh Ynte"
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain transform-gpu will-change-transform"
             />
             {/* full name lives inside the frame */}
             <div

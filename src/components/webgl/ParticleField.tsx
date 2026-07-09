@@ -118,11 +118,20 @@ const VAULT_PANELS: Array<[number, number]> = [
   [-0.7, 3.2],
 ];
 
+function lcg(seed: number) {
+  let s = seed;
+  return () => {
+    s = (Math.imul(s, 1664525) + 1013904223) | 0;
+    return (s >>> 0) / 4294967296;
+  };
+}
+
 export function ParticleField({ count }: { count: number }) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const gl = useThree((state) => state.gl);
 
   const geometry = useMemo(() => {
+    const random = lcg(42);
     const positions = new Float32Array(count * 3);
     const core = new Float32Array(count * 3);
     const vault = new Float32Array(count * 3);
@@ -135,17 +144,17 @@ export function ParticleField({ count }: { count: number }) {
       const i3 = i * 3;
 
       /* hero swarm: shell-biased flattened sphere */
-      const r = 4 + 5 * Math.pow(Math.random(), 0.7);
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
+      const r = 4 + 5 * Math.pow(random(), 0.7);
+      const theta = random() * Math.PI * 2;
+      const phi = Math.acos(2 * random() - 1);
       positions[i3] = r * Math.sin(phi) * Math.cos(theta);
       positions[i3 + 1] = r * Math.cos(phi) * 0.55;
       positions[i3 + 2] = r * Math.sin(phi) * Math.sin(theta);
 
       /* core: dense sphere, most mass near the surface for a shell glow */
-      const cr = 1.7 * Math.pow(Math.random(), 0.35);
-      const cth = Math.random() * Math.PI * 2;
-      const cph = Math.acos(2 * Math.random() - 1);
+      const cr = 1.7 * Math.pow(random(), 0.35);
+      const cth = random() * Math.PI * 2;
+      const cph = Math.acos(2 * random() - 1);
       core[i3] = cr * Math.sin(cph) * Math.cos(cth);
       core[i3 + 1] = cr * Math.cos(cph);
       core[i3 + 2] = cr * Math.sin(cph) * Math.sin(cth);
@@ -156,19 +165,19 @@ export function ParticleField({ count }: { count: number }) {
       const h = 1.5; // panel height (y axis)
       let ly: number;
       let lz: number;
-      if (Math.random() < 0.35) {
+      if (random() < 0.35) {
         // perimeter: pick an edge, walk along it
-        const edge = Math.floor(Math.random() * 4);
-        const along = Math.random() - 0.5;
+        const edge = Math.floor(random() * 4);
+        const along = random() - 0.5;
         if (edge === 0) [ly, lz] = [h / 2, along * w];
         else if (edge === 1) [ly, lz] = [-h / 2, along * w];
         else if (edge === 2) [ly, lz] = [along * h, w / 2];
         else [ly, lz] = [along * h, -w / 2];
       } else {
-        ly = (Math.random() - 0.5) * h;
-        lz = (Math.random() - 0.5) * w;
+        ly = (random() - 0.5) * h;
+        lz = (random() - 0.5) * w;
       }
-      vault[i3] = -8 + (Math.random() - 0.5) * 0.08; // paper-thin depth
+      vault[i3] = -8 + (random() - 0.5) * 0.08; // paper-thin depth
       vault[i3 + 1] = py + ly;
       vault[i3 + 2] = pz + lz;
 
@@ -176,11 +185,11 @@ export function ParticleField({ count }: { count: number }) {
       const si = i % STREAMS;
       const sa = (si / STREAMS) * Math.PI * 2;
       const sr = 2.5 + ((si * 7919) % 100) / 100 * 3.5;
-      uplink[i3] = Math.cos(sa) * sr + (Math.random() - 0.5) * 0.3;
-      uplink[i3 + 1] = Math.random() * 18 - 2; // shader scrolls this in a loop
-      uplink[i3 + 2] = Math.sin(sa) * sr + (Math.random() - 0.5) * 0.3;
+      uplink[i3] = Math.cos(sa) * sr + (random() - 0.5) * 0.3;
+      uplink[i3 + 1] = random() * 18 - 2; // shader scrolls this in a loop
+      uplink[i3 + 2] = Math.sin(sa) * sr + (random() - 0.5) * 0.3;
 
-      seeds[i] = Math.random();
+      seeds[i] = random();
     }
 
     const geo = new THREE.BufferGeometry();
@@ -203,8 +212,10 @@ export function ParticleField({ count }: { count: number }) {
   );
 
   useEffect(() => {
-    uniforms.uPixelRatio.value = gl.getPixelRatio();
-  }, [gl, uniforms]);
+    if (materialRef.current) {
+      materialRef.current.uniforms.uPixelRatio.value = gl.getPixelRatio();
+    }
+  }, [gl]);
 
   // spec §7: explicit disposal on unmount
   useEffect(() => {
@@ -212,8 +223,10 @@ export function ParticleField({ count }: { count: number }) {
   }, [geometry]);
 
   useFrame((_, delta) => {
-    uniforms.uTime.value += delta;
-    uniforms.uProgress.value = hudState.scrollProgress;
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value += delta;
+      materialRef.current.uniforms.uProgress.value = hudState.scrollProgress;
+    }
   });
 
   return (

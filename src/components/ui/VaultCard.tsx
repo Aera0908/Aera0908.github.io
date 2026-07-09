@@ -21,7 +21,6 @@ export function VaultCard({
   stack,
   img,
   slug,
-  summary,
 }: {
   index: string;
   name: string;
@@ -35,7 +34,8 @@ export function VaultCard({
   const flipRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<SVGCircleElement>(null);
   const holdRef = useRef<gsap.core.Tween | null>(null);
-  const overlayImgRef = useRef<HTMLImageElement>(null);
+  const overlayFolderRef = useRef<HTMLDivElement>(null);
+  const overlayFlapRef = useRef<HTMLDivElement>(null);
   const overlayBlackRef = useRef<HTMLDivElement>(null);
   const [unlocking, setUnlocking] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -43,7 +43,10 @@ export function VaultCard({
   // the body-portaled overlay that runs the cover→fullscreen→black flight)
   const [openRect, setOpenRect] = useState<DOMRect | null>(null);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const unlock = () => {
     if (unlocking) return;
@@ -59,56 +62,55 @@ export function VaultCard({
   };
 
   /**
-   * Open sequence (runs once the portal has mounted):
-   * 1) the folder cover swings fully open,
-   * 2) the cover image lifts off the card and flies forward to fill the
-   *    whole viewport,
-   * 3) it fades to solid black, then we navigate — the case page fades in
-   *    from black on its own (CaseEnter), so the seam is invisible.
+   * Open sequence (runs once the portal folder has mounted):
+   * 1) the thumbnail cover flap swings fully open on its left hinge,
+   *    revealing the folder's black interior,
+   * 2) the whole folder itself zooms forward, growing from the card's box
+   *    to fill the entire viewport (the interior is black, so the screen
+   *    goes black as it fills),
+   * 3) a solid black layer seals the hand-off, then we navigate — the case
+   *    page fades in from black on its own (CaseEnter).
    */
   useEffect(() => {
     if (!openRect) return;
-    const rect = openRect;
-    const cover = flipRef.current?.querySelector<HTMLElement>(".vault-cover");
-    const img = overlayImgRef.current;
+    const folder = overlayFolderRef.current;
+    const flap = overlayFlapRef.current;
     const black = overlayBlackRef.current;
+
+    // hide the real card so the portal folder is the only visible copy
+    if (flipRef.current) gsap.set(flipRef.current, { opacity: 0 });
 
     const tl = gsap.timeline({
       onComplete: () => router.push(`/vault/archive/${slug}`),
     });
 
-    if (cover) {
-      // kill the Tailwind hover transition so GSAP owns the transform cleanly
-      tl.set(cover, { transition: "none", transformOrigin: "left center" }, 0);
-      tl.to(cover, { rotateY: -168, duration: 0.42, ease: "power3.in" }, 0);
+    // 1) cover flap opens (hinged left), then fades once it is edge-on so the
+    //    black interior is all that remains
+    if (flap) {
+      gsap.set(flap, { transformOrigin: "left center" });
+      tl.to(flap, { rotateY: -150, duration: 0.5, ease: "power2.in" }, 0);
+      tl.to(flap, { opacity: 0, duration: 0.18, ease: "none" }, 0.42);
     }
 
-    if (img) {
-      gsap.set(img, {
-        position: "fixed",
-        left: rect.left,
-        top: rect.top,
-        width: rect.width,
-        height: rect.height,
-        opacity: 0,
-      });
-      tl.to(img, { opacity: 1, duration: 0.12, ease: "none" }, 0.3);
+    // 2) the folder grows from its card box to cover the whole viewport
+    if (folder) {
       tl.to(
-        img,
+        folder,
         {
           left: 0,
           top: 0,
           width: window.innerWidth,
           height: window.innerHeight,
           duration: 0.62,
-          ease: "power3.inOut",
+          ease: "power3.in",
         },
         0.34,
       );
     }
 
+    // 3) guarantee a fully-solid black hand-off (covers the notch/corners)
     if (black) {
-      tl.to(black, { opacity: 1, duration: 0.42, ease: "power2.in" }, 0.9);
+      tl.to(black, { opacity: 1, duration: 0.32, ease: "power2.in" }, 0.8);
     }
 
     return () => {
@@ -200,7 +202,7 @@ export function VaultCard({
             <img
               src={img}
               alt={`${name} cover`}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             />
             <div
               className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-world via-world/45 to-transparent"
@@ -268,13 +270,37 @@ export function VaultCard({
       </div>
 
       {/* open sequence overlay — portaled to <body> so `fixed` escapes the
-          transformed fan wrapper and truly covers the viewport */}
+          transformed fan wrapper and truly covers the viewport. The folder
+          keeps a black interior; only the cover flap carries the thumbnail. */}
       {mounted &&
         openRect &&
         createPortal(
           <div className="fixed inset-0 z-[1000] pointer-events-none">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img ref={overlayImgRef} src={img} alt="" className="object-cover" />
+            <div
+              ref={overlayFolderRef}
+              className="clip-tab-tl"
+              style={{
+                position: "fixed",
+                left: openRect.left,
+                top: openRect.top,
+                width: openRect.width,
+                height: openRect.height,
+                perspective: "1000px",
+              }}
+            >
+              {/* black folder interior */}
+              <div className="absolute inset-0 bg-black" />
+              {/* faint interior scanline detail */}
+              <div className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(rgba(252,238,10,1)_1px,transparent_1px)] bg-[size:100%_6px]" />
+              {/* cover flap = project thumbnail, hinged on the left */}
+              <div
+                ref={overlayFlapRef}
+                className="clip-tab-tl absolute inset-0 overflow-hidden border border-iris-bright/40 [backface-visibility:hidden]"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img} alt="" className="h-full w-full object-cover" />
+              </div>
+            </div>
             <div
               ref={overlayBlackRef}
               className="absolute inset-0 bg-black"

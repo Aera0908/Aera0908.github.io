@@ -5,6 +5,14 @@ import { gsap } from "@/lib/gsap";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
+interface LenisWindow extends Window {
+  lenis?: {
+    stop: () => void;
+    start: () => void;
+  };
+  aera_credentials_loaded?: boolean;
+}
+
 interface Certificate {
   name: string;
   issuer: string;
@@ -133,12 +141,14 @@ function TypingText({
   onComplete: () => void;
 }) {
   const [displayed, setDisplayed] = useState("");
-  const doneRef = useRef(false);
+  const [isDone, setIsDone] = useState(false);
   const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
-    if (!active || doneRef.current) return;
+    if (!active || isDone) return;
     let idx = 0;
     const timer = setInterval(() => {
       if (idx < text.length) {
@@ -146,17 +156,17 @@ function TypingText({
         setDisplayed(text.slice(0, idx));
       } else {
         clearInterval(timer);
-        doneRef.current = true;
+        setIsDone(true);
         onCompleteRef.current();
       }
     }, 18);
     return () => clearInterval(timer);
-  }, [text, active]);
+  }, [text, active, isDone]);
 
   return (
     <span>
       {displayed}
-      {active && !doneRef.current && (
+      {active && !isDone && (
         <span className="animate-pulse text-iris-bright">▊</span>
       )}
     </span>
@@ -239,16 +249,16 @@ export function Credentials() {
     if (previewCert) {
       document.documentElement.classList.add("overflow-hidden");
       document.body.classList.add("overflow-hidden");
-      (window as any).lenis?.stop();
+      (window as unknown as LenisWindow).lenis?.stop();
     } else {
       document.documentElement.classList.remove("overflow-hidden");
       document.body.classList.remove("overflow-hidden");
-      (window as any).lenis?.start();
+      (window as unknown as LenisWindow).lenis?.start();
     }
     return () => {
       document.documentElement.classList.remove("overflow-hidden");
       document.body.classList.remove("overflow-hidden");
-      (window as any).lenis?.start();
+      (window as unknown as LenisWindow).lenis?.start();
     };
   }, [previewCert]);
 
@@ -284,9 +294,9 @@ export function Credentials() {
           trigger: rootRef.current,
           start: "top 70%",
           onEnter: () => {
-            if (!(window as any).aera_credentials_loaded) {
+            if (!(window as unknown as LenisWindow).aera_credentials_loaded) {
               setTerminalState("loading");
-              (window as any).aera_credentials_loaded = true;
+              (window as unknown as LenisWindow).aera_credentials_loaded = true;
             } else {
               setTerminalState("ready");
             }
@@ -369,7 +379,7 @@ export function Credentials() {
                 
                 <div className={`mb-4 flex-1 flex flex-col justify-between transition-all duration-500 ${terminalState === "ready" || cmd1Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
                   <div>
-                    <span className="text-periwinkle/40 text-[8px] block mb-1.5">// HARDWARE & SYSTEMS CORE</span>
+                    <span className="text-periwinkle/40 text-[8px] block mb-1.5">{"// HARDWARE & SYSTEMS CORE"}</span>
                     <ul className="flex flex-col gap-1 border-l border-iris/25 pl-3">
                       {HARD_SKILLS.map((s, idx) => (
                         <li key={s} className="text-[11px] leading-relaxed text-periwinkle/80">
@@ -380,7 +390,7 @@ export function Credentials() {
                   </div>
 
                   <div className="mt-4">
-                    <span className="text-periwinkle/40 text-[8px] block mb-1.5">// COLLABORATION & INTEGRATION MODE</span>
+                    <span className="text-periwinkle/40 text-[8px] block mb-1.5">{"// COLLABORATION & INTEGRATION MODE"}</span>
                     <ul className="flex flex-col gap-1 border-l border-periwinkle/20 pl-3">
                       {SOFT_SKILLS.map((s, idx) => (
                         <li key={s} className="text-[11px] leading-relaxed text-periwinkle/60">

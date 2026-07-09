@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { hudState } from "@/lib/hud-state";
 import { WORLD } from "@/lib/scene";
