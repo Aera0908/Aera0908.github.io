@@ -12,9 +12,9 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
  * With prefers-reduced-motion, native scrolling is left untouched —
  * ScrollTrigger still works off the native scroll events.
  */
-interface LenisWindow extends Window {
-  lenis?: Lenis;
-}
+// Standalone cast type — do NOT `extends Window` (the lenis package globally
+// augments Window.lenis with a different shape, which conflicts at build time).
+type LenisWindow = { lenis?: Lenis };
 
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   useEffect(() => {

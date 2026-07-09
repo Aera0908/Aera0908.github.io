@@ -5,13 +5,15 @@ import { gsap } from "@/lib/gsap";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
-interface LenisWindow extends Window {
+// Standalone cast type — do NOT `extends Window` (the lenis package globally
+// augments Window.lenis with a different shape, which conflicts at build time).
+type LenisWindow = {
   lenis?: {
     stop: () => void;
     start: () => void;
   };
   aera_credentials_loaded?: boolean;
-}
+};
 
 interface Certificate {
   name: string;

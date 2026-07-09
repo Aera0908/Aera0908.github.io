@@ -18,13 +18,15 @@ const SceneCanvas = dynamic(() => import("@/components/webgl/SceneCanvas"), {
 
 const SECTION_IDS = ["journey", "vault", "credentials", "contact"];
 
-interface LenisWindow extends Window {
+// Standalone cast type — do NOT `extends Window` (the lenis package globally
+// augments Window.lenis with a different shape, which conflicts at build time).
+type LenisWindow = {
   lenis?: {
     stop: () => void;
     start: () => void;
     scrollTo: (target: unknown, options: unknown) => void;
   };
-}
+};
 
 /**
  * The scrollytelling one-pager. `initialSection` comes from the route

@@ -3,12 +3,9 @@
 import { useEffect, useState } from "react";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
-interface LenisWindow extends Window {
-  lenis?: {
-    stop: () => void;
-    start: () => void;
-  };
-}
+// Standalone cast type — do NOT `extends Window`: the lenis package globally
+// augments Window.lenis with a different shape, which conflicts at build time.
+type LenisWindow = { lenis?: { stop: () => void; start: () => void } };
 
 export function ResumePreviewModal() {
   const [type, setType] = useState<"resume" | "cv" | null>(null);
