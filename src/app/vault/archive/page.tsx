@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { CyberLines } from "@/components/ui/CyberLines";
 
