@@ -33,6 +33,20 @@ export function Contact() {
       className="relative z-10 flex min-h-screen flex-col overflow-hidden bg-world-2 px-6 pt-[24vh] pb-10 md:px-16"
     >
       <CyberLines flip />
+
+      {/* silhouette portrait — right side, fades into the bg on the left */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 select-none" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/contacts_silhouette.png"
+          alt=""
+          className="h-full w-full object-cover object-[center_20%] opacity-40"
+        />
+        {/* left fade */}
+        <div className="absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-world-2 to-transparent" />
+        {/* bottom fade */}
+        <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-world-2 to-transparent" />
+      </div>
       <p className="contact-reveal t-label mb-6 text-periwinkle/60">
         ● 004 — UPLINK
       </p>

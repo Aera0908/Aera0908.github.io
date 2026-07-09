@@ -118,11 +118,26 @@ const SYSTEMS: ArchiveItem[] = [
   },
 ];
 
-const ARTS_PENDING = [
-  { index: "A-01", name: "VIDEO EDITING", note: "REEL // IN CURATION" },
-  { index: "A-02", name: "PUBMAT DESIGN", note: "COLLECTION // IN CURATION" },
-  { index: "A-03", name: "MOTION & VISUAL EXPERIMENTS", note: "IN CURATION" },
+const ARTS_VIDEOS = [
+  {
+    index: "A-01",
+    name: "FEHUVIA WORKSTATION SHOWCASE",
+    youtubeId: "aDBoZOoOhd8",
+    tools: "FIGMA // ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO",
+    blurb:
+      "High-fidelity workstation highlights video — interface functionalities, dual-state data flows, and AI OCR capabilities. Custom visual assets in Figma and Adobe Illustrator, motion graphics in After Effects, edited in Premiere Pro.",
+  },
+  {
+    index: "A-02",
+    name: "AEROVIT ECOSYSTEM WALKTHROUGH",
+    youtubeId: "rqx192_81zA",
+    tools: "ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO",
+    blurb:
+      "Curated walkthrough of the hybrid fitness ecosystem — ESP32-S3 smartwatch pairing, MediaPipe BlazePose form tracking, Flame 2D dungeon RPG, and AERO Web3 withdrawals. Vector assets in Illustrator, keyframed animations in After Effects, final edit in Premiere Pro.",
+  },
 ];
+
+
 
 export default function ProjectArchivePage() {
   const { fx } = useHudAudio();
@@ -145,23 +160,22 @@ export default function ProjectArchivePage() {
       <CyberLines />
 
       {/* header */}
-      <div className="flex items-baseline justify-between border-b border-periwinkle/15 px-6 py-5 md:px-16 z-10">
-        <div className="flex items-baseline gap-4">
+      <div className="flex items-center justify-between border-b border-periwinkle/15 px-6 pt-7 pb-2 md:px-16 z-10">
+        <div className="flex items-center gap-4">
           <h1 className="font-display text-xl font-black uppercase tracking-tight text-paper md:text-2xl">
             PROJECT ARCHIVE<span className="text-iris-bright">.</span>
           </h1>
           <span className="t-micro hidden text-periwinkle/50 sm:inline">
-            {SYSTEMS.length} SYSTEMS // {ARTS_PENDING.length} ART TRACKS
+            {SYSTEMS.length} SYSTEMS // {ARTS_VIDEOS.length} ART TRACKS
           </span>
         </div>
-        <Link
-          href="/vault"
-          className="nav-link t-label text-periwinkle"
+        <button
+          onClick={() => { fx.click(); router.back(); }}
           onMouseEnter={fx.blip}
-          onClick={fx.click}
+          className="nav-link t-label text-periwinkle cursor-pointer"
         >
-          [ESC] CLOSE
-        </Link>
+          ← BACK
+        </button>
       </div>
 
       {/* body */}
@@ -252,17 +266,33 @@ export default function ProjectArchivePage() {
         <p className="t-label mb-6 text-iris-bright">
           ● ARTS — VIDEO / PUBMATS / VISUAL
         </p>
-        <div className="grid gap-6 pb-16 sm:grid-cols-2 lg:grid-cols-3">
-          {ARTS_PENDING.map((a) => (
+        <div className="grid gap-6 pb-8 sm:grid-cols-2 lg:grid-cols-2">
+          {ARTS_VIDEOS.map((a) => (
             <div
               key={a.index}
-              className="flex aspect-video flex-col items-center justify-center gap-2 rounded-[10px] border border-dashed border-periwinkle/25"
+              className="group card-notch overflow-hidden border border-periwinkle/15 bg-world-2 transition-all duration-300 hover:border-iris-bright/50 hover:shadow-[0_0_20px_rgba(252,238,10,0.08)]"
             >
-              <span className="index-marker">● {a.index}</span>
-              <span className="font-display text-base font-black uppercase tracking-tight text-periwinkle/80">
-                {a.name}
-              </span>
-              <span className="t-micro text-periwinkle/50">{a.note}</span>
+              <div className="relative aspect-video w-full overflow-hidden bg-black">
+                <iframe
+                  src={`https://www.youtube.com/embed/${a.youtubeId}`}
+                  title={a.name}
+                  className="absolute inset-0 h-full w-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+              <div className="p-5">
+                <div className="flex items-baseline gap-3 mb-2">
+                  <span className="index-marker">● {a.index}</span>
+                  <span className="font-display text-sm font-black uppercase tracking-tight text-paper">
+                    {a.name}
+                  </span>
+                </div>
+                <p className="t-micro mb-3 text-iris-bright/70">{a.tools}</p>
+                <p className="text-xs leading-relaxed text-periwinkle/70">
+                  {a.blurb}
+                </p>
+              </div>
             </div>
           ))}
         </div>

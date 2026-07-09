@@ -47,8 +47,6 @@ export function Hero({ entered }: { entered: boolean }) {
     const root = rootRef.current;
     if (!card || !placeholder || !root) return;
 
-    const collapsedWrapBounds = { left: 0, width: 0, top: 0, height: 0 };
-
     // Helper to position the absolute card exactly over its layout placeholder
     const matchPlaceholder = () => {
       const placeholderRect = placeholder.getBoundingClientRect();
@@ -61,16 +59,20 @@ export function Hero({ entered }: { entered: boolean }) {
       });
 
       const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
-      const parentEl = wrapEl?.parentElement;
-      if (parentEl) {
-        const w = parentEl.clientWidth;
-        const t = parentEl.clientHeight * 0.15;
-        const h = parentEl.clientHeight * 0.70;
+      if (wrapEl) {
+        const metaRows = card.querySelectorAll(".hero-card-meta");
+        let metaHeight = 0;
+        metaRows.forEach((row) => {
+          metaHeight += row.getBoundingClientRect().height;
+        });
+        if (metaHeight === 0) {
+          metaHeight = 36;
+        }
 
-        collapsedWrapBounds.left = 0;
-        collapsedWrapBounds.width = w;
-        collapsedWrapBounds.top = t;
-        collapsedWrapBounds.height = h;
+        const w = placeholderRect.width - 40;
+        const pHeight = placeholderRect.height - 40 - metaHeight;
+        const t = pHeight * 0.15;
+        const h = pHeight * 0.70;
 
         gsap.set(wrapEl, {
           left: 0,
@@ -102,7 +104,24 @@ export function Hero({ entered }: { entered: boolean }) {
       };
 
       const getWrapCollapsedBounds = () => {
-        return collapsedWrapBounds;
+        const rect = placeholder.getBoundingClientRect();
+        const metaRows = card.querySelectorAll(".hero-card-meta");
+        let metaHeight = 0;
+        metaRows.forEach((row) => {
+          metaHeight += row.getBoundingClientRect().height;
+        });
+        if (metaHeight === 0) {
+          metaHeight = 36;
+        }
+
+        const pWidth = rect.width - 40;
+        const pHeight = rect.height - 40 - metaHeight;
+        return {
+          left: 0,
+          width: pWidth,
+          top: pHeight * 0.15,
+          height: pHeight * 0.70,
+        };
       };
 
       ctx = gsap.context(() => {
@@ -382,23 +401,31 @@ export function Hero({ entered }: { entered: boolean }) {
               <span className="ml-[8%] inline-block">FLUENT IN SOFTWARE.</span>
             </h3>
 
-            <figure className="absolute left-[6%] top-[44%] w-[15%]">
-              <div className="card-notch flex aspect-[4/3] w-full flex-col items-center justify-center gap-1.5 border border-dashed border-ink/30 bg-ink/[0.04]">
-                <span className="text-lg text-ink/35">▣</span>
-                <span className="t-micro text-ink/50">EVENT PHOTO {"//"} 01</span>
+            <figure className="group/ev1 absolute left-[6%] top-[44%] w-[15%] cursor-pointer pointer-events-auto">
+              <div className="card-notch aspect-[4/3] w-full overflow-hidden border border-ink/15 transition-all duration-500 group-hover/ev1:border-iris-bright/40 group-hover/ev1:shadow-lg">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/events/base_ph_blockchain4youth.jpg"
+                  alt="Base PH Blockchain4Youth — Presenting Aerovit"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/ev1:scale-110"
+                />
               </div>
-              <figcaption className="t-micro mt-2 text-ink/60">
-                ■ FIELD LOG {"//"} EVENT 01
+              <figcaption className="t-micro mt-2 text-ink/60 transition-colors duration-300 group-hover/ev1:text-ink/90">
+                ■ BLOCKCHAIN4YOUTH — UPHSL
               </figcaption>
             </figure>
 
-            <figure className="absolute left-[34%] top-[52%] w-[19%]">
-              <div className="card-notch flex aspect-video w-full flex-col items-center justify-center gap-1.5 border border-dashed border-ink/30 bg-ink/[0.04]">
-                <span className="text-lg text-ink/35">▣</span>
-                <span className="t-micro text-ink/50">EVENT PHOTO {"//"} 02</span>
+            <figure className="group/ev2 absolute left-[34%] top-[52%] w-[19%] cursor-pointer pointer-events-auto">
+              <div className="card-notch aspect-video w-full overflow-hidden border border-ink/15 transition-all duration-500 group-hover/ev2:border-iris-bright/40 group-hover/ev2:shadow-lg">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/events/dost_imec_2026_aerovit.jpg"
+                  alt="DOST IMEC 2026 — Aerovit Presentation"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/ev2:scale-110"
+                />
               </div>
-              <figcaption className="t-micro mt-2 text-ink/60">
-                ■ FIELD LOG {"//"} EVENT 02
+              <figcaption className="t-micro mt-2 text-ink/60 transition-colors duration-300 group-hover/ev2:text-ink/90">
+                ■ DOST IMEC 2026 — ACACIA HOTEL
               </figcaption>
             </figure>
 
@@ -411,12 +438,12 @@ export function Hero({ entered }: { entered: boolean }) {
             </span>
           </div>
 
-          <div className="hero-card-img-wrap card-notch absolute left-0 right-0 top-[15%] bottom-[15%] w-full h-[70%] [--notch:38px] border border-ink/15 overflow-hidden bg-world-2 flex items-center justify-center transform-gpu will-change-transform">
+          <div className="group/portrait hero-card-img-wrap card-notch absolute left-0 right-0 top-[15%] bottom-[15%] w-full h-[70%] [--notch:38px] border border-ink/15 overflow-hidden bg-world-2 flex items-center justify-center transform-gpu will-change-transform">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/kpr_portrait.png"
+              src="/portrait.png"
               alt="AERA Portrait — Aira Josh Ynte"
-              className="absolute inset-0 h-full w-full object-contain transform-gpu will-change-transform"
+              className="absolute inset-0 h-full w-full object-cover object-[center_15%] scale-[1.5] transform-gpu will-change-transform transition-transform duration-700 ease-out group-hover/portrait:scale-[1.55]"
             />
             {/* full name lives inside the frame */}
             <div
