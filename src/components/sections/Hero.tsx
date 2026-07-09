@@ -47,6 +47,8 @@ export function Hero({ entered }: { entered: boolean }) {
     const root = rootRef.current;
     if (!card || !placeholder || !root) return;
 
+    const collapsedWrapBounds = { left: 0, width: 0, top: 0, height: 0 };
+
     // Helper to position the absolute card exactly over its layout placeholder
     const matchPlaceholder = () => {
       const placeholderRect = placeholder.getBoundingClientRect();
@@ -61,11 +63,20 @@ export function Hero({ entered }: { entered: boolean }) {
       const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
       const parentEl = wrapEl?.parentElement;
       if (parentEl) {
+        const w = parentEl.clientWidth;
+        const t = parentEl.clientHeight * 0.15;
+        const h = parentEl.clientHeight * 0.70;
+
+        collapsedWrapBounds.left = 0;
+        collapsedWrapBounds.width = w;
+        collapsedWrapBounds.top = t;
+        collapsedWrapBounds.height = h;
+
         gsap.set(wrapEl, {
           left: 0,
-          width: parentEl.clientWidth,
-          top: parentEl.clientHeight * 0.15,
-          height: parentEl.clientHeight * 0.70,
+          width: w,
+          top: t,
+          height: h,
         });
       }
     };
@@ -91,26 +102,7 @@ export function Hero({ entered }: { entered: boolean }) {
       };
 
       const getWrapCollapsedBounds = () => {
-        const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
-        const parentEl = wrapEl?.parentElement;
-        if (parentEl) {
-          return {
-            left: 0,
-            width: parentEl.clientWidth,
-            top: parentEl.clientHeight * 0.15,
-            height: parentEl.clientHeight * 0.70,
-          };
-        }
-        const rect = placeholder.getBoundingClientRect();
-        // card has p-5 = 1.25rem = 20px padding on all sides
-        const pWidth = rect.width - 40;
-        const pHeight = rect.height - 40;
-        return {
-          left: 0,
-          width: pWidth,
-          top: pHeight * 0.15,
-          height: pHeight * 0.70,
-        };
+        return collapsedWrapBounds;
       };
 
       ctx = gsap.context(() => {
