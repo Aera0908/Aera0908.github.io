@@ -142,6 +142,15 @@ export default function ProjectArchivePage() {
   const { fx } = useHudAudio();
   const router = useRouter();
 
+  // Reset scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis;
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    }
+  }, []);
+
   // Listen for Escape key to close the archive standalone page and return to /vault
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

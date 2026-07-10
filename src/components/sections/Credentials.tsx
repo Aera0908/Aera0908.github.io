@@ -329,7 +329,7 @@ export function Credentials() {
     <section
       id="credentials"
       ref={rootRef}
-      className="relative z-10 overflow-hidden border-t border-periwinkle/10 bg-world h-screen w-screen flex flex-col justify-center px-6 pt-20 pb-4 md:px-16"
+      className="relative z-10 overflow-hidden border-t border-periwinkle/10 bg-world min-h-screen md:h-screen w-screen flex flex-col justify-center px-6 pt-20 pb-8 md:pb-4 md:px-16"
     >
       <CyberLines flip />
 
@@ -341,7 +341,7 @@ export function Credentials() {
       </p>
 
       {/* Terminal Dashboard Container */}
-      <div className="cred-reveal w-full border border-periwinkle/15 bg-world-2/80 rounded-lg overflow-hidden flex flex-col font-mono min-h-[460px] relative">
+      <div className="cred-reveal w-full border border-periwinkle/15 bg-world-2/80 rounded-lg overflow-hidden flex flex-col font-mono min-h-[460px] lg:max-h-[calc(100vh-13rem)] relative">
         
         {/* Terminal Header Bar */}
         <div className="bg-world border-b border-periwinkle/15 px-4 py-2 flex items-center justify-between text-xs text-iris-bright select-none">
@@ -368,10 +368,10 @@ export function Credentials() {
           </div>
         ) : (
           /* Terminal Body */
-          <div className={`grid gap-4 p-4 lg:grid-cols-12 flex-1 transition-opacity duration-300 ${terminalState === "hidden" ? "opacity-0" : "opacity-100"}`}>
+          <div className={`grid gap-4 p-4 lg:grid-cols-12 flex-1 min-h-0 lg:[grid-template-rows:minmax(0,1fr)] transition-opacity duration-300 ${terminalState === "hidden" ? "opacity-0" : "opacity-100"}`}>
             
             {/* Left Panel: Capabilities (Diagnostic logs) */}
-            <div className="lg:col-span-5 flex flex-col justify-between gap-4">
+            <div className="lg:col-span-5 min-w-0 min-h-0 flex flex-col justify-between gap-4">
               <div className="border border-periwinkle/10 bg-world/50 p-4 rounded flex-1 flex flex-col justify-between min-h-[220px]">
                 <p className="text-[10px] text-iris-bright mb-3 font-bold select-none">
                   $ {terminalState === "ready" ? "query --capabilities --matrix" : (
@@ -412,8 +412,10 @@ export function Credentials() {
             </div>
 
             {/* Right Panel: Certifications Folder Files */}
-            <div className="lg:col-span-7 flex flex-col gap-4">
-              <div className="flex-1 flex flex-col">
+            <div className="lg:col-span-7 min-w-0 min-h-0 flex flex-col gap-4">
+              {/* min-h-fit keeps the cards at natural size when space is
+                  tight — the additional-certs table below yields and scrolls */}
+              <div className="flex-1 min-h-fit flex flex-col">
                 <p className="text-[10px] text-iris-bright font-bold select-none mb-2">
                   $ {terminalState === "ready" ? "get --certifications --featured" : (
                     <TypingText text="get --certifications --featured" active={terminalState === "typing" && cmd1Done} onComplete={() => setCmd2Done(true)} />
@@ -483,17 +485,17 @@ export function Credentials() {
               </div>
 
               {/* Additional logs rendered as an ASCII Table */}
-              <div>
-                <p className="text-[10px] text-iris-bright mb-2 font-bold select-none">
+              <div className="min-h-0 flex flex-col">
+                <p className="text-[10px] text-iris-bright mb-2 font-bold select-none shrink-0">
                   $ {terminalState === "ready" ? "list --certifications --additional" : (
                     <TypingText text="list --certifications --additional" active={terminalState === "typing" && cmd2Done} onComplete={() => setCmd3Done(true)} />
                   )}
                 </p>
 
-                <div className={`overflow-x-auto border border-periwinkle/10 bg-world/20 rounded transition-opacity duration-500 ${terminalState === "ready" || cmd3Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+                <div className={`overflow-x-auto overflow-y-auto min-h-0 border border-periwinkle/10 bg-world/20 rounded transition-opacity duration-500 ${terminalState === "ready" || cmd3Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
                   <table className="w-full text-left text-[10px] border-collapse">
-                    <thead>
-                      <tr className="border-b border-periwinkle/10 bg-world-2/80 text-periwinkle/40">
+                    <thead className="sticky top-0 z-10">
+                      <tr className="border-b border-periwinkle/10 bg-world-2 text-periwinkle/40">
                         <th className="px-4 py-1.5 font-mono font-bold">LOG_ID</th>
                         <th className="px-4 py-1.5 font-mono font-bold">TRAINING LOG / DETAILS</th>
                         <th className="px-4 py-1.5 font-mono font-bold">ISSUER</th>
@@ -571,8 +573,8 @@ export function Credentials() {
 
             {/* Modal Header */}
             <div className="bg-world-2/40 text-paper px-6 py-4 flex items-center justify-between text-xs font-bold border-b border-periwinkle/15 select-none z-10">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-iris-bright animate-ping" />
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="w-2 h-2 shrink-0 rounded-full bg-iris-bright animate-ping" />
                 <span className="truncate tracking-widest text-periwinkle">DECRYPTING: {previewCert.downloadName}</span>
               </div>
               <div className="flex items-center gap-3">

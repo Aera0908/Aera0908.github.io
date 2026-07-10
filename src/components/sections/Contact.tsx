@@ -35,15 +35,15 @@ export function Contact() {
       <CyberLines flip />
 
       {/* silhouette portrait — right side, fades into the bg on the left */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 select-none" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:h-[45%] max-md:w-full select-none" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/contacts_silhouette.png"
           alt=""
-          className="h-full w-full object-cover object-[center_20%] opacity-40"
+          className="h-full w-full object-cover object-[center_20%] max-md:object-center opacity-40"
         />
         {/* left fade */}
-        <div className="absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-world-2 to-transparent" />
+        <div className="absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-world-2 to-transparent max-md:hidden" />
         {/* bottom fade */}
         <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-world-2 to-transparent" />
       </div>
@@ -59,7 +59,7 @@ export function Contact() {
       <div className="contact-reveal flex flex-wrap items-center gap-8">
         <a
           href="mailto:08airajosh@gmail.com"
-          className="card-notch bg-signal px-8 py-4 font-bold tracking-tight text-ink uppercase transition-transform hover:scale-[1.03]"
+          className="card-notch bg-signal px-8 py-4 font-bold tracking-tight text-ink uppercase transition-transform hover:scale-[1.03] max-md:w-full max-md:px-4 max-md:text-center max-md:text-xs"
           onMouseEnter={fx.blip}
           onClick={fx.confirm}
         >

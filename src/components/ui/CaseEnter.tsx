@@ -12,6 +12,12 @@ export function CaseEnter() {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis;
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    }
+
     const el = ref.current;
     if (!el) return;
     const tw = gsap.to(el, {

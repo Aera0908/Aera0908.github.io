@@ -4,6 +4,7 @@ import { CASE_STUDIES, getCaseStudy } from "@/lib/case-studies";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { CaseStudyBackButton } from "@/components/ui/CaseStudyBackButton";
 import { CaseEnter } from "@/components/ui/CaseEnter";
+import { ProjectDiagramsSection } from "@/components/ui/ProjectDiagrams";
 import Link from "next/link";
 
 export function generateStaticParams() {
@@ -104,6 +105,8 @@ export default async function CaseStudyPage({
                 </li>
               ))}
             </ul>
+
+            <ProjectDiagramsSection slug={cs.slug} />
           </div>
 
           {/* stack + links */}

@@ -92,6 +92,17 @@ export function Hero({ entered }: { entered: boolean }) {
     let ctx: gsap.Context | undefined;
 
     const timer = setTimeout(() => {
+      // On phones the expanded portrait becomes a full-width bottom banner —
+      // the desktop 58vw/35vw right column collapses to an unreadable sliver.
+      // Function-based values so invalidateOnRefresh re-picks the layout.
+      const isMobile = () => window.innerWidth < 768;
+      const wrapExpanded = {
+        left: () => (isMobile() ? "6vw" : "58vw"),
+        width: () => (isMobile() ? "88vw" : "35vw"),
+        top: () => (isMobile() ? "66%" : "0%"),
+        height: () => (isMobile() ? "28%" : "100%"),
+      };
+
       const getCardBounds = () => {
         const rect = placeholder.getBoundingClientRect();
         const rootRect = root.getBoundingClientRect();
@@ -194,10 +205,10 @@ export function Hero({ entered }: { entered: boolean }) {
           top: () => getWrapCollapsedBounds().top,
           height: () => getWrapCollapsedBounds().height,
         }, {
-          left: "58vw",
-          width: "35vw",
-          top: 0,
-          height: "100%",
+          left: wrapExpanded.left,
+          width: wrapExpanded.width,
+          top: wrapExpanded.top,
+          height: wrapExpanded.height,
           duration: 1.0,
           ease: "power2.inOut",
           immediateRender: false,
@@ -260,10 +271,10 @@ export function Hero({ entered }: { entered: boolean }) {
           immediateRender: false,
         }, 3.4)
         .fromTo(".hero-card-img-wrap", {
-          left: "58vw",
-          width: "35vw",
-          top: 0,
-          height: "100%",
+          left: wrapExpanded.left,
+          width: wrapExpanded.width,
+          top: wrapExpanded.top,
+          height: wrapExpanded.height,
         }, {
           left: 0,
           width: () => getWrapCollapsedBounds().width,
@@ -395,13 +406,13 @@ export function Hero({ entered }: { entered: boolean }) {
               ■ 001 — OPERATOR PROFILE
             </span>
 
-            <h3 className="absolute left-[6%] top-[13%] w-[50%] font-display font-black uppercase leading-[0.95] tracking-tight text-[clamp(1.6rem,4vw,3.8rem)]">
+            <h3 className="absolute left-[6%] top-[13%] w-[50%] max-md:w-[88%] font-display font-black uppercase leading-[0.95] tracking-tight text-[clamp(1.6rem,4vw,3.8rem)]">
               BORN IN HARDWARE.
               <br />
               <span className="ml-[8%] inline-block">FLUENT IN SOFTWARE.</span>
             </h3>
 
-            <figure className="group/ev1 absolute left-[6%] top-[44%] w-[15%] cursor-pointer pointer-events-auto">
+            <figure className="group/ev1 absolute left-[6%] top-[44%] w-[15%] max-md:top-[30%] max-md:w-[42%] cursor-pointer pointer-events-auto">
               <div className="card-notch aspect-[4/3] w-full overflow-hidden border border-ink/15 transition-all duration-500 group-hover/ev1:border-iris-bright/40 group-hover/ev1:shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -415,7 +426,7 @@ export function Hero({ entered }: { entered: boolean }) {
               </figcaption>
             </figure>
 
-            <figure className="group/ev2 absolute left-[34%] top-[52%] w-[19%] cursor-pointer pointer-events-auto">
+            <figure className="group/ev2 absolute left-[34%] top-[52%] w-[19%] max-md:left-[54%] max-md:top-[30%] max-md:w-[40%] cursor-pointer pointer-events-auto">
               <div className="card-notch aspect-video w-full overflow-hidden border border-ink/15 transition-all duration-500 group-hover/ev2:border-iris-bright/40 group-hover/ev2:shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -429,11 +440,11 @@ export function Hero({ entered }: { entered: boolean }) {
               </figcaption>
             </figure>
 
-            <p className="absolute bottom-[10%] left-[6%] w-[22%] text-sm leading-relaxed text-ink/80">
+            <p className="absolute bottom-[10%] left-[6%] w-[22%] max-md:bottom-auto max-md:top-[50%] max-md:w-[88%] text-sm leading-relaxed text-ink/80">
               Computer engineer from Muntinlupa — building wearables, EDA tools, and settlement rails.
             </p>
 
-            <span className="t-micro absolute bottom-[10%] left-[34%] text-ink/50">
+            <span className="t-micro absolute bottom-[10%] left-[34%] max-md:bottom-auto max-md:left-[6%] max-md:top-[61%] text-ink/50">
               CPE &apos;26 · MNL · @AERA0908
             </span>
           </div>

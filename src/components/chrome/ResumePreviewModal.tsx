@@ -80,10 +80,10 @@ export function ResumePreviewModal() {
         <div className="absolute bottom-1 left-1 text-[8px] text-[#0a0a0c]/40 pointer-events-none select-none">└ MODULE_AERA ┘</div>
 
         {/* Modal Header (Solid Black bar with solid yellow text) */}
-        <div className="bg-[#0a0a0c] text-signal px-4 py-3 flex items-center justify-between text-xs font-black border-b-2 border-[#0a0a0c] select-none">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-signal animate-ping" />
-            <span className="tracking-widest">{title}</span>
+        <div className="bg-[#0a0a0c] text-signal px-4 py-3 flex items-center justify-between max-md:flex-wrap max-md:gap-y-2 text-xs font-black border-b-2 border-[#0a0a0c] select-none">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="w-2 h-2 shrink-0 rounded-full bg-signal animate-ping" />
+            <span className="tracking-widest max-md:truncate">{title}</span>
           </div>
           <div className="flex items-center gap-4">
             <a

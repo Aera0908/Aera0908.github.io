@@ -214,12 +214,12 @@ export function Experience({ entered }: { entered: boolean }) {
 
       <div
         ref={containerRef}
-        className="flex flex-row flex-nowrap gap-[8vw] pl-[58vw] pr-[50vw] mt-12 w-max items-center"
+        className="flex flex-row flex-nowrap gap-[8vw] pl-[58vw] pr-[50vw] mt-8 md:mt-12 w-max items-center"
       >
         {ENTRIES.map((e) => (
           <article
             key={e.index}
-            className="xp-card clip-bevel-br relative w-[80vw] max-w-[500px] flex-shrink-0 bg-paper p-8 text-ink md:p-12"
+            className="xp-card clip-bevel-br relative w-[80vw] max-w-[500px] flex-shrink-0 bg-paper p-6 text-ink md:p-12"
           >
             {/* journey-family line accents */}
             <span

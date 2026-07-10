@@ -93,7 +93,7 @@ export function Projects() {
     <section
       id="vault"
       ref={rootRef}
-      className="relative z-10 overflow-hidden bg-world px-6 h-screen w-screen flex flex-col justify-center pt-24 pb-6 md:px-16"
+      className="relative z-10 overflow-hidden bg-world px-6 min-h-screen md:h-screen w-screen flex flex-col justify-center pt-24 pb-10 md:pb-6 md:px-16"
     >
       <CyberLines />
 
@@ -119,7 +119,7 @@ export function Projects() {
       </div>
 
       {/* stacked on small screens */}
-      <div className="mx-auto grid max-w-sm gap-6 md:hidden">
+      <div className="mx-auto grid w-full max-w-sm gap-6 md:hidden">
         {PROJECTS.map((p) => (
           <div key={p.index} className="proj-card">
             <VaultCard {...p} />
