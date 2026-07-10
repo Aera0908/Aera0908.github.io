@@ -63,11 +63,12 @@ export function VaultCard({
 
   /**
    * Open sequence (runs once the portal folder has mounted):
-   * 1) the thumbnail cover flap swings fully open on its left hinge,
-   *    revealing the folder's black interior,
-   * 2) the whole folder itself zooms forward, growing from the card's box
-   *    to fill the entire viewport (the interior is black, so the screen
-   *    goes black as it fills),
+   * 1) the thumbnail cover flap swings a full 180° open on its left hinge,
+   *    landing flat beside the folder with its back face up,
+   * 2) the whole open spread zooms forward, centered on the hinge between
+   *    the cover and the body: the hinge lands on the screen's center line,
+   *    the opened cover fills the left half and the folder body the right
+   *    (both faces are dark, so the screen goes dark as it fills),
    * 3) a solid black layer seals the hand-off, then we navigate — the case
    *    page fades in from black on its own (CaseEnter).
    */
@@ -84,33 +85,36 @@ export function VaultCard({
       onComplete: () => router.push(`/vault/archive/${slug}`),
     });
 
-    // 1) cover flap opens (hinged left), then fades once it is edge-on so the
-    //    black interior is all that remains
+    // 1) cover flap swings a full 180° on its left hinge and lands flat open
+    //    beside the folder, back face up — no mid-swing fade, so the motion
+    //    reads as a complete physical open
     if (flap) {
       gsap.set(flap, { transformOrigin: "left center" });
-      tl.to(flap, { rotateY: -150, duration: 0.5, ease: "power2.in" }, 0);
-      tl.to(flap, { opacity: 0, duration: 0.18, ease: "none" }, 0.42);
+      tl.to(flap, { rotateY: -180, duration: 0.6, ease: "power2.inOut" }, 0);
     }
 
-    // 2) the folder grows from its card box to cover the whole viewport
+    // 2) the open spread zooms centered on its hinge: the folder body (the
+    //    container) grows to the RIGHT half of the viewport, and the cover —
+    //    mirrored across the hinge at the container's left edge — fills the
+    //    left half, so the composite expands symmetrically to full screen
     if (folder) {
       tl.to(
         folder,
         {
-          left: 0,
+          left: window.innerWidth / 2,
           top: 0,
-          width: window.innerWidth,
+          width: window.innerWidth / 2,
           height: window.innerHeight,
           duration: 0.62,
           ease: "power3.in",
         },
-        0.34,
+        0.7,
       );
     }
 
     // 3) guarantee a fully-solid black hand-off (covers the notch/corners)
     if (black) {
-      tl.to(black, { opacity: 1, duration: 0.32, ease: "power2.in" }, 0.8);
+      tl.to(black, { opacity: 1, duration: 0.32, ease: "power2.in" }, 1.05);
     }
 
     return () => {
@@ -278,7 +282,6 @@ export function VaultCard({
           <div className="fixed inset-0 z-[1000] pointer-events-none">
             <div
               ref={overlayFolderRef}
-              className="clip-tab-tl"
               style={{
                 position: "fixed",
                 left: openRect.left,
@@ -288,17 +291,27 @@ export function VaultCard({
                 perspective: "1000px",
               }}
             >
-              {/* black folder interior */}
-              <div className="absolute inset-0 bg-black" />
+              {/* NO clip on the container — clipping it masks the flap's 3D
+                  swing, so only the notched interior layers carry the shape */}
+              {/* folder interior — styled like the card's folder back so the
+                  cover visibly opens off of it instead of popping to black */}
+              <div className="clip-tab-tl absolute inset-0 bg-[#0c0d12] border border-iris-bright/40" />
               {/* faint interior scanline detail */}
-              <div className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(rgba(252,238,10,1)_1px,transparent_1px)] bg-[size:100%_6px]" />
-              {/* cover flap = project thumbnail, hinged on the left */}
+              <div className="clip-tab-tl absolute inset-0 opacity-[0.06] bg-[linear-gradient(rgba(252,238,10,1)_1px,transparent_1px)] bg-[size:100%_6px]" />
+              {/* cover flap, hinged on the left — two faces so the swing can
+                  pass 90° without vanishing: thumbnail front, folder-cover back */}
               <div
                 ref={overlayFlapRef}
-                className="clip-tab-tl absolute inset-0 overflow-hidden border border-iris-bright/40 [backface-visibility:hidden]"
+                className="absolute inset-0 [transform-style:preserve-3d]"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img} alt="" className="h-full w-full object-cover" />
+                <div className="clip-tab-tl absolute inset-0 overflow-hidden border border-iris-bright/40 [backface-visibility:hidden]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img} alt="" className="h-full w-full object-cover" />
+                </div>
+                <div className="clip-tab-tl absolute inset-0 border border-iris-bright/40 bg-[#0c0d12] [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                  {/* yellow micro grid — matches the card's folder-back texture */}
+                  <div className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(rgba(252,238,10,1)_1px,transparent_1px),linear-gradient(90deg,rgba(252,238,10,1)_1px,transparent_1px)] bg-[size:16px_16px]" />
+                </div>
               </div>
             </div>
             <div

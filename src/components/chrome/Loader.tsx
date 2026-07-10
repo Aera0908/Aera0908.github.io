@@ -20,55 +20,11 @@ const BOOT_LINES: Array<{ at: number; text: string; status?: string }> = [
   { at: 93, text: "> uplink standby ..................", status: "READY" },
 ];
 
-/* crater rings for the engraved moon (x offset, y offset, radius — all
-   relative to r). The two leading pairs are concentric "walled" craters. */
-const CRATER_RINGS: Array<[number, number, number]> = [
-  [-0.32, -0.12, 0.2],
-  [-0.32, -0.12, 0.12],
-  [0.26, 0.22, 0.15],
-  [0.26, 0.22, 0.09],
-  [0.02, -0.42, 0.11],
-  [-0.12, 0.4, 0.09],
-  [0.42, -0.18, 0.08],
-  [-0.48, 0.18, 0.07],
-  [0.12, 0.1, 0.05],
-  [-0.2, 0.62, 0.06],
-  [0.55, 0.35, 0.05],
-  [-0.05, -0.15, 0.04],
-  [0.3, -0.5, 0.05],
-  [-0.55, -0.35, 0.05],
-  [0.65, 0.05, 0.04],
-];
-
-/* stipple dots (x, y in the unit disk + dot radius relative to r) — fixed,
-   seeded positions so the texture never shimmers between frames. Density is
-   biased toward the rim and the lower-left, like an engraving's shading. */
-const STIPPLE: Array<[number, number, number]> = (() => {
-  let s = 42;
-  const rand = () => {
-    s = (s * 1664525 + 1013904223) % 4294967296;
-    return s / 4294967296;
-  };
-  const dots: Array<[number, number, number]> = [];
-  let guard = 0;
-  while (dots.length < 240 && guard++ < 10000) {
-    const a = rand() * Math.PI * 2;
-    const rr = Math.sqrt(rand()); // uniform over the disk
-    const rimBias = Math.pow(rr, 2.2); // hug the rim
-    // canvas +y is down, so lower-left shading peaks around a ≈ 0.75π
-    const angleBias = 0.15 + 0.85 * Math.max(0, Math.cos(a - 0.75 * Math.PI));
-    if (rand() > rimBias * angleBias) continue;
-    dots.push([Math.cos(a) * rr, Math.sin(a) * rr, 0.008 + rand() * 0.016]);
-  }
-  return dots;
-})();
-
 /**
- * Flat 2D engraved moon (spec §0: printed, no shading gradients): a stroked
- * disc with crater rings and stippled rim shading, like a woodcut print.
- * "light" draws black linework on a white disc through the front canvas'
- * difference blend — the moon color-flips as it crosses the wordmark;
- * "dark" draws ink linework on a paper disc on the back canvas.
+ * Flat 2D moon (spec §0: printed, no shading): a solid silhouette disc.
+ * "dark" draws it as solid ink on the back canvas; "light" draws it solid
+ * white on the difference-blended front canvas, so it still reads as a black
+ * disc over paper and only the region intersecting the wordmark flips white.
  */
 function drawMoon(
   ctx: CanvasRenderingContext2D,
@@ -78,11 +34,6 @@ function drawMoon(
   mode: "dark" | "light",
   alpha: number,
 ) {
-  // the front canvas is difference-blended: black lines there read as "show
-  // the background through the white disc", flipping over the wordmark
-  const line = mode === "light" ? "0,0,0" : "244,243,238";
-
-  // solid disc — occludes the orbit trail passing behind the moon
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
   ctx.fillStyle =
@@ -90,28 +41,6 @@ function drawMoon(
       ? `rgba(255,255,255,${alpha})`
       : `rgba(13,13,16,${alpha})`;
   ctx.fill();
-
-  // rim outline
-  ctx.lineWidth = Math.max(2, r * 0.05);
-  ctx.strokeStyle = `rgba(${line},${0.9 * alpha})`;
-  ctx.stroke();
-
-  // crater rings
-  ctx.lineWidth = Math.max(1, r * 0.028);
-  ctx.strokeStyle = `rgba(${line},${0.7 * alpha})`;
-  for (const [cx, cy, cr] of CRATER_RINGS) {
-    ctx.beginPath();
-    ctx.arc(x + cx * r, y + cy * r, cr * r, 0, 2 * Math.PI);
-    ctx.stroke();
-  }
-
-  // stippled shading
-  ctx.fillStyle = `rgba(${line},${0.75 * alpha})`;
-  for (const [dx, dy, dr] of STIPPLE) {
-    ctx.beginPath();
-    ctx.arc(x + dx * r * 0.92, y + dy * r * 0.92, Math.max(0.6, dr * r), 0, 2 * Math.PI);
-    ctx.fill();
-  }
 }
 
 /**
