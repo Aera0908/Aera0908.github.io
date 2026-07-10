@@ -57,15 +57,45 @@ export function Contact() {
       </h2>
 
       <div className="contact-reveal flex flex-wrap items-center gap-8">
-        <a
-          href="mailto:08airajosh@gmail.com"
-          className="card-notch bg-signal px-8 py-4 font-bold tracking-tight text-ink uppercase transition-transform hover:scale-[1.03] max-md:w-full max-md:px-4 max-md:text-center max-md:text-xs"
-          onMouseEnter={fx.blip}
-          onClick={fx.confirm}
-        >
-          OPEN UPLINK → 08AIRAJOSH@GMAIL.COM
-        </a>
-        <div className="flex gap-6">
+        <div className="flex flex-col items-start gap-4 max-md:w-full">
+          <a
+            href="mailto:08airajosh@gmail.com"
+            className="card-notch bg-signal px-8 py-4 font-bold tracking-tight text-ink uppercase transition-transform hover:scale-[1.03] max-md:w-full max-md:px-4 max-md:text-center max-md:text-xs"
+            onMouseEnter={fx.blip}
+            onClick={fx.confirm}
+          >
+            OPEN UPLINK → 08AIRAJOSH@GMAIL.COM
+          </a>
+
+          {/* Inline Resume & CV buttons under the Open Uplink button */}
+          <div className="flex flex-col items-start gap-1.5 font-mono text-[9px] select-none mt-2 pl-1">
+            <span className="text-[8px] text-periwinkle/30">SYS_UPLINK // DOWNLOAD</span>
+            <div className="flex gap-2 bg-world border border-periwinkle/20 p-2 rounded shadow-2xl">
+              <button
+                onClick={() => {
+                  fx.click();
+                  window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "resume" } }));
+                }}
+                className="px-2.5 py-1.5 border border-iris/30 text-iris hover:bg-iris hover:text-world transition-all duration-300 tracking-wider cursor-pointer"
+                onMouseEnter={fx.blip}
+              >
+                RESUME
+              </button>
+              <button
+                onClick={() => {
+                  fx.click();
+                  window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "cv" } }));
+                }}
+                className="px-2.5 py-1.5 border border-iris/30 text-iris hover:bg-iris hover:text-world transition-all duration-300 tracking-wider cursor-pointer"
+                onMouseEnter={fx.blip}
+              >
+                CV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-6 max-md:mt-4">
           {[
             { label: "GITHUB", href: "https://github.com/Aera0908" },
             { label: "LINKEDIN", href: "https://linkedin.com/in/aira-josh-ynte" },

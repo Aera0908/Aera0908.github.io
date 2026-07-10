@@ -9,13 +9,23 @@ export function StickyDownloadButton() {
 
   useEffect(() => {
     const toggle = () => {
-      if (window.scrollY > 400) {
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const winHeight = window.innerHeight;
+
+      const isScrollPastThreshold = scrollY > 400;
+      const hasContact = typeof document !== "undefined" && !!document.getElementById("contact");
+      const isNearBottom = scrollY + winHeight >= docHeight - 120;
+
+      if (isScrollPastThreshold && !(hasContact && isNearBottom)) {
         setVisible(true);
       } else {
         setVisible(false);
       }
     };
     window.addEventListener("scroll", toggle);
+    // Run once on mount
+    toggle();
     return () => window.removeEventListener("scroll", toggle);
   }, []);
 

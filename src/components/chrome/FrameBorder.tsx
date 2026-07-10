@@ -6,13 +6,6 @@
  */
 export function FrameBorder() {
   return (
-    <div className="viewport-frame" aria-hidden="true">
-      <span className="t-micro absolute bottom-2 left-4 text-white">
-        PORTFOLIO.SYS
-      </span>
-      <span className="t-micro absolute right-4 bottom-2 text-white">
-        BUILD 2026.07
-      </span>
-    </div>
+    <div className="viewport-frame" aria-hidden="true" />
   );
 }
