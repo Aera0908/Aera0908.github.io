@@ -3,6 +3,7 @@ import { Archivo, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { HudAudioProvider } from "@/components/providers/HudAudioProvider";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
+import { PageTransitionProvider } from "@/components/providers/PageTransitionProvider";
 import { Cursor } from "@/components/chrome/Cursor";
 import { FrameBorder } from "@/components/chrome/FrameBorder";
 import { Navbar } from "@/components/chrome/Navbar";
@@ -68,10 +69,12 @@ export default function RootLayout({
       <body>
         <SmoothScrollProvider>
           <HudAudioProvider>
-            <Navbar />
-            {children}
-            <StickyDownloadButton />
-            <ResumePreviewModal />
+            <PageTransitionProvider>
+              <Navbar />
+              {children}
+              <StickyDownloadButton />
+              <ResumePreviewModal />
+            </PageTransitionProvider>
           </HudAudioProvider>
         </SmoothScrollProvider>
         <FrameBorder />

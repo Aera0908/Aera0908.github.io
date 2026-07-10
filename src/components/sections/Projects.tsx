@@ -7,6 +7,7 @@ import { hudState } from "@/lib/hud-state";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { VaultCard } from "@/components/ui/VaultCard";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
+import { usePageTransition } from "@/components/providers/PageTransitionProvider";
 
 /* top three flagships (fanned like collectible cards) — everything else
    lives in the ProjectGallery overlay; details live in /projects/[slug] */
@@ -44,6 +45,7 @@ const PROJECTS = [
 export function Projects() {
   const rootRef = useRef<HTMLElement>(null);
   const { fx } = useHudAudio();
+  const { transitionTo } = usePageTransition();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -133,7 +135,11 @@ export function Projects() {
           href="/vault/archive"
           className="group relative card-notch overflow-hidden border border-periwinkle/30 px-8 py-4 font-mono text-xs tracking-[0.16em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright cursor-pointer"
           onMouseEnter={fx.blip}
-          onClick={fx.click}
+          onClick={(e) => {
+            e.preventDefault();
+            fx.click();
+            transitionTo("/vault/archive");
+          }}
         >
           {/* Sliding yellow background */}
           <span className="absolute inset-0 bg-iris-bright translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
