@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { navReturn } from "@/lib/nav-return";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
 export function CaseStudyBackButton() {
@@ -11,7 +12,21 @@ export function CaseStudyBackButton() {
     e.preventDefault();
     fx.click();
 
-    // Check if there is local window history (meaning they came from another page on the site)
+    // Where the case file was opened from (set by the opener). We can't rely on
+    // router.back() for the one-pager origin: the scroll-spy only rewrote the
+    // URL to /vault, so Next's router tree still points at "/" and going back
+    // replays the intro loader and dumps the user at the base URL. (The native
+    // browser back button is handled separately, in Home, via the same marker.)
+    const ret = navReturn.consume();
+
+    if (ret === "/vault") {
+      // deep-link straight back to the vault section (skips the intro)
+      router.push("/vault");
+      return;
+    }
+
+    // Archive-listing origin (or any real pushed route) — history.back()
+    // returns there correctly and preserves the listing's scroll position.
     if (typeof window !== "undefined" && window.history.length > 1) {
       router.back();
     } else {

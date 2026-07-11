@@ -10,6 +10,7 @@ import { Experience } from "@/components/sections/Experience";
 import { Projects } from "@/components/sections/Projects";
 import { Credentials } from "@/components/sections/Credentials";
 import { Contact } from "@/components/sections/Contact";
+import { navReturn } from "@/lib/nav-return";
 
 // WebGL only ever renders client-side
 const SceneCanvas = dynamic(() => import("@/components/webgl/SceneCanvas"), {
@@ -34,8 +35,32 @@ type LenisWindow = {
  * land scrolled to their section — only the bare "/" plays the boot intro.
  */
 export function Home({ initialSection = null }: { initialSection?: string | null }) {
-  const [entered, setEntered] = useState(!!initialSection);
-  const [mountCanvas, setMountCanvas] = useState(!!initialSection);
+  // Which section to land on at mount, and whether this mount is a *return*
+  // from a case file (in-app "← BACK" or the native browser back button)
+  // rather than a fresh route load. A case file's back re-mounts <Home> with
+  // initialSection=null — Next's router tree is still pinned to "/" even though
+  // the scroll-spy left the URL at /vault — so without this we'd replay the
+  // intro and dump the user at the top. navReturn, set when the case file was
+  // opened, tells us to skip the loader and deep-link back to the vault.
+  const [boot] = useState<{ section: string | null; isReturn: boolean }>(() => {
+    if (initialSection) return { section: initialSection, isReturn: false };
+    if (typeof window === "undefined") return { section: null, isReturn: false };
+    const back = navReturn.peek();
+    if (back === "/vault" || back === "/vault/archive")
+      return { section: "vault", isReturn: true };
+    return { section: null, isReturn: false };
+  });
+
+  const [entered, setEntered] = useState(!!boot.section);
+  const [mountCanvas, setMountCanvas] = useState(!!boot.section);
+
+  // one-shot: clear the return marker (peeked above) so later navigations —
+  // e.g. the navbar logo → "/" — boot normally instead of re-triggering the
+  // return jump. Runs in an effect (not the initializer) to stay safe under
+  // React Strict Mode's double-invoked render.
+  useEffect(() => {
+    navReturn.consume();
+  }, []);
 
   const handleLoaderWaiting = () => {
     setMountCanvas(true);
@@ -50,7 +75,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
   // the scroll-spy stays muzzled on deep links until the jump lands —
   // otherwise its first toggle rewrites the restored URL while the pinned
   // layout is still settling (breaks back-navigation targets)
-  const spyArmedRef = useRef(!initialSection);
+  const spyArmedRef = useRef(!boot.section);
 
   /**
    * Master timeline (spec §4): one scrubbed tween drives a 0→1 proxy;
@@ -154,7 +179,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
      ScrollTrigger refresh grows the pinned layout (spacer heights land
      asynchronously — a single early jump strands short of the target) */
   useEffect(() => {
-    if (!initialSection) return;
+    if (!boot.section) return;
     try {
       history.scrollRestoration = "manual";
     } catch {}
@@ -166,11 +191,17 @@ export function Home({ initialSection = null }: { initialSection?: string | null
     // very first toggle would clobber the restored path back to "/" while
     // the pinned layout is still shorter than the restored scroll offset.
     const restoredSeg = window.location.pathname.replace(/^\/+|\/+$/g, "");
-    const target = SECTION_IDS.includes(restoredSeg)
-      ? restoredSeg
-      : restoredSeg === ""
-        ? null // restored to "/" — stay at the top
-        : initialSection;
+    // A case-file return forces its section: after Next canonicalizes the
+    // back-navigation the visible URL may read "/" again, so we can't trust it
+    // here. For ordinary section↔section back/forward the visible URL stays
+    // the source of truth.
+    const target = boot.isReturn
+      ? boot.section
+      : SECTION_IDS.includes(restoredSeg)
+        ? restoredSeg
+        : restoredSeg === ""
+          ? null // restored to "/" — stay at the top
+          : boot.section;
 
     const jump = () => {
       if (!target) {
@@ -204,7 +235,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
       clearTimeout(t2);
       clearTimeout(t3);
     };
-  }, [initialSection]);
+  }, [boot]);
 
   /* back/forward between section paths keeps working without reloads */
   useEffect(() => {
@@ -269,7 +300,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
 
   return (
     <div id="scroll-space" className="relative">
-       {!initialSection && (
+       {!boot.section && (
         <Loader onDone={handleLoaderDone} onWaiting={handleLoaderWaiting} />
       )}
 

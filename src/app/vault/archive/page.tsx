@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { navReturn } from "@/lib/nav-return";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { CyberLines } from "@/components/ui/CyberLines";
 
@@ -142,8 +143,20 @@ export default function ProjectArchivePage() {
   const { fx } = useHudAudio();
   const router = useRouter();
 
+  // Open a case file, tagging the archive listing as the return target so its
+  // BACK comes back here (not the one-pager vault section).
+  const openCase = (slug: string) => {
+    fx.click();
+    navReturn.set("/vault/archive");
+    router.push(`/vault/archive/${slug}`);
+  };
+
   // Reset scroll to top on mount
   useEffect(() => {
+    // Arriving here (incl. native back from a case file opened from this
+    // listing) is the return target itself — clear the marker so it can't
+    // leak into a later navigation to the one-pager.
+    navReturn.consume();
     window.scrollTo(0, 0);
     const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis;
     if (lenis) {
@@ -178,7 +191,7 @@ export default function ProjectArchivePage() {
           </span>
         </div>
         <button
-          onClick={() => { fx.click(); router.back(); }}
+          onClick={() => { fx.click(); router.push("/vault"); }}
           onMouseEnter={fx.blip}
           className="nav-link t-label text-periwinkle cursor-pointer"
         >
@@ -197,15 +210,11 @@ export default function ProjectArchivePage() {
               key={p.index}
               role="button"
               tabIndex={0}
-              onClick={() => {
-                fx.click();
-                router.push(`/vault/archive/${p.slug}`);
-              }}
+              onClick={() => openCase(p.slug)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  fx.click();
-                  router.push(`/vault/archive/${p.slug}`);
+                  openCase(p.slug);
                 }
               }}
               className="clip-tab-tl flex flex-col border border-periwinkle/15 bg-world-2/60 transition-all duration-300 hover:border-iris-bright/50 hover:bg-world-2 hover:-translate-y-1 group cursor-pointer focus-visible:outline-2"

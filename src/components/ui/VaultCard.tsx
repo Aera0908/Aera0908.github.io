@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { gsap, EASE } from "@/lib/gsap";
+import { navReturn } from "@/lib/nav-return";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
 const HOLD_SECONDS = 0.6;
@@ -52,6 +53,11 @@ export function VaultCard({
     if (unlocking) return;
     setUnlocking(true);
     fx.confirm();
+    // remember we opened this case from the one-pager vault section so the
+    // case file's BACK — in-app or native browser back — returns here instead
+    // of replaying the intro. (The scroll-spy only rewrote the URL to /vault;
+    // Next's router tree is still pinned to "/".)
+    navReturn.set("/vault");
     const el = flipRef.current;
     if (!el) {
       router.push(`/vault/archive/${slug}`);
