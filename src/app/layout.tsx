@@ -69,7 +69,7 @@ export default function RootLayout({
       lang="en"
       className={`${archivo.variable} ${jetbrainsMono.variable} antialiased`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <SmoothScrollProvider>
           <HudAudioProvider>
             <PageTransitionProvider>

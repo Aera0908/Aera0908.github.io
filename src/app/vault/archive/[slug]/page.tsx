@@ -5,6 +5,7 @@ import { CyberLines } from "@/components/ui/CyberLines";
 import { CaseStudyBackButton } from "@/components/ui/CaseStudyBackButton";
 import { CaseEnter } from "@/components/ui/CaseEnter";
 import { ProjectDiagramsSection } from "@/components/ui/ProjectDiagrams";
+import { CaseStudyGallery } from "@/components/ui/CaseStudyGallery";
 import Link from "next/link";
 
 export function generateStaticParams() {
@@ -166,6 +167,10 @@ export default async function CaseStudyPage({
             )}
           </div>
         </div>
+
+        {cs.gallery && cs.gallery.length > 0 && (
+          <CaseStudyGallery gallery={cs.gallery} slug={cs.slug} />
+        )}
 
         <footer className="mt-20 flex items-baseline justify-between border-t border-periwinkle/15 pt-5">
           <span className="t-micro text-periwinkle/50">

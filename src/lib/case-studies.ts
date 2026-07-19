@@ -18,6 +18,7 @@ export type CaseStudy = {
   stack: { label: string; items: string[] }[];
   links?: { label: string; href: string }[];
   badge?: string;
+  gallery?: { src: string; caption: string; type?: "image" | "video" | "youtube" }[];
 };
 
 export const CASE_STUDIES: CaseStudy[] = [
@@ -56,6 +57,18 @@ export const CASE_STUDIES: CaseStudy[] = [
       { label: "FEHUVIA.APP", href: "https://www.fehuvia.app/" },
       { label: "GITHUB", href: "https://github.com/Aera0908/Project_Fehuvia" },
     ],
+    gallery: [
+      {
+        src: "/projects/fehuvia-demo.mp4",
+        caption: "Fehuvia Workstation Walkthrough — Real-time Web3 B2B treasury workstation showing L2 payments, invoice parser, and AI co-pilot",
+        type: "video"
+      },
+      {
+        src: "https://www.youtube.com/embed/aDBoZOoOhd8",
+        caption: "Fehuvia Workstation Video Demo — Full walk-through showing invoice OCR, wallet connection, and AI co-pilot functionalities (YouTube)",
+        type: "youtube"
+      }
+    ]
   },
   {
     slug: "aerovit",
@@ -88,6 +101,28 @@ export const CASE_STUDIES: CaseStudy[] = [
       { label: "Backend / Web3", items: ["Firebase", "Cloud Functions", "Ethereum Sepolia", "ERC-20"] },
     ],
     links: [{ label: "AEROVIT.DEV", href: "https://aerovit.dev" }],
+    gallery: [
+      {
+        src: "/projects/aerovit-video.mp4",
+        caption: "Aerovit Smartwatch & Pose Tracking Demo — Real-time ESP32-S3 biometrics and MediaPipe BlazePose intensity mapping",
+        type: "video"
+      },
+      {
+        src: "https://www.youtube.com/embed/rqx192_81zA",
+        caption: "Aerovit Hybrid Fitness Walkthrough — Detailed demonstration of smartwatch BLE biometrics and MediaPipe pose recognition system (YouTube)",
+        type: "youtube"
+      },
+      {
+        src: "/projects/aerovit-watch.jpg",
+        caption: "Aerovit Smartwatch — Custom ESP32-S3 biometrics wearable with custom enclosure and integrated pulse sensor",
+        type: "image"
+      },
+      {
+        src: "/projects/aerovit-poster.jpg",
+        caption: "Aerovit Research & Development Poster — Hardware schematic, MediaPipe processing pipeline, and core systems architecture",
+        type: "image"
+      }
+    ]
   },
   {
     slug: "stickout",

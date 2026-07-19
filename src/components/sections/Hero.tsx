@@ -141,7 +141,7 @@ export function Hero({ entered }: { entered: boolean }) {
           scrollTrigger: {
             trigger: root,
             start: "top top",
-            end: "+=2000", // Pinned scroll length (made shorter to bring Journey in faster)
+            end: "+=2800", // Adjusted scroll track for the 4-photo reveal sequence
             pin: true,
             scrub: true,
             invalidateOnRefresh: true,
@@ -226,13 +226,46 @@ export function Hero({ entered }: { entered: boolean }) {
           ease: "power2.out",
         }, 0.9);
 
-        // Step D: hold the collage static, then fade it before closing
+        // Step D: Sequential photo reveals as you scroll (appearing and disappearing one-by-one)
+        // Figure 1
+        tl.fromTo(".feed-fig-1",
+          { opacity: 0, scale: 0.95, pointerEvents: "none" },
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fx.click(); } },
+          1.3
+        )
+        .to(".feed-fig-1", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 1.8);
+
+        // Figure 2
+        tl.fromTo(".feed-fig-2",
+          { opacity: 0, scale: 0.95, pointerEvents: "none" },
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fx.click(); } },
+          1.8
+        )
+        .to(".feed-fig-2", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 2.3);
+
+        // Figure 3
+        tl.fromTo(".feed-fig-3",
+          { opacity: 0, scale: 0.95, pointerEvents: "none" },
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fx.click(); } },
+          2.3
+        )
+        .to(".feed-fig-3", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 2.8);
+
+        // Figure 4
+        tl.fromTo(".feed-fig-4",
+          { opacity: 0, scale: 0.95, pointerEvents: "none" },
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fx.click(); } },
+          2.8
+        )
+        .to(".feed-fig-4", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 3.3);
+
+        // Step E: hold the collage static, then fade it before closing
         tl.to(".hero-intro", {
           opacity: 0,
           y: -20,
           duration: 0.45,
           ease: "power2.in",
-        }, 3.0);
+        }, 3.6);
 
         // Step F: Shrink card back to placeholder bounds, slide up, & transition background parallax layers
         tl.fromTo(card, {
@@ -254,7 +287,7 @@ export function Hero({ entered }: { entered: boolean }) {
           duration: 1.1,
           ease: "power2.inOut",
           immediateRender: false,
-        }, 3.4)
+        }, 4.0)
         .to(hudState, {
           earthY: 24.0, // Keep Earth out of view
           earthOpacity: 0.0, // Keep Earth faded out
@@ -262,14 +295,14 @@ export function Hero({ entered }: { entered: boolean }) {
           oldMoonOpacity: 0.0, // Keep old Moon faded out
           duration: 1.1,
           ease: "power2.inOut",
-        }, 3.4)
+        }, 4.0)
         .fromTo(".hero-card-meta", {
           opacity: 0,
         }, {
           opacity: 1,
           duration: 0.35,
           immediateRender: false,
-        }, 3.4)
+        }, 4.0)
         .fromTo(".hero-card-img-wrap", {
           left: wrapExpanded.left,
           width: wrapExpanded.width,
@@ -283,7 +316,7 @@ export function Hero({ entered }: { entered: boolean }) {
           duration: 1.1,
           ease: "power2.inOut",
           immediateRender: false,
-        }, 3.4)
+        }, 4.0)
 
 
         // Step G: Hold scroll lock briefly in its closed state before unpinning
@@ -412,31 +445,63 @@ export function Hero({ entered }: { entered: boolean }) {
               <span className="ml-[8%] inline-block">FLUENT IN SOFTWARE.</span>
             </h3>
 
-            <figure className="group/ev1 absolute left-[6%] top-[44%] w-[15%] max-md:top-[30%] max-md:w-[42%] cursor-pointer pointer-events-auto">
-              <div className="card-notch aspect-[4/3] w-full overflow-hidden border border-ink/15 transition-all duration-500 group-hover/ev1:border-iris-bright/40 group-hover/ev1:shadow-lg">
+            {/* Figure 1: Blockchain4Youth */}
+            <figure className="feed-fig-1 absolute left-[18%] top-[30%] w-[64%] aspect-video md:left-[8%] md:top-[38%] md:w-[20%] md:aspect-[4/3] cursor-pointer opacity-0 pointer-events-none">
+              <div className="card-notch aspect-[4/3] w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/events/base_ph_blockchain4youth.jpg"
                   alt="Base PH Blockchain4Youth — Presenting Aerovit"
-                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/ev1:scale-110"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
                 />
               </div>
-              <figcaption className="t-micro mt-2 text-ink/60 transition-colors duration-300 group-hover/ev1:text-ink/90">
+              <figcaption className="t-micro mt-2 text-ink/60">
                 ■ BLOCKCHAIN4YOUTH — UPHSL
               </figcaption>
             </figure>
 
-            <figure className="group/ev2 absolute left-[34%] top-[52%] w-[19%] max-md:left-[54%] max-md:top-[30%] max-md:w-[40%] cursor-pointer pointer-events-auto">
-              <div className="card-notch aspect-video w-full overflow-hidden border border-ink/15 transition-all duration-500 group-hover/ev2:border-iris-bright/40 group-hover/ev2:shadow-lg">
+            {/* Figure 2: DOST IMEC */}
+            <figure className="feed-fig-2 absolute left-[18%] top-[30%] w-[64%] aspect-video md:left-[28%] md:top-[46%] md:w-[22%] md:aspect-video cursor-pointer opacity-0 pointer-events-none">
+              <div className="card-notch aspect-video w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/events/dost_imec_2026_aerovit.jpg"
                   alt="DOST IMEC 2026 — Aerovit Presentation"
-                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/ev2:scale-110"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
                 />
               </div>
-              <figcaption className="t-micro mt-2 text-ink/60 transition-colors duration-300 group-hover/ev2:text-ink/90">
+              <figcaption className="t-micro mt-2 text-ink/60">
                 ■ DOST IMEC 2026 — ACACIA HOTEL
+              </figcaption>
+            </figure>
+
+            {/* Figure 3: Best Thesis & Poster */}
+            <figure className="feed-fig-3 absolute left-[18%] top-[30%] w-[64%] aspect-video md:left-[12%] md:top-[52%] md:w-[18%] md:aspect-[4/3] cursor-pointer opacity-0 pointer-events-none">
+              <div className="card-notch aspect-[4/3] w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/events/best-thesis-best-poster.jpg"
+                  alt="Best Thesis & Best Poster Award"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
+                />
+              </div>
+              <figcaption className="t-micro mt-2 text-ink/60">
+                ■ BEST THESIS & POSTER — CDM
+              </figcaption>
+            </figure>
+
+            {/* Figure 4: CDM Recognition Day */}
+            <figure className="feed-fig-4 absolute left-[18%] top-[30%] w-[64%] aspect-video md:left-[30%] md:top-[39%] md:w-[20%] md:aspect-video cursor-pointer opacity-0 pointer-events-none">
+              <div className="card-notch aspect-video w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/projects/cdm-recognition-day-2026.jpg"
+                  alt="CDM Recognition Day 2026"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
+                />
+              </div>
+              <figcaption className="t-micro mt-2 text-ink/60">
+                ■ RECOGNITION DAY 2026 — CDM
               </figcaption>
             </figure>
 
