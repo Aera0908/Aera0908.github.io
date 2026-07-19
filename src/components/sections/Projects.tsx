@@ -19,6 +19,7 @@ const PROJECTS = [
     img: "/projects/notable-project-thumbnails/aerovit.png",
     stack: "ESP32-S3 / FLUTTER / MEDIAPIPE",
     summary: "ESP32 fitness RPG & wearables",
+    badge: "Awarded Best Thesis",
   },
   {
     index: "P-01",

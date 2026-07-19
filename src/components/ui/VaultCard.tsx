@@ -22,6 +22,7 @@ export function VaultCard({
   stack,
   img,
   slug,
+  badge,
 }: {
   index: string;
   name: string;
@@ -29,6 +30,7 @@ export function VaultCard({
   img: string;
   slug: string;
   summary: string;
+  badge?: string;
 }) {
   const router = useRouter();
   const { fx } = useHudAudio();
@@ -193,10 +195,17 @@ export function VaultCard({
                <span className="font-mono text-[7px] px-1 bg-ink text-paper font-bold leading-none py-0.5">TOP SECRET</span>
              </div>
              <div className="flex-grow pt-4 flex flex-col justify-between">
-               <div className="space-y-1">
-                  <h4 className="font-display font-black text-sm uppercase leading-tight text-ink tracking-tight">{name}</h4>
-                   <p className="font-mono text-[8px] text-ink-soft leading-relaxed tracking-tight">{stack}</p>
-               </div>
+                <div className="space-y-1">
+                   <h4 className="font-display font-black text-sm uppercase leading-tight text-ink tracking-tight flex items-center gap-1.5">
+                     {name}
+                     {badge && (
+                       <span className="text-[6.5px] font-bold font-mono tracking-wider text-paper bg-ink px-1 py-0.5 uppercase leading-none rounded-sm">
+                         {badge}
+                       </span>
+                     )}
+                   </h4>
+                    <p className="font-mono text-[8px] text-ink-soft leading-relaxed tracking-tight">{stack}</p>
+                </div>
                <div className="border-t border-dashed border-ink/15 pt-2 mt-2">
                  <div className="flex justify-between font-mono text-[7px] text-ink-soft tracking-wider">
                    <span>SYS_STATUS: READY</span>
@@ -231,6 +240,11 @@ export function VaultCard({
             </span>
 
             <div className="absolute inset-x-5 bottom-5 flex flex-col gap-2">
+              {badge && (
+                <span className="self-start text-[8px] font-bold font-mono tracking-widest text-[#0c0d12] bg-[#e8d90c] px-1.5 py-0.5 uppercase leading-none rounded-sm">
+                  {badge}
+                </span>
+              )}
               <h3 className="font-display text-2xl font-black uppercase tracking-tight text-paper">
                 {name}
               </h3>

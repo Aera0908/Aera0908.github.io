@@ -15,6 +15,7 @@ type ArchiveItem = {
   img?: string;
   nda?: boolean;
   links?: { label: string; href: string }[];
+  badge?: string;
 };
 
 const SYSTEMS: ArchiveItem[] = [
@@ -35,6 +36,7 @@ const SYSTEMS: ArchiveItem[] = [
     index: "S-02",
     slug: "aerovit",
     name: "AEROVIT",
+    badge: "Awarded Best Thesis",
     category: "IOT / AI / MOBILE",
     blurb:
       "Hybrid fitness ecosystem — custom ESP32-S3 smartwatch, BlazePose form coaching, a 20-floor dungeon RPG, and AERO ERC-20 rewards on Sepolia.",
@@ -241,8 +243,13 @@ export default function ProjectArchivePage() {
                   <span className="index-marker">● {p.index}</span>
                   <span className="t-micro text-periwinkle/50">{p.category}</span>
                 </div>
-                <h3 className="mb-2 font-display text-lg font-black uppercase tracking-tight text-paper group-hover:text-iris-bright transition-colors">
+                <h3 className="mb-2 font-display text-lg font-black uppercase tracking-tight text-paper group-hover:text-iris-bright transition-colors flex items-center gap-2">
                   {p.name}
+                  {p.badge && (
+                    <span className="text-[8px] font-bold font-mono tracking-widest text-[#0c0d12] bg-[#e8d90c] px-1.5 py-0.5 uppercase leading-none rounded-sm">
+                      {p.badge}
+                    </span>
+                  )}
                 </h3>
                 <p className="mb-4 text-xs leading-relaxed text-periwinkle/75">
                   {p.blurb}

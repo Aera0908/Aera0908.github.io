@@ -116,17 +116,19 @@ const CERTIFICATES: Certificate[] = [
 ];
 
 const HARD_SKILLS = [
-  "SystemVerilog RTL & Digital Logic (AMBA)",
-  "Embedded MCU Firmware & Peripherals (RTOS)",
-  "PCB Layout & Hardware-in-the-Loop Prototyping",
-  "Full-Stack Web Architectures (React, Next.js)",
-  "Smart Contracts & Web3 (Solidity, Morph L2)",
+  "Software Development & Clean Architecture",
+  "System Design & Modular API Planning",
+  "Hardware-Software Systems Integration",
+  "Digital Logic Design & RTL Verification",
+  "Embedded Firmware & Peripherals Development",
+  "Decentralized Protocol & Smart Contract Design",
 ];
 
 const SOFT_SKILLS = [
-  "Hardware-Software Integration Mindset",
   "Cross-Functional Team Collaboration",
-  "Rapid Self-Directed Technical Upskilling",
+  "Technical Documentation & Spec Writing",
+  "Client Communication & Iterative Feedback",
+  "Rapid Self-Directed Technical Learning",
 ];
 
 // Sequential typing component for hacker prompts.
@@ -400,6 +402,15 @@ export function Credentials() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+
+                  <div className="mt-4">
+                    <span className="text-periwinkle/40 text-[8px] block mb-1.5">{"// TECH STACK SUMMARY"}</span>
+                    <div className="text-[9.5px] leading-relaxed text-periwinkle/65 border-l border-iris/25 pl-3 font-mono">
+                      <div>LANGUAGES  :: TypeScript, JavaScript, Python, C/C++, Solidity, SystemVerilog, SQL</div>
+                      <div>FRAMEWORKS :: React, Next.js, Express, Tailwind CSS, Flutter, Hardhat</div>
+                      <div>INFRA/TOOL :: PostgreSQL, MongoDB, Firebase, Git, Docker, KiCad, Figma</div>
+                    </div>
                   </div>
                 </div>
               </div>

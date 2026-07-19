@@ -17,6 +17,7 @@ export type CaseStudy = {
   architecture: string[];
   stack: { label: string; items: string[] }[];
   links?: { label: string; href: string }[];
+  badge?: string;
 };
 
 export const CASE_STUDIES: CaseStudy[] = [
@@ -59,6 +60,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "aerovit",
     name: "AEROVIT",
+    badge: "Awarded Best Thesis",
     category: "IOT / AI / MOBILE",
     role: "Lead Developer & Embedded Systems Architect",
     duration: "SEP 2024 — APR 2026",
