@@ -48,7 +48,7 @@ const ENTRIES = [
     org: "COLEGIO DE MUNTINLUPA",
     period: "2022 — 2026",
     blurb:
-      "Specializing in embedded systems, systems design, and digital signal processing — Magna Cum Laude standing, expected July 2026. Research prototyping across microcontrollers, RTOS, and PCB layout, including a muscle bio-signal acquisition controller.",
+      "Specializing in embedded systems, systems design, and digital signal processing — Graduated Magna Cum Laude, July 2026. Research prototyping across microcontrollers, RTOS, and PCB layout, including a muscle bio-signal acquisition controller.",
     tags: ["Embedded Systems", "RTOS", "PCB", "DSP", "C/C++"],
   },
 ];
