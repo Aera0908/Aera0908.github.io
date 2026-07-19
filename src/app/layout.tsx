@@ -31,6 +31,9 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   icons: { icon: "/aj-logo.svg" },
   alternates: { canonical: "/" },
+  verification: {
+    google: "google32a78ba66d0a07c5",
+  },
   openGraph: {
     type: "website",
     url: SITE_URL,
