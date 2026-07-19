@@ -49,15 +49,18 @@ export default async function CaseStudyPage({
         <p className="t-micro mb-3 text-periwinkle/50">
           CASE FILE // {cs.category}
         </p>
-        <h1 className="t-h2 mb-6 text-paper flex items-center gap-3">
+        <h1 className="t-h2 mb-3 text-paper">
           {cs.name}
-          {cs.badge && (
-            <span className="text-xs font-bold font-mono tracking-widest text-ink bg-iris px-2 py-0.5 uppercase rounded-sm">
-              {cs.badge}
-            </span>
-          )}
           <span className="text-iris-bright">.</span>
         </h1>
+
+        {cs.badge && (
+          <div className="mb-6 animate-badge-entry">
+            <span className="text-[10px] font-bold font-mono tracking-widest text-ink bg-iris px-2.5 py-1 uppercase rounded-sm">
+              {cs.badge}
+            </span>
+          </div>
+        )}
 
         <div className="mb-10 flex flex-wrap gap-x-10 gap-y-2">
           <span className="t-micro text-periwinkle/60">

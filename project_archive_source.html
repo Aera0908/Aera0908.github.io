@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aira Josh C. Ynte — Project Archive (Vectorheart Edition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --world: #0a0a0c;
+      --world-2: #17171b;
+      --iris: #e8d90c;
+      --iris-bright: #fcee0a;
+      --periwinkle: #eceae2;
+      --paper: #f4f3ee;
+      --ink: #0d0d10;
+      --ink-soft: #55555a;
+      --alert: #ff2e55;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--world);
+      color: var(--periwinkle);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.4;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      width: 210mm;
+      height: 295mm; /* Buffer below 297mm to prevent print wraps */
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      background-color: var(--world);
+      box-sizing: border-box;
+    }
+
+    /* Bounded no-break rule for page contents */
+    .page * {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Vectorheart Grid & Framework */
+    .grid-lines {
+      position: absolute;
+      top: 10mm;
+      left: 10mm;
+      right: 10mm;
+      bottom: 10mm;
+      border: 0.5px solid rgba(236, 234, 226, 0.15);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .grid-lines::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 58%;
+      bottom: 0;
+      width: 0.5px;
+      background-color: rgba(236, 234, 226, 0.1);
+    }
+
+    /* Crosshairs in corners of the page */
+    .crosshair {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      z-index: 12;
+    }
+    .crosshair::before, .crosshair::after {
+      content: '';
+      position: absolute;
+      background-color: var(--iris-bright);
+    }
+    .crosshair::before {
+      top: 4px;
+      left: 0;
+      width: 9px;
+      height: 0.5px;
+    }
+    .crosshair::after {
+      top: 0;
+      left: 4px;
+      width: 0.5px;
+      height: 9px;
+    }
+    .ch-tl { top: 9.5mm; left: 9.5mm; }
+    .ch-tr { top: 9.5mm; right: 9.5mm; }
+    .ch-bl { bottom: 9.5mm; left: 9.5mm; }
+    .ch-br { bottom: 9.5mm; right: 9.5mm; }
+
+    /* Technical 45-degree Corner Accent */
+    .corner-tag {
+      position: absolute;
+      top: 10mm;
+      left: 10mm;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 8px 8px 0 0;
+      border-color: var(--iris-bright) transparent transparent transparent;
+      z-index: 11;
+    }
+
+    /* Content Layout */
+    .content-wrapper {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding: 14mm 14mm 0 14mm;
+      box-sizing: border-box;
+    }
+
+    /* Specific height for cover wrapper to distribute space beautifully */
+    .cover-wrapper {
+      height: 265mm;
+      justify-content: space-between;
+    }
+
+    /* Typography */
+    h1, h2, h3 {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    .t-label {
+      font-size: 9.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(236, 234, 226, 0.55);
+    }
+
+    .accent-yellow {
+      color: var(--iris-bright);
+    }
+
+    /* ==========================================
+       COVER PAGE
+       ========================================== */
+    .cover-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 0.5px solid rgba(236, 234, 226, 0.15);
+      padding-bottom: 5mm;
+    }
+
+    .cover-title {
+      font-size: 36px;
+      line-height: 0.9;
+      color: var(--periwinkle);
+    }
+
+    .cover-subtitle {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      margin-top: 3px;
+      color: var(--iris-bright);
+    }
+
+    .cover-header-meta {
+      text-align: right;
+      font-size: 8px;
+      line-height: 1.6;
+    }
+
+    .cover-middle {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 6mm 0;
+    }
+
+    .vectorheart-backdrop {
+      flex: 1;
+      height: 150px;
+      position: relative;
+      border: 0.5px solid rgba(236, 234, 226, 0.08);
+      background: radial-gradient(circle at center, rgba(23, 23, 27, 0.8) 0%, transparent 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-right: 8mm;
+    }
+
+    .vectorheart-backdrop::before, .vectorheart-backdrop::after {
+      content: '';
+      position: absolute;
+      width: 140%;
+      height: 0.5px;
+      background-color: rgba(236, 234, 226, 0.08);
+    }
+    .vectorheart-backdrop::before { transform: rotate(45deg); }
+    .vectorheart-backdrop::after { transform: rotate(-45deg); }
+
+    .vh-tech-circle {
+      position: absolute;
+      border: 0.5px dashed rgba(252, 238, 10, 0.25);
+      border-radius: 50%;
+    }
+    .vh-tc-1 { width: 120px; height: 120px; }
+    .vh-tc-2 { width: 90px; height: 90px; border-style: solid; border-color: rgba(236, 234, 226, 0.15); }
+    .vh-tc-3 { width: 55px; height: 55px; border-style: dotted; }
+
+    .vh-tech-text {
+      font-size: 6px;
+      color: var(--iris-bright);
+      position: absolute;
+      letter-spacing: 0.15em;
+    }
+
+    .cover-stats {
+      width: 180px;
+      border-left: 1px solid var(--iris-bright);
+      padding-left: 5mm;
+      display: flex;
+      flex-direction: column;
+      gap: 3mm;
+    }
+
+    .cover-stat-item {
+      font-size: 8px;
+    }
+    .cover-stat-val {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--periwinkle);
+      margin-top: 1px;
+    }
+
+    /* Index table */
+    .cover-index-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2mm;
+      font-size: 9.5px;
+      margin-bottom: 6mm; /* Clear the footer */
+    }
+    .cover-index-table th {
+      text-align: left;
+      border-bottom: 0.5px solid rgba(236, 234, 226, 0.3);
+      padding: 3px 4px;
+      color: var(--iris-bright);
+    }
+    .cover-index-table td {
+      padding: 3px 4px;
+      border-bottom: 0.5px solid rgba(236, 234, 226, 0.08);
+    }
+
+    /* ==========================================
+       PROJECT PAGE
+       ========================================== */
+    .proj-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 0.5px solid rgba(236, 234, 226, 0.15);
+      padding-bottom: 2mm;
+      margin-bottom: 3mm;
+    }
+
+    .proj-id-badge {
+      font-weight: bold;
+      color: var(--iris-bright);
+      font-size: 10px;
+    }
+
+    .proj-cat {
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      color: var(--periwinkle);
+    }
+
+    .proj-status-dossier {
+      font-size: 9px;
+      color: rgba(236, 234, 226, 0.5);
+    }
+
+    /* Banner image container (Vectorheart Clipped Notch) */
+    .proj-banner-container {
+      position: relative;
+      width: 100%;
+      height: 102.4mm; /* Exactly 16/9 aspect ratio at 182mm print width */
+      margin-bottom: 3mm;
+      border: 0.5px solid rgba(236, 234, 226, 0.2);
+      background-color: var(--world-2);
+      overflow: hidden;
+      clip-path: polygon(0 8px, 8px 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .proj-banner-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* NDA Banner Placeholder */
+    .nda-banner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: repeating-linear-gradient(
+        45deg,
+        #17171b,
+        #17171b 8px,
+        #101013 8px,
+        #101013 16px
+      );
+      color: var(--periwinkle);
+      text-align: center;
+      padding: 4mm;
+    }
+
+    .nda-badge {
+      border: 1px solid var(--iris-bright);
+      padding: 1mm 4mm;
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--iris-bright);
+      margin-bottom: 1.5mm;
+      letter-spacing: 0.2em;
+    }
+
+    .nda-subtext {
+      font-size: 9px;
+      color: rgba(236, 234, 226, 0.5);
+      max-width: 80%;
+      line-height: 1.3;
+    }
+
+    /* Project Main Title & Info block */
+    .proj-title-block {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      align-items: flex-end;
+      border-bottom: 0.5px solid rgba(236, 234, 226, 0.15);
+      padding-bottom: 2mm;
+      margin-bottom: 3mm;
+    }
+
+    .proj-name {
+      font-size: 25px;
+      line-height: 0.9;
+      color: var(--paper);
+    }
+
+    .proj-meta-table {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 3mm;
+      row-gap: 1px;
+      font-size: 9.5px;
+      justify-self: end;
+      text-align: right;
+    }
+
+    .meta-lbl {
+      color: rgba(236, 234, 226, 0.4);
+    }
+
+    .meta-val {
+      font-weight: bold;
+      color: var(--periwinkle);
+    }
+
+    /* Columns layout */
+    .proj-details-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      column-gap: 6mm;
+      margin-bottom: 3mm;
+    }
+
+    .column-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5mm;
+    }
+
+    .column-right {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5mm;
+      border-left: 0.5px solid rgba(236, 234, 226, 0.1);
+      padding-left: 5mm;
+    }
+
+    .section-title {
+      font-size: 9.5px;
+      font-weight: bold;
+      color: var(--iris-bright);
+      margin-bottom: 1mm;
+      letter-spacing: 0.12em;
+      border-bottom: 0.5px solid rgba(236, 234, 226, 0.1);
+      padding-bottom: 0.5mm;
+    }
+
+    .summary-text {
+      font-size: 10px;
+      line-height: 1.4;
+      color: rgba(236, 234, 226, 0.85);
+      text-align: justify;
+    }
+
+    .bullets-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .bullets-list li {
+      font-size: 9.5px;
+      line-height: 1.3;
+      color: rgba(236, 234, 226, 0.8);
+      position: relative;
+      padding-left: 3mm;
+    }
+
+    .bullets-list li::before {
+      content: '▶';
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 6px;
+      color: var(--iris-bright);
+    }
+
+    .stack-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1mm;
+    }
+
+    .stack-tag {
+      font-size: 9px;
+      padding: 0.5mm 1.5mm;
+      border: 0.5px solid rgba(236, 234, 226, 0.2);
+      border-radius: 1px;
+      color: var(--periwinkle);
+      background-color: var(--world-2);
+    }
+
+    .uplinks-box {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1mm;
+      background-color: rgba(23, 23, 27, 0.5);
+      padding: 1.5mm;
+      border: 0.5px solid rgba(236, 234, 226, 0.1);
+    }
+
+    .uplink-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: var(--periwinkle);
+      text-decoration: none;
+      border-bottom: 0.5px dotted rgba(236, 234, 226, 0.2);
+      padding-bottom: 0.5mm;
+    }
+
+    .uplink-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .uplink-item span {
+      color: var(--iris-bright);
+    }
+
+    /* Architecture Diagram Section spanning full-width at bottom */
+    .proj-architecture-section {
+      border-top: 0.5px solid rgba(236, 234, 226, 0.15);
+      padding-top: 2.5mm;
+      margin-top: 3mm; /* Flow naturally with natural margin spacing instead of auto */
+    }
+
+    .diagram-viewport {
+      border: 0.5px solid rgba(236, 234, 226, 0.15);
+      background-color: rgba(23, 23, 27, 0.4);
+      padding: 2.5mm 4mm;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .diagram-viewport svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 65mm; /* Expanded system architecture size */
+    }
+
+    /* SVG Nodes Styling for Y2K Vectorheart Diagrams */
+    .node-neutral rect { fill: rgba(23, 23, 27, 0.85); stroke: rgba(236, 234, 226, 0.2); }
+    .node-blue rect { fill: rgba(232, 217, 12, 0.08); stroke: var(--iris); }
+    .node-amber rect { fill: rgba(252, 238, 10, 0.08); stroke: var(--iris-bright); }
+    .node-violet rect { fill: rgba(255, 46, 85, 0.08); stroke: var(--alert); }
+    .node-emerald rect { fill: rgba(236, 234, 226, 0.08); stroke: var(--periwinkle); }
+
+    .node-text { font-family: 'Archivo', sans-serif; font-weight: 600; fill: #f4f3ee; font-size: 13px; text-anchor: middle; letter-spacing: 0.03em; }
+    .node-subtext { font-family: 'JetBrains Mono', monospace; fill: rgba(236, 234, 226, 0.6); font-size: 10px; text-anchor: middle; }
+    .row-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--iris); letter-spacing: 0.15em; font-weight: bold; }
+    .arrow-marker { fill: var(--iris); }
+    .arrow-marker-muted { fill: rgba(236, 234, 226, 0.3); }
+
+    /* Footer styling (absolutely positioned at the bottom) */
+    .page-footer {
+      position: absolute;
+      bottom: 14mm;
+      left: 14mm;
+      right: 14mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 0.5px solid rgba(236, 234, 226, 0.15);
+      padding-top: 2.5mm;
+      font-size: 8px;
+      color: rgba(236, 234, 226, 0.45);
+      z-index: 15;
+    }
+
+    .page-num {
+      color: var(--iris-bright);
+      font-weight: bold;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       PAGE 1: COVER PAGE
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines">
+      <div style="position: absolute; left: 0; right: 0; top: 25%; height: 0.5px; background-color: rgba(236, 234, 226, 0.05);"></div>
+      <div style="position: absolute; left: 0; right: 0; top: 75%; height: 0.5px; background-color: rgba(236, 234, 226, 0.05);"></div>
+    </div>
+    <div class="crosshair ch-tl"></div>
+    <div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div>
+    <div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper cover-wrapper">
+      <div class="cover-top">
+        <div>
+          <h1 class="cover-title">PROJECT<br>ARCHIVE<span class="accent-yellow">.</span></h1>
+          <div class="cover-subtitle">// SYSTEMS + ARTS INTEGRATION</div>
+        </div>
+        <div class="cover-header-meta">
+          <div>ENGINEER: AIRA JOSH C. YNTE</div>
+          <div class="accent-yellow">TITLE: COMPUTER ENGINEER</div>
+          <div>LOC: METRO MANILA, PH</div>
+          <div>DATE: 2026-07-13</div>
+        </div>
+      </div>
+
+      <div class="cover-middle">
+        <div class="vectorheart-backdrop">
+          <div class="vh-tech-circle vh-tc-1"></div>
+          <div class="vh-tech-circle vh-tc-2"></div>
+          <div class="vh-tech-circle vh-tc-3"></div>
+          <div class="vh-tech-text" style="top: 15px; left: 15px;">[SYS_INIT]</div>
+          <div class="vh-tech-text" style="bottom: 15px; right: 15px;">AERA.DEV</div>
+          <svg width="120" height="120" viewBox="0 0 100 100" style="position: absolute;">
+            <circle cx="50" cy="50" r="40" stroke="rgba(252, 238, 10, 0.4)" stroke-width="0.5" fill="none" />
+            <circle cx="50" cy="50" r="42" stroke="rgba(236, 234, 226, 0.2)" stroke-width="0.5" stroke-dasharray="2 2" fill="none" />
+            <line x1="50" y1="2" x2="50" y2="98" stroke="rgba(236, 234, 226, 0.25)" stroke-width="0.5" />
+            <line x1="2" y1="50" x2="98" y2="50" stroke="rgba(236, 234, 226, 0.25)" stroke-width="0.5" />
+            <rect x="47" y="47" width="6" height="6" stroke="var(--iris-bright)" stroke-width="0.5" fill="none" />
+            <line x1="10" y1="10" x2="25" y2="10" stroke="var(--iris-bright)" stroke-width="1" />
+            <line x1="10" y1="10" x2="10" y2="25" stroke="var(--iris-bright)" stroke-width="1" />
+            <line x1="90" y1="90" x2="75" y2="90" stroke="var(--iris-bright)" stroke-width="1" />
+            <line x1="90" y1="90" x2="90" y2="75" stroke="var(--iris-bright)" stroke-width="1" />
+          </svg>
+        </div>
+
+        <div class="cover-stats">
+          <div class="cover-stat-item">
+            <div class="t-label">TOTAL SYSTEMS</div>
+            <div class="cover-stat-val">09 SYSTEMS</div>
+          </div>
+          <div class="cover-stat-item">
+            <div class="t-label">TOTAL ART TRACKS</div>
+            <div class="cover-stat-val">02 VIDEOS</div>
+          </div>
+          <div class="cover-stat-item">
+            <div class="t-label">ACTIVE RECON</div>
+            <div class="cover-stat-val accent-yellow">SECURE / T+0</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="t-label" style="margin-bottom: 2px;">● DIRECTORY INDEX — REPOSITORIES & MEDIA</div>
+        <table class="cover-index-table">
+          <thead>
+            <tr>
+              <th width="8%">ID</th>
+              <th width="24%">PROJECT NAME</th>
+              <th width="38%">CLASSIFICATION / CATEGORY</th>
+              <th width="15%">TIMELINE</th>
+              <th width="15%">STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>S-01</td>
+              <td class="accent-yellow">FEHUVIA</td>
+              <td>WEB3 / AI / FULL-STACK</td>
+              <td>2026</td>
+              <td>LIVE</td>
+            </tr>
+            <tr>
+              <td>S-02</td>
+              <td class="accent-yellow">AEROVIT</td>
+              <td>IOT / AI / MOBILE</td>
+              <td>2024 - 2026</td>
+              <td>PROTOTYPE</td>
+            </tr>
+            <tr>
+              <td>S-03</td>
+              <td class="accent-yellow">STICKOUT</td>
+              <td>EDA / VLSI / WEB</td>
+              <td>2026</td>
+              <td>PRODUCTION</td>
+            </tr>
+            <tr>
+              <td>S-04</td>
+              <td class="accent-yellow">EMG CONTROLLER</td>
+              <td>EMBEDDED / HARDWARE</td>
+              <td>ACADEMIC</td>
+              <td>COMPLETED</td>
+            </tr>
+            <tr>
+              <td>S-05</td>
+              <td class="accent-yellow">THE SAFEHOUSE</td>
+              <td>3D WEB / SHOWCASE</td>
+              <td>2025 - PRES</td>
+              <td>WIP</td>
+            </tr>
+            <tr>
+              <td>S-06</td>
+              <td>PLANT.IO</td>
+              <td>MOBILE / IOT — FREELANCE (NDA)</td>
+              <td>2025</td>
+              <td>DELIVERED</td>
+            </tr>
+            <tr>
+              <td>S-07</td>
+              <td class="accent-yellow">MANHWA READER</td>
+              <td>WEB / FRONTEND</td>
+              <td>2026</td>
+              <td>COMPLETE</td>
+            </tr>
+            <tr>
+              <td>S-08</td>
+              <td>STUDENT CONSULTATION</td>
+              <td>WEB / FULL-STACK — FREELANCE (NDA)</td>
+              <td>2025</td>
+              <td>DELIVERED</td>
+            </tr>
+            <tr>
+              <td>S-09</td>
+              <td>WALANG BASAGAN NG THRIFT</td>
+              <td>WEB / E-COMMERCE — FREELANCE (NDA)</td>
+              <td>2025</td>
+              <td>DELIVERED</td>
+            </tr>
+            <tr>
+              <td>A-01</td>
+              <td class="accent-yellow">FEHUVIA SHOWCASE</td>
+              <td>VIDEO / PUBMATS / VISUAL</td>
+              <td>2026</td>
+              <td>COMPLETE</td>
+            </tr>
+            <tr>
+              <td>A-02</td>
+              <td class="accent-yellow">AEROVIT WALKTHROUGH</td>
+              <td>VIDEO / PUBMATS / VISUAL</td>
+              <td>2026</td>
+              <td>COMPLETE</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Cover Footer -->
+    <div class="page-footer">
+      <div>SYS_RECON: v2.0-STABLE // SYSTEM RUNS ON MORPH L2</div>
+      <div class="page-num">COVER PAGE // PAGE 01</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 2: FEHUVIA
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-01</span>
+        <span class="proj-cat">WEB3 / AI / FULL-STACK</span>
+        <span class="proj-status-dossier">[STATE: ACTIVE // DEPLOYED]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <img class="proj-banner-img" src="public/projects/fehuvia.png" alt="FEHUVIA banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name">FEHUVIA<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">LEAD WEB3 & FULL-STACK DEV</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2026</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">LIVE</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Open-finance Web3 B2B treasury workstation for Southeast Asian SMEs — marrying relational database state tracking with smart-contract execution rails on Morph L2 to cut settlement from a 3-day banking standard to under 2 seconds (T+0), at a fraction of a cent per transaction.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Atomic sub-2-second payment clearance on Morph L2 via custom Solidity contracts</li>
+              <li>EVM listener daemon: real-time log syncing into PostgreSQL for dual-state financial auditing</li>
+              <li>AI financial co-pilot: GPT-4o RAG pipeline for structured cashflow runway forecasting</li>
+              <li>AI OCR scan auto-parses uploaded invoice sheets and fills workstation drawers</li>
+              <li>Self-healing background gas faucet dispenses L2 gas asynchronously to MetaMask operators</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">React 19</span>
+              <span class="stack-tag">Vite</span>
+              <span class="stack-tag">Solidity</span>
+              <span class="stack-tag">Morph L2</span>
+              <span class="stack-tag">Ethers.js</span>
+              <span class="stack-tag">Node.js</span>
+              <span class="stack-tag">Express</span>
+              <span class="stack-tag">PostgreSQL</span>
+              <span class="stack-tag">GPT-4o</span>
+            </div>
+          </div>
+
+          <div class="uplinks-box">
+            <a class="uplink-item" href="https://www.fehuvia.app/" target="_blank">
+              LIVE SITE <span>FEHUVIA.APP ↗</span>
+            </a>
+            <a class="uplink-item" href="https://github.com/Aera0908/Project_Fehuvia" target="_blank">
+              REPOSITORY <span>GITHUB ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● SYSTEM ARCHITECTURE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 496" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: WORKSTATION -->
+            <text x="40" y="62" class="row-lbl">&gt; WORKSTATION</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="52" class="node-text">Workstation UI</text>
+              <text x="325" y="71" class="node-subtext">React 19 · glassmorphic</text>
+            </g>
+            <g class="node-blue">
+              <rect x="500" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="52" class="node-text">AI OCR Scan</text>
+              <text x="655" y="71" class="node-subtext">PDF / Image grid parsing</text>
+            </g>
+            <g class="node-blue">
+              <rect x="830" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="52" class="node-text">MetaMask Signing</text>
+              <text x="985" y="71" class="node-subtext">EIP-1193 zero-custody</text>
+            </g>
+            <line x1="600" y1="100" x2="600" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: API BACKEND -->
+            <text x="40" y="166" class="row-lbl">&gt; API BACKEND</text>
+            <g class="node-neutral">
+              <rect x="170" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="156" class="node-text">Express.js Server</text>
+              <text x="325" y="175" class="node-subtext">API broker & faucet route</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="500" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="156" class="node-text">Gas Dispenser</text>
+              <text x="655" y="175" class="node-subtext">Vault faucet dispenser</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="830" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="156" class="node-text">AI Co-Pilot RAG</text>
+              <text x="985" y="175" class="node-subtext">GPT-4o runway prompt assembly</text>
+            </g>
+            <line x1="600" y1="204" x2="600" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: PERSISTENCE -->
+            <text x="40" y="270" class="row-lbl">&gt; PERSISTENCE</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402" y="260" class="node-text">PostgreSQL DB</text>
+              <text x="402" y="279" class="node-subtext">suppliers · users</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="655" y="228" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897" y="260" class="node-text">Invoice Ledger</text>
+              <text x="897" y="279" class="node-subtext">ACID transactional directory</text>
+            </g>
+            <line x1="600" y1="308" x2="600" y2="330" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 4: EVM LEDGER -->
+            <text x="40" y="374" class="row-lbl">&gt; EVM LEDGER</text>
+            <g class="node-amber">
+              <rect x="170" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="364" class="node-text">B2BSettlement.sol</text>
+              <text x="325" y="383" class="node-subtext">atomic transfer pattern</text>
+            </g>
+            <g class="node-amber">
+              <rect x="500" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="364" class="node-text">MockUSDC.sol</text>
+              <text x="655" y="383" class="node-subtext">6-decimal stablecoin</text>
+            </g>
+            <g class="node-amber">
+              <rect x="830" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="364" class="node-text">Morph Layer 2</text>
+              <text x="985" y="383" class="node-subtext">sub-2 second L2 blocks</text>
+            </g>
+            <line x1="600" y1="412" x2="600" y2="434" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 5: DAEMON SYNC -->
+            <text x="40" y="478" class="row-lbl">&gt; DAEMON SYNC</text>
+            <g class="node-violet">
+              <rect x="170" y="436" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402" y="468" class="node-text">Listener Daemon</text>
+              <text x="402" y="487" class="node-subtext">JSON-RPC EVM event stream</text>
+            </g>
+            <g class="node-violet">
+              <rect x="655" y="436" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897" y="468" class="node-text">Log Reconciliation</text>
+              <text x="897" y="487" class="node-subtext">T+0 dual-state sync</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: FEHUVIA</div>
+      <div class="page-num">PAGE 02 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 3: AEROVIT
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-02</span>
+        <span class="proj-cat">IOT / AI / MOBILE</span>
+        <span class="proj-status-dossier">[STATE: COMPLETE // PROTOTYPE]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <img class="proj-banner-img" src="public/projects/aerovit.png" alt="AEROVIT banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name">AEROVIT<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">LEAD DEV & EMBEDDED ARCHITECT</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2024 — 2026</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">PROTOTYPE</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Hybrid fitness ecosystem pairing a Flutter mobile app with a custom ESP32-S3 smartwatch, MediaPipe BlazePose real-time form tracking, adaptive AI coaching, and an ERC-20 reward token on Ethereum Sepolia — complete at demonstration depth as a fully walkable prototype.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Custom smartwatch hardware: ESP32-S3, 1.69" touch LCD, MAX30102 HR, QMI8658 IMU, BLE 5.0</li>
+              <li>33-landmark BlazePose pipeline with EMA smoothing, joint-angle scoring, and form state machines</li>
+              <li>Gamification: Hunter ranks, quests, leaderboards, and a 20-floor turn-based dungeon RPG via Flame</li>
+              <li>Web3 rewards: AERO ERC-20 on Sepolia — off-chain accrual, 100 AERO minimum, 24h cooldown, 5% burn</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">Flutter</span>
+              <span class="stack-tag">Dart</span>
+              <span class="stack-tag">Flame 2D</span>
+              <span class="stack-tag">ESP32-S3</span>
+              <span class="stack-tag">BLE 5.0</span>
+              <span class="stack-tag">BlazePose</span>
+              <span class="stack-tag">Firebase</span>
+              <span class="stack-tag">Solidity</span>
+              <span class="stack-tag">Sepolia</span>
+            </div>
+          </div>
+
+          <div class="uplinks-box">
+            <a class="uplink-item" href="https://aerovit.dev" target="_blank">
+              LIVE SITE <span>AEROVIT.DEV ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● SYSTEM ARCHITECTURE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 496" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: CLIENTS -->
+            <text x="40" y="62" class="row-lbl">&gt; CLIENTS</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="225" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="282.5" y="52" class="node-text">Smartwatch</text>
+              <text x="282.5" y="71" class="node-subtext">ESP32-S3</text>
+            </g>
+            <g class="node-blue">
+              <rect x="410" y="20" width="225" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="522.5" y="52" class="node-text">Mobile App</text>
+              <text x="522.5" y="71" class="node-subtext">Flutter · Dart</text>
+            </g>
+            <g class="node-blue">
+              <rect x="650" y="20" width="225" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="762.5" y="52" class="node-text">Website</text>
+              <text x="762.5" y="71" class="node-subtext">aerovit.dev</text>
+            </g>
+            <g class="node-blue">
+              <rect x="890" y="20" width="225" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="1002.5" y="52" class="node-text">Showcase</text>
+              <text x="1002.5" y="71" class="node-subtext">Next.js · 3D</text>
+            </g>
+            <line x1="600" y1="100" x2="600" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: SERVICES -->
+            <text x="40" y="166" class="row-lbl">&gt; SERVICES</text>
+            <g class="node-neutral">
+              <rect x="170" y="124" width="180" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="260" y="156" class="node-text">Workouts</text>
+              <text x="260" y="175" class="node-subtext">reps · form</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="365" y="124" width="180" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="455" y="156" class="node-text">Pairing</text>
+              <text x="455" y="175" class="node-subtext">BLE 5.0</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="560" y="124" width="180" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="156" class="node-text">Quests / XP</text>
+              <text x="655" y="175" class="node-subtext">Hunter ranks</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="755" y="124" width="180" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="845" y="156" class="node-text">Dungeon RPG</text>
+              <text x="845" y="175" class="node-subtext">20 floors · Flame</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="950" y="124" width="180" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="1040" y="156" class="node-text">Wallet / Token</text>
+              <text x="1040" y="175" class="node-subtext">AERO flows</text>
+            </g>
+            <line x1="600" y1="204" x2="600" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: AI / ML -->
+            <text x="40" y="270" class="row-lbl">&gt; AI / ML</text>
+            <g class="node-violet">
+              <rect x="170" y="228" width="300" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="320" y="260" class="node-text">BlazePose</text>
+              <text x="320" y="279" class="node-subtext">33 landmarks</text>
+            </g>
+            <g class="node-violet">
+              <rect x="490" y="228" width="300" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="640" y="260" class="node-text">RAG Coach</text>
+              <text x="640" y="279" class="node-subtext">ChromaDB</text>
+            </g>
+            <g class="node-violet">
+              <rect x="810" y="228" width="330" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="975" y="260" class="node-text">RL Coach</text>
+              <text x="975" y="279" class="node-subtext">PPO · FSM</text>
+            </g>
+            <line x1="600" y1="308" x2="600" y2="330" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 4: BACKEND -->
+            <text x="40" y="374" class="row-lbl">&gt; BACKEND</text>
+            <g class="node-emerald">
+              <rect x="170" y="332" width="300" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="320" y="364" class="node-text">Firebase Auth</text>
+              <text x="320" y="383" class="node-subtext">email · OAuth</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="490" y="332" width="300" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="640" y="364" class="node-text">Firestore</text>
+              <text x="640" y="383" class="node-subtext">profiles · quests</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="810" y="332" width="330" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="975" y="364" class="node-text">Cloud Functions</text>
+              <text x="975" y="383" class="node-subtext">withdraw · burn</text>
+            </g>
+            <line x1="600" y1="412" x2="600" y2="434" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 5: CHAIN -->
+            <text x="40" y="478" class="row-lbl">&gt; CHAIN</text>
+            <g class="node-amber">
+              <rect x="170" y="436" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402" y="468" class="node-text">AERO Token</text>
+              <text x="402" y="487" class="node-subtext">ERC-20</text>
+            </g>
+            <g class="node-amber">
+              <rect x="655" y="436" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897" y="468" class="node-text">Ethereum Sepolia</text>
+              <text x="897" y="487" class="node-subtext">testnet</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: AEROVIT</div>
+      <div class="page-num">PAGE 03 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 4: STICKOUT
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-03</span>
+        <span class="proj-cat">EDA / VLSI / WEB</span>
+        <span class="proj-status-dossier">[STATE: COMPLETE // STABLE]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <img class="proj-banner-img" src="public/projects/stickout.png" alt="STICKOUT banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name">STICKOUT<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">CREATOR & LEAD FRONTEND ENGINEER</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2026</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">COMPLETE</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Open-source, browser-based EDA tool for creating, editing, and validating VLSI stick diagrams — a custom 2D math viewport on raw HTML5 Canvas with infinite pan/zoom, a Photoshop-style layer stack, and automated design-rule assistants.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Infinite 2D viewport: screen↔world coordinate transforms, grid snapping @ 60fps</li>
+              <li>Same-layer wire crossovers auto-bridge with arc loops; right-click solid junctions</li>
+              <li>Custom double-pass canvas renderer for LaTeX-style subscripts (V_DD, V_SS)</li>
+              <li>50-level undo/redo, copy/paste clipboards, auto-save, .stk JSON project files</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">React 19</span>
+              <span class="stack-tag">Vite 8</span>
+              <span class="stack-tag">HTML5 Canvas</span>
+              <span class="stack-tag">CSS3</span>
+              <span class="stack-tag">VLSI Stick Layout</span>
+              <span class="stack-tag">EDA Tooling</span>
+            </div>
+          </div>
+
+          <div class="uplinks-box">
+            <a class="uplink-item" href="https://stickout.vercel.app" target="_blank">
+              LIVE SITE <span>STICKOUT.VERCEL.APP ↗</span>
+            </a>
+            <a class="uplink-item" href="https://github.com/Aera0908/stickOut" target="_blank">
+              REPOSITORY <span>GITHUB ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● SYSTEM ARCHITECTURE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 392" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: APPLICATION -->
+            <text x="40" y="62" class="row-lbl">&gt; APPLICATION</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="970" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="52" class="node-text">Vite / React Application</text>
+              <text x="655" y="71" class="node-subtext">React 19 Frontend SPA</text>
+            </g>
+            <line x1="655" y1="100" x2="655" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: STATE ENGINE -->
+            <text x="40" y="166" class="row-lbl">&gt; STATE ENGINE</text>
+            <g class="node-violet">
+              <rect x="170" y="124" width="970" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="156" class="node-text">App.jsx Coordinator</text>
+              <text x="655" y="175" class="node-subtext">Central state manager & undo/redo dispatcher</text>
+            </g>
+            <line x1="655" y1="204" x2="655" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: VIEWPORTS & UI -->
+            <text x="40" y="270" class="row-lbl">&gt; VIEWPORTS & UI</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="260" class="node-text">CanvasArea Component</text>
+              <text x="325" y="279" class="node-subtext">HTML5 Canvas 2D View</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="500" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="260" class="node-text">Sidebar Panels</text>
+              <text x="655" y="279" class="node-subtext">Layers & properties configs</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="830" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="260" class="node-text">Toolbar & MenuBar</text>
+              <text x="985" y="279" class="node-subtext">Cursor tools & File commands</text>
+            </g>
+            <line x1="655" y1="308" x2="655" y2="330" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 4: CORES & STACKS -->
+            <text x="40" y="374" class="row-lbl">&gt; CORES & STACKS</text>
+            <g class="node-amber">
+              <rect x="170" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="364" class="node-text">helpers.js Math Utilities</text>
+              <text x="325" y="383" class="node-subtext">Coordinates snap & auto crossover</text>
+            </g>
+            <g class="node-amber">
+              <rect x="500" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="364" class="node-text">Undo / Redo Stack</text>
+              <text x="655" y="383" class="node-subtext">50-level state history tracking</text>
+            </g>
+            <g class="node-amber">
+              <rect x="830" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="364" class="node-text">Auto-Save System</text>
+              <text x="985" y="383" class="node-subtext">LocalStorage .stk serializations</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: STICKOUT</div>
+      <div class="page-num">PAGE 04 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 5: EMG INTERFACE CONTROLLER
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-04</span>
+        <span class="proj-cat">EMBEDDED / HARDWARE</span>
+        <span class="proj-status-dossier">[STATE: COMPLETE // STABLE]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <img class="proj-banner-img" src="public/projects/emg.png" alt="EMG CONTROLLER banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name">EMG INTERFACE<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">EMBEDDED DEV & PCB DESIGNER</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">ACADEMIC PROJECT</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">COMPLETED</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Real-time electromyography signal processing and visualization on the ESP32-S3 smartwatch/microcontroller — 500 Hz acquisition through a multi-stage DSP pipeline, streamed over UART to a Python GUI, with a game-controller bridge and custom PCB + enclosure.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>500 Hz EMG sampling on the ESP32-S3 with EMG Candy analog front-end</li>
+              <li>Adaptive threshold calibration per user and muscle group</li>
+              <li>Real-time Python GUI (pyserial + matplotlib) and Arduino Plotter support</li>
+              <li>pynput game bridge — muscle activations drive game input (Roblox tested)</li>
+              <li>Custom KiCad PCB layout and Fusion 360 3D-printed enclosure</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">ESP32-S3</span>
+              <span class="stack-tag">C/C++</span>
+              <span class="stack-tag">Arduino Framework</span>
+              <span class="stack-tag">Python</span>
+              <span class="stack-tag">pyserial</span>
+              <span class="stack-tag">matplotlib</span>
+              <span class="stack-tag">KiCad</span>
+              <span class="stack-tag">Fusion 360</span>
+            </div>
+          </div>
+
+          <div class="uplinks-box">
+            <a class="uplink-item" href="https://github.com/Aera0908/emg-game-controller" target="_blank">
+              REPOSITORY <span>GITHUB ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● DSP & ACQUISITION PIPELINE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+            </defs>
+            <!-- Row 1: ACQUISITION -->
+            <text x="40" y="40" class="row-lbl">&gt; ACQUISITION</text>
+            <g class="node-neutral">
+              <rect x="40" y="60" width="170" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="125" y="92" class="node-text">Muscle</text>
+              <text x="125" y="111" class="node-subtext">forearm · bicep</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="240" y="60" width="170" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="92" class="node-text">Electrodes</text>
+              <text x="325" y="111" class="node-subtext">3-lead surface</text>
+            </g>
+            <g class="node-blue">
+              <rect x="440" y="60" width="170" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="525" y="92" class="node-text">EMG Candy</text>
+              <text x="525" y="111" class="node-subtext">front-end amp</text>
+            </g>
+            <g class="node-blue">
+              <rect x="640" y="60" width="210" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="745" y="92" class="node-text">ESP32-S3 ADC</text>
+              <text x="745" y="111" class="node-subtext">500 Hz · 12-bit</text>
+            </g>
+            <line x1="210" y1="95" x2="240" y2="95" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+            <line x1="410" y1="95" x2="440" y2="95" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+            <line x1="610" y1="95" x2="640" y2="95" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+
+            <!-- Row 2: DSP PIPELINE -->
+            <text x="40" y="170" class="row-lbl">&gt; DSP PIPELINE (ON-DEVICE)</text>
+            <g class="node-violet">
+              <rect x="40" y="190" width="200" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="140" y="222" class="node-text">Moving Average</text>
+              <text x="140" y="241" class="node-subtext">noise floor</text>
+            </g>
+            <g class="node-violet">
+              <rect x="270" y="190" width="200" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="370" y="222" class="node-text">RMS</text>
+              <text x="370" y="241" class="node-subtext">20-sample window</text>
+            </g>
+            <g class="node-violet">
+              <rect x="500" y="190" width="200" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="600" y="222" class="node-text">Smoothing</text>
+              <text x="600" y="241" class="node-subtext">2-stage low-pass</text>
+            </g>
+            <g class="node-violet">
+              <rect x="730" y="190" width="200" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="830" y="222" class="node-text">Envelope</text>
+              <text x="830" y="241" class="node-subtext">peak detector</text>
+            </g>
+            <g class="node-amber">
+              <rect x="960" y="190" width="200" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="1060" y="222" class="node-text">Adaptive Threshold</text>
+              <text x="1060" y="241" class="node-subtext">session calibration</text>
+            </g>
+            <line x1="240" y1="225" x2="270" y2="225" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+            <line x1="470" y1="225" x2="500" y2="225" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+            <line x1="700" y1="225" x2="730" y2="225" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+            <line x1="930" y1="225" x2="960" y2="225" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+            <line x1="745" y1="130" x2="140" y2="190" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)" />
+
+            <!-- Row 3: OUTPUTS -->
+            <text x="40" y="310" class="row-lbl">&gt; OUTPUTS</text>
+            <g class="node-blue">
+              <rect x="40" y="330" width="240" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="160" y="362" class="node-text">Serial UART</text>
+              <text x="160" y="381" class="node-subtext">115200 baud</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="320" y="330" width="220" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="430" y="362" class="node-text">Python GUI</text>
+              <text x="430" y="381" class="node-subtext">matplotlib · NumPy</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="580" y="330" width="220" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="690" y="362" class="node-text">Serial Plotter</text>
+              <text x="690" y="381" class="node-subtext">Arduino IDE</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="840" y="330" width="320" height="70" rx="0" ry="0" stroke-width="1.4" />
+              <text x="1000" y="362" class="node-text">Game Controller</text>
+              <text x="1000" y="381" class="node-subtext">pynput → Roblox</text>
+            </g>
+            <line x1="1060" y1="260" x2="160" y2="330" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)" />
+            <line x1="280" y1="365" x2="320" y2="365" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+            <line x1="540" y1="365" x2="580" y2="365" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+            <line x1="800" y1="365" x2="840" y2="365" stroke="var(--iris)" stroke-width="1.6" marker-end="url(#arrow)" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: EMG INTERFACE</div>
+      <div class="page-num">PAGE 05 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 6: THE SAFEHOUSE
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-05</span>
+        <span class="proj-cat">3D WEB / SHOWCASE</span>
+        <span class="proj-status-dossier">[STATE: IN PROGRESS // ACTIVE]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <img class="proj-banner-img" src="public/projects/safehouse.png" alt="THE SAFEHOUSE banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name">THE SAFEHOUSE<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">FRONTEND & 3D WEB DEV</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2025 — PRESENT</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">WIP</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Showcase and pitch site for The Safehouse community, delivered as a guided 3D scroll journey — campfire gathering, forest path, signposts, and a gate — rendered in real-time WebGL with scroll-driven choreography.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Interactive 3D journey scene in React Three Fiber with procedural terrain</li>
+              <li>GSAP timelines + ScrollTrigger wired to Lenis smooth scroll via Tempus clock</li>
+              <li>13 scroll-driven narrative sections tied to waypoints and scroll stages</li>
+              <li>Accessibility-first: honors prefers-reduced-motion with flat CSS fades</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">React 19</span>
+              <span class="stack-tag">Vite 8</span>
+              <span class="stack-tag">Three.js</span>
+              <span class="stack-tag">R3F 9</span>
+              <span class="stack-tag">GSAP 3.15</span>
+              <span class="stack-tag">Framer Motion</span>
+              <span class="stack-tag">Lenis</span>
+              <span class="stack-tag">Tailwind 4</span>
+            </div>
+          </div>
+
+          <div class="uplinks-box">
+            <a class="uplink-item" href="https://safehouse-inky.vercel.app/" target="_blank">
+              LIVE SITE <span>LIVE SITE ↗</span>
+            </a>
+            <a class="uplink-item" href="https://github.com/Aera0908/safe-house" target="_blank">
+              REPOSITORY <span>GITHUB ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● SYSTEM ARCHITECTURE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 392" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: INTERACTION -->
+            <text x="40" y="62" class="row-lbl">&gt; INTERACTION</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="52" class="node-text">Lenis Smooth Scroll</text>
+              <text x="402.5" y="71" class="node-subtext">normalized kinetic scroll physics</text>
+            </g>
+            <g class="node-blue">
+              <rect x="655" y="20" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="52" class="node-text">ScrollTrigger bindings</text>
+              <text x="897.5" y="71" class="node-subtext">scroll positions mapped to timeline progress</text>
+            </g>
+            <line x1="600" y1="100" x2="600" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: ORCHESTRATION -->
+            <text x="40" y="166" class="row-lbl">&gt; ORCHESTRATION</text>
+            <g class="node-violet">
+              <rect x="170" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="156" class="node-text">GSAP Master Timeline</text>
+              <text x="325" y="175" class="node-subtext">deterministic interpolation</text>
+            </g>
+            <g class="node-violet">
+              <rect x="500" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="156" class="node-text">13 Waypoints Core</text>
+              <text x="655" y="175" class="node-subtext">narrative layout triggers</text>
+            </g>
+            <g class="node-violet">
+              <rect x="830" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="156" class="node-text">MotionModeContext</text>
+              <text x="985" y="175" class="node-subtext">accessibility reduced-motion checks</text>
+            </g>
+            <line x1="600" y1="204" x2="600" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: RENDER ENGINE -->
+            <text x="40" y="270" class="row-lbl">&gt; RENDER ENGINE</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="260" class="node-text">React Three Fiber Canvas</text>
+              <text x="402.5" y="279" class="node-subtext">WebGL persistent context layer</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="655" y="228" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="260" class="node-text">JourneyCamera Rig</text>
+              <text x="897.5" y="279" class="node-subtext">bezier spline camera navigation path</text>
+            </g>
+            <line x1="600" y1="308" x2="600" y2="330" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 4: SCENE GRAPH -->
+            <text x="40" y="374" class="row-lbl">&gt; SCENE GRAPH</text>
+            <g class="node-amber">
+              <rect x="170" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="364" class="node-text">Tent, Trees & Gate</text>
+              <text x="325" y="383" class="node-subtext">3D assets & mesh structures</text>
+            </g>
+            <g class="node-amber">
+              <rect x="500" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="364" class="node-text">Ember Particles</text>
+              <text x="655" y="383" class="node-subtext">additive GLSL shader materials</text>
+            </g>
+            <g class="node-amber">
+              <rect x="830" y="332" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="364" class="node-text">Rive Animations</text>
+              <text x="985" y="383" class="node-subtext">2D interactive vector layers</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: THE SAFEHOUSE</div>
+      <div class="page-num">PAGE 06 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 7: PLANT.IO
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-06</span>
+        <span class="proj-cat">MOBILE / IOT — FREELANCE (NDA)</span>
+        <span class="proj-status-dossier">[STATE: SECURE // DELIVERED]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <img class="proj-banner-img" src="public/projects/plantio.png" alt="PLANT.IO banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name">PLANT.IO<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">FULL-STACK MOBILE & IOT DEV</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2025</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">DELIVERED</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Flutter IoT monitoring dashboard for nurseries and garden beds — ESP32 devices stream soil moisture, temperature, humidity, EC, and pH in real time, with remote actuator control and a plant-health scoring system rendered as an animated avatar. 8-bit retro UI throughout.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Real-time multi-device telemetry over Firebase Realtime Database</li>
+              <li>Remote actuation: pump, fans, and fertilizer dispensing per bed</li>
+              <li>Plant-mood scoring drives an animated avatar (thirsty / hot / critical / thriving)</li>
+              <li>Historical analytics with fl_chart; Open-Meteo weather integration</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">Flutter</span>
+              <span class="stack-tag">Dart</span>
+              <span class="stack-tag">Provider</span>
+              <span class="stack-tag">Firebase RTDB</span>
+              <span class="stack-tag">Firestore</span>
+              <span class="stack-tag">fl_chart</span>
+              <span class="stack-tag">ESP32</span>
+              <span class="stack-tag">Open-Meteo API</span>
+            </div>
+          </div>
+
+          <div class="uplinks-box">
+            <div class="t-label accent-yellow" style="font-size: 8px; text-align: center; border-bottom: 0.5px solid rgba(236,234,226,0.1); padding-bottom: 1.5px; margin-bottom: 1px;">◆ CLIENT WORK (NDA)</div>
+            <div class="nda-subtext" style="font-size: 7px; color: rgba(236,234,226,0.4);">Screenshots and source code are withheld. Architecture is limited to non-sensitive elements.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● SYSTEM ARCHITECTURE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: TELEMETRY HARDWARE -->
+            <text x="40" y="62" class="row-lbl">&gt; HARDWARE</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="52" class="node-text">ESP32 microcontroller</text>
+              <text x="325" y="71" class="node-subtext">freeRTOS dual-core clock</text>
+            </g>
+            <g class="node-blue">
+              <rect x="500" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="52" class="node-text">Sensors Array</text>
+              <text x="655" y="71" class="node-subtext">soil moisture · EC · pH · temp</text>
+            </g>
+            <g class="node-blue">
+              <rect x="830" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="52" class="node-text">Relay Actuators</text>
+              <text x="985" y="71" class="node-subtext">pump · fan control commands</text>
+            </g>
+            <line x1="655" y1="100" x2="655" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: TRANSPORT & DB -->
+            <text x="40" y="166" class="row-lbl">&gt; SYSTEM DATA</text>
+            <g class="node-neutral">
+              <rect x="170" y="124" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="156" class="node-text">Firebase Realtime DB</text>
+              <text x="402.5" y="175" class="node-subtext">live telemetry sync nodes</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="655" y="124" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="156" class="node-text">Cloud Firestore</text>
+              <text x="897.5" y="175" class="node-subtext">user configurations & device maps</text>
+            </g>
+            <line x1="655" y1="204" x2="655" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: CLIENT APPLICATION -->
+            <text x="40" y="270" class="row-lbl">&gt; CLIENT APP</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="260" class="node-text">Flutter Dashboard UI</text>
+              <text x="325" y="279" class="node-subtext">8-bit retro theme design layout</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="500" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="260" class="node-text">Provider state machine</text>
+              <text x="655" y="279" class="node-subtext">real-time view model bindings</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="830" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="260" class="node-text">fl_chart & Weather API</text>
+              <text x="985" y="279" class="node-subtext">history graphs & forecast syncing</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: PLANT.IO</div>
+      <div class="page-num">PAGE 07 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 8: MANHWA READER
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-07</span>
+        <span class="proj-cat">WEB / FRONTEND</span>
+        <span class="proj-status-dossier">[STATE: COMPLETE // STABLE]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <img class="proj-banner-img" src="public/projects/manhwa.png" alt="MANHWA READER banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name">MANHWA READER<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">FRONTEND DEVELOPER</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2026</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">COMPLETE</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Single-page app for discovering titles and reading chapters end-to-end via the MangaDex API — home with search and feeds, detail pages, and a dedicated reader with chapter navigation and persistent themes.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Discovery: hero search, popular & recently-updated grids, category chips</li>
+              <li>Reader: full chapter images, chapter dropdown, prev/next page navigation</li>
+              <li>Light/dark theme with localStorage persistence for reading environments</li>
+              <li>Defensive handling of duplicate chapters, translator groups, and payloads</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">React 19</span>
+              <span class="stack-tag">TypeScript</span>
+              <span class="stack-tag">Vite 7</span>
+              <span class="stack-tag">React Router 7</span>
+              <span class="stack-tag">Tailwind CSS 3</span>
+              <span class="stack-tag">MangaDex REST API</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● SYSTEM ARCHITECTURE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: DATA SOURCE -->
+            <text x="40" y="62" class="row-lbl">&gt; DATA SOURCE</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="970" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="52" class="node-text">MangaDex API Plane</text>
+              <text x="655" y="71" class="node-subtext">external REST endpoints for catalog metadata & image hash resolutions</text>
+            </g>
+            <line x1="655" y1="100" x2="655" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: SERVICE LAYER -->
+            <text x="40" y="166" class="row-lbl">&gt; SERVICES</text>
+            <g class="node-violet">
+              <rect x="170" y="124" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="156" class="node-text">mangaService.ts</text>
+              <text x="402.5" y="175" class="node-subtext">data shapers & Axios client abstraction</text>
+            </g>
+            <g class="node-violet">
+              <rect x="655" y="124" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="156" class="node-text">Chapter Resolver Engine</text>
+              <text x="897.5" y="175" class="node-subtext">group filters, deduplications & fallback sequences</text>
+            </g>
+            <line x1="655" y1="204" x2="655" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: UI LAYER -->
+            <text x="40" y="270" class="row-lbl">&gt; UI VIEWS</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="260" class="node-text">Discovery & Feed Views</text>
+              <text x="325" y="279" class="node-subtext">search box & popular panels</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="500" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="260" class="node-text">Dedicated Reader SPA</text>
+              <text x="655" y="279" class="node-subtext">progressive image load grids</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="830" y="228" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="260" class="node-text">Persistent Settings</text>
+              <text x="985" y="279" class="node-subtext">localStorage dark-theme variables</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: MANHWA READER</div>
+      <div class="page-num">PAGE 08 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 9: STUDENT CONSULTATION SYSTEM
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-08</span>
+        <span class="proj-cat">WEB / FULL-STACK — FREELANCE (NDA)</span>
+        <span class="proj-status-dossier">[STATE: SECURE // DELIVERED]</span>
+      </div>
+
+      <!-- NDA Visual Banner -->
+      <div class="proj-banner-container">
+        <div class="nda-banner">
+          <div class="nda-badge">CLASSIFIED // NDA</div>
+          <div class="nda-subtext">
+            FREELANCE ENGAGEMENT — CLIENT COPY AND SCREENSHOTS ARE WITHHELD UNDER NONDISCLOSURE AGREEMENT.
+          </div>
+          <!-- Tiny geometric Vectorheart vector art in background -->
+          <svg width="40" height="40" viewBox="0 0 100 100" style="margin-top: 2.5mm; opacity: 0.3;">
+            <rect x="10" y="10" width="80" height="80" stroke="rgba(236,234,226,0.3)" stroke-width="0.5" fill="none" />
+            <line x1="10" y1="10" x2="90" y2="90" stroke="rgba(236,234,226,0.3)" stroke-width="0.5" />
+            <line x1="90" y1="10" x2="10" y2="90" stroke="rgba(236,234,226,0.3)" stroke-width="0.5" />
+            <circle cx="50" cy="50" r="30" stroke="var(--iris-bright)" stroke-width="0.5" stroke-dasharray="2 2" fill="none" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name" style="font-size: 20px;">STUDENT CONSULTATION<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">FULL-STACK DEVELOPER</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2025</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">DELIVERED</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Full-stack platform turning ad-hoc student–professor consultations into a structured, trackable workflow — role-based dashboards, realtime messaging with attachments, an interactive scheduling calendar, and a clear consultation status lifecycle.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Role-based interfaces for students, professors, and administrators</li>
+              <li>Realtime messaging and calendar scheduling with status lifecycle</li>
+              <li>Profile management with custom photo cropping; dashboard analytics</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">React</span>
+              <span class="stack-tag">TypeScript</span>
+              <span class="stack-tag">Vite</span>
+              <span class="stack-tag">Tailwind CSS</span>
+              <span class="stack-tag">Node.js</span>
+              <span class="stack-tag">Express</span>
+              <span class="stack-tag">JWT</span>
+              <span class="stack-tag">PostgreSQL</span>
+              <span class="stack-tag">Sharp</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● SYSTEM ARCHITECTURE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: CLIENT FRONTEND -->
+            <text x="40" y="62" class="row-lbl">&gt; FRONTEND</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="52" class="node-text">Student Panel SPA</text>
+              <text x="325" y="71" class="node-subtext">appointment request pipelines</text>
+            </g>
+            <g class="node-blue">
+              <rect x="500" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="52" class="node-text">Professor Panel SPA</text>
+              <text x="655" y="71" class="node-subtext">calendar grid approvals</text>
+            </g>
+            <g class="node-blue">
+              <rect x="830" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="52" class="node-text">Admin Panel SPA</text>
+              <text x="985" y="71" class="node-subtext">system logs & role config panels</text>
+            </g>
+            <line x1="655" y1="100" x2="655" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: REST API BACKEND -->
+            <text x="40" y="166" class="row-lbl">&gt; BACKEND API</text>
+            <g class="node-neutral">
+              <rect x="170" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="156" class="node-text">Express REST Server</text>
+              <text x="325" y="175" class="node-subtext">JWT route guard middlewares</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="500" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="156" class="node-text">Sharp Image System</text>
+              <text x="655" y="175" class="node-subtext">Multer profile uploads & resizings</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="830" y="124" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="156" class="node-text">Caching layer</text>
+              <text x="985" y="175" class="node-subtext">in-memory static route cache</text>
+            </g>
+            <line x1="655" y1="204" x2="655" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: CORE DATABASE -->
+            <text x="40" y="270" class="row-lbl">&gt; DATABASE</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="260" class="node-text">PostgreSQL Database</text>
+              <text x="402.5" y="279" class="node-subtext">relational data tables (users, logs)</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="655" y="228" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="260" class="node-text">Consultation Schedule</text>
+              <text x="897.5" y="279" class="node-subtext">state: pending → approved → ongoing → completed</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: STUDENT CONSULTATION</div>
+      <div class="page-num">PAGE 09 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 10: WALANG BASAGAN NG THRIFT
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● S-09</span>
+        <span class="proj-cat">WEB / E-COMMERCE — FREELANCE (NDA)</span>
+        <span class="proj-status-dossier">[STATE: SECURE // DELIVERED]</span>
+      </div>
+
+      <!-- NDA Visual Banner -->
+      <div class="proj-banner-container">
+        <div class="nda-banner">
+          <div class="nda-badge">CLASSIFIED // NDA</div>
+          <div class="nda-subtext">
+            FREELANCE ENGAGEMENT — CLIENT COPY AND SCREENSHOTS ARE WITHHELD UNDER NONDISCLOSURE AGREEMENT.
+          </div>
+          <!-- Tiny geometric Vectorheart vector art in background -->
+          <svg width="40" height="40" viewBox="0 0 100 100" style="margin-top: 2.5mm; opacity: 0.3;">
+            <rect x="10" y="10" width="80" height="80" stroke="rgba(236,234,226,0.3)" stroke-width="0.5" fill="none" />
+            <line x1="10" y1="10" x2="90" y2="90" stroke="rgba(236,234,226,0.3)" stroke-width="0.5" />
+            <line x1="90" y1="10" x2="10" y2="90" stroke="rgba(236,234,226,0.3)" stroke-width="0.5" />
+            <circle cx="50" cy="50" r="30" stroke="var(--iris-bright)" stroke-width="0.5" stroke-dasharray="2 2" fill="none" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name" style="font-size: 20px;">WALANG BASAGAN NG THRIFT<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">FULL-STACK WEB DEVELOPER</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2025</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">DELIVERED</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Y2K-inspired thrift store platform — storefront, role-based authentication, full shopping flow, threaded customer-support inbox, and an admin dashboard for users, products, orders, homepage content, and tickets.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Full storefront: catalog, details, cart, checkout, order histories</li>
+              <li>Three-tier role model (admin / moderator / buyer) with protected routes</li>
+              <li>In-app support inbox with thread assignment and moderator tools</li>
+              <li>SQLite-first storage with a JSON fallback mode for portable Windows devs</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● TECHNICAL STACK</div>
+            <div class="stack-tags">
+              <span class="stack-tag">React 19</span>
+              <span class="stack-tag">TypeScript</span>
+              <span class="stack-tag">Vite</span>
+              <span class="stack-tag">Tailwind CSS</span>
+              <span class="stack-tag">Node.js</span>
+              <span class="stack-tag">Express</span>
+              <span class="stack-tag">better-sqlite3</span>
+              <span class="stack-tag">bcryptjs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● SYSTEM ARCHITECTURE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: STOREFRONT CLIENT -->
+            <text x="40" y="62" class="row-lbl">&gt; STOREFRONT</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="52" class="node-text">Shopping Client SPA</text>
+              <text x="325" y="71" class="node-subtext">Y2K catalog & cart flows</text>
+            </g>
+            <g class="node-blue">
+              <rect x="500" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="52" class="node-text">Support Chat Inbox</text>
+              <text x="655" y="71" class="node-subtext">threaded moderator discussions</text>
+            </g>
+            <g class="node-blue">
+              <rect x="830" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="52" class="node-text">Admin Control Dashboard</text>
+              <text x="985" y="71" class="node-subtext">order management & catalogs</text>
+            </g>
+            <line x1="655" y1="100" x2="655" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: EXPRESS API -->
+            <text x="40" y="166" class="row-lbl">&gt; BACKEND API</text>
+            <g class="node-neutral">
+              <rect x="170" y="124" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="156" class="node-text">Express process router</text>
+              <text x="402.5" y="175" class="node-subtext">bcryptjs passwords & protected mod routes</text>
+            </g>
+            <g class="node-neutral">
+              <rect x="655" y="124" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="156" class="node-text">Multer Ingest</text>
+              <text x="897.5" y="175" class="node-subtext">local storage catalog photo uploads</text>
+            </g>
+            <line x1="655" y1="204" x2="655" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: DATABASE -->
+            <text x="40" y="270" class="row-lbl">&gt; SQLITE ENGINE</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="260" class="node-text">better-sqlite3 database</text>
+              <text x="402.5" y="279" class="node-subtext">default transactional local DB file</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="655" y="228" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="260" class="node-text">JSON Fallback Mode</text>
+              <text x="897.5" y="279" class="node-subtext">portable database configuration for Windows dev</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: WALANG BASAGAN</div>
+      <div class="page-num">PAGE 10 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 11: FEHUVIA WORKSTATION SHOWCASE
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● A-01</span>
+        <span class="proj-cat">VIDEO / PUBMATS / VISUAL</span>
+        <span class="proj-status-dossier">[STATE: COMPLETE // STABLE]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <!-- YouTube Thumbnail served as high quality banner -->
+        <img class="proj-banner-img" src="https://img.youtube.com/vi/aDBoZOoOhd8/maxresdefault.jpg" alt="FEHUVIA Showreel banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name" style="font-size: 20px;">FEHUVIA WORKSTATION SHOWCASE<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">VISUAL DESIGNER & EDITOR</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2026</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">COMPLETE</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              High-fidelity workstation highlights video — interface functionalities, dual-state data flows, and AI OCR capabilities. Custom visual assets designed in Figma and Adobe Illustrator, motion graphics keyframed in After Effects, final video editing and sound mixing in Premiere Pro.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>Curated user interface sequences showcasing real-time MetaMask signing</li>
+              <li>Hand-keyframed infographic elements explaining dual-state syncing details</li>
+              <li>Polished multi-camera sequence edits highlighting OCR automated invoice ingestion</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● PRODUCTION TOOLS</div>
+            <div class="stack-tags">
+              <span class="stack-tag">Figma</span>
+              <span class="stack-tag">Illustrator</span>
+              <span class="stack-tag">After Effects</span>
+              <span class="stack-tag">Premiere Pro</span>
+            </div>
+          </div>
+
+          <div class="uplinks-box">
+            <a class="uplink-item" href="https://youtu.be/aDBoZOoOhd8" target="_blank">
+              YOUTUBE VIDEO <span>WATCH SHOWCASE ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● VIDEO PRODUCTION ASSETS PIPELINE DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: ASSETS -->
+            <text x="40" y="62" class="row-lbl">&gt; ASSETS</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="52" class="node-text">Figma UI Prep</text>
+              <text x="402.5" y="71" class="node-subtext">interface wireframes & vector shapes</text>
+            </g>
+            <g class="node-blue">
+              <rect x="655" y="20" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="52" class="node-text">Illustrator Icons</text>
+              <text x="897.5" y="71" class="node-subtext">high fidelity custom graphics & layouts</text>
+            </g>
+            <line x1="655" y1="100" x2="655" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: MOTION -->
+            <text x="40" y="166" class="row-lbl">&gt; MOTION GRAPHICS</text>
+            <g class="node-violet">
+              <rect x="170" y="124" width="970" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="156" class="node-text">After Effects Compositing</text>
+              <text x="655" y="175" class="node-subtext">camera keyframes, UI click animations & flow infographics</text>
+            </g>
+            <line x1="655" y1="204" x2="655" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: ASSEMBLY -->
+            <text x="40" y="270" class="row-lbl">&gt; ASSEMBLY</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="260" class="node-text">Premiere Pro Editing</text>
+              <text x="402.5" y="279" class="node-subtext">scene transitions & multi-cam syncing</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="655" y="228" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="260" class="node-text">Audio track design</text>
+              <text x="897.5" y="279" class="node-subtext">ambient synthesizers & sound effect sweeps</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: FEHUVIA SHOWCASE</div>
+      <div class="page-num">PAGE 11 // 12</div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 12: AEROVIT ECOSYSTEM WALKTHROUGH
+       ========================================== -->
+  <div class="page">
+    <div class="grid-lines"></div>
+    <div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div>
+    <div class="corner-tag"></div>
+
+    <div class="content-wrapper">
+      <div class="proj-header">
+        <span class="proj-id-badge">● A-02</span>
+        <span class="proj-cat">VIDEO / PUBMATS / VISUAL</span>
+        <span class="proj-status-dossier">[STATE: COMPLETE // STABLE]</span>
+      </div>
+
+      <div class="proj-banner-container">
+        <!-- YouTube Thumbnail served as high quality banner -->
+        <img class="proj-banner-img" src="https://img.youtube.com/vi/rqx192_81zA/maxresdefault.jpg" alt="AEROVIT Walkthrough banner">
+      </div>
+
+      <div class="proj-title-block">
+        <h2 class="proj-name" style="font-size: 20px;">AEROVIT ECOSYSTEM WALKTHROUGH<span class="accent-yellow">.</span></h2>
+        <div class="proj-meta-table">
+          <div class="meta-lbl">ROLE:</div><div class="meta-val">VISUAL DESIGNER & EDITOR</div>
+          <div class="meta-lbl">TIMELINE:</div><div class="meta-val">2026</div>
+          <div class="meta-lbl">STATUS:</div><div class="meta-val accent-yellow">COMPLETE</div>
+        </div>
+      </div>
+
+      <div class="proj-details-grid">
+        <div class="column-left">
+          <div>
+            <div class="section-title">● SUMMARY</div>
+            <p class="summary-text">
+              Curated walkthrough of the hybrid fitness ecosystem — ESP32-S3 smartwatch pairing, MediaPipe BlazePose form tracking, Flame 2D dungeon RPG, and AERO Web3 withdrawals. Vector assets in Illustrator, keyframed animations in After Effects, final edit in Premiere Pro.
+            </p>
+          </div>
+          <div>
+            <div class="section-title">● KEY HIGHLIGHTS</div>
+            <ul class="bullets-list">
+              <li>High-impact motion graphic overlays showcasing BLE telemetry packages</li>
+              <li>Synchronized picture-in-picture tracking comparing actual user movements</li>
+              <li>Custom vector animations showing Flame 2D game loops and Sepolia transactions</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="column-right">
+          <div>
+            <div class="section-title">● PRODUCTION TOOLS</div>
+            <div class="stack-tags">
+              <span class="stack-tag">Illustrator</span>
+              <span class="stack-tag">After Effects</span>
+              <span class="stack-tag">Premiere Pro</span>
+            </div>
+          </div>
+
+          <div class="uplinks-box">
+            <a class="uplink-item" href="https://youtu.be/rqx192_81zA" target="_blank">
+              YOUTUBE VIDEO <span>WATCH WALKTHROUGH ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-architecture-section">
+        <div class="section-title">● WALKTHROUGH PRODUCTION STAGES DIAGRAM</div>
+        <div class="diagram-viewport">
+          <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--iris)" class="arrow-marker" />
+              </marker>
+              <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(236, 234, 226, 0.3)" class="arrow-marker-muted" />
+              </marker>
+            </defs>
+            <!-- Row 1: CAPTURE -->
+            <text x="40" y="62" class="row-lbl">&gt; CAPTURE</text>
+            <g class="node-blue">
+              <rect x="170" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="325" y="52" class="node-text">Device captures</text>
+              <text x="325" y="71" class="node-subtext">smartwatch camera feeds & telemetry dumps</text>
+            </g>
+            <g class="node-blue">
+              <rect x="500" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="655" y="52" class="node-text">BlazePose overlays</text>
+              <text x="655" y="71" class="node-subtext">33-mesh coordinate raw recordings</text>
+            </g>
+            <g class="node-blue">
+              <rect x="830" y="20" width="310" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="985" y="52" class="node-text">Flame RPG loops</text>
+              <text x="985" y="71" class="node-subtext">2D game engine gameplay capture files</text>
+            </g>
+            <line x1="655" y1="100" x2="655" y2="122" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 2: SYNTHESIS -->
+            <text x="40" y="166" class="row-lbl">&gt; GRAPHICS SYNTHESIS</text>
+            <g class="node-violet">
+              <rect x="170" y="124" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="156" class="node-text">Illustrator Blueprint assets</text>
+              <text x="402.5" y="175" class="node-subtext">sensor schematic vectors & chip outlines</text>
+            </g>
+            <g class="node-violet">
+              <rect x="655" y="124" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="156" class="node-text">BLE packet indicators</text>
+              <text x="897.5" y="175" class="node-subtext">After Effects data streams & coordinate track overlays</text>
+            </g>
+            <line x1="655" y1="204" x2="655" y2="226" stroke="rgba(236, 234, 226, 0.3)" stroke-width="1.4" stroke-dasharray="3 4" marker-end="url(#arrow-muted)" />
+
+            <!-- Row 3: EDIT ASSEMBLY -->
+            <text x="40" y="270" class="row-lbl">&gt; FINAL ASSEMBLY</text>
+            <g class="node-emerald">
+              <rect x="170" y="228" width="465" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="402.5" y="260" class="node-text">Premiere timelines</text>
+              <text x="402.5" y="279" class="node-subtext">picture-in-picture sync & cuts</text>
+            </g>
+            <g class="node-emerald">
+              <rect x="655" y="228" width="485" height="78" rx="0" ry="0" stroke-width="1.4" />
+              <text x="897.5" y="260" class="node-text">Voice-over mixing</text>
+              <text x="897.5" y="279" class="node-subtext">voice cleanup & background synth hum assemblies</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>AERA.DEV // CASE STUDY: AEROVIT WALKTHROUGH</div>
+      <div class="page-num">PAGE 12 // 12</div>
+    </div>
+  </div>
+
+</body>
+</html>
