@@ -118,6 +118,16 @@ const SYSTEMS: ArchiveItem[] = [
       "Y2K-themed thrift storefront — full shopping flow, three-tier role model, admin back office, and a threaded customer-support inbox.",
     nda: true,
   },
+  {
+    index: "S-10",
+    slug: "familiar",
+    name: "FAMILIAR",
+    badge: "IN DEVELOPMENT",
+    category: "MOBILE / AI / CV",
+    blurb:
+      "Gamified study companion — on-device ML Kit distraction detection, a Flame-rendered creature that grows as you focus, ember-seed hatches, wax-seal achievements. Offline-first Isar + Firebase.",
+    img: "/projects/familiar-classified.svg",
+  },
 ];
 
 const ARTS_VIDEOS = [

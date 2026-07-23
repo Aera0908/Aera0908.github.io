@@ -1,0 +1,52 @@
+<svg viewBox="0 0 1260 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FAMILIAR — classified case file cover, in development">
+  <defs>
+    <pattern id="microgrid" width="16" height="16" patternUnits="userSpaceOnUse">
+      <path d="M16 0H0V16" fill="none" stroke="#fcee0a" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- world background -->
+  <rect width="1260" height="540" fill="#0a0a0c"/>
+  <rect width="1260" height="540" fill="url(#microgrid)"/>
+
+  <!-- decorative radar / sonar rings (vault family motif) -->
+  <g transform="translate(1000,270)">
+    <circle r="200" fill="none" stroke="#e8d90c" stroke-opacity="0.07"/>
+    <circle r="130" fill="none" stroke="#e8d90c" stroke-opacity="0.07" stroke-dasharray="6 8"/>
+    <circle r="60" fill="none" stroke="#e8d90c" stroke-opacity="0.10"/>
+    <line x1="-200" y1="0" x2="200" y2="0" stroke="#e8d90c" stroke-opacity="0.05"/>
+    <line x1="0" y1="-200" x2="0" y2="200" stroke="#e8d90c" stroke-opacity="0.05"/>
+  </g>
+
+  <!-- inset frame -->
+  <rect x="18" y="18" width="1224" height="504" fill="none" stroke="#eceae2" stroke-opacity="0.14"/>
+
+  <!-- frame readouts -->
+  <text x="34" y="44" font-family="Consolas, 'JetBrains Mono', monospace" font-size="12" letter-spacing="2" fill="#e8d90c" fill-opacity="0.55">AERA_SECURE_ARCHIVE</text>
+  <text x="1226" y="44" text-anchor="end" font-family="Consolas, 'JetBrains Mono', monospace" font-size="12" letter-spacing="2" fill="#eceae2" fill-opacity="0.45">CASE FILE // P-04</text>
+  <text x="34" y="506" font-family="Consolas, 'JetBrains Mono', monospace" font-size="12" letter-spacing="2" fill="#eceae2" fill-opacity="0.45">SYS_STATUS: IN_DEV</text>
+  <text x="1226" y="506" text-anchor="end" font-family="Consolas, 'JetBrains Mono', monospace" font-size="12" letter-spacing="2" fill="#eceae2" fill-opacity="0.45">LOC: MNL_SYS</text>
+
+  <!-- index marker -->
+  <text x="74" y="180" font-family="Consolas, 'JetBrains Mono', monospace" font-size="14" letter-spacing="3" fill="#e8d90c">● P-04 — NEXT BUILD</text>
+
+  <!-- title -->
+  <text x="68" y="292" font-family="'Archivo Black', Arial, sans-serif" font-weight="900" font-size="104" letter-spacing="-2" fill="#f4f3ee">FAMILIAR</text>
+
+  <!-- redacted spec lines -->
+  <g fill="#eceae2">
+    <rect x="74" y="330" width="340" height="16" fill-opacity="0.12"/>
+    <rect x="430" y="330" width="120" height="16" fill-opacity="0.08"/>
+    <rect x="74" y="358" width="180" height="16" fill-opacity="0.08"/>
+    <rect x="270" y="358" width="280" height="16" fill-opacity="0.12"/>
+    <rect x="74" y="386" width="410" height="16" fill-opacity="0.10"/>
+  </g>
+  <text x="74" y="440" font-family="Consolas, 'JetBrains Mono', monospace" font-size="13" letter-spacing="2" fill="#eceae2" fill-opacity="0.6">FLUTTER // ML KIT CV // FLAME // ISAR</text>
+
+  <!-- classified stamp -->
+  <g transform="translate(960,150) rotate(-8)">
+    <rect x="-150" y="-34" width="300" height="68" fill="none" stroke="#fcee0a" stroke-width="3" stroke-opacity="0.85"/>
+    <text x="0" y="-6" text-anchor="middle" font-family="Consolas, 'JetBrains Mono', monospace" font-weight="bold" font-size="24" letter-spacing="6" fill="#fcee0a" fill-opacity="0.9">CLASSIFIED</text>
+    <text x="0" y="22" text-anchor="middle" font-family="Consolas, 'JetBrains Mono', monospace" font-size="13" letter-spacing="4" fill="#fcee0a" fill-opacity="0.7">IN DEVELOPMENT</text>
+  </g>
+</svg>

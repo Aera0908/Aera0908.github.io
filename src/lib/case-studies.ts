@@ -157,6 +157,36 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
   },
   {
+    slug: "familiar",
+    name: "FAMILIAR",
+    badge: "IN DEVELOPMENT",
+    category: "MOBILE / AI / COMPUTER VISION",
+    role: "Solo Developer & Product Designer",
+    duration: "2026 — PRESENT",
+    status: "IN DEVELOPMENT",
+    img: "/projects/familiar-classified.svg",
+    summary:
+      "Gamified study companion (working title) — point the front camera at yourself during a focus session and on-device computer vision watches for signs of distraction: looking away, leaving the desk. Stay focused and your Familiar — a creature hatched from an ember seed — grows alongside your study streaks, earning wax-seal achievements. Offline-first, with a Firebase sync plane.",
+    highlights: [
+      "On-device distraction detection: front camera stream + Google ML Kit face detection",
+      "Virtual companion creature rendered with Flame — grows through accumulated focus time",
+      "\"Ember seed\" hatch mechanic and collectible wax-seal achievements",
+      "Offline-first local persistence on Isar with Firebase Auth / Firestore sync",
+      "Design-token system as single source of truth — aged-paper palette, Fraunces + Inter",
+    ],
+    architecture: [
+      "Feature-first Flutter architecture: core (theme / routing / constants) → features (home, session, familiar, hatch, rewards, cv) → services (firebase, persistence)",
+      "CV service isolates the camera + ML Kit pipeline from session scoring logic",
+      "Riverpod state graph bridges session telemetry into creature growth and rewards",
+      "Web3 collectible layer planned behind its own interface — swappable, never load-bearing",
+    ],
+    stack: [
+      { label: "Mobile", items: ["Flutter", "Dart", "Riverpod", "Flame 2D"] },
+      { label: "CV", items: ["Camera stream", "Google ML Kit Face Detection"] },
+      { label: "Data", items: ["Isar (offline-first)", "Firebase Auth", "Cloud Firestore", "Cloud Functions"] },
+    ],
+  },
+  {
     slug: "emg-controller",
     name: "EMG INTERFACE CONTROLLER",
     category: "EMBEDDED / HARDWARE",

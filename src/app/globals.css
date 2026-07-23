@@ -314,3 +314,28 @@ html {
   animation-delay: 0.35s;
   opacity: 0;
 }
+
+/* ---------- vault NEXT BUILD marquee (teaser signage) ---------- */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-scroll 22s linear infinite;
+}
+
+/* pause on hover so the signage is readable / clickable with intent */
+.marquee-strip:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
