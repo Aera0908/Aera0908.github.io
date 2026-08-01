@@ -73,9 +73,15 @@ body {
   color: var(--paper);
 }
 
-:focus-visible {
-  outline: 2px solid var(--signal);
-  outline-offset: 2px;
+/* Inside @layer base so component-level utilities can override it. Unlayered
+   rules beat every layered Tailwind utility regardless of specificity, so as
+   written outside a layer this could not be turned off anywhere — not even
+   with focus-visible:outline-none. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
 }
 
 /* ---------- typography scale (spec §2) ---------- */
@@ -315,7 +321,7 @@ html {
   opacity: 0;
 }
 
-/* ---------- vault NEXT BUILD marquee (teaser signage) ---------- */
+/* ---------- vault caution ribbon slow marquee ---------- */
 @keyframes marquee-scroll {
   from {
     transform: translateX(0);
@@ -325,17 +331,42 @@ html {
   }
 }
 
-.animate-marquee {
-  animation: marquee-scroll 22s linear infinite;
+.animate-marquee-slow {
+  animation: marquee-scroll 50s linear infinite;
 }
 
-/* pause on hover so the signage is readable / clickable with intent */
-.marquee-strip:hover .animate-marquee {
+.group\/next:hover .animate-marquee-slow {
   animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
+  .animate-marquee-slow {
     animation: none;
   }
 }
+
+@keyframes stripe-scroll {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -40px 0;
+  }
+}
+
+.animate-stripe-slow {
+  animation: stripe-scroll 3s linear infinite;
+  background-size: 40px 100%;
+}
+
+.group\/next:hover .animate-stripe-slow {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-stripe-slow {
+    animation: none;
+  }
+}
+
+

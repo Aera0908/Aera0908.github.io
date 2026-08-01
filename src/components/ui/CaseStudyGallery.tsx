@@ -8,12 +8,28 @@ type GalleryItem = {
   src: string;
   caption: string;
   type?: "image" | "video" | "youtube";
+  poster?: string;
 };
 
 function getYoutubeId(url: string): string {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
   const match = url.match(regExp);
   return match && match[2].length === 11 ? match[2] : "";
+}
+
+/**
+ * The still shown in the grid. Never returns a media URL: a self-hosted clip
+ * falls back to its own poster, and a YouTube item to the CDN thumbnail —
+ * which needs a parseable id, so an unparseable URL yields null rather than
+ * the broken `/vi//hqdefault.jpg` the old code silently produced.
+ */
+function thumbFor(item: GalleryItem): string | undefined {
+  if (item.poster) return item.poster;
+  if (item.type === "youtube") {
+    const id = getYoutubeId(item.src);
+    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : undefined;
+  }
+  return undefined;
 }
 
 export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; slug: string }) {
@@ -35,7 +51,9 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
       <div className="mt-16 border-t border-periwinkle/15 pt-12">
         <p className="t-label mb-6 text-iris-bright font-mono tracking-widest uppercase">GALLERY & EVIDENCE FILES</p>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {gallery.map((item, idx) => (
+          {gallery.map((item, idx) => {
+            const thumb = thumbFor(item);
+            return (
             <div
               key={idx}
               onClick={() => handleOpen(item)}
@@ -44,19 +62,17 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/40 flex items-center justify-center">
                 {item.type === "video" || item.type === "youtube" ? (
                   <>
-                    {item.type === "video" ? (
-                      <video
-                        src={item.src}
-                        muted
-                        playsInline
-                        loop
-                        autoPlay
-                        className="h-full w-full object-cover opacity-85 group-hover:opacity-100 transition-opacity duration-500"
-                      />
-                    ) : (
+                    {/* Always a still in the grid — never the media itself.
+                        An autoplaying <video> here pulled the whole demo file
+                        (50–64 MB) on page load, before any click. If no still
+                        resolves we show the bare play HUD over black rather
+                        than a broken-image icon. */}
+                    {thumb && (
                       <img
-                        src={`https://img.youtube.com/vi/${getYoutubeId(item.src)}/hqdefault.jpg`}
+                        src={thumb}
                         alt={item.caption}
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-700 ease-out group-hover:scale-105"
                       />
                     )}
@@ -76,6 +92,8 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                   <img
                     src={item.src}
                     alt={item.caption}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                 )}
@@ -85,7 +103,8 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                 ■ {item.type === "video" ? "[ VIDEO DEMO ] " : item.type === "youtube" ? "[ YOUTUBE FEED ] " : ""}{item.caption.toUpperCase()}
               </p>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -132,9 +151,11 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
               ) : activeItem.type === "video" ? (
                 <video
                   src={activeItem.src}
+                  poster={activeItem.poster}
                   controls
                   autoPlay
                   playsInline
+                  preload="auto"
                   className="h-full w-full object-contain"
                 />
               ) : (

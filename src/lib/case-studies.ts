@@ -18,7 +18,17 @@ export type CaseStudy = {
   stack: { label: string; items: string[] }[];
   links?: { label: string; href: string }[];
   badge?: string;
-  gallery?: { src: string; caption: string; type?: "image" | "video" | "youtube" }[];
+  /**
+   * `poster` is required in spirit for `type: "video"` — the grid renders it
+   * instead of the media file, so a multi-MB demo is only fetched once the
+   * viewer actually opens the lightbox.
+   */
+  gallery?: {
+    src: string;
+    caption: string;
+    type?: "image" | "video" | "youtube";
+    poster?: string;
+  }[];
 };
 
 export const CASE_STUDIES: CaseStudy[] = [
@@ -29,7 +39,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     role: "Lead Web3 & Full-Stack Developer",
     duration: "2026",
     status: "LIVE",
-    img: "/projects/fehuvia.png",
+    img: "/projects/fehuvia.webp",
     summary:
       "Open-finance Web3 B2B treasury workstation for Southeast Asian SMEs — marrying relational database state tracking with smart-contract execution rails on Morph L2 to cut settlement from a 3-day banking standard to under 2 seconds (T+0), at a fraction of a cent per transaction.",
     highlights: [
@@ -60,6 +70,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     gallery: [
       {
         src: "/projects/fehuvia-demo.mp4",
+        poster: "/projects/fehuvia-demo-poster.jpg",
         caption: "Fehuvia Workstation Walkthrough — Real-time Web3 B2B treasury workstation showing L2 payments, invoice parser, and AI co-pilot",
         type: "video"
       },
@@ -78,7 +89,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     role: "Lead Developer & Embedded Systems Architect",
     duration: "SEP 2024 — APR 2026",
     status: "COMPLETE — PROTOTYPE",
-    img: "/projects/aerovit.png",
+    img: "/projects/aerovit.webp",
     summary:
       "Hybrid fitness ecosystem pairing a Flutter app with a custom ESP32-S3 smartwatch, MediaPipe BlazePose tracking, adaptive AI coaching, and an ERC-20 reward token on Ethereum Sepolia — complete at demonstration depth as a fully walkable prototype.",
     highlights: [
@@ -104,6 +115,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     gallery: [
       {
         src: "/projects/aerovit-video.mp4",
+        poster: "/projects/aerovit-video-poster.jpg",
         caption: "Aerovit Smartwatch & Pose Tracking Demo — Real-time ESP32-S3 biometrics and MediaPipe BlazePose intensity mapping",
         type: "video"
       },
@@ -131,7 +143,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     role: "Creator & Lead Frontend Engineer",
     duration: "MAY — JUN 2026",
     status: "COMPLETE — PRODUCTION DEPTH",
-    img: "/projects/stickout.png",
+    img: "/projects/stickout.webp",
     summary:
       "Open-source, browser-based EDA tool for creating, editing, and validating VLSI stick diagrams — a custom 2D math viewport on raw HTML5 Canvas with infinite pan/zoom, a Photoshop-style layer stack, and automated design-rule assistants.",
     highlights: [
@@ -193,7 +205,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     role: "Embedded Systems Developer & Hardware Designer",
     duration: "ACADEMIC PROJECT",
     status: "COMPLETED",
-    img: "/projects/emg.png",
+    img: "/projects/emg.webp",
     summary:
       "Real-time electromyography signal processing and visualization on the ESP32-S3 — 500 Hz acquisition through a multi-stage DSP pipeline, streamed over UART to a Python GUI, with a game-controller bridge and custom PCB + enclosure.",
     highlights: [
@@ -224,7 +236,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     role: "Frontend & 3D Web Developer",
     duration: "2025 — PRESENT",
     status: "WORK IN PROGRESS",
-    img: "/projects/safehouse.png",
+    img: "/projects/safehouse.webp",
     summary:
       "Showcase and pitch site for The Safehouse community, delivered as a guided 3D scroll journey — campfire gathering, forest path, signposts, and a gate — rendered in real-time WebGL with scroll-driven choreography.",
     highlights: [
@@ -256,7 +268,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     role: "Full-Stack Mobile & IoT Developer",
     duration: "2025",
     status: "DELIVERED",
-    img: "/projects/plantio.png",
+    img: "/projects/plantio.webp",
     nda: true,
     summary:
       "Flutter IoT monitoring dashboard for nurseries and garden beds — ESP32 devices stream soil moisture, temperature, humidity, EC, and pH in real time, with remote actuator control and a plant-health scoring system rendered as an animated avatar. 8-bit retro UI throughout.",
@@ -285,7 +297,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     role: "Frontend Developer",
     duration: "2026",
     status: "COMPLETE",
-    img: "/projects/manhwa.png",
+    img: "/projects/manhwa.webp",
     summary:
       "Single-page app for discovering titles and reading chapters end-to-end via the MangaDex API — home with search and feeds, detail pages, and a dedicated reader with chapter navigation and persistent themes.",
     highlights: [

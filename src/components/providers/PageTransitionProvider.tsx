@@ -11,6 +11,18 @@ interface PageTransitionContextProps {
 
 const PageTransitionContext = createContext<PageTransitionContextProps | undefined>(undefined);
 
+/**
+ * next.config has `trailingSlash: true`, so a push to "/vault/archive" lands a
+ * canonical URL of "/vault/archive/" — and usePathname() reads straight off
+ * that canonical URL. Comparing the raw strings never matched, so the curtain
+ * slid in and then sat there until the 3.5s failsafe. Normalise both sides.
+ */
+const samePath = (a: string | null, b: string | null) => {
+  if (!a || !b) return false;
+  const strip = (p: string) => p.replace(/\/+$/, "") || "/";
+  return strip(a) === strip(b);
+};
+
 export function PageTransitionProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -55,7 +67,7 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
 
   // Watch for pathname changes to trigger the slide-out
   useEffect(() => {
-    if (isTransitioning && targetHref && pathname === targetHref) {
+    if (isTransitioning && targetHref && samePath(pathname, targetHref)) {
       // Small timeout to allow the browser to paint the new route
       const t = setTimeout(() => {
         const lenis = (window as unknown as { lenis?: { stop: () => void; start: () => void } }).lenis;

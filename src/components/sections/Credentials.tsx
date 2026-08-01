@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { gsap } from "@/lib/gsap";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
@@ -241,6 +242,10 @@ export function Credentials() {
   const rootRef = useRef<HTMLElement>(null);
   const { fx } = useHudAudio();
   const [previewCert, setPreviewCert] = useState<Certificate | null>(null);
+  // the modal is portaled to <body>; gate on mount so SSR and the first client
+  // render agree (document doesn't exist during prerender)
+  const [portalReady, setPortalReady] = useState(false);
+  useEffect(() => setPortalReady(true), []);
 
   // Terminal state machine: hidden -> loading -> typing -> ready
   const [terminalState, setTerminalState] = useState<"hidden" | "loading" | "typing" | "ready">("hidden");
@@ -559,10 +564,15 @@ export function Credentials() {
         )}
       </div>
 
-      {/* Terminal Certificate Decryption View Modal */}
-      {previewCert && (
+      {/* Terminal Certificate Decryption View Modal.
+          Portaled to <body>: this section is `relative z-10`, which opens a
+          stacking context, so a `fixed z-50` child was capped at z-10 in root
+          order and painted UNDER the fixed Navbar (z-70) and the sticky
+          download bar (z-60) — both stayed clickable over the "modal". */}
+      {previewCert && portalReady &&
+        createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-[110] flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
           aria-label={`${previewCert.name} preview`}
@@ -643,7 +653,8 @@ export function Credentials() {
               <span>AERA SECURE WORKSTATION v2.0 // DECRYPT_ENGINE_ACTIVE</span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </section>
   );

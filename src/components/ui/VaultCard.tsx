@@ -221,6 +221,8 @@ export function VaultCard({
             <img
               src={img}
               alt={`${name} cover`}
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div

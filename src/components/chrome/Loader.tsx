@@ -8,6 +8,11 @@ type Phase = "loading" | "waiting" | "revealing" | "ready" | "gone";
 
 const FINAL_LETTERS = ["A", "E", "R", "A"];
 
+/** spec §7 — read live, so an OS-level change mid-session is honoured */
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 /** boot log lines, revealed when the progress passes their threshold */
 const BOOT_LINES: Array<{ at: number; text: string; status?: string }> = [
   { at: 3, text: "$ boot portfolio.sys" },
@@ -61,6 +66,40 @@ const STIPPLE: Array<[number, number, number]> = (() => {
     dots.push([Math.cos(a) * rr, Math.sin(a) * rr, 0.008 + rand() * 0.016]);
   }
   return dots;
+})();
+
+/* ---------------- launch gate ----------------
+   The world beyond this screen is a lunar facility, so the boot gate is an
+   ignition instrument: hold to spin the thrust gauge up to launch. Engraved
+   line-work only — tick rings and a needle, same printed language as the moon
+   drawn above (spec §0: flat, no glow). */
+
+/** spec §4 — click-and-hold is 1.2s; release before complete reverses at 2× */
+const HOLD_SECONDS = 1.2;
+
+/** gauge geometry in svg user units; 270° sweep opening at the bottom */
+const G = { size: 160, cx: 80, cy: 80, r: 62, a0: 135, sweep: 270, arcR: 44 };
+
+const deg2rad = (d: number) => (d * Math.PI) / 180;
+const onDial = (deg: number, r: number): [number, number] => [
+  G.cx + Math.cos(deg2rad(deg)) * r,
+  G.cy + Math.sin(deg2rad(deg)) * r,
+];
+
+/** graduated ticks around the dial — every 5th is a major graduation */
+const TICKS = Array.from({ length: 46 }, (_, i) => {
+  const a = G.a0 + G.sweep * (i / 45);
+  const major = i % 5 === 0;
+  const [x1, y1] = onDial(a, G.r - (major ? 11 : 6));
+  const [x2, y2] = onDial(a, G.r);
+  return { x1, y1, x2, y2, major, i };
+});
+
+/** the thrust arc the hold inks in; pathLength=1 so dashoffset is just 1-p */
+const ARC_PATH = (() => {
+  const [x0, y0] = onDial(G.a0, G.arcR);
+  const [x1, y1] = onDial(G.a0 + G.sweep, G.arcR);
+  return `M${x0.toFixed(1)} ${y0.toFixed(1)} A ${G.arcR} ${G.arcR} 0 1 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
 })();
 
 /**
@@ -135,6 +174,18 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   const promptRef = useRef<HTMLDivElement>(null);
   const scrambleTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const scrambleIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /* launch gate */
+  const arcRef = useRef<SVGPathElement>(null);
+  const needleRef = useRef<SVGGElement>(null);
+  const dialRef = useRef<HTMLDivElement>(null);
+  const thrustRef = useRef<HTMLSpanElement>(null);
+  const clockRef = useRef<HTMLSpanElement>(null);
+  const statusRef = useRef<HTMLSpanElement>(null);
+  const gateBtnRef = useRef<HTMLButtonElement>(null);
+  const holdTweenRef = useRef<gsap.core.Tween | null>(null);
+  const progressTweenRef = useRef<gsap.core.Tween | null>(null);
+  const launchedRef = useRef(false);
 
   const canvasState = useRef({
     angle: Math.PI / 2,
@@ -276,24 +327,56 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
       { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
     );
 
-    const headEl = prompt.querySelector<HTMLElement>(".proceed-head");
-    const HEAD = "CLICK TO PROCEED";
-    const timers: ReturnType<typeof setInterval>[] = [];
+    // land keyboard focus on the gate so it is reachable without a pointer
+    gateBtnRef.current?.focus({ preventScroll: true });
+  }, [phase]);
 
-    if (headEl) {
-      let idx = 0;
-      const typeTimer = setInterval(() => {
-        idx++;
-        headEl.textContent = HEAD.slice(0, idx);
-        if (idx >= HEAD.length) {
-          clearInterval(typeTimer);
-        }
-      }, 40);
-      timers.push(typeTimer);
+  /**
+   * Paint the scan at progress p (0→1). Written straight to the DOM rather
+   * than through state — this runs every frame of the hold.
+   */
+  const paintLaunch = (p: number) => {
+    // p can exceed 1 during the ignition kick so the needle physically
+    // overshoots its stop and springs back; the readouts stay clamped.
+    const shown = Math.min(1, Math.max(0, p));
+    // arc has pathLength=1, so the dash offset is simply the remainder
+    arcRef.current?.setAttribute("stroke-dashoffset", String(1 - shown));
+    needleRef.current?.setAttribute(
+      "transform",
+      `rotate(${G.a0 + G.sweep * p} ${G.cx} ${G.cy})`,
+    );
+    if (thrustRef.current) {
+      thrustRef.current.textContent = String(Math.round(shown * 100)).padStart(3, "0");
+    }
+    if (clockRef.current) {
+      // counts down to zero as the gauge comes up
+      clockRef.current.textContent = (HOLD_SECONDS * (1 - shown)).toFixed(1);
     }
 
-    return () => timers.forEach(clearInterval);
-  }, [phase]);
+    // Mechanical shake during hold: intensifies as thrust builds from 0% -> 100%
+    if (!launchedRef.current && dialRef.current) {
+      if (shown > 0) {
+        const intensity = Math.pow(shown, 1.2);
+        const dx = (Math.random() - 0.5) * 12 * intensity;
+        const dy = (Math.random() - 0.5) * 12 * intensity;
+        const rot = (Math.random() - 0.5) * 2.4 * intensity;
+        gsap.set(dialRef.current, { x: dx, y: dy, rotation: rot });
+        if (overlayRef.current) {
+          gsap.set(overlayRef.current, { scale: 1 + Math.random() * 0.007 * intensity });
+        }
+      } else {
+        gsap.set(dialRef.current, { x: 0, y: 0, rotation: 0 });
+        if (overlayRef.current) {
+          gsap.set(overlayRef.current, { scale: 1 });
+        }
+      }
+    }
+  };
+
+  const setStatus = (text: string) => {
+    if (statusRef.current) statusRef.current.textContent = text;
+  };
+
 
   /* sci-fi reticle cursor while the intro is up — Cursor.tsx swaps designs
      based on this body class (removed automatically when the Loader leaves) */
@@ -343,12 +426,16 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         }
       },
       onComplete: () => {
+        // a skip may have already torn the intro down
+        if (enteredRef.current) return;
         setPhase("waiting");
         onWaiting?.();
       },
     });
+    progressTweenRef.current = tween;
     return () => {
       tween.kill();
+      progressTweenRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -356,7 +443,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   function enter(withSound: boolean) {
     if (enteredRef.current) return;
     enteredRef.current = true;
-    
+
     // Attempt WebAudio boot
     try {
       hudAudio.boot();
@@ -369,6 +456,26 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     if (!logo) {
       setPhase("gone");
       onDone();
+      return;
+    }
+
+    // spec §7: with reduced motion the whole hand-off collapses to one fade —
+    // no FLIP morph, no canvas exit flight, no clip-path wipe. It must still
+    // finish by calling onDone(), or Home's scroll lock never lifts.
+    if (prefersReducedMotion()) {
+      settleScramble();
+      revealTlRef.current?.kill();
+      revealTlRef.current = null;
+      gsap.killTweensOf([logo, logo.querySelectorAll(".aera-letter")]);
+      gsap.to(overlayRef.current, {
+        opacity: 0,
+        duration: 0.35,
+        ease: "none",
+        onComplete: () => {
+          setPhase("gone");
+          onDone();
+        },
+      });
       return;
     }
 
@@ -472,22 +579,38 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   useEffect(() => {
     if (phase !== "revealing") return;
 
+    // Every exit from this effect MUST reach enter() — it is the only caller of
+    // onDone(), and Home keeps the page hard scroll-locked until onDone fires.
+    // Bailing out here (missing node, reduced motion) used to strand the
+    // visitor on the boot screen with scrolling disabled and no way forward.
     const logo = logoRef.current;
-    if (!logo) return;
+    if (!logo) {
+      enter(true);
+      return;
+    }
     logo.style.display = "flex";
 
     const letters = Array.from(logo.querySelectorAll<HTMLElement>(".aera-letter"));
-    if (letters.length === 0) return;
+    if (letters.length === 0) {
+      enter(true);
+      return;
+    }
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      // spec §7: reveals become fades, no scramble loops
+    if (prefersReducedMotion()) {
+      // spec §7: reveals become fades, no scramble loops — then hand off
       gsap.set(letters, { yPercent: 0, opacity: 0 });
-      gsap.to(letters, { opacity: 1, duration: 0.6, ease: "power2.out" });
       if (captionRef.current) {
         gsap.fromTo(captionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.6 });
       }
-      return;
+      const fade = gsap.to(letters, {
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        onComplete: () => enter(true),
+      });
+      return () => {
+        fade.kill();
+      };
     }
 
     const tl = gsap.timeline({
@@ -546,14 +669,44 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
-  const handleOverlayClick = () => {
-    if (phase !== "waiting" || enteredRef.current) return;
+  /**
+   * Bail out of the entire intro — the boot log, the gate and the AERA reveal.
+   * Available from every phase, so it also works while the progress bar is
+   * still filling. Skips straight to `gone` rather than into the reveal.
+   */
+  const skipIntro = () => {
+    if (enteredRef.current) return;
+    enteredRef.current = true; // also blocks a late enter() / launch()
+    launchedRef.current = true;
+
+    progressTweenRef.current?.kill();
+    holdTweenRef.current?.kill();
+    revealTlRef.current?.kill();
+    revealTlRef.current = null;
+    settleScramble();
+    gsap.killTweensOf(
+      [promptRef.current, dialRef.current, logoRef.current].filter(Boolean),
+    );
 
     try {
       hudAudio.boot();
-    } catch {
-    }
+      hudAudio.setMuted(false);
+    } catch {}
 
+    const done = () => {
+      setPhase("gone");
+      onDone();
+    };
+    const overlay = overlayRef.current;
+    if (!overlay || prefersReducedMotion()) {
+      done();
+      return;
+    }
+    gsap.to(overlay, { opacity: 0, duration: 0.28, ease: "power2.out", onComplete: done });
+  };
+
+  /** hand off to the AERA reveal (previously the whole of the click handler) */
+  const leaveGate = () => {
     const prompt = promptRef.current;
     if (prompt) {
       gsap.to(prompt, {
@@ -562,14 +715,155 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         scale: 0.95,
         duration: 0.45,
         ease: "power2.inOut",
-        onComplete: () => {
-          setPhase("revealing");
-        }
+        onComplete: () => setPhase("revealing"),
       });
     } else {
       setPhase("revealing");
     }
   };
+
+  /** gauge topped out — fire the ignition kick, then release into the reveal */
+  const launch = () => {
+    if (launchedRef.current || enteredRef.current) return;
+    launchedRef.current = true;
+
+    try {
+      hudAudio.boot();
+      hudAudio.confirm();
+    } catch {}
+
+    paintLaunch(1);
+    setStatus("IGNITION");
+
+    if (prefersReducedMotion()) {
+      leaveGate();
+      return;
+    }
+
+    /**
+     * Real launches are not smooth. The sequence is: engines light and the
+     * whole stack rattles while the hold-downs are still clamped, the needle
+     * slams its stop and springs back, then release — and the thing barely
+     * moves at first before running away from the pad.
+     *
+     * So the motion is deliberately stuttered (steps easing over random
+     * keyframes, not a sine) and the ascent is ease-IN, never ease-out.
+     */
+    const dial = dialRef.current;
+    const prompt = promptRef.current;
+    const overlay = overlayRef.current;
+    const tl = gsap.timeline({ onComplete: () => setPhase("revealing") });
+
+    // 1) the needle slams past its stop and springs back on the spring
+    const kick = { p: 1 };
+    tl.to(kick, {
+      p: 1.05,
+      duration: 0.08,
+      ease: "power4.out",
+      onUpdate: () => paintLaunch(kick.p),
+    }, 0).to(kick, {
+      p: 1,
+      duration: 0.55,
+      ease: "elastic.out(1, 0.3)",
+      onUpdate: () => paintLaunch(kick.p),
+    }, 0.08);
+
+    // 2) engine light-up — hard mechanical rattle, stepped so it stutters
+    if (dial) {
+      tl.to(dial, {
+        keyframes: {
+          x: [-5, 6, -7, 5, -6, 4, -3, 2, 0],
+          y: [4, -5, 6, -4, 4, -3, 2, -1, 0],
+          rotation: [-0.9, 1.0, -1.1, 0.7, -0.8, 0.5, -0.3, 0.2, 0],
+          // easeEach is the PER-SEGMENT ease; `ease` here would quantise the
+          // whole sequence instead, holding the first value then snapping to
+          // the last — which is exactly what it did before this was fixed.
+          easeEach: "steps(1)",
+          ease: "none",
+          duration: 0.5,
+        },
+      }, 0);
+    }
+    // the structure itself shudders — scaled, not translated, so the paper
+    // background can never pull away from the viewport edge
+    if (overlay) {
+      tl.to(overlay, {
+        keyframes: {
+          scale: [1.006, 1.002, 1.008, 1.003, 1.006, 1.001, 1],
+          easeEach: "steps(1)",
+          ease: "none",
+          duration: 0.5,
+        },
+        transformOrigin: "50% 100%",
+      }, 0);
+    }
+
+    // 3) hold-downs release: a beat of dead stillness before it commits
+    tl.to({}, { duration: 0.12 }).call(() => setStatus("LIFTOFF"));
+
+    // 4) ascent — barely moves, then runs away. power4.in does the work.
+    if (prompt) {
+      tl.to(prompt, {
+        y: () => -(window.innerHeight * 0.9),
+        scale: 0.82,
+        duration: 0.62,
+        ease: "power4.in",
+      }, ">")
+        .to(prompt, { opacity: 0, duration: 0.22, ease: "none" }, "<0.4");
+    }
+    if (overlay) {
+      tl.to(overlay, { scale: 1, duration: 0.2 }, "<");
+    }
+  };
+
+  const pressGate = () => {
+    if (phase !== "waiting" || launchedRef.current) return;
+    setStatus("IGNITION SEQUENCE");
+    holdTweenRef.current?.timeScale(1).play();
+  };
+
+  const releaseGate = () => {
+    if (phase !== "waiting" || launchedRef.current) return;
+    const tw = holdTweenRef.current;
+    if (!tw || tw.progress() === 0) return;
+    setStatus("HOLD ABORTED");
+    tw.timeScale(2).reverse(); // spec §4: release before complete reverses at 2×
+  };
+
+  /** keyboard / reduced-motion path: no hold required, launch outright */
+  const launchInstant = () => {
+    if (phase !== "waiting" || launchedRef.current) return;
+    holdTweenRef.current?.pause();
+    launch();
+  };
+
+  /* the hold tween — mirrors VaultCard's ring so the boot gate teaches the
+     same "press and hold" grammar the vault uses later. Declared after
+     launch() so the onComplete reference is not a use-before-declare. */
+  useEffect(() => {
+    if (phase !== "waiting") return;
+    const proxy = { p: 0 };
+    const tween = gsap.to(proxy, {
+      p: 1,
+      duration: HOLD_SECONDS,
+      ease: "none", // spec §4: hold progress is unsmoothed
+      paused: true,
+      onUpdate: () => paintLaunch(proxy.p),
+      onComplete: () => launch(),
+      onReverseComplete: () => {
+        setStatus("AWAITING LAUNCH AUTHORITY");
+        if (dialRef.current) gsap.set(dialRef.current, { x: 0, y: 0, rotation: 0 });
+        if (overlayRef.current) gsap.set(overlayRef.current, { scale: 1 });
+      },
+    });
+    holdTweenRef.current = tween;
+    paintLaunch(0);
+    return () => {
+      tween.kill();
+      holdTweenRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   if (phase === "gone") return null;
 
@@ -578,23 +872,165 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
       ref={overlayRef}
       className={`fixed inset-0 z-[100] bg-paper text-ink ${phase === "waiting" ? "cursor-pointer" : ""}`}
       style={{ clipPath: "inset(0% 0% 0% 0%)" }}
-      onClick={handleOverlayClick}
+      onPointerDown={phase === "waiting" ? pressGate : undefined}
+      onPointerUp={phase === "waiting" ? releaseGate : undefined}
     >
+      {/* Skip — sits above every phase so it is available while the boot log
+          is still running, not just at the gate. stopPropagation keeps the
+          press off the overlay's hold handler. */}
+      <button
+        type="button"
+        onPointerDown={(e) => e.stopPropagation()}
+        onPointerUp={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          skipIntro();
+        }}
+        aria-label="Skip intro and go straight to the site"
+        className="absolute left-6 top-5 z-[20] cursor-pointer font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-ink focus-visible:text-ink md:left-16 md:top-8"
+      >
+        SKIP INTRO →
+      </button>
+
       {phase === "waiting" && (
         <div
           ref={promptRef}
-          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-[10] select-none"
+          className="absolute inset-0 flex flex-col items-center justify-center z-[10] select-none"
           style={{ opacity: 0 }}
         >
-          <div className="flex flex-col items-center gap-5 px-6 text-center">
-            <h2 className="font-mono text-3xl font-bold uppercase tracking-[0.08em] text-ink md:text-5xl">
-              <span className="proceed-head" />
-              <span className="animate-pulse text-ink">▊</span>
-            </h2>
-            <p className="t-micro animate-pulse text-ink-soft">
-              ■ CLICK ANYWHERE TO BOOT SYSTEM
-            </p>
-          </div>
+          <button
+            ref={gateBtnRef}
+            type="button"
+            /* pointer events bubble from the overlay too, so a press anywhere
+               still starts the scan — this element exists so the gate is a real
+               focusable control instead of a click-only <div> */
+            onPointerDown={pressGate}
+            onPointerUp={releaseGate}
+            onPointerLeave={releaseGate}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                launchInstant();
+              }
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+            aria-label="Hold to launch and boot the system. Press and hold, or press Enter."
+            /* The gate is auto-focused so keyboard users start here, which
+               means the ring shows on load — so it is scoped to the dial and
+               reads as instrument chrome. `focus-visible:outline-none` (not
+               plain `outline-none`) is required to beat the global
+               :focus-visible rule in globals.css on specificity; that global
+               ring is also --signal yellow, which is ~1:1 against --paper and
+               would be invisible here anyway. */
+            className="group flex cursor-pointer flex-col items-center gap-5 px-6 text-center focus-visible:outline-none"
+            style={{ touchAction: "manipulation" }}
+          >
+            {/* thrust gauge */}
+            <div
+              ref={dialRef}
+              className="relative rounded-full group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-offset-4 group-focus-visible:outline-ink/70"
+            >
+              <svg
+                viewBox={`0 0 ${G.size} ${G.size}`}
+                className="h-[188px] w-[188px] md:h-[224px] md:w-[224px]"
+                aria-hidden="true"
+              >
+                {/* dial face — engraved rings, same line-work as the moon */}
+                <circle
+                  cx={G.cx}
+                  cy={G.cy}
+                  r={G.r}
+                  fill="none"
+                  stroke="var(--ink)"
+                  strokeOpacity="0.22"
+                  strokeWidth="1"
+                />
+
+                {/* graduations */}
+                <g strokeLinecap="butt">
+                  {TICKS.map((t) => (
+                    <line
+                      key={t.i}
+                      x1={t.x1}
+                      y1={t.y1}
+                      x2={t.x2}
+                      y2={t.y2}
+                      stroke="var(--ink)"
+                      strokeOpacity={t.major ? 0.55 : 0.25}
+                      strokeWidth={t.major ? 1.6 : 1}
+                    />
+                  ))}
+                </g>
+
+                {/* unlit thrust track */}
+                <path
+                  d={ARC_PATH}
+                  fill="none"
+                  stroke="var(--ink)"
+                  strokeOpacity="0.14"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                />
+                {/* the thrust the hold builds — the one signal element (spec §1) */}
+                <path
+                  ref={arcRef}
+                  d={ARC_PATH}
+                  pathLength={1}
+                  fill="none"
+                  stroke="var(--iris)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  strokeDasharray="1"
+                  strokeDashoffset="1"
+                />
+
+                {/* Pointer rides the leading edge of the arc rather than
+                    pivoting from the centre — a centre needle swept straight
+                    through the thrust readout. */}
+                <g ref={needleRef} transform={`rotate(${G.a0} ${G.cx} ${G.cy})`}>
+                  <line
+                    x1={G.cx + G.arcR - 13}
+                    y1={G.cy}
+                    x2={G.cx + G.arcR + 13}
+                    y2={G.cy}
+                    stroke="var(--ink)"
+                    strokeWidth="2"
+                  />
+                  <circle cx={G.cx + G.arcR + 13} cy={G.cy} r="2.4" fill="var(--ink)" />
+                </g>
+              </svg>
+
+              {/* live thrust readout — the dial centre is kept clear for it */}
+              <span className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-0.5">
+                <span className="font-mono text-2xl font-bold tracking-tight text-ink md:text-3xl">
+                  <span ref={thrustRef}>000</span>
+                  <span className="text-ink-soft">%</span>
+                </span>
+                <span className="t-micro text-ink-soft/70">THRUST</span>
+              </span>
+            </div>
+
+            {/* readouts */}
+            <div className="flex flex-col items-center gap-1.5">
+              <span className="t-micro text-ink-soft">
+                T-MINUS <span ref={clockRef} className="text-ink">0.6</span>
+                <span className="mx-2 text-ink/25">|</span>
+                DEST. LUNA — 384,400 KM
+              </span>
+
+              <span
+                ref={statusRef}
+                aria-live="polite"
+                className="font-mono text-xl font-bold uppercase tracking-[0.08em] text-ink md:text-3xl"
+              >
+                AWAITING LAUNCH AUTHORITY
+              </span>
+
+              <span className="t-micro text-ink-soft group-hover:text-ink">
+                ■ PRESS AND HOLD TO LAUNCH
+              </span>
+            </div>
+          </button>
         </div>
       )}
       {/* HUGE centered "AERA" logo with orbit ring + satellite dot */}

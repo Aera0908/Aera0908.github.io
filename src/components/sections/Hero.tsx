@@ -452,6 +452,8 @@ export function Hero({ entered }: { entered: boolean }) {
                 <img
                   src="/events/base_ph_blockchain4youth.jpg"
                   alt="Base PH Blockchain4Youth — Presenting Aerovit"
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
                 />
               </div>
@@ -467,6 +469,8 @@ export function Hero({ entered }: { entered: boolean }) {
                 <img
                   src="/events/dost_imec_2026_aerovit.jpg"
                   alt="DOST IMEC 2026 — Aerovit Presentation"
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
                 />
               </div>
@@ -482,6 +486,8 @@ export function Hero({ entered }: { entered: boolean }) {
                 <img
                   src="/events/best-thesis-best-poster.jpg"
                   alt="Best Thesis & Best Poster Award"
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
                 />
               </div>
@@ -497,6 +503,8 @@ export function Hero({ entered }: { entered: boolean }) {
                 <img
                   src="/projects/cdm-recognition-day-2026.jpg"
                   alt="CDM Recognition Day 2026"
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
                 />
               </div>
@@ -517,8 +525,12 @@ export function Hero({ entered }: { entered: boolean }) {
           <div className="group/portrait hero-card-img-wrap card-notch absolute left-0 right-0 top-[15%] bottom-[15%] w-full h-[70%] [--notch:38px] border border-ink/15 overflow-hidden bg-world-2 flex items-center justify-center transform-gpu will-change-transform">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/portrait.png"
+              src="/portrait.webp"
               alt="AERA Portrait — Aira Josh Ynte"
+              /* the one genuinely above-the-fold image — stays eager and is
+                 hinted as the LCP candidate */
+              fetchPriority="high"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-[center_15%] scale-[1.5] transform-gpu will-change-transform transition-transform duration-700 ease-out group-hover/portrait:scale-[1.55]"
             />
             {/* full name lives inside the frame */}

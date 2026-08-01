@@ -152,7 +152,14 @@ export function Home({ initialSection = null }: { initialSection?: string | null
       "Spacebar",
     ]);
     const onKey = (e: KeyboardEvent) => {
-      if (SCROLL_KEYS.has(e.key)) e.preventDefault();
+      if (!SCROLL_KEYS.has(e.key)) return;
+      // Never swallow keys aimed at a focused control. Space/Enter on the boot
+      // gate must still activate it — preventing the keydown default stops a
+      // <button> from firing at all, which left keyboard users with no way
+      // past the intro.
+      const t = e.target as HTMLElement | null;
+      if (t?.closest("button, a, [role='button'], input, textarea, select")) return;
+      e.preventDefault();
     };
 
     window.addEventListener("wheel", swallow, { passive: false, capture: true });

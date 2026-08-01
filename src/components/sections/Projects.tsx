@@ -18,7 +18,7 @@ const PROJECTS = [
     index: "P-02",
     name: "AEROVIT",
     slug: "aerovit",
-    img: "/projects/notable-project-thumbnails/aerovit.png",
+    img: "/projects/notable-project-thumbnails/aerovit.webp",
     stack: "ESP32-S3 / FLUTTER / MEDIAPIPE",
     summary: "ESP32 fitness RPG & wearables",
     badge: "Awarded Best Thesis",
@@ -27,7 +27,7 @@ const PROJECTS = [
     index: "P-01",
     name: "FEHUVIA",
     slug: "fehuvia",
-    img: "/projects/notable-project-thumbnails/fehuvia.png",
+    img: "/projects/notable-project-thumbnails/fehuvia.webp",
     stack: "SOLIDITY / MORPH L2 / GPT-4O",
     summary: "Morph L2 B2B Treasury co-pilot",
   },
@@ -35,7 +35,7 @@ const PROJECTS = [
     index: "P-03",
     name: "STICKOUT",
     slug: "stickout",
-    img: "/projects/notable-project-thumbnails/stickOut.png",
+    img: "/projects/notable-project-thumbnails/stickOut.webp",
     stack: "REACT 19 / HTML5 CANVAS / VLSI",
     summary: "VLSI interactive Stick-Diagram editor",
   },
@@ -88,17 +88,42 @@ export function Projects() {
         },
       });
 
-      gsap.from(".proj-card", {
+      /* The FAMILIAR teaser is the punchline to the flagship fan, so it must
+         not ride the same stagger as the cards — it waits until all three have
+         landed, then announces itself by sliding along its 30-degree slanted tape angle. */
+      gsap.set(".next-build-teaser", { autoAlpha: 0, x: -350, y: -202 });
+
+      /* once: true — this is a one-shot entrance. Without it a deep link to
+         /vault (or a return from a case file) replays the card tween on each of
+         Home's three ScrollTrigger.refresh() passes. */
+      const reveal = gsap.timeline({
+        scrollTrigger: { trigger: rootRef.current, start: "top 95%", once: true },
+      });
+
+      reveal.from(".proj-card", {
         y: 70,
         opacity: 0,
         duration: 0.6,
         ease: "power2.out",
         stagger: 0.06,
-        scrollTrigger: { trigger: rootRef.current, start: "top 95%" },
         onComplete: () => {
           gsap.set(".proj-card", { clearProps: "all" });
         },
       });
+
+      /* Cued AFTER cards finish entry animation: slides in along its exact 30-degree slanted angle,
+         settling with ease-in and bounce-out (back.out). */
+      reveal.to(
+        ".next-build-teaser",
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          duration: 0.85,
+          ease: "back.out(1.4)",
+        },
+        "+=0.4",
+      );
     }, rootRef);
     return () => ctx.revert();
   }, []);
@@ -121,13 +146,13 @@ export function Projects() {
         {/* hover:z-40 lifts the hovered folder above the center card and
             snaps back to the fan order on unhover. AEROVIT (the pilot
             project) holds the elevated center slot. */}
-        <div className="proj-card absolute left-1/2 top-12 w-[250px] -translate-x-[132%] rotate-[-8deg] transition-all duration-500 ease-out group-hover/vault:-translate-x-[155%] group-hover/vault:rotate-[-14deg] hover:z-40">
+        <div className="proj-card absolute left-1/2 top-12 w-[250px] -translate-x-[132%] rotate-[-8deg] transition-transform duration-500 ease-out group-hover/vault:-translate-x-[155%] group-hover/vault:rotate-[-14deg] hover:z-40">
           <VaultCard {...PROJECTS[1]} />
         </div>
-        <div className="proj-card absolute left-1/2 top-0 z-10 w-[280px] -translate-x-1/2 transition-all duration-500 ease-out group-hover/vault:-translate-y-4 hover:z-40">
+        <div className="proj-card absolute left-1/2 top-0 z-10 w-[280px] -translate-x-1/2 transition-transform duration-500 ease-out group-hover/vault:-translate-y-4 hover:z-40">
           <VaultCard {...PROJECTS[0]} />
         </div>
-        <div className="proj-card absolute left-1/2 top-12 w-[250px] translate-x-[32%] rotate-[8deg] transition-all duration-500 ease-out group-hover/vault:translate-x-[55%] group-hover/vault:rotate-[14deg] hover:z-40">
+        <div className="proj-card absolute left-1/2 top-12 w-[250px] translate-x-[32%] rotate-[8deg] transition-transform duration-500 ease-out group-hover/vault:translate-x-[55%] group-hover/vault:rotate-[14deg] hover:z-40">
           <VaultCard {...PROJECTS[2]} />
         </div>
       </div>
@@ -141,53 +166,48 @@ export function Projects() {
         ))}
       </div>
 
-      {/* NEXT BUILD — FAMILIAR teaser signage: full-bleed scrolling marquee
-          under the flagship fan. The fan stays flagship-only; the WIP flagship
-          announces itself like construction-site signage. Click → case file. */}
-      <button
-        onClick={openNextBuild}
-        onMouseEnter={fx.blip}
-        className="proj-card marquee-strip group/next relative mt-4 -mx-6 block shrink-0 overflow-hidden border-y border-periwinkle/20 bg-world-2/60 py-2 transition-colors duration-300 hover:border-iris-bright/60 hover:bg-world-2 cursor-pointer focus-visible:outline-2 md:-mx-16"
-        aria-label="FAMILIAR — next build, in development. Open case file"
-      >
-        <div className="animate-marquee flex w-max items-center whitespace-nowrap">
-          {[0, 1].map((half) => (
-            <div
-              key={half}
-              aria-hidden={half === 1}
-              className="flex items-center"
-            >
-              {Array.from({ length: 3 }).map((_, i) => (
-                <span key={i} className="flex items-center gap-4 pr-4">
-                  <span className="t-micro text-iris-bright">
-                    ◍ INCOMING TRANSMISSION
-                  </span>
-                  <span className="t-micro text-periwinkle/60">
-                    P-04 // CODENAME:
-                  </span>
-                  <span className="font-display text-base font-black uppercase leading-none tracking-tight text-paper transition-colors group-hover/next:text-iris-bright">
-                    FAMILIAR
-                  </span>
-                  <span className="text-[8px] font-bold font-mono tracking-widest text-[#0c0d12] bg-[#e8d90c] px-1.5 py-0.5 uppercase leading-none rounded-sm">
-                    IN DEVELOPMENT
-                  </span>
-                  <span className="t-micro text-periwinkle/60">
-                    SOMETHING IS HATCHING IN THE VAULT
-                  </span>
-                  <span className="t-micro text-iris-bright/40">✦</span>
-                  <span className="t-micro text-periwinkle/60">
-                    IT WATCHES YOU STUDY
-                  </span>
-                  <span className="t-micro text-periwinkle/40">
-                    DECRYPT CASE FILE →
-                  </span>
-                  <span className="t-micro text-iris-bright/40">✦</span>
+      {/* NEXT BUILD — FAMILIAR teaser ribbon tape: Extended length yellow caution tape
+          slanted DOWNWARD across lower-left area, expanded 50% on both sides. Click → case file. */}
+      <div className="next-build-teaser pointer-events-none absolute bottom-28 md:bottom-90 -left-16 md:-left-28 z-20">
+        <button
+          onClick={openNextBuild}
+          onMouseEnter={fx.blip}
+          className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] py-3 px-16 md:px-28 text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left rotate-[20deg] md:rotate-[30deg] min-w-[750px] md:min-w-[1000px] max-w-none"
+          aria-label="FAMILIAR — next build, in development. Open case file"
+        >
+          {/* Caution hazard stripes accent borders */}
+          <div className="animate-stripe-slow absolute inset-x-0 top-0 h-1 bg-[repeating-linear-gradient(45deg,#0c0d12,#0c0d12_10px,#e8d90c_10px,#e8d90c_20px)]" />
+          <div className="animate-stripe-slow absolute inset-x-0 bottom-0 h-1 bg-[repeating-linear-gradient(45deg,#0c0d12,#0c0d12_10px,#e8d90c_10px,#e8d90c_20px)]" />
+
+          <div className="animate-marquee-slow flex w-max items-center whitespace-nowrap">
+            {[0, 1].map((half) => (
+              <div
+                key={half}
+                aria-hidden={half === 1}
+                className="flex items-center gap-6 pr-6 font-mono text-xs font-black uppercase tracking-wider text-[#0c0d12]"
+              >
+                <span className="opacity-40">●</span>
+                <span className="flex items-center gap-1.5 font-bold">
+                  <span className="h-2.5 w-2.5 rounded-full bg-black animate-ping" />
+                  P-04 // FAMILIAR
                 </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </button>
+                <span className="opacity-40">●</span>
+                <span className="bg-black text-[#e8d90c] px-2.5 py-0.5 rounded-xs text-[10px] font-extrabold tracking-widest">
+                  IN DEVELOPMENT
+                </span>
+                <span className="opacity-40">●</span>
+                <span className="font-bold underline decoration-2 underline-offset-4 group-hover/next:translate-x-1 transition-transform inline-flex items-center gap-1">
+                  DECRYPT CASE FILE →
+                </span>
+                <span className="opacity-40">●</span>
+                <span className="opacity-70 text-[10px] font-extrabold tracking-widest">
+                  RESTRICTED AREA
+                </span>
+              </div>
+            ))}
+          </div>
+        </button>
+      </div>
 
       {/* full archive uplink */}
       <div className="mt-4 flex shrink-0 justify-center">

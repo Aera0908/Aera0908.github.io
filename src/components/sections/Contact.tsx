@@ -38,8 +38,10 @@ export function Contact() {
       <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:h-[45%] max-md:w-full select-none" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/contacts_silhouette.png"
+          src="/contacts_silhouette.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover object-[center_20%] max-md:object-center opacity-40"
         />
         {/* left fade */}

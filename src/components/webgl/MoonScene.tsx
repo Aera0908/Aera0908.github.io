@@ -62,10 +62,10 @@ export function MoonScene() {
   const newMoonRef = useRef<THREE.Mesh>(null);
   
   // Load the user's flat assets from public folder
-  const earthTexture = useLoader(THREE.TextureLoader, "/bg-assets/earth-no-bg.png");
-  const moonTexture = useLoader(THREE.TextureLoader, "/bg-assets/moon-surface-hero-section.png");
-  const facilityTexture = useLoader(THREE.TextureLoader, "/bg-assets/facility-bg-parallax.png");
-  const moonParallaxTexture = useLoader(THREE.TextureLoader, "/bg-assets/moon-surface-parallax.png");
+  const earthTexture = useLoader(THREE.TextureLoader, "/bg-assets/earth-no-bg.webp");
+  const moonTexture = useLoader(THREE.TextureLoader, "/bg-assets/moon-surface-hero-section.webp");
+  const facilityTexture = useLoader(THREE.TextureLoader, "/bg-assets/facility-bg-parallax.webp");
+  const moonParallaxTexture = useLoader(THREE.TextureLoader, "/bg-assets/moon-surface-parallax.webp");
 
   // Procedural WebGL Space Skybox Shader
   const spaceShader = useMemo(() => {

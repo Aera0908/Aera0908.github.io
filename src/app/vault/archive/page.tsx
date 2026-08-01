@@ -26,7 +26,7 @@ const SYSTEMS: ArchiveItem[] = [
     category: "WEB3 / AI / FULL-STACK",
     blurb:
       "Open-finance B2B treasury workstation on Morph L2 — T+0 settlements under 2 seconds, zero-custody MetaMask signing, GPT-4o RAG co-pilot with OCR invoicing.",
-    img: "/projects/fehuvia.png",
+    img: "/projects/fehuvia.webp",
     links: [
       { label: "FEHUVIA.APP", href: "https://www.fehuvia.app/" },
       { label: "GITHUB", href: "https://github.com/Aera0908/Project_Fehuvia" },
@@ -40,7 +40,7 @@ const SYSTEMS: ArchiveItem[] = [
     category: "IOT / AI / MOBILE",
     blurb:
       "Hybrid fitness ecosystem — custom ESP32-S3 smartwatch, BlazePose form coaching, a 20-floor dungeon RPG, and AERO ERC-20 rewards on Sepolia.",
-    img: "/projects/aerovit.png",
+    img: "/projects/aerovit.webp",
     links: [{ label: "AEROVIT.DEV", href: "https://aerovit.dev" }],
   },
   {
@@ -50,7 +50,7 @@ const SYSTEMS: ArchiveItem[] = [
     category: "EDA / VLSI / WEB",
     blurb:
       "Interactive VLSI stick-diagram editor — infinite 2D canvas, same-layer auto-bridging crossovers, LaTeX subscript labels, .stk project files.",
-    img: "/projects/stickout.png",
+    img: "/projects/stickout.webp",
     links: [
       { label: "STICKOUT.VERCEL.APP", href: "https://stickout.vercel.app" },
       { label: "GITHUB", href: "https://github.com/Aera0908/stickOut" },
@@ -63,7 +63,7 @@ const SYSTEMS: ArchiveItem[] = [
     category: "EMBEDDED / HARDWARE",
     blurb:
       "Real-time electromyography on the ESP32-S3 — 500 Hz DSP pipeline, adaptive calibration, Python visualization GUI, muscle-driven game control.",
-    img: "/projects/emg.png",
+    img: "/projects/emg.webp",
     links: [
       { label: "GITHUB", href: "https://github.com/Aera0908/emg-game-controller" },
     ],
@@ -75,7 +75,7 @@ const SYSTEMS: ArchiveItem[] = [
     category: "3D WEB / SHOWCASE",
     blurb:
       "Narrative 3D scroll-journey pitch site — procedural R3F forest and campfire world with GSAP + Lenis choreography and reduced-motion fallbacks.",
-    img: "/projects/safehouse.png",
+    img: "/projects/safehouse.webp",
     links: [
       { label: "LIVE SITE", href: "https://safehouse-inky.vercel.app/" },
       { label: "GITHUB", href: "https://github.com/Aera0908/safe-house" },
@@ -88,7 +88,7 @@ const SYSTEMS: ArchiveItem[] = [
     category: "MOBILE / IOT — FREELANCE",
     blurb:
       "8-bit retro IoT nursery dashboard — live soil and climate telemetry from ESP32 beds, remote actuators, and an animated plant-mood avatar.",
-    img: "/projects/plantio.png",
+    img: "/projects/plantio.webp",
     nda: true,
   },
   {
@@ -98,7 +98,7 @@ const SYSTEMS: ArchiveItem[] = [
     category: "WEB / FRONTEND",
     blurb:
       "MangaDex-powered reading SPA — discovery feeds, title search, detail pages, and a full chapter reader with persistent themes.",
-    img: "/projects/manhwa.png",
+    img: "/projects/manhwa.webp",
   },
   {
     index: "S-08",
@@ -310,6 +310,7 @@ export default function ProjectArchivePage() {
                 <iframe
                   src={`https://www.youtube.com/embed/${a.youtubeId}`}
                   title={a.name}
+                  loading="lazy"
                   className="absolute inset-0 h-full w-full border-0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
