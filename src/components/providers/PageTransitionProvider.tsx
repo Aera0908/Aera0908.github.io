@@ -32,9 +32,25 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
   const containerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Reset layers function
+  /**
+   * Park the layers: off-screen AND transparent.
+   *
+   * The transparency is what keeps them hidden before a transition — NOT a CSS
+   * transform. The layers used to carry an inline `transform: translateX(-100%)`,
+   * which GSAP parsed into its own `x` (= -1 viewport in px) and then composed
+   * with the `xPercent` it was animating. The result was
+   * `translate(0%, 0%) translate3d(-1280px, 0, 0)` at the end of the sweep-in —
+   * so the curtain never actually covered the screen, the route changed in plain
+   * sight, and the only time the layers were visible was on the way back out.
+   * GSAP now owns the transform outright.
+   */
   const resetLayers = () => {
-    gsap.set(layersRef.current, { xPercent: -100 });
+    gsap.set(layersRef.current, { xPercent: -100, opacity: 0 });
+  };
+
+  /** stage the layers off-screen but visible, ready to sweep across */
+  const armLayers = () => {
+    gsap.set(layersRef.current, { xPercent: -100, opacity: 1 });
   };
 
   const transitionTo = (href: string) => {
@@ -47,8 +63,8 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
     if (lenis) lenis.stop();
     document.body.classList.add("overflow-hidden");
 
-    // Reset positions before animating
-    resetLayers();
+    // Stage them off-screen and visible before animating
+    armLayers();
 
     // Slide-in timeline
     gsap.timeline({
@@ -134,25 +150,25 @@ export function PageTransitionProvider({ children }: { children: React.ReactNode
         <div
           ref={(el) => { layersRef.current[0] = el; }}
           className="absolute inset-0 bg-world-2 w-full h-full"
-          style={{ transform: "translateX(-100%)" }}
+          style={{ opacity: 0 }}
         />
         {/* Layer 2: Electric yellow */}
         <div
           ref={(el) => { layersRef.current[1] = el; }}
           className="absolute inset-0 bg-iris w-full h-full"
-          style={{ transform: "translateX(-100%)" }}
+          style={{ opacity: 0 }}
         />
         {/* Layer 3: Signal alert red */}
         <div
           ref={(el) => { layersRef.current[2] = el; }}
           className="absolute inset-0 bg-alert w-full h-full"
-          style={{ transform: "translateX(-100%)" }}
+          style={{ opacity: 0 }}
         />
         {/* Layer 4: Main dark background */}
         <div
           ref={(el) => { layersRef.current[3] = el; }}
           className="absolute inset-0 bg-world w-full h-full"
-          style={{ transform: "translateX(-100%)" }}
+          style={{ opacity: 0 }}
         />
       </div>
     </PageTransitionContext.Provider>
