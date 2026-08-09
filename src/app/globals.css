@@ -8,6 +8,11 @@
    ============================================================ */
 
 :root {
+  /* The site is dark-only by design. Declaring it means UA-rendered chrome —
+     PDF viewer surfaces in the preview iframes, native scrollbars, form
+     controls, spinners — follows suit instead of flashing light defaults. */
+  color-scheme: dark;
+
   /* Brand core — cyberpunk white/black/yellow per user spec.
      Token NAMES are kept (iris/periwinkle/world) so every utility class
      keeps working; only the values changed. */
@@ -262,13 +267,35 @@ body:not(.intro-cursor) .cursor-circle {
 
 /* ---------- accessibility & scrollbar hiding ---------- */
 
-::-webkit-scrollbar {
+/* Scoped to the page scroller ONLY. Unscoped, this also stripped the scrollbar
+   from every inner scroll region — the credentials log table scrolls ~500px on
+   a short viewport with nothing on screen to say so. Inner regions keep a slim
+   themed scrollbar instead. */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
   display: none;
 }
 
-html {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+html,
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* inner scroll regions: visible but unobtrusive */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--periwinkle) 22%, transparent);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--periwinkle) 38%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

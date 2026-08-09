@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
-
-// Standalone cast type — do NOT `extends Window`: the lenis package globally
-// augments Window.lenis with a different shape, which conflicts at build time.
-type LenisWindow = { lenis?: { stop: () => void; start: () => void } };
+import { lockScroll, unlockScroll } from "@/lib/scroll-lock";
 
 export function ResumePreviewModal() {
   const [type, setType] = useState<"resume" | "cv" | null>(null);
@@ -20,22 +17,12 @@ export function ResumePreviewModal() {
     return () => window.removeEventListener("open-resume-preview", handleOpen);
   }, []);
 
-  // Freeze background page scroll when modal is active
+  // Freeze background page scroll while the preview is open. Ref-counted, so
+  // closing this cannot release a lock another overlay still holds.
   useEffect(() => {
-    if (type) {
-      document.documentElement.classList.add("overflow-hidden");
-      document.body.classList.add("overflow-hidden");
-      (window as unknown as LenisWindow).lenis?.stop();
-    } else {
-      document.documentElement.classList.remove("overflow-hidden");
-      document.body.classList.remove("overflow-hidden");
-      (window as unknown as LenisWindow).lenis?.start();
-    }
-    return () => {
-      document.documentElement.classList.remove("overflow-hidden");
-      document.body.classList.remove("overflow-hidden");
-      (window as unknown as LenisWindow).lenis?.start();
-    };
+    if (!type) return;
+    lockScroll();
+    return () => unlockScroll();
   }, [type]);
 
   useEffect(() => {

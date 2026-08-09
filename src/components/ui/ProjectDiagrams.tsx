@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
+import { lockScroll, unlockScroll } from "@/lib/scroll-lock";
 
 // Isomorphic layout effect to prevent SSR warnings
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -681,14 +682,18 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
 
   useEffect(() => {
     if (!lightboxOpen) return;
-    document.body.style.overflow = "hidden";
+    // was `document.body.style.overflow = "unset"` on cleanup, which blew away
+    // the lock other overlays set via classes; now ref-counted like the rest
+    lockScroll();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeLightbox();
+      if (e.key !== "Escape") return;
+      e.stopPropagation(); // don't also trigger the archive's "leave page" Escape
+      closeLightbox();
     };
-    window.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey, { capture: true });
     return () => {
-      document.body.style.overflow = "unset";
-      window.removeEventListener("keydown", onKey);
+      unlockScroll();
+      window.removeEventListener("keydown", onKey, { capture: true } as EventListenerOptions);
     };
   }, [lightboxOpen]);
 
@@ -891,7 +896,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
                 {caption}
               </p>
             )}
-            <p className="relative z-10 mt-1 text-center font-mono text-[9px] text-periwinkle/40 tracking-widest uppercase">
+            <p className="relative z-10 mt-1 text-center font-mono text-[9px] text-periwinkle/55 tracking-widest uppercase">
               Default size fits the viewer. Ctrl/⌘ + scroll to zoom · drag to pan when zoomed // ESC TO CLOSE
             </p>
           </div>

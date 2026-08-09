@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { CyberLines } from "@/components/ui/CyberLines";
+import { lockScroll, unlockScroll } from "@/lib/scroll-lock";
 
 type GalleryItem = {
   src: string;
@@ -35,8 +37,12 @@ function thumbFor(item: GalleryItem): string | undefined {
 export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; slug: string }) {
   const [activeItem, setActiveItem] = useState<GalleryItem | null>(null);
   const { fx } = useHudAudio();
+  /** the tile that opened the lightbox, so focus can go back to it on close */
+  const openerRef = useRef<HTMLElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
-  const handleOpen = (item: GalleryItem) => {
+  const handleOpen = (item: GalleryItem, opener?: HTMLElement | null) => {
+    openerRef.current = opener ?? null;
     setActiveItem(item);
     fx.click();
   };
@@ -44,7 +50,32 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
   const handleClose = () => {
     setActiveItem(null);
     fx.deny();
+    openerRef.current?.focus();
   };
+
+  /* Escape closes, and the page behind must not scroll while it is open.
+     `stopPropagation` matters: the archive listing binds Escape on window to
+     navigate back to /vault, so without it one keypress would both close this
+     and leave the page. */
+  useEffect(() => {
+    if (!activeItem) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      e.stopPropagation();
+      handleClose();
+    };
+    window.addEventListener("keydown", onKey, { capture: true });
+
+    lockScroll();
+    dialogRef.current?.focus({ preventScroll: true });
+
+    return () => {
+      window.removeEventListener("keydown", onKey, { capture: true } as EventListenerOptions);
+      unlockScroll();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeItem]);
 
   return (
     <>
@@ -56,8 +87,18 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
             return (
             <div
               key={idx}
-              onClick={() => handleOpen(item)}
-              className="group relative overflow-hidden border border-periwinkle/15 bg-world-2 p-3 transition-colors duration-500 hover:border-iris-bright/40 cursor-pointer clip-tab-tl"
+              role="button"
+              tabIndex={0}
+              aria-haspopup="dialog"
+              aria-label={`Open ${item.caption}`}
+              onClick={(e) => handleOpen(item, e.currentTarget)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleOpen(item, e.currentTarget);
+                }
+              }}
+              className="group relative overflow-hidden border border-periwinkle/15 bg-world-2 p-3 transition-colors duration-500 hover:border-iris-bright/40 cursor-pointer clip-tab-tl focus-visible:outline-2"
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/40 flex items-center justify-center">
                 {item.type === "video" || item.type === "youtube" ? (
@@ -99,7 +140,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                 )}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-world/40 to-transparent" />
               </div>
-              <p className="t-micro mt-4 leading-relaxed text-periwinkle/60 transition-colors duration-300 group-hover:text-periwinkle/95 font-mono">
+              <p className="t-micro mt-4 leading-relaxed text-periwinkle/60 transition-colors duration-300 group-hover:text-periwinkle font-mono">
                 ■ {item.type === "video" ? "[ VIDEO DEMO ] " : item.type === "youtube" ? "[ YOUTUBE FEED ] " : ""}{item.caption.toUpperCase()}
               </p>
             </div>
@@ -108,11 +149,18 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
         </div>
       </div>
 
-      {/* Modal Lightbox */}
-      {activeItem && (
+      {/* Modal Lightbox — portaled to <body> and above the sticky download bar
+          (z-60), which previously painted over this and stayed clickable. */}
+      {activeItem &&
+        createPortal(
         <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={activeItem.caption}
+          tabIndex={-1}
           onClick={handleClose}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-md transition-opacity duration-300 cursor-zoom-out"
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 p-4 backdrop-blur-md transition-opacity duration-300 cursor-zoom-out focus:outline-none"
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -133,7 +181,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
             </button>
 
             {/* Modal header/meta */}
-            <div className="mb-4 flex justify-between pr-14 t-micro text-periwinkle/40 font-mono">
+            <div className="mb-4 flex justify-between pr-14 t-micro text-periwinkle/55 font-mono">
               <span><span>● CASE FILE EVIDENCE // </span>{slug.toUpperCase()}</span>
               <span className="text-iris-bright">{activeItem.type === "youtube" ? "YOUTUBE BROADCAST" : activeItem.type === "video" ? "VIDEO FEED" : "IMAGE STILL"}</span>
             </div>
@@ -174,7 +222,8 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
               </p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

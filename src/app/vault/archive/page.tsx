@@ -176,13 +176,15 @@ export default function ProjectArchivePage() {
     }
   }, []);
 
-  // Listen for Escape key to close the archive standalone page and return to /vault
+  // Escape leaves the archive — but only when nothing is layered on top of it.
+  // The resume preview and the gallery lightbox both bind Escape too, so
+  // without this guard one keypress closed the modal AND navigated away.
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        fx.click();
-        router.push("/vault");
-      }
+      if (e.key !== "Escape") return;
+      if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
+      fx.click();
+      router.push("/vault");
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -216,20 +218,18 @@ export default function ProjectArchivePage() {
         <p className="t-label mb-6 text-iris-bright">
           ● SYSTEMS — HARDWARE & SOFTWARE
         </p>
+        {/* Cards are plain containers, NOT role="button": ARIA forbids focusable
+            descendants inside a button, and each card carries its own links —
+            which made the whole card announce as a single control and left those
+            links unreachable. Mouse users still get the whole card as a click
+            target; keyboard users get the explicit OPEN CASE FILE button plus
+            each link. */}
         <div className="mb-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {SYSTEMS.map((p) => (
             <div
               key={p.index}
-              role="button"
-              tabIndex={0}
               onClick={() => openCase(p.slug)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  openCase(p.slug);
-                }
-              }}
-              className="clip-tab-tl flex flex-col border border-periwinkle/15 bg-world-2/60 transition-all duration-300 hover:border-iris-bright/50 hover:bg-world-2 hover:-translate-y-1 group cursor-pointer focus-visible:outline-2"
+              className="clip-tab-tl flex flex-col border border-periwinkle/15 bg-world-2/60 transition-all duration-300 hover:border-iris-bright/50 hover:bg-world-2 hover:-translate-y-1 group cursor-pointer"
             >
               {p.img ? (
                 <div className="aspect-video w-full overflow-hidden border-b border-periwinkle/10">
@@ -265,9 +265,17 @@ export default function ProjectArchivePage() {
                   {p.blurb}
                 </p>
                 <div className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-periwinkle/5">
-                  <span className="font-mono text-[9px] font-bold tracking-widest text-iris group-hover:text-iris-bright transition-colors uppercase">
-                    CLICK TO OPEN CASE FILE
-                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openCase(p.slug);
+                    }}
+                    aria-label={`Open ${p.name} case file`}
+                    className="font-mono text-[9px] font-bold tracking-widest text-iris group-hover:text-iris-bright transition-colors uppercase cursor-pointer focus-visible:outline-2"
+                  >
+                    OPEN CASE FILE →
+                  </button>
                   <div className="flex flex-wrap gap-3 z-10">
                     {p.nda && (
                       <span className="t-micro text-periwinkle/50 select-none">

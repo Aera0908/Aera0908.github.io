@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { HudAudioProvider } from "@/components/providers/HudAudioProvider";
@@ -57,6 +57,16 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/OG_card.png"],
   },
+};
+
+/**
+ * themeColor lives on the `viewport` export, not `metadata` (moved in Next
+ * 13.4). Matching --world means mobile browser chrome blends into the site
+ * instead of framing it in white.
+ */
+export const viewport: Viewport = {
+  themeColor: "#0a0a0c",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

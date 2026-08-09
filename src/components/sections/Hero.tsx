@@ -9,6 +9,16 @@ import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
 export function Hero({ entered }: { entered: boolean }) {
   const { fx } = useHudAudio();
+  /**
+   * The pinned scroll timeline fires fx.click() from GSAP callbacks. Depending
+   * on `fx` directly would rebuild that whole ScrollTrigger every time the mute
+   * state flips (fx is re-memoised on booted/muted), so the effect reads the
+   * latest handle through a ref instead.
+   */
+  const fxRef = useRef(fx);
+  useEffect(() => {
+    fxRef.current = fx;
+  }, [fx]);
   const rootRef = useRef<HTMLElement>(null);
   const wordsRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -230,7 +240,7 @@ export function Hero({ entered }: { entered: boolean }) {
         // Figure 1
         tl.fromTo(".feed-fig-1",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
-          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fx.click(); } },
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
           1.3
         )
         .to(".feed-fig-1", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 1.8);
@@ -238,7 +248,7 @@ export function Hero({ entered }: { entered: boolean }) {
         // Figure 2
         tl.fromTo(".feed-fig-2",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
-          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fx.click(); } },
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
           1.8
         )
         .to(".feed-fig-2", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 2.3);
@@ -246,7 +256,7 @@ export function Hero({ entered }: { entered: boolean }) {
         // Figure 3
         tl.fromTo(".feed-fig-3",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
-          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fx.click(); } },
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
           2.3
         )
         .to(".feed-fig-3", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 2.8);
@@ -254,7 +264,7 @@ export function Hero({ entered }: { entered: boolean }) {
         // Figure 4
         tl.fromTo(".feed-fig-4",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
-          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fx.click(); } },
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
           2.8
         )
         .to(".feed-fig-4", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 3.3);
@@ -357,9 +367,9 @@ export function Hero({ entered }: { entered: boolean }) {
     <section
       id="top"
       ref={rootRef}
-      className="relative z-10 flex min-h-screen items-center px-6 py-20 md:px-16"
+      className="relative z-10 flex min-h-screen items-center px-6 py-12 md:py-20 md:px-16"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center w-full max-w-7xl mx-auto z-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-center w-full max-w-7xl mx-auto z-10">
         {/* Left Column: AERA Text Logo & About Me */}
         <div ref={wordsRef} className="flex flex-col items-start gap-6 will-change-transform relative z-10">
           <div className="hero-logo-target font-display font-black tracking-[-0.08em] text-paper uppercase select-none text-[12vw] md:text-[9vw] leading-none">
@@ -417,7 +427,7 @@ export function Hero({ entered }: { entered: boolean }) {
         {/* Right Column Spacer: Reserves card's slot in grid */}
         <div
           ref={cardPlaceholderRef}
-          className="hero-img-container w-full max-w-md aspect-[3/4] justify-self-center md:justify-self-end relative pointer-events-none"
+          className="hero-img-container w-full max-w-[290px] sm:max-w-sm md:max-w-md aspect-[3/4] max-md:max-h-[42vh] justify-self-center md:justify-self-end relative pointer-events-none"
         />
       </div>
 
@@ -435,19 +445,22 @@ export function Hero({ entered }: { entered: boolean }) {
 
         <div className="flex-grow flex items-center justify-center relative w-full h-full">
           <div className="hero-intro pointer-events-none absolute inset-0 select-none text-ink opacity-0">
-            <span className="t-micro absolute left-[6%] top-[9%] text-ink/50">
+            <span className="t-micro absolute left-[6%] top-[9%] text-ink/65">
               ■ 001 — OPERATOR PROFILE
             </span>
 
-            <h3 className="absolute left-[6%] top-[13%] w-[50%] max-md:w-[88%] font-display font-black uppercase leading-[0.95] tracking-tight text-[clamp(1.6rem,4vw,3.8rem)]">
+            <h2 className="absolute left-[6%] top-[11%] w-[50%] max-md:w-[88%] font-display font-black uppercase leading-[0.95] tracking-tight text-[clamp(1.6rem,4vw,3.8rem)] max-md:text-[1.4rem]">
               BORN IN HARDWARE.
               <br />
-              <span className="ml-[8%] inline-block">FLUENT IN SOFTWARE.</span>
-            </h3>
+              <span className="ml-[8%] max-md:ml-[4%] inline-block">FLUENT IN SOFTWARE.</span>
+            </h2>
 
             {/* Figure 1: Blockchain4Youth */}
-            <figure className="feed-fig-1 absolute left-[18%] top-[30%] w-[64%] aspect-video md:left-[8%] md:top-[38%] md:w-[20%] md:aspect-[4/3] cursor-pointer opacity-0 pointer-events-none">
-              <div className="card-notch aspect-[4/3] w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
+            <figure className="feed-fig-1 absolute left-[16%] top-[23%] [@media(max-height:620px)]:top-[19%] w-[68%] aspect-video max-md:aspect-auto md:left-[8%] md:top-[38%] md:w-[20%] md:aspect-[4/3] cursor-pointer opacity-0 pointer-events-none">
+              {/* max-md:aspect-video — on mobile all four figures share one
+                  slot, so a taller 4/3 box ran 54px into the paragraph below.
+                  Uniform 16/9 keeps every figure the same height in that slot. */}
+              <div className="card-notch aspect-[4/3] max-md:aspect-video max-md:max-h-[16vh] w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/events/base_ph_blockchain4youth.jpg"
@@ -463,7 +476,7 @@ export function Hero({ entered }: { entered: boolean }) {
             </figure>
 
             {/* Figure 2: DOST IMEC */}
-            <figure className="feed-fig-2 absolute left-[18%] top-[30%] w-[64%] aspect-video md:left-[28%] md:top-[46%] md:w-[22%] md:aspect-video cursor-pointer opacity-0 pointer-events-none">
+            <figure className="feed-fig-2 absolute left-[16%] top-[23%] [@media(max-height:620px)]:top-[19%] w-[68%] aspect-video max-md:aspect-auto md:left-[28%] md:top-[46%] md:w-[22%] md:aspect-video cursor-pointer opacity-0 pointer-events-none">
               <div className="card-notch aspect-video w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -480,8 +493,11 @@ export function Hero({ entered }: { entered: boolean }) {
             </figure>
 
             {/* Figure 3: Best Thesis & Poster */}
-            <figure className="feed-fig-3 absolute left-[18%] top-[30%] w-[64%] aspect-video md:left-[12%] md:top-[52%] md:w-[18%] md:aspect-[4/3] cursor-pointer opacity-0 pointer-events-none">
-              <div className="card-notch aspect-[4/3] w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
+            <figure className="feed-fig-3 absolute left-[16%] top-[23%] [@media(max-height:620px)]:top-[19%] w-[68%] aspect-video max-md:aspect-auto md:left-[12%] md:top-[52%] md:w-[18%] md:aspect-[4/3] cursor-pointer opacity-0 pointer-events-none">
+              {/* max-md:aspect-video — on mobile all four figures share one
+                  slot, so a taller 4/3 box ran 54px into the paragraph below.
+                  Uniform 16/9 keeps every figure the same height in that slot. */}
+              <div className="card-notch aspect-[4/3] max-md:aspect-video max-md:max-h-[16vh] w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/events/best-thesis-best-poster.jpg"
@@ -497,7 +513,7 @@ export function Hero({ entered }: { entered: boolean }) {
             </figure>
 
             {/* Figure 4: CDM Recognition Day */}
-            <figure className="feed-fig-4 absolute left-[18%] top-[30%] w-[64%] aspect-video md:left-[30%] md:top-[39%] md:w-[20%] md:aspect-video cursor-pointer opacity-0 pointer-events-none">
+            <figure className="feed-fig-4 absolute left-[16%] top-[23%] [@media(max-height:620px)]:top-[19%] w-[68%] aspect-video max-md:aspect-auto md:left-[30%] md:top-[39%] md:w-[20%] md:aspect-video cursor-pointer opacity-0 pointer-events-none">
               <div className="card-notch aspect-video w-full overflow-hidden border border-ink/15 transition-all duration-500 hover:border-iris-bright/40 hover:shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -513,13 +529,22 @@ export function Hero({ entered }: { entered: boolean }) {
               </figcaption>
             </figure>
 
-            <p className="absolute bottom-[10%] left-[6%] w-[22%] max-md:bottom-auto max-md:top-[50%] max-md:w-[88%] text-sm leading-relaxed text-ink/80">
-              Computer engineer from Muntinlupa — building wearables, EDA tools, and settlement rails.
-            </p>
+            {/* Blurb + byline were each absolutely positioned by PERCENTAGE
+                while the blurb's height is in PIXELS, so on a narrow phone it
+                wrapped to a third line and ran 33px into the byline. On mobile
+                they share one anchored flow block, which cannot overlap at any
+                width. `md:contents` removes this wrapper from layout on desktop
+                so the children keep resolving against .hero-intro exactly as
+                before. */}
+            <div className="max-md:absolute max-md:left-[6%] max-md:top-[51%] [@media(max-height:620px)]:top-[45%] max-md:flex max-md:w-[88%] max-md:flex-col max-md:gap-2.5 md:contents">
+              <p className="md:absolute md:bottom-[10%] md:left-[6%] md:w-[22%] text-sm leading-relaxed text-ink/80">
+                Computer engineer from Muntinlupa — building wearables, EDA tools, and settlement rails.
+              </p>
 
-            <span className="t-micro absolute bottom-[10%] left-[34%] max-md:bottom-auto max-md:left-[6%] max-md:top-[61%] text-ink/50">
-              CPE &apos;26 · MNL · @AERA0908
-            </span>
+              <span className="t-micro md:absolute md:bottom-[10%] md:left-[34%] text-ink/65">
+                CPE &apos;26 · MNL · @AERA0908
+              </span>
+            </div>
           </div>
 
           <div className="group/portrait hero-card-img-wrap card-notch absolute left-0 right-0 top-[15%] bottom-[15%] w-full h-[70%] [--notch:38px] border border-ink/15 overflow-hidden bg-world-2 flex items-center justify-center transform-gpu will-change-transform">

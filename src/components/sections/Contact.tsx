@@ -71,7 +71,7 @@ export function Contact() {
 
           {/* Inline Resume & CV buttons under the Open Uplink button */}
           <div className="flex flex-col items-start gap-1.5 font-mono text-[9px] select-none mt-2 pl-1">
-            <span className="text-[8px] text-periwinkle/30">SYS_UPLINK // DOWNLOAD</span>
+            <span className="text-[8px] text-periwinkle/55">SYS_UPLINK // DOWNLOAD</span>
             <div className="flex gap-2 bg-world border border-periwinkle/20 p-2 rounded shadow-2xl">
               <button
                 onClick={() => {

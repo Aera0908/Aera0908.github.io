@@ -198,7 +198,7 @@ export function Experience({ entered }: { entered: boolean }) {
     >
       {/* drifting mono coordinates */}
       <span
-        className="t-micro absolute top-[8%] right-[8%] text-periwinkle/40"
+        className="t-micro absolute top-[8%] right-[8%] text-periwinkle/55"
       >
         SECTOR 02 // JOURNEY
       </span>

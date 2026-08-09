@@ -8,25 +8,49 @@ export function StickyDownloadButton() {
   const { fx } = useHudAudio();
 
   useEffect(() => {
-    const toggle = () => {
-      const scrollY = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight;
-      const winHeight = window.innerHeight;
+    // scrollHeight + getElementById forced a layout flush on EVERY scroll
+    // event, and Lenis emits one per frame. Both are cached and only refreshed
+    // on resize / when the document actually changes size, and the handler is
+    // rAF-throttled and passive.
+    let docHeight = document.documentElement.scrollHeight;
+    let winHeight = window.innerHeight;
+    let hasContact = !!document.getElementById("contact");
+    let queued = false;
 
-      const isScrollPastThreshold = scrollY > 400;
-      const hasContact = typeof document !== "undefined" && !!document.getElementById("contact");
-      const isNearBottom = scrollY + winHeight >= docHeight - 120;
-
-      if (isScrollPastThreshold && !(hasContact && isNearBottom)) {
-        setVisible(true);
-      } else {
-        setVisible(false);
-      }
+    const remeasure = () => {
+      docHeight = document.documentElement.scrollHeight;
+      winHeight = window.innerHeight;
+      hasContact = !!document.getElementById("contact");
     };
-    window.addEventListener("scroll", toggle);
-    // Run once on mount
-    toggle();
-    return () => window.removeEventListener("scroll", toggle);
+
+    const evaluate = () => {
+      queued = false;
+      const scrollY = window.scrollY;
+      const isScrollPastThreshold = scrollY > 400;
+      const isNearBottom = scrollY + winHeight >= docHeight - 120;
+      setVisible(isScrollPastThreshold && !(hasContact && isNearBottom));
+    };
+
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(evaluate);
+    };
+
+    // the one-pager's pinned sections change the document height well after
+    // mount, so re-measure when the layout settles rather than only at t=0
+    const ro = new ResizeObserver(remeasure);
+    ro.observe(document.documentElement);
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", remeasure);
+    evaluate();
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", remeasure);
+    };
   }, []);
 
   return (
@@ -57,7 +81,7 @@ export function StickyDownloadButton() {
           CV
         </button>
       </div>
-      <span className="text-[8px] text-periwinkle/30 mr-1">SYS_UPLINK // DOWNLOAD</span>
+      <span className="text-[8px] text-periwinkle/55 mr-1">SYS_UPLINK // DOWNLOAD</span>
     </div>
   );
 }

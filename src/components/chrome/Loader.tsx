@@ -500,7 +500,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
     // 1. Fade out the loader elements (terminal log and progress bar),
     //    the orbit ring and the caption — the logo must morph alone
-    tl.to(".pointer-events-none.absolute.inset-0.flex.flex-col.justify-between", {
+    tl.to(".boot-chrome", {
       opacity: 0,
       duration: 0.45,
     });
@@ -1073,7 +1073,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 flex flex-col justify-between px-6 py-10 md:px-16 md:py-16">
+      <div className="boot-chrome pointer-events-none absolute inset-0 flex flex-col justify-between px-6 py-10 md:px-16 md:py-16">
         {/* Top rule */}
         <div className="flex items-baseline justify-between border-t border-ink/25 pt-2">
           <span className="t-micro text-ink-soft">
@@ -1157,7 +1157,11 @@ function TypingLine({
     }
 
     let currentLen = 0;
-    let timer: number;
+    // BOTH handles must be tracked. Previously only the rAF id was, so the
+    // pending setTimeout survived unmount, fired, and scheduled another frame
+    // that wrote innerHTML on a detached node — the loop could not be stopped.
+    let raf = 0;
+    let tick: ReturnType<typeof setTimeout> | undefined;
 
     const typeFast = () => {
       const isFinished = currentLen >= text.length;
@@ -1170,8 +1174,8 @@ function TypingLine({
 
       if (!isFinished) {
         currentLen += 2; // Type 2 characters at a time for snappiness
-        setTimeout(() => {
-          timer = requestAnimationFrame(typeFast);
+        tick = setTimeout(() => {
+          raf = requestAnimationFrame(typeFast);
         }, 16); // Throttle slightly to limit DOM updates to ~30fps
       }
     };
@@ -1179,7 +1183,8 @@ function TypingLine({
     typeFast();
 
     return () => {
-      cancelAnimationFrame(timer);
+      if (tick) clearTimeout(tick);
+      cancelAnimationFrame(raf);
     };
   }, [active, isComplete, text, status]);
 

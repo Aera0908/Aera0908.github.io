@@ -90,8 +90,18 @@ export function Projects() {
 
       /* The FAMILIAR teaser is the punchline to the flagship fan, so it must
          not ride the same stagger as the cards — it waits until all three have
-         landed, then announces itself by sliding along its 30-degree slanted tape angle. */
-      gsap.set(".next-build-teaser", { autoAlpha: 0, x: -350, y: -202 });
+         landed, then announces itself.
+         The entry vector is layout-dependent: on desktop the tape is a slanted
+         full-bleed ribbon, so it slides in ALONG its own 30-degree angle. On
+         mobile it is an ordinary button sitting under the archive link, so that
+         diagonal would fly it in from off-canvas — it just rises instead. */
+      const slantedTape = window.matchMedia("(min-width: 768px)").matches;
+      gsap.set(
+        ".next-build-teaser",
+        slantedTape
+          ? { autoAlpha: 0, x: -350, y: -202 }
+          : { autoAlpha: 0, x: 0, y: 24 },
+      );
 
       /* once: true — this is a one-shot entrance. Without it a deep link to
          /vault (or a return from a case file) replays the card tween on each of
@@ -168,11 +178,16 @@ export function Projects() {
 
       {/* NEXT BUILD — FAMILIAR teaser ribbon tape: Extended length yellow caution tape
           slanted DOWNWARD across lower-left area, expanded 50% on both sides. Click → case file. */}
-      <div className="next-build-teaser pointer-events-none absolute bottom-28 md:bottom-90 -left-16 md:-left-28 z-20">
+      {/* On mobile the slanted full-bleed ribbon cannot work — rotated and
+          750px wide it lies across the stacked cards — so it becomes an
+          ordinary in-flow button. `order-last` drops it BELOW the archive link
+          (which is earlier in the DOM); on md it goes back to being absolutely
+          positioned, where order is irrelevant. */}
+      <div className="next-build-teaser pointer-events-none z-20 order-last mt-5 flex w-full justify-center md:absolute md:order-none md:mt-0 md:block md:w-auto md:bottom-90 md:-left-28">
         <button
           onClick={openNextBuild}
           onMouseEnter={fx.blip}
-          className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] py-3 px-16 md:px-28 text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left rotate-[20deg] md:rotate-[30deg] min-w-[750px] md:min-w-[1000px] max-w-none"
+          className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left w-full max-w-sm min-w-0 rotate-0 px-4 py-2.5 md:w-auto md:max-w-none md:min-w-[1000px] md:rotate-[30deg] md:px-28 md:py-3"
           aria-label="FAMILIAR — next build, in development. Open case file"
         >
           {/* Caution hazard stripes accent borders */}

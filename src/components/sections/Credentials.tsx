@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { gsap } from "@/lib/gsap";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
+import { lockScroll, unlockScroll } from "@/lib/scroll-lock";
 
 // Standalone cast type — do NOT `extends Window` (the lenis package globally
 // augments Window.lenis with a different shape, which conflicts at build time).
@@ -215,7 +216,7 @@ function SystemSpecs({ active, totalKeys }: { active: boolean; totalKeys: number
         {active ? (
           <span className="text-iris-bright">RECONCILED // READY</span>
         ) : (
-          <span className="animate-pulse text-periwinkle/40">SYNCING ▊</span>
+          <span className="animate-pulse text-periwinkle/55">SYNCING ▊</span>
         )}
       </div>
       <div className="flex justify-between">
@@ -242,10 +243,6 @@ export function Credentials() {
   const rootRef = useRef<HTMLElement>(null);
   const { fx } = useHudAudio();
   const [previewCert, setPreviewCert] = useState<Certificate | null>(null);
-  // the modal is portaled to <body>; gate on mount so SSR and the first client
-  // render agree (document doesn't exist during prerender)
-  const [portalReady, setPortalReady] = useState(false);
-  useEffect(() => setPortalReady(true), []);
 
   // Terminal state machine: hidden -> loading -> typing -> ready
   const [terminalState, setTerminalState] = useState<"hidden" | "loading" | "typing" | "ready">("hidden");
@@ -255,20 +252,9 @@ export function Credentials() {
 
   // Freeze background page scroll when modal is active
   useEffect(() => {
-    if (previewCert) {
-      document.documentElement.classList.add("overflow-hidden");
-      document.body.classList.add("overflow-hidden");
-      (window as unknown as LenisWindow).lenis?.stop();
-    } else {
-      document.documentElement.classList.remove("overflow-hidden");
-      document.body.classList.remove("overflow-hidden");
-      (window as unknown as LenisWindow).lenis?.start();
-    }
-    return () => {
-      document.documentElement.classList.remove("overflow-hidden");
-      document.body.classList.remove("overflow-hidden");
-      (window as unknown as LenisWindow).lenis?.start();
-    };
+    if (!previewCert) return;
+    lockScroll();
+    return () => unlockScroll();
   }, [previewCert]);
 
   // BIOS loader delay
@@ -356,7 +342,7 @@ export function Credentials() {
             <span className="w-2.5 h-2.5 rounded-full bg-signal animate-pulse" />
             <span>AERA_SYS // MODULE: CREDENTIALS_DB_v2.0</span>
           </div>
-          <div className="text-periwinkle/40 hidden sm:block">
+          <div className="text-periwinkle/55 hidden sm:block">
             SYS_SEC: ACTIVE // PORT_443
           </div>
         </div>
@@ -371,7 +357,7 @@ export function Credentials() {
             <div className="w-64 h-2 border border-iris/30 rounded overflow-hidden p-0.5 bg-world-2">
               <div className="h-full bg-signal animate-[loader-fill_1.2s_ease-in-out_forwards]" />
             </div>
-            <div className="text-[9px] text-periwinkle/40 tracking-wider">ALGORITHM: ECDSA-SHA256 // SECURE_KEY: LOADED</div>
+            <div className="text-[9px] text-periwinkle/55 tracking-wider">ALGORITHM: ECDSA-SHA256 // SECURE_KEY: LOADED</div>
           </div>
         ) : (
           /* Terminal Body */
@@ -388,7 +374,7 @@ export function Credentials() {
                 
                 <div className={`mb-4 flex-1 flex flex-col justify-between transition-all duration-500 ${terminalState === "ready" || cmd1Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
                   <div>
-                    <span className="text-periwinkle/40 text-[8px] block mb-1.5">{"// HARDWARE & SYSTEMS CORE"}</span>
+                    <span className="text-periwinkle/55 text-[8px] block mb-1.5">{"// HARDWARE & SYSTEMS CORE"}</span>
                     <ul className="flex flex-col gap-1 border-l border-iris/25 pl-3">
                       {HARD_SKILLS.map((s, idx) => (
                         <li key={s} className="text-[11px] leading-relaxed text-periwinkle/80">
@@ -399,18 +385,18 @@ export function Credentials() {
                   </div>
 
                   <div className="mt-4">
-                    <span className="text-periwinkle/40 text-[8px] block mb-1.5">{"// COLLABORATION & INTEGRATION MODE"}</span>
+                    <span className="text-periwinkle/55 text-[8px] block mb-1.5">{"// COLLABORATION & INTEGRATION MODE"}</span>
                     <ul className="flex flex-col gap-1 border-l border-periwinkle/20 pl-3">
                       {SOFT_SKILLS.map((s, idx) => (
                         <li key={s} className="text-[11px] leading-relaxed text-periwinkle/60">
-                          <span className="text-periwinkle/40 font-bold">[MOD_{String(idx + 1).padStart(2, "0")}]</span> {s}
+                          <span className="text-periwinkle/55 font-bold">[MOD_{String(idx + 1).padStart(2, "0")}]</span> {s}
                         </li>
                       ))}
                     </ul>
                   </div>
 
                   <div className="mt-4">
-                    <span className="text-periwinkle/40 text-[8px] block mb-1.5">{"// TECH STACK SUMMARY"}</span>
+                    <span className="text-periwinkle/55 text-[8px] block mb-1.5">{"// TECH STACK SUMMARY"}</span>
                     <div className="text-[9.5px] leading-relaxed text-periwinkle/65 border-l border-iris/25 pl-3 font-mono">
                       <div>LANGUAGES  :: TypeScript, JavaScript, Python, C/C++, Solidity, SystemVerilog, SQL</div>
                       <div>FRAMEWORKS :: React, Next.js, Express, Tailwind CSS, Flutter, Hardhat</div>
@@ -439,23 +425,18 @@ export function Credentials() {
                 </p>
 
                 <div className={`grid gap-3 sm:grid-cols-2 lg:grid-cols-3 flex-1 transition-opacity duration-500 ${terminalState === "ready" || cmd2Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+                  {/* Cards are not role="button" — each contains its own
+                      [PREVIEW] button and [DOWNLOAD] link, and ARIA forbids
+                      focusable descendants inside a button. Those two controls
+                      are the keyboard path; the card stays a mouse target. */}
                   {featured.map((c) => (
                     <div
                       key={c.name}
-                      role="button"
-                      tabIndex={0}
                       onClick={() => {
                         fx.click();
                         setPreviewCert(c);
                       }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          fx.click();
-                          setPreviewCert(c);
-                        }
-                      }}
-                      className="clip-step-tr text-left cursor-pointer relative border border-periwinkle/15 bg-world/40 hover:border-iris-bright/60 transition-colors p-4 flex flex-col justify-between focus-visible:outline-2"
+                      className="clip-step-tr text-left cursor-pointer relative border border-periwinkle/15 bg-world/40 hover:border-iris-bright/60 transition-colors p-4 flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -478,7 +459,8 @@ export function Credentials() {
                             fx.click();
                             setPreviewCert(c);
                           }}
-                          className="px-2 py-1 border border-iris/30 text-iris hover:bg-iris hover:text-world text-[8px] font-mono transition-colors cursor-pointer"
+                          aria-label={`Preview ${c.name} certificate`}
+                          className="px-2 py-1 border border-iris/30 text-iris hover:bg-iris hover:text-world text-[8px] font-mono transition-colors cursor-pointer focus-visible:outline-2"
                         >
                           [ PREVIEW ]
                         </button>
@@ -489,7 +471,8 @@ export function Credentials() {
                             e.stopPropagation();
                             fx.click();
                           }}
-                          className="px-2 py-1 border border-periwinkle/30 text-periwinkle/70 hover:border-paper hover:text-paper text-[8px] font-mono transition-colors"
+                          aria-label={`Download ${c.name} certificate`}
+                          className="px-2 py-1 border border-periwinkle/30 text-periwinkle/70 hover:border-paper hover:text-paper text-[8px] font-mono transition-colors focus-visible:outline-2"
                           onMouseEnter={fx.blip}
                         >
                           [ DOWNLOAD ]
@@ -511,11 +494,11 @@ export function Credentials() {
                 <div className={`overflow-x-auto overflow-y-auto min-h-0 border border-periwinkle/10 bg-world/20 rounded transition-opacity duration-500 ${terminalState === "ready" || cmd3Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
                   <table className="w-full text-left text-[10px] border-collapse">
                     <thead className="sticky top-0 z-10">
-                      <tr className="border-b border-periwinkle/10 bg-world-2 text-periwinkle/40">
-                        <th className="px-4 py-1.5 font-mono font-bold">LOG_ID</th>
-                        <th className="px-4 py-1.5 font-mono font-bold">TRAINING LOG / DETAILS</th>
-                        <th className="px-4 py-1.5 font-mono font-bold">ISSUER</th>
-                        <th className="px-4 py-1.5 font-mono font-bold text-right">UPLINKS</th>
+                      <tr className="border-b border-periwinkle/10 bg-world-2 text-periwinkle/55">
+                        <th scope="col" className="px-4 py-1.5 font-mono font-bold">LOG_ID</th>
+                        <th scope="col" className="px-4 py-1.5 font-mono font-bold">TRAINING LOG / DETAILS</th>
+                        <th scope="col" className="px-4 py-1.5 font-mono font-bold">ISSUER</th>
+                        <th scope="col" className="px-4 py-1.5 font-mono font-bold text-right">UPLINKS</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -569,7 +552,7 @@ export function Credentials() {
           stacking context, so a `fixed z-50` child was capped at z-10 in root
           order and painted UNDER the fixed Navbar (z-70) and the sticky
           download bar (z-60) — both stayed clickable over the "modal". */}
-      {previewCert && portalReady &&
+      {previewCert &&
         createPortal(
         <div
           className="fixed inset-0 z-[110] flex items-center justify-center p-4"
@@ -648,7 +631,7 @@ export function Credentials() {
             </div>
 
             {/* Modal Footer */}
-            <div className="bg-world-2/40 text-periwinkle/40 px-6 py-2 text-[8px] flex justify-between border-t border-periwinkle/15 select-none">
+            <div className="bg-world-2/40 text-periwinkle/55 px-6 py-2 text-[8px] flex justify-between border-t border-periwinkle/15 select-none">
               <span>CIPHER_DEC: COMPLETED // SUCCESS</span>
               <span>AERA SECURE WORKSTATION v2.0 // DECRYPT_ENGINE_ACTIVE</span>
             </div>

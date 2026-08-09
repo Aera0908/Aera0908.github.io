@@ -41,6 +41,8 @@ export function VaultCard({
   const overlayFlapRef = useRef<HTMLDivElement>(null);
   const overlayBlackRef = useRef<HTMLDivElement>(null);
   const [unlocking, setUnlocking] = useState(false);
+  /** synchronous mirror of `unlocking` for closures captured at first render */
+  const unlockingRef = useRef(false);
   const [mounted, setMounted] = useState(false);
   // holds the card's screen rect once the open sequence starts (also gates
   // the body-portaled overlay that runs the cover→fullscreen→black flight)
@@ -52,7 +54,12 @@ export function VaultCard({
   }, []);
 
   const unlock = () => {
-    if (unlocking) return;
+    // Ref, not the `unlocking` state: the hold tween below is built once in a
+    // []-dep effect, so its onComplete closes over the FIRST render's copy of
+    // this function, where `unlocking` is permanently false. Reading state here
+    // made the guard dead on the hold path — a second trigger could re-enter.
+    if (unlockingRef.current) return;
+    unlockingRef.current = true;
     setUnlocking(true);
     fx.confirm();
     // remember we opened this case from the one-pager vault section so the
@@ -284,7 +291,10 @@ export function VaultCard({
         </div>
 
         {/* back face */}
-        <div className="clip-tab-tl absolute inset-0 flex rotate-y-180 flex-col items-center justify-center gap-4 border border-iris-bright/40 bg-world-2 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+        {/* one transform declaration only — `rotate-y-180` and the arbitrary
+            [transform:rotateY(180deg)] both wrote `transform`, so which one
+            applied depended on stylesheet order */}
+        <div className="clip-tab-tl absolute inset-0 flex flex-col items-center justify-center gap-4 border border-iris-bright/40 bg-world-2 [backface-visibility:hidden] [transform:rotateY(180deg)]">
           <span className="index-marker">● {index}</span>
           <span className="font-display text-xl font-black uppercase tracking-tight text-paper">
             {name}

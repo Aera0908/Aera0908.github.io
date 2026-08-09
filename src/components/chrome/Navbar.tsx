@@ -73,12 +73,16 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
+              /* below sm the label is display:none, which drops it out of the
+                 accessibility tree — these links announced as bare "001".
+                 The aria-label carries the real name at every width. */
+              aria-label={link.label}
               className="nav-link t-label text-white"
               onMouseEnter={fx.blip}
               onClick={(e) => onSection(e, link.id, link.href)}
             >
-              <span className="mr-1.5 opacity-50">{link.index}</span>
-              <span className="hidden sm:inline">{link.label}</span>
+              <span className="mr-1.5 opacity-50" aria-hidden="true">{link.index}</span>
+              <span className="hidden sm:inline" aria-hidden="true">{link.label}</span>
             </Link>
           ))}
 
