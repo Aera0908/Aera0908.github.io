@@ -60,82 +60,92 @@ export function Projects() {
   };
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      /**
-       * Journey exit — as this solid section slides up over the viewport,
-       * the moonbase parallax layers behind it drift upward at different
-       * speeds and fade out (foreground moon moves faster than the facility
-       * dome), so the world hands off to the editorial sections.
-       */
-      gsap.fromTo(hudState, {
-        facilityY: 2.5,
-        moonParallaxY: 1.5,
-        facilityOpacity: 1.0,
-        moonParallaxOpacity: 1.0,
-      }, {
-        facilityY: 7.5, // slow background lift
-        moonParallaxY: 11.5, // faster foreground lift
-        facilityOpacity: 0.0,
-        moonParallaxOpacity: 0.0,
-        ease: "none",
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: rootRef.current,
-          start: "top bottom",
-          end: "top top",
-          scrub: true,
-          invalidateOnRefresh: true,
-        },
-      });
+    const mm = gsap.matchMedia(rootRef);
 
-      /* The FAMILIAR teaser is the punchline to the flagship fan, so it must
-         not ride the same stagger as the cards — it waits until all three have
-         landed, then announces itself.
-         The entry vector is layout-dependent: on desktop the tape is a slanted
-         full-bleed ribbon, so it slides in ALONG its own 30-degree angle. On
-         mobile it is an ordinary button sitting under the archive link, so that
-         diagonal would fly it in from off-canvas — it just rises instead. */
-      const slantedTape = window.matchMedia("(min-width: 768px)").matches;
-      gsap.set(
-        ".next-build-teaser",
-        slantedTape
-          ? { autoAlpha: 0, x: -350, y: -202 }
-          : { autoAlpha: 0, x: 0, y: 24 },
-      );
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      },
+      (context) => {
+        const { isDesktop } = context.conditions as { isDesktop: boolean; isMobile: boolean };
 
-      /* once: true — this is a one-shot entrance. Without it a deep link to
-         /vault (or a return from a case file) replays the card tween on each of
-         Home's three ScrollTrigger.refresh() passes. */
-      const reveal = gsap.timeline({
-        scrollTrigger: { trigger: rootRef.current, start: "top 95%", once: true },
-      });
+        /**
+         * Journey exit — as this solid section slides up over the viewport,
+         * the moonbase parallax layers behind it drift upward at different
+         * speeds and fade out (foreground moon moves faster than the facility
+         * dome), so the world hands off to the editorial sections.
+         */
+        gsap.fromTo(hudState, {
+          facilityY: 2.5,
+          moonParallaxY: 1.5,
+          facilityOpacity: 1.0,
+          moonParallaxOpacity: 1.0,
+        }, {
+          facilityY: 7.5, // slow background lift
+          moonParallaxY: 11.5, // faster foreground lift
+          facilityOpacity: 0.0,
+          moonParallaxOpacity: 0.0,
+          ease: "none",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top bottom",
+            end: "top top",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
 
-      reveal.from(".proj-card", {
-        y: 70,
-        opacity: 0,
-        duration: 0.6,
-        ease: "power2.out",
-        stagger: 0.06,
-        onComplete: () => {
-          gsap.set(".proj-card", { clearProps: "all" });
-        },
-      });
+        /* The FAMILIAR teaser is the punchline to the flagship fan, so it must
+           not ride the same stagger as the cards — it waits until all three have
+           landed, then announces itself.
+           The entry vector is layout-dependent: on desktop the tape is a slanted
+           full-bleed ribbon, so it slides in ALONG its own 30-degree angle. On
+           mobile it is an ordinary button sitting under the archive link, so that
+           diagonal would fly it in from off-canvas — it just rises instead. */
+        gsap.set(
+          ".next-build-teaser",
+          isDesktop
+            ? { autoAlpha: 0, x: -350, y: -202 }
+            : { autoAlpha: 0, x: 0, y: 24 },
+        );
 
-      /* Cued AFTER cards finish entry animation: slides in along its exact 30-degree slanted angle,
-         settling with ease-in and bounce-out (back.out). */
-      reveal.to(
-        ".next-build-teaser",
-        {
-          autoAlpha: 1,
-          x: 0,
-          y: 0,
-          duration: 0.85,
-          ease: "back.out(1.4)",
-        },
-        "+=0.4",
-      );
-    }, rootRef);
-    return () => ctx.revert();
+        /* once: true — this is a one-shot entrance. Without it a deep link to
+           /vault (or a return from a case file) replays the card tween on each of
+           Home's three ScrollTrigger.refresh() passes. */
+        const reveal = gsap.timeline({
+          scrollTrigger: { trigger: rootRef.current, start: "top 95%", once: true },
+        });
+
+        reveal.from(".proj-card", {
+          y: 70,
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: 0.06,
+          onComplete: () => {
+            gsap.set(".proj-card", { clearProps: "all" });
+          },
+        });
+
+        /* Cued AFTER cards finish entry animation: slides in along its exact 30-degree slanted angle,
+           settling with ease-in and bounce-out (back.out). */
+        reveal.to(
+          ".next-build-teaser",
+          {
+            autoAlpha: 1,
+            x: 0,
+            y: 0,
+            duration: 0.85,
+            ease: "back.out(1.4)",
+          },
+          "+=0.4",
+        );
+      }
+    );
+
+    return () => mm.revert();
   }, []);
 
   return (

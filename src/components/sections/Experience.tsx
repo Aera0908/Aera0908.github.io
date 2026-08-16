@@ -97,119 +97,127 @@ export function Experience({ entered }: { entered: boolean }) {
     const cardsContainer = containerRef.current;
     if (!section || !cardsContainer) return;
 
-    const ctx = gsap.context(() => {
-      // Horizontal travel: translate the track until the LAST card's center
-      // sits on the viewport center. rect.left minus the track's current x
-      // gives the untransformed position (the flip rotation is origin-left,
-      // so the card's left edge is stable); offsetWidth is layout width.
-      const getScrollWidth = () => {
-        const cards = cardsContainer.querySelectorAll<HTMLElement>(".xp-card");
-        const last = cards[cards.length - 1];
-        if (!last) return 0;
-        const trackX = Number(gsap.getProperty(cardsContainer, "x")) || 0;
-        const naturalLeft = last.getBoundingClientRect().left - trackX;
-        return Math.max(
-          0,
-          naturalLeft + last.offsetWidth / 2 - window.innerWidth / 2,
-        );
-      };
+    const mm = gsap.matchMedia(rootRef);
 
-      /**
-       * Entrance — plays while the section scrolls INTO view (the viewport-
-       * height of scroll where the collapsed Hero exits). The moonbase rises
-       * from below the horizon and the header fades in, so there is never a
-       * dead black gap between the white card collapsing and the Journey.
-       */
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "top top",
-          scrub: true,
-          invalidateOnRefresh: true,
-        },
-      })
-        .fromTo(hudState, {
-          facilityY: -55.0,
-          moonParallaxY: -55.0,
-        }, {
-          facilityY: 2.5, // Rest position of facility
-          moonParallaxY: 1.5, // Rest position of moon horizon
-          duration: 1.0,
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      },
+      () => {
+        // Horizontal travel: translate the track until the LAST card's center
+        // sits on the viewport center. rect.left minus the track's current x
+        // gives the untransformed position (the flip rotation is origin-left,
+        // so the card's left edge is stable); offsetWidth is layout width.
+        const getScrollWidth = () => {
+          const cards = cardsContainer.querySelectorAll<HTMLElement>(".xp-card");
+          const last = cards[cards.length - 1];
+          if (!last) return 0;
+          const trackX = Number(gsap.getProperty(cardsContainer, "x")) || 0;
+          const naturalLeft = last.getBoundingClientRect().left - trackX;
+          return Math.max(
+            0,
+            naturalLeft + last.offsetWidth / 2 - window.innerWidth / 2,
+          );
+        };
+
+        /**
+         * Entrance — plays while the section scrolls INTO view (the viewport-
+         * height of scroll where the collapsed Hero exits). The moonbase rises
+         * from below the horizon and the header fades in, so there is never a
+         * dead black gap between the white card collapsing and the Journey.
+         */
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "top top",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        })
+          .fromTo(hudState, {
+            facilityY: -55.0,
+            moonParallaxY: -55.0,
+          }, {
+            facilityY: 2.5, // Rest position of facility
+            moonParallaxY: 1.5, // Rest position of moon horizon
+            duration: 1.0,
+            ease: "none",
+          }, 0)
+          .fromTo(".journey-header", {
+            opacity: 0,
+            y: 40,
+          }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.45,
+            ease: "none",
+          }, 0.55);
+
+        // Pinned horizontal timeline — starts exactly when the entrance ends
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${getScrollWidth() + 1600}`, // dynamic duration
+            pin: true,
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        // 1. Horizontal cards scroll
+        tl.to(cardsContainer, {
+          x: () => -getScrollWidth(),
           ease: "none",
-        }, 0)
-        .fromTo(".journey-header", {
-          opacity: 0,
-          y: 40,
+          duration: 3.0,
+        }, 0);
+
+        // 2. Parallax camera pan on WebGL background (foreground pans faster
+        // than the facility dome). Pans are centered — see hud-state.ts.
+        tl.fromTo(hudState, {
+          facilityX: 5.0,
+          moonParallaxX: 22.5,
         }, {
-          opacity: 1,
-          y: 0,
-          duration: 0.45,
+          facilityX: -5.0, // Slower background pan
+          moonParallaxX: -22.5, // Faster foreground pan
           ease: "none",
-        }, 0.55);
+          duration: 3.0,
+          immediateRender: false,
+        }, 0);
 
-      // Pinned horizontal timeline — starts exactly when the entrance ends
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => `+=${getScrollWidth() + 1600}`, // dynamic duration
-          pin: true,
-          scrub: true,
-          invalidateOnRefresh: true,
-        },
-      });
+        // 3. Card flips synced to position: every card flips in the moment it
+        // reaches the middle-right slot (~58vw); the LAST card instead flips
+        // as the track settles it onto the viewport center.
+        const cards = gsap.utils.toArray<HTMLElement>(".xp-card");
+        const travel = getScrollWidth();
+        const trackX0 = Number(gsap.getProperty(cardsContainer, "x")) || 0;
+        cards.forEach((card, idx) => {
+          const isLast = idx === cards.length - 1;
+          const naturalLeft = card.getBoundingClientRect().left - trackX0;
+          const reach = isLast
+            ? travel
+            : Math.max(0, naturalLeft - window.innerWidth * 0.58);
+          const startTime = (Math.min(reach, travel) / travel) * 3.0;
+          tl.fromTo(card, {
+            transformPerspective: 1200,
+            rotationY: -75,
+            scale: 0.86,
+            opacity: 0,
+            transformOrigin: "left center",
+          }, {
+            rotationY: 0,
+            scale: 1.0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "back.out(1.2)",
+          }, startTime);
+        });
+      }
+    );
 
-      // 1. Horizontal cards scroll
-      tl.to(cardsContainer, {
-        x: () => -getScrollWidth(),
-        ease: "none",
-        duration: 3.0,
-      }, 0);
-
-      // 2. Parallax camera pan on WebGL background (foreground pans faster
-      // than the facility dome). Pans are centered — see hud-state.ts.
-      tl.fromTo(hudState, {
-        facilityX: 5.0,
-        moonParallaxX: 22.5,
-      }, {
-        facilityX: -5.0, // Slower background pan
-        moonParallaxX: -22.5, // Faster foreground pan
-        ease: "none",
-        duration: 3.0,
-        immediateRender: false,
-      }, 0);
-
-      // 3. Card flips synced to position: every card flips in the moment it
-      // reaches the middle-right slot (~58vw); the LAST card instead flips
-      // as the track settles it onto the viewport center.
-      const cards = gsap.utils.toArray<HTMLElement>(".xp-card");
-      const travel = getScrollWidth();
-      const trackX0 = Number(gsap.getProperty(cardsContainer, "x")) || 0;
-      cards.forEach((card, idx) => {
-        const isLast = idx === cards.length - 1;
-        const naturalLeft = card.getBoundingClientRect().left - trackX0;
-        const reach = isLast
-          ? travel
-          : Math.max(0, naturalLeft - window.innerWidth * 0.58);
-        const startTime = (Math.min(reach, travel) / travel) * 3.0;
-        tl.fromTo(card, {
-          transformPerspective: 1200,
-          rotationY: -75,
-          scale: 0.86,
-          opacity: 0,
-          transformOrigin: "left center",
-        }, {
-          rotationY: 0,
-          scale: 1.0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "back.out(1.2)",
-        }, startTime);
-      });
-    }, rootRef);
-
-    return () => ctx.revert();
+    return () => mm.revert();
   }, [entered]);
 
   useEffect(() => {

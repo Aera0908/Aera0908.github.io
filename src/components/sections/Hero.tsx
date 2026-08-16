@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { hudState } from "@/lib/hud-state";
 import { expDampAlpha } from "@/lib/scene";
 import { CyberLines } from "@/components/ui/CyberLines";
@@ -57,101 +57,91 @@ export function Hero({ entered }: { entered: boolean }) {
     const root = rootRef.current;
     if (!card || !placeholder || !root) return;
 
+    const getCardBounds = () => {
+      const rect = placeholder.getBoundingClientRect();
+      const rootRect = root.getBoundingClientRect();
+      return {
+        left: rect.left - rootRect.left,
+        top: rect.top - rootRect.top,
+        width: rect.width,
+        height: rect.height,
+      };
+    };
+
+    const getWrapCollapsedBounds = () => {
+      const rect = placeholder.getBoundingClientRect();
+      const metaRows = card.querySelectorAll(".hero-card-meta");
+      let metaHeight = 0;
+      metaRows.forEach((row) => {
+        metaHeight += row.getBoundingClientRect().height;
+      });
+      if (metaHeight === 0) {
+        metaHeight = 36;
+      }
+
+      const pWidth = rect.width - 40;
+      const pHeight = rect.height - 40 - metaHeight;
+      return {
+        left: 0,
+        width: pWidth,
+        top: pHeight * 0.15,
+        height: pHeight * 0.70,
+      };
+    };
+
     // Helper to position the absolute card exactly over its layout placeholder
     const matchPlaceholder = () => {
-      const placeholderRect = placeholder.getBoundingClientRect();
-      const rootRect = root.getBoundingClientRect();
+      const bounds = getCardBounds();
+      if (bounds.width === 0 || bounds.height === 0) return;
+
       gsap.set(card, {
-        left: placeholderRect.left - rootRect.left,
-        top: placeholderRect.top - rootRect.top,
-        width: placeholderRect.width,
-        height: placeholderRect.height,
+        left: bounds.left,
+        top: bounds.top,
+        width: bounds.width,
+        height: bounds.height,
       });
 
       const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
       if (wrapEl) {
-        const metaRows = card.querySelectorAll(".hero-card-meta");
-        let metaHeight = 0;
-        metaRows.forEach((row) => {
-          metaHeight += row.getBoundingClientRect().height;
-        });
-        if (metaHeight === 0) {
-          metaHeight = 36;
-        }
-
-        const w = placeholderRect.width - 40;
-        const pHeight = placeholderRect.height - 40 - metaHeight;
-        const t = pHeight * 0.15;
-        const h = pHeight * 0.70;
-
+        const wrapBounds = getWrapCollapsedBounds();
         gsap.set(wrapEl, {
           left: 0,
-          width: w,
-          top: t,
-          height: h,
+          width: wrapBounds.width,
+          top: wrapBounds.top,
+          height: wrapBounds.height,
         });
       }
     };
 
-    // Initialize layout position
+    // Initialize layout position immediately
     matchPlaceholder();
 
-    // Re-adjust card layout position on window resize
-    window.addEventListener("resize", matchPlaceholder);
+    const mm = gsap.matchMedia(rootRef);
 
-    let ctx: gsap.Context | undefined;
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      },
+      (context) => {
+        const { isMobile } = context.conditions as { isMobile: boolean; isDesktop: boolean };
 
-    const timer = setTimeout(() => {
-      // On phones the expanded portrait becomes a full-width bottom banner —
-      // the desktop 58vw/35vw right column collapses to an unreadable sliver.
-      // Function-based values so invalidateOnRefresh re-picks the layout.
-      const isMobile = () => window.innerWidth < 768;
-      const wrapExpanded = {
-        left: () => (isMobile() ? "6vw" : "58vw"),
-        width: () => (isMobile() ? "88vw" : "35vw"),
-        top: () => (isMobile() ? "66%" : "0%"),
-        height: () => (isMobile() ? "28%" : "100%"),
-      };
+        // Re-measure and position the card fresh for this breakpoint
+        matchPlaceholder();
 
-      const getCardBounds = () => {
-        const rect = placeholder.getBoundingClientRect();
-        const rootRect = root.getBoundingClientRect();
-        return {
-          left: rect.left - rootRect.left,
-          top: rect.top - rootRect.top,
-          width: rect.width,
-          height: rect.height,
+        const wrapExpanded = {
+          left: isMobile ? "6vw" : "58vw",
+          width: isMobile ? "88vw" : "35vw",
+          top: isMobile ? "66%" : "0%",
+          height: isMobile ? "28%" : "100%",
         };
-      };
 
-      const getWrapCollapsedBounds = () => {
-        const rect = placeholder.getBoundingClientRect();
-        const metaRows = card.querySelectorAll(".hero-card-meta");
-        let metaHeight = 0;
-        metaRows.forEach((row) => {
-          metaHeight += row.getBoundingClientRect().height;
-        });
-        if (metaHeight === 0) {
-          metaHeight = 36;
-        }
-
-        const pWidth = rect.width - 40;
-        const pHeight = rect.height - 40 - metaHeight;
-        return {
-          left: 0,
-          width: pWidth,
-          top: pHeight * 0.15,
-          height: pHeight * 0.70,
-        };
-      };
-
-      ctx = gsap.context(() => {
         // Create scroll trigger timeline to pin Hero section and morph the card
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: root,
             start: "top top",
-            end: "+=2800", // Adjusted scroll track for the 4-photo reveal sequence
+            end: "+=2800",
             pin: true,
             scrub: true,
             invalidateOnRefresh: true,
@@ -167,11 +157,7 @@ export function Hero({ entered }: { entered: boolean }) {
             stagger: 0.05,
           }, 0);
 
-        // Step B: Morph the exact same card container to cover the full
-        // viewport. All repeated-target steps use explicit fromTo: with
-        // lazy .to() starts, invalidateOnRefresh + entering the pin from
-        // BELOW (deep link / back-nav) captured mid-scrub values and
-        // corrupted the whole morph.
+        // Step B: Morph the exact same card container to cover the full viewport
         tl.fromTo(card, {
           left: () => getCardBounds().left,
           top: () => getCardBounds().top,
@@ -183,8 +169,6 @@ export function Hero({ entered }: { entered: boolean }) {
         }, {
           left: 0,
           top: 0,
-          // viewport units, NOT "100%": percentages resolve against the
-          // section (min-h-screen + padding ≈ 146vh) and oversize the card
           width: "100vw",
           height: "100vh",
           borderRadius: 0,
@@ -195,10 +179,10 @@ export function Hero({ entered }: { entered: boolean }) {
           immediateRender: false,
         }, 0.1)
         .to(hudState, {
-          earthY: 24.0, // Earth slides up slowly
-          earthOpacity: 0.0, // Earth fades out
-          oldMoonY: -2.0, // old Moon slides up slowly (removed fast speed to prevent cut-off)
-          oldMoonOpacity: 0.0, // old Moon fades out completely during expansion
+          earthY: 24.0,
+          earthOpacity: 0.0,
+          oldMoonY: -2.0,
+          oldMoonOpacity: 0.0,
           duration: 1.0,
           ease: "power2.inOut",
         }, 0.1)
@@ -224,8 +208,7 @@ export function Hero({ entered }: { entered: boolean }) {
           immediateRender: false,
         }, 0.1);
 
-        // Step C: Reveal the one-screen intro collage (no inner scrolling —
-        // it simply holds while the viewer reads, then the card collapses)
+        // Step C: Reveal the one-screen intro collage
         tl.fromTo(".hero-intro", {
           opacity: 0,
           y: 24,
@@ -236,8 +219,7 @@ export function Hero({ entered }: { entered: boolean }) {
           ease: "power2.out",
         }, 0.9);
 
-        // Step D: Sequential photo reveals as you scroll (appearing and disappearing one-by-one)
-        // Figure 1
+        // Step D: Sequential photo reveals as you scroll
         tl.fromTo(".feed-fig-1",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
           { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
@@ -245,7 +227,6 @@ export function Hero({ entered }: { entered: boolean }) {
         )
         .to(".feed-fig-1", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 1.8);
 
-        // Figure 2
         tl.fromTo(".feed-fig-2",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
           { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
@@ -253,7 +234,6 @@ export function Hero({ entered }: { entered: boolean }) {
         )
         .to(".feed-fig-2", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 2.3);
 
-        // Figure 3
         tl.fromTo(".feed-fig-3",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
           { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
@@ -261,7 +241,6 @@ export function Hero({ entered }: { entered: boolean }) {
         )
         .to(".feed-fig-3", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 2.8);
 
-        // Figure 4
         tl.fromTo(".feed-fig-4",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
           { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
@@ -277,7 +256,7 @@ export function Hero({ entered }: { entered: boolean }) {
           ease: "power2.in",
         }, 3.6);
 
-        // Step F: Shrink card back to placeholder bounds, slide up, & transition background parallax layers
+        // Step F: Shrink card back to placeholder bounds, slide up
         tl.fromTo(card, {
           left: 0,
           top: 0,
@@ -299,10 +278,10 @@ export function Hero({ entered }: { entered: boolean }) {
           immediateRender: false,
         }, 4.0)
         .to(hudState, {
-          earthY: 24.0, // Keep Earth out of view
-          earthOpacity: 0.0, // Keep Earth faded out
-          oldMoonY: -2.0, // Keep old Moon slowly translated
-          oldMoonOpacity: 0.0, // Keep old Moon faded out
+          earthY: 24.0,
+          earthOpacity: 0.0,
+          oldMoonY: -2.0,
+          oldMoonOpacity: 0.0,
           duration: 1.1,
           ease: "power2.inOut",
         }, 4.0)
@@ -326,19 +305,31 @@ export function Hero({ entered }: { entered: boolean }) {
           duration: 1.1,
           ease: "power2.inOut",
           immediateRender: false,
-        }, 4.0)
-
+        }, 4.0);
 
         // Step G: Hold scroll lock briefly in its closed state before unpinning
         tl.to({}, { duration: 0.35 });
+      }
+    );
 
-      }, rootRef);
-    }, 100);
+    const onResize = () => {
+      matchPlaceholder();
+    };
+
+    window.addEventListener("resize", onResize);
+    ScrollTrigger.addEventListener("refreshInit", onResize);
+
+    const ro = new ResizeObserver(() => {
+      onResize();
+    });
+    ro.observe(placeholder);
+    ro.observe(root);
 
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", matchPlaceholder);
-      if (ctx) ctx.revert();
+      window.removeEventListener("resize", onResize);
+      ScrollTrigger.removeEventListener("refreshInit", onResize);
+      ro.disconnect();
+      mm.revert();
     };
   }, [entered]);
 
