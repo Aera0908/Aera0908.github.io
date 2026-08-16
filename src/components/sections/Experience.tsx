@@ -3,53 +3,86 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { hudState } from "@/lib/hud-state";
+import { VariousClientsIcon } from "@/components/ui/OrgIcons";
+
+interface JourneyEntry {
+  index: string;
+  role: string;
+  org: string;
+  period: string;
+  url?: string;
+  blurb: string;
+  tags: string[];
+  logo?: string;
+  Icon?: React.ComponentType<{ className?: string }>;
+}
 
 /* real history — sourced from the resume (see web_resume/src/data/journey.json) */
-const ENTRIES = [
+const ENTRIES: JourneyEntry[] = [
   {
     index: "001",
-    role: "Lead Web3 & Full-Stack Developer",
-    org: "FEHUVIA",
-    period: "2026",
+    role: "IC Layout Trainee",
+    org: "XINYX LABS",
+    period: "2026 — PRESENT",
+    url: "https://www.labsbyxinyx.com/",
     blurb:
-      "Architected an open-finance B2B treasury workstation on Morph L2 — Solidity billing clearance settling T+0 in under 2 seconds, a self-healing background gas faucet, an EVM listener daemon reconciling a dual-state PostgreSQL ledger, and a GPT-4o RAG co-pilot with OCR invoice parsing.",
-    tags: ["Solidity", "Morph L2", "React 19", "Express", "PostgreSQL", "GPT-4o"],
+      "Undergoing specialized industry training in integrated circuit (IC) physical layout design — floorplanning, standard cell layout, DRC/LVS physical verification rule decks, and parasitic extraction workflows.",
+    tags: ["IC Layout", "DRC/LVS", "Physical Design", "VLSI", "Semiconductor"],
+    logo: "/icons/xinyx-labs.jpg",
   },
   {
     index: "002",
-    role: "Lead Hardware & Software Engineer",
-    org: "AEROVIT",
-    period: "2024 — 2026",
+    role: "Lead Web3 & Full-Stack Developer",
+    org: "FEHUVIA",
+    period: "2026",
+    url: "https://www.fehuvia.app/",
     blurb:
-      "Built a fitness-gamified smartwatch ecosystem — designed and brought up custom ESP32-S3 PCBs (QMI8658 IMU, MAX30102 heart-rate), a 33-landmark BlazePose pipeline with real-time rep and form state machines, and the AERO ERC-20 reward token on Ethereum Sepolia.",
-    tags: ["ESP32-S3", "C++", "BLE 5.0", "MediaPipe", "Flutter", "Sepolia"],
+      "Architected an open-finance B2B treasury workstation on Morph L2 — Solidity billing clearance settling T+0 in under 2 seconds, a self-healing background gas faucet, an EVM listener daemon reconciling a dual-state PostgreSQL ledger, and a GPT-4o RAG co-pilot with OCR invoice parsing.",
+    tags: ["Solidity", "Morph L2", "React 19", "Express", "PostgreSQL", "GPT-4o"],
+    logo: "/icons/fehuvia-logo.png",
   },
   {
     index: "003",
+    role: "Lead Hardware & Software Engineer",
+    org: "AEROVIT",
+    period: "2024 — 2026",
+    url: "https://www.aerovit.dev/",
+    blurb:
+      "Built a fitness-gamified smartwatch ecosystem — designed and brought up custom ESP32-S3 PCBs (QMI8658 IMU, MAX30102 heart-rate), a 33-landmark BlazePose pipeline with real-time rep and form state machines, and the AERO ERC-20 reward token on Ethereum Sepolia.",
+    tags: ["ESP32-S3", "C++", "BLE 5.0", "MediaPipe", "Flutter", "Sepolia"],
+    logo: "/icons/aerovit-logo.png",
+  },
+  {
+    index: "004",
     role: "Freelance Web3 & Full-Stack Developer",
     org: "VARIOUS CLIENTS",
     period: "2023 — NOW",
     blurb:
       "Deliver custom Web2/Web3 dashboards and database systems — secure client-side signing with MetaMask (EIP-1193), highly optimized PostgreSQL schemas, and RESTful Express microservices with strict rate-limiting and audit logging.",
     tags: ["React", "Node.js", "Express", "Solidity", "PostgreSQL", "MetaMask"],
-  },
-  {
-    index: "004",
-    role: "IC Design Intern",
-    org: "XINYX DESIGN",
-    period: "OJT",
-    blurb:
-      "On-the-job training in integrated circuit design and peripheral verification — SystemVerilog RTL modeling and verification of an AMBA APB3 protocol implementation.",
-    tags: ["SystemVerilog", "RTL", "AMBA APB3", "Verification", "Digital Logic"],
+    Icon: VariousClientsIcon,
   },
   {
     index: "005",
-    role: "B.S. Computer Engineering",
+    role: "IC Design Intern",
+    org: "XINYX DESIGN",
+    period: "OJT",
+    url: "https://www.xinyxdesign.com/",
+    blurb:
+      "On-the-job training in integrated circuit design and peripheral verification — SystemVerilog RTL modeling and verification of an AMBA APB3 protocol implementation.",
+    tags: ["SystemVerilog", "RTL", "AMBA APB3", "Verification", "Digital Logic"],
+    logo: "/icons/xinyx-design-with-text.jpg",
+  },
+  {
+    index: "006",
+    role: "B.S. Computer Engineering (Magna Cum Laude)",
     org: "COLEGIO DE MUNTINLUPA",
     period: "2022 — 2026",
+    url: "https://www.cdm.edu.ph/",
     blurb:
-      "Specializing in embedded systems, systems design, and digital signal processing — Graduated Magna Cum Laude, July 2026. Research prototyping across microcontrollers, RTOS, and PCB layout, including a muscle bio-signal acquisition controller.",
-    tags: ["Embedded Systems", "RTOS", "PCB", "DSP", "C/C++"],
+      "Graduated Magna Cum Laude with Best Thesis Award for 'AeroVit' (Gamified AI Fitness Platform). Specialized in embedded systems, digital signal processing, RTOS, and PCB bring-up — including muscle bio-signal (EMG) acquisition controllers.",
+    tags: ["Magna Cum Laude", "Best Thesis (AeroVit)", "Embedded Systems", "RTOS", "PCB", "DSP", "C/C++"],
+    logo: "/icons/cdm%20logo.jpg",
   },
 ];
 
@@ -237,7 +270,56 @@ export function Experience({ entered }: { entered: boolean }) {
             <h3 className="t-h2 mb-1 !text-[clamp(1.2rem,2.5vw,2.0rem)]">
               {e.role}
             </h3>
-            <p className="t-label mb-6 text-iris">{e.org}</p>
+            <div className="mb-6">
+              {e.url ? (
+                <a
+                  href={e.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit ${e.org} website`}
+                  className="group/org-link inline-flex items-center gap-3 transition-transform hover:translate-x-1"
+                >
+                  {e.logo ? (
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-[5px] border border-ink/15 bg-white shadow-xs transition-colors group-hover/org-link:border-iris">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={e.logo}
+                        alt={`${e.org} logo`}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </span>
+                  ) : e.Icon ? (
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[5px] border border-ink/15 bg-ink/[0.04] p-1.5 shadow-xs transition-colors group-hover/org-link:border-iris">
+                      <e.Icon className="h-full w-full object-contain" />
+                    </span>
+                  ) : null}
+                  <span className="t-label flex items-center gap-1.5 text-iris transition-colors group-hover/org-link:text-ink">
+                    <span>{e.org}</span>
+                    <span className="text-[0.65rem] opacity-70 group-hover/org-link:opacity-100">↗</span>
+                  </span>
+                </a>
+              ) : (
+                <div className="flex items-center gap-3">
+                  {e.logo ? (
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-[5px] border border-ink/15 bg-white shadow-xs">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={e.logo}
+                        alt={`${e.org} logo`}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </span>
+                  ) : e.Icon ? (
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[5px] border border-ink/15 bg-ink/[0.04] p-1.5 shadow-xs">
+                      <e.Icon className="h-full w-full object-contain" />
+                    </span>
+                  ) : null}
+                  <p className="t-label text-iris">{e.org}</p>
+                </div>
+              )}
+            </div>
             <p className="mb-8 max-w-prose leading-relaxed text-ink-soft text-[0.95rem]">
               {e.blurb}
             </p>
