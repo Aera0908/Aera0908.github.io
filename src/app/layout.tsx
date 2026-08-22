@@ -69,6 +69,45 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      "name": "Aira Ynte",
+      "alternateName": ["@Aera0908", "Aira Josh Ynte"],
+      "url": SITE_URL,
+      "image": `${SITE_URL}/portrait.webp`,
+      "jobTitle": "Software Engineer & System Architect",
+      "sameAs": [
+        "https://github.com/Aera0908",
+        "https://linkedin.com/in/aira-josh-ynte"
+      ],
+      "email": "mailto:08airajosh@gmail.com",
+      "knowsAbout": [
+        "Full-Stack Web Development",
+        "Embedded Systems & ESP32 Firmware",
+        "Web3 & Smart Contract Settlement",
+        "Solidity",
+        "React & Next.js",
+        "Artificial Intelligence & RAG Pipelines",
+        "Computer Vision"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      "url": SITE_URL,
+      "name": "AERA.DEV",
+      "description": SITE_DESCRIPTION,
+      "publisher": {
+        "@id": `${SITE_URL}/#person`
+      }
+    }
+  ]
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -79,6 +118,12 @@ export default function RootLayout({
       lang="en"
       className={`${archivo.variable} ${jetbrainsMono.variable} antialiased`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body suppressHydrationWarning>
         <SmoothScrollProvider>
           <HudAudioProvider>

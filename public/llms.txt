@@ -1,0 +1,62 @@
+# Aira Ynte — Technical Profile & Portfolio Digest
+
+> Software Engineer & System Architect specializing in full-stack web applications, hardware-firmware integration, Web3 settlement rails, and AI copilots. Computer Engineering '26, Metro Manila.
+
+## Profile Summary
+Aira Ynte (@Aera0908) is a software engineer and computer engineering candidate operating at the intersection of hardware, web systems, artificial intelligence, and decentralized financial rails. Experience spans building open-finance treasury software on Layer 2 EVM networks, custom ESP32-S3 biometrics smartwatches with machine-learning pose estimation, browser-based EDA tools for VLSI circuit design, and interactive 3D WebGL user experiences.
+
+## Contact & Links
+- Website: https://aera0908.github.io
+- GitHub: https://github.com/Aera0908
+- LinkedIn: https://linkedin.com/in/aira-josh-ynte
+- Email: mailto:08airajosh@gmail.com
+- Resume (PDF): https://aera0908.github.io/YNTE_RESUME.pdf
+- CV (PDF): https://aera0908.github.io/YNTE_CV.pdf
+- Projects Archive (PDF): https://aera0908.github.io/YNTE_PROJECTS_ARCHIVE.pdf
+
+## Key Case Studies & Technical Work
+
+### 1. FEHUVIA — Web3 B2B Treasury Workstation (2026)
+- **Role**: Lead Web3 & Full-Stack Developer
+- **Stack**: React 19, Vite, Solidity, Morph L2, Ethers.js, Node.js, Express, PostgreSQL, OpenAI GPT-4o RAG
+- **Url**: https://aera0908.github.io/vault/archive/fehuvia/
+- **Overview**: Open-finance treasury workstation cutting settlement times to under 2 seconds on Morph L2 via custom Solidity smart contracts (`B2BSettlement.sol`), dual-state PostgreSQL auditing, AI OCR invoice parsing, and a GPT-4o RAG cashflow analytics engine.
+
+### 2. AEROVIT — Hybrid Fitness Ecosystem & Smartwatch (2024 — 2026)
+- **Award**: Awarded Best Thesis
+- **Role**: Lead Developer & Embedded Systems Architect
+- **Stack**: ESP32-S3, BLE 5.0, Flutter, MediaPipe BlazePose, ChromaDB RAG, Ethereum Sepolia ERC-20, Firebase
+- **Url**: https://aera0908.github.io/vault/archive/aerovit/
+- **Overview**: Hybrid fitness system pairing a custom ESP32-S3 biometrics smartwatch with a 33-landmark MediaPipe pose tracking pipeline, Flame 2D gamified dungeon RPG, ChromaDB RAG AI coaching, and ERC-20 reward settlements on Sepolia.
+
+### 3. STICKOUT — Browser EDA Tool for VLSI Stick Diagrams (2026)
+- **Role**: Creator & Lead Frontend Engineer
+- **Stack**: React 19, Vite 8, HTML5 Canvas 2D, TypeScript
+- **Url**: https://aera0908.github.io/vault/archive/stickout/
+- **Overview**: Browser-based EDA CAD application featuring an infinite 2D viewport (0.1×–5× zoom), automatic wire crossover bridging, LaTeX label rendering, 50-level undo/redo, and design-rule verification.
+
+### 4. EMG Interface Controller — Embedded Biosignal Controller
+- **Role**: Embedded Systems Developer & Hardware Designer
+- **Stack**: ESP32-S3, C/C++, DSP (500 Hz sampling), Python, KiCad PCB, Fusion 360
+- **Url**: https://aera0908.github.io/vault/archive/emg-controller/
+- **Overview**: Real-time EMG signal processing on ESP32-S3 with a multi-stage DSP envelope pipeline, real-time Python GUI telemetry, and a muscle-activation game input bridge.
+
+### 5. The Safehouse — Interactive 3D WebGL Showcase (2025 — Present)
+- **Role**: Frontend & 3D Web Developer
+- **Stack**: Next.js, React Three Fiber, Three.js, GSAP, Lenis, Rive
+- **Url**: https://aera0908.github.io/vault/archive/safehouse/
+- **Overview**: 3D scroll-driven narrative journey with procedural terrain, ember particle physics, and accessibility-first motion reduction options.
+
+### 6. Familiar — Gamified Computer Vision Focus Companion (2026)
+- **Role**: Solo Developer & Product Designer
+- **Stack**: Flutter, Google ML Kit, Flame 2D, Isar, Firebase
+- **Url**: https://aera0908.github.io/vault/archive/familiar/
+- **Overview**: Offline-first mobile companion using front-camera computer vision for real-time distraction detection and creature growth mechanics during focus sessions.
+
+## Technical Skills Matrix
+- **Programming Languages**: TypeScript, JavaScript, Python, C, C++, Solidity (^0.8.24), Dart, SQL, HTML5/CSS3
+- **Frontend & WebGL**: Next.js (App Router), React 19, Three.js, React Three Fiber, GSAP, Tailwind CSS, HTML5 Canvas 2D, Flutter
+- **Backend & Cloud**: Node.js, Express, PostgreSQL, Firebase Auth/Firestore/Cloud Functions, Isar DB, REST APIs
+- **Hardware & IoT**: ESP32-S3, BLE 5.0, UART/SPI/I2C, KiCad PCB Layout, Fusion 360 CAD, Biosensors (MAX30102, QMI8658, EMG front-ends)
+- **AI / ML / CV**: OpenAI GPT-4o RAG, ChromaDB Vector DB, MediaPipe BlazePose, Google ML Kit Face Detection, PPO Reinforcement Learning
+- **Web3 & Blockchain**: Solidity, Hardhat, Morph L2, Ethereum Sepolia, Ethers.js, MetaMask EIP-1193, ERC-20 Tokenomics
