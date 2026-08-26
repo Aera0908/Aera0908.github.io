@@ -23,10 +23,10 @@ const ENTRIES: JourneyEntry[] = [
     index: "001",
     role: "IC Layout Trainee",
     org: "XINYX LABS",
-    period: "2026 — PRESENT",
+    period: "2026 - PRESENT",
     url: "https://www.labsbyxinyx.com/",
     blurb:
-      "Undergoing specialized industry training in integrated circuit (IC) physical layout design — floorplanning, standard cell layout, DRC/LVS physical verification rule decks, and parasitic extraction workflows.",
+      "Undergoing specialized industry training in integrated circuit (IC) physical layout design: floorplanning, standard cell layout, DRC/LVS physical verification rule decks, and parasitic extraction workflows.",
     tags: ["IC Layout", "DRC/LVS", "Physical Design", "VLSI", "Semiconductor"],
     logo: "/icons/xinyx-labs.jpg",
   },
@@ -37,7 +37,7 @@ const ENTRIES: JourneyEntry[] = [
     period: "2026",
     url: "https://www.fehuvia.app/",
     blurb:
-      "Architected an open-finance B2B treasury workstation on Morph L2 — Solidity billing clearance settling T+0 in under 2 seconds, a self-healing background gas faucet, an EVM listener daemon reconciling a dual-state PostgreSQL ledger, and a GPT-4o RAG co-pilot with OCR invoice parsing.",
+      "Architected an open-finance B2B treasury workstation on Morph L2: Solidity billing clearance settling T+0 in under 2 seconds, a self-healing background gas faucet, an EVM listener daemon reconciling a dual-state PostgreSQL ledger, and a GPT-4o RAG co-pilot with OCR invoice parsing.",
     tags: ["Solidity", "Morph L2", "React 19", "Express", "PostgreSQL", "GPT-4o"],
     logo: "/icons/fehuvia-logo.png",
   },
@@ -45,10 +45,10 @@ const ENTRIES: JourneyEntry[] = [
     index: "003",
     role: "Lead Hardware & Software Engineer",
     org: "AEROVIT",
-    period: "2024 — 2026",
+    period: "2024 - 2026",
     url: "https://www.aerovit.dev/",
     blurb:
-      "Built a fitness-gamified smartwatch ecosystem — designed and brought up custom ESP32-S3 PCBs (QMI8658 IMU, MAX30102 heart-rate), a 33-landmark BlazePose pipeline with real-time rep and form state machines, and the AERO ERC-20 reward token on Ethereum Sepolia.",
+      "Built a fitness-gamified smartwatch ecosystem: designed and brought up custom ESP32-S3 PCBs (QMI8658 IMU, MAX30102 heart-rate), a 33-landmark BlazePose pipeline with real-time rep and form state machines, and the AERO ERC-20 reward token on Ethereum Sepolia.",
     tags: ["ESP32-S3", "C++", "BLE 5.0", "MediaPipe", "Flutter", "Sepolia"],
     logo: "/icons/aerovit-logo.png",
   },
@@ -56,9 +56,9 @@ const ENTRIES: JourneyEntry[] = [
     index: "004",
     role: "Freelance Web3 & Full-Stack Developer",
     org: "VARIOUS CLIENTS",
-    period: "2023 — NOW",
+    period: "2023 - NOW",
     blurb:
-      "Deliver custom Web2/Web3 dashboards and database systems — secure client-side signing with MetaMask (EIP-1193), highly optimized PostgreSQL schemas, and RESTful Express microservices with strict rate-limiting and audit logging.",
+      "Deliver custom Web2/Web3 dashboards and database systems: secure client-side signing with MetaMask (EIP-1193), highly optimized PostgreSQL schemas, and RESTful Express microservices with strict rate-limiting and audit logging.",
     tags: ["React", "Node.js", "Express", "Solidity", "PostgreSQL", "MetaMask"],
     Icon: VariousClientsIcon,
   },
@@ -69,7 +69,7 @@ const ENTRIES: JourneyEntry[] = [
     period: "OJT",
     url: "https://www.xinyxdesign.com/",
     blurb:
-      "On-the-job training in integrated circuit design and peripheral verification — SystemVerilog RTL modeling and verification of an AMBA APB3 protocol implementation.",
+      "On-the-job training in integrated circuit design and peripheral verification: SystemVerilog RTL modeling and verification of an AMBA APB3 protocol implementation.",
     tags: ["SystemVerilog", "RTL", "AMBA APB3", "Verification", "Digital Logic"],
     logo: "/icons/xinyx-design-with-text.jpg",
   },
@@ -77,10 +77,10 @@ const ENTRIES: JourneyEntry[] = [
     index: "006",
     role: "B.S. Computer Engineering (Magna Cum Laude)",
     org: "COLEGIO DE MUNTINLUPA",
-    period: "2022 — 2026",
+    period: "2022 - 2026",
     url: "https://www.cdm.edu.ph/",
     blurb:
-      "Graduated Magna Cum Laude with Best Thesis Award for 'AeroVit' (Gamified AI Fitness Platform). Specialized in embedded systems, digital signal processing, RTOS, and PCB bring-up — including muscle bio-signal (EMG) acquisition controllers.",
+      "Graduated Magna Cum Laude with Best Thesis Award for 'AeroVit' (Gamified AI Fitness Platform). Specialized in embedded systems, digital signal processing, RTOS, and PCB bring-up, including muscle bio-signal (EMG) acquisition controllers.",
     tags: ["Magna Cum Laude", "Best Thesis (AeroVit)", "Embedded Systems", "RTOS", "PCB", "DSP", "C/C++"],
     logo: "/icons/cdm%20logo.jpg",
   },
@@ -158,6 +158,7 @@ export function Experience({ entered }: { entered: boolean }) {
         // Pinned horizontal timeline — starts exactly when the entrance ends
         const tl = gsap.timeline({
           scrollTrigger: {
+            id: "journey-pin",
             trigger: section,
             start: "top top",
             end: () => `+=${getScrollWidth() + 1600}`, // dynamic duration
@@ -249,7 +250,7 @@ export function Experience({ entered }: { entered: boolean }) {
           THE JOURNEY<span className="text-iris-bright">.</span>
         </h2>
         <p className="t-label text-periwinkle/60">
-          ● 001 — EXPERIENCE LOG
+          ● 001 // EXPERIENCE LOG
         </p>
       </div>
 

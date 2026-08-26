@@ -173,7 +173,7 @@ export function VaultCard({
         }
       }}
       onMouseEnter={fx.blip}
-      aria-label={`${name} — hold to open case file`}
+      aria-label={`${name} - hold to open case file`}
       style={{ touchAction: "manipulation", userSelect: "none" }}
     >
       <div

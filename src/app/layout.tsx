@@ -21,9 +21,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 const SITE_URL = "https://aera0908.github.io";
-const SITE_TITLE = "Aira Ynte — Software Engineer & System Architect";
+const SITE_TITLE = "Aira Ynte - Software Engineer & System Architect";
 const SITE_DESCRIPTION =
-  "Immersive scrollytelling portfolio of Aira Ynte (@Aera0908) — full-stack systems, hardware-firmware integration, Web3 settlement rails, and AI copilots. Computer Engineering '26, Metro Manila.";
+  "Immersive scrollytelling portfolio of Aira Ynte (@Aera0908) - full-stack systems, hardware-firmware integration, Web3 settlement rails, and AI copilots. Computer Engineering '26, Metro Manila.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
         url: "/OG_card.png",
         width: 1537,
         height: 1023,
-        alt: "AERA.DEV — Aira Ynte portfolio",
+        alt: "AERA.DEV - Aira Ynte portfolio",
       },
     ],
   },

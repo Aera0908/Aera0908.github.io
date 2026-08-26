@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CASE_STUDIES, getCaseStudy } from "@/lib/case-studies";
+import Link from "next/link";
+import { getCaseStudy, CASE_STUDIES } from "@/lib/case-studies";
 import { CyberLines } from "@/components/ui/CyberLines";
-import { CaseStudyBackButton } from "@/components/ui/CaseStudyBackButton";
-import { CaseEnter } from "@/components/ui/CaseEnter";
 import { ProjectDiagramsSection } from "@/components/ui/ProjectDiagrams";
 import { CaseStudyGallery } from "@/components/ui/CaseStudyGallery";
-import Link from "next/link";
+import { CaseStudyBackButton } from "@/components/ui/CaseStudyBackButton";
+import { CaseEnter } from "@/components/ui/CaseEnter";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return CASE_STUDIES.map((c) => ({ slug: c.slug }));
 }
 
@@ -20,13 +20,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const cs = getCaseStudy(slug);
   return {
-    title: cs ? `${cs.name} — Case File // Aira Ynte` : "Case File",
+    title: cs ? `${cs.name} - Case File // Aira Ynte` : "Case File",
     description: cs?.summary,
   };
 }
 
 /**
- * Full-view case study — flat editorial dossier over the solid world
+ * Full-view case study - flat editorial dossier over the solid world
  * background. Vault shape family (.clip-tab-tl) carries over here.
  */
 export default async function CaseStudyPage({
@@ -65,13 +65,13 @@ export default async function CaseStudyPage({
 
         <div className="mb-10 flex flex-wrap gap-x-10 gap-y-2">
           <span className="t-micro text-periwinkle/60">
-            ROLE — <span className="text-periwinkle">{cs.role.toUpperCase()}</span>
+            ROLE // <span className="text-periwinkle">{cs.role.toUpperCase()}</span>
           </span>
           <span className="t-micro text-periwinkle/60">
-            TIMELINE — <span className="text-periwinkle">{cs.duration}</span>
+            TIMELINE // <span className="text-periwinkle">{cs.duration}</span>
           </span>
           <span className="t-micro text-periwinkle/60">
-            STATUS — <span className="text-iris-bright">{cs.status}</span>
+            STATUS // <span className="text-iris-bright">{cs.status}</span>
           </span>
         </div>
 
@@ -83,55 +83,65 @@ export default async function CaseStudyPage({
             className="clip-tab-tl mb-12 aspect-[21/9] w-full border border-periwinkle/15 object-cover"
           />
         ) : (
-          <div className="clip-tab-tl mb-12 flex aspect-[21/9] w-full items-center justify-center border border-periwinkle/15 bg-world-2">
-            <span className="t-micro text-periwinkle/50">
-              NDA // NO PUBLIC VISUAL
-            </span>
+          <div className="clip-tab-tl mb-12 aspect-[21/9] w-full border border-periwinkle/15 bg-world-2 flex items-center justify-center">
+            <span className="t-micro text-periwinkle/30">NO VISUAL CLASSIFIED</span>
           </div>
         )}
 
-        <p className="mb-14 max-w-3xl text-base leading-relaxed text-periwinkle/85">
-          {cs.summary}
-        </p>
+        <div className="grid gap-12 lg:grid-cols-[1fr_320px]">
+          {/* left: narrative */}
+          <div>
+            <h2 className="t-h3 mb-4 text-paper">EXECUTIVE SUMMARY</h2>
+            <p className="mb-10 text-base leading-relaxed text-periwinkle/85">
+              {cs.summary}
+            </p>
 
-        <div className="grid gap-14 md:grid-cols-12">
-          {/* highlights + architecture */}
-          <div className="md:col-span-7">
-            <p className="t-label mb-5 text-iris-bright">HIGHLIGHTS</p>
-            <ul className="mb-12 flex flex-col gap-3 border-l border-periwinkle/15 pl-5">
-              {cs.highlights.map((h) => (
-                <li key={h} className="text-sm leading-relaxed text-periwinkle/80">
-                  ▸ {h}
+            <h2 className="t-h3 mb-4 text-paper">SYSTEM HIGHLIGHTS</h2>
+            <ul className="mb-10 space-y-3">
+              {cs.highlights.map((h, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-3 text-sm text-periwinkle/80"
+                >
+                  <span className="mt-1 block h-1.5 w-1.5 bg-signal shrink-0" />
+                  <span>{h}</span>
                 </li>
               ))}
             </ul>
 
-            <p className="t-label mb-5 text-iris-bright">ARCHITECTURE</p>
-            <ul className="flex flex-col gap-3 border-l border-periwinkle/15 pl-5">
-              {cs.architecture.map((a) => (
-                <li key={a} className="font-mono text-xs leading-relaxed text-periwinkle/75">
-                  ▸ {a}
+            <h2 className="t-h3 mb-4 text-paper">CORE ARCHITECTURE</h2>
+            <ul className="mb-10 space-y-3">
+              {cs.architecture.map((a, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-3 text-sm text-periwinkle/80"
+                >
+                  <span className="mt-1 block h-1.5 w-1.5 bg-iris-bright shrink-0" />
+                  <span>{a}</span>
                 </li>
               ))}
             </ul>
 
+            {/* Diagrams section */}
             <ProjectDiagramsSection slug={cs.slug} />
+
+            {/* Gallery Section */}
+            {cs.gallery && cs.gallery.length > 0 && (
+              <CaseStudyGallery gallery={cs.gallery} slug={cs.slug} />
+            )}
           </div>
 
-          {/* stack + links */}
-          <div className="md:col-span-5">
-            <p className="t-label mb-5 text-iris-bright">STACK</p>
-            <div className="mb-12 flex flex-col gap-6">
-              {cs.stack.map((g) => (
-                <div key={g.label}>
-                  <p className="t-micro mb-2 text-periwinkle/50">{g.label.toUpperCase()}</p>
-                  <ul className="flex flex-wrap gap-2">
-                    {g.items.map((item) => (
-                      <li
-                        key={item}
-                        className="t-micro rounded-full border border-periwinkle/20 px-3 py-1.5 text-periwinkle/85"
-                      >
-                        {item}
+          {/* right: specs sidebar */}
+          <aside className="space-y-8">
+            <div className="border border-periwinkle/15 bg-world-2 p-6">
+              <p className="t-label mb-4 text-iris-bright">STACK SPECIFICATION</p>
+              {cs.stack.map((layer) => (
+                <div key={layer.label} className="mb-4 last:mb-0">
+                  <p className="t-micro mb-1 text-periwinkle/50">{layer.label}</p>
+                  <ul className="space-y-1">
+                    {layer.items.map((it) => (
+                      <li key={it} className="text-xs text-periwinkle">
+                        {it}
                       </li>
                     ))}
                   </ul>
@@ -141,7 +151,7 @@ export default async function CaseStudyPage({
 
             {cs.nda && (
               <p className="t-micro mb-8 border border-periwinkle/20 p-4 leading-relaxed text-periwinkle/60">
-                ◆ FREELANCE ENGAGEMENT — SCREENSHOTS, CLIENT COPY, AND SOME
+                ◆ FREELANCE ENGAGEMENT // SCREENSHOTS, CLIENT COPY, AND SOME
                 IMPLEMENTATION DETAILS ARE WITHHELD. THIS CASE FILE IS LIMITED
                 TO NON-SENSITIVE ARCHITECTURE.
               </p>
@@ -165,12 +175,8 @@ export default async function CaseStudyPage({
                 </div>
               </>
             )}
-          </div>
+          </aside>
         </div>
-
-        {cs.gallery && cs.gallery.length > 0 && (
-          <CaseStudyGallery gallery={cs.gallery} slug={cs.slug} />
-        )}
 
         <footer className="mt-20 flex items-baseline justify-between border-t border-periwinkle/15 pt-5">
           <span className="t-micro text-periwinkle/50">

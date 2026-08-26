@@ -34,9 +34,7 @@ export function Navbar() {
     e.preventDefault();
     fx.click();
     history.pushState(null, "", href);
-    const lenis = (window as unknown as { lenis?: { scrollTo: (t: Element, o?: object) => void } }).lenis;
-    if (lenis) lenis.scrollTo(el, {});
-    else el.scrollIntoView({ behavior: "auto" });
+    window.dispatchEvent(new CustomEvent("aera-snap-jump", { detail: { target: id } }));
   };
 
   const onHome = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -45,9 +43,7 @@ export function Navbar() {
     e.preventDefault();
     fx.click();
     history.pushState(null, "", "/");
-    const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis;
-    if (lenis) lenis.scrollTo(0, {});
-    else window.scrollTo(0, 0);
+    window.dispatchEvent(new CustomEvent("aera-snap-jump", { detail: { target: "hero-top" } }));
   };
 
   if (hidden) return null;
@@ -60,7 +56,7 @@ export function Navbar() {
           className="flex items-center gap-3 text-white"
           onMouseEnter={fx.blip}
           onClick={onHome}
-          aria-label="AERA.DEV — home"
+          aria-label="AERA.DEV - home"
         >
           <AJLogo className="h-6 w-auto" />
           <span className="t-label hidden font-bold sm:inline">

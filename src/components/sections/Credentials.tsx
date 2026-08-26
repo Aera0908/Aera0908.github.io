@@ -62,7 +62,7 @@ const CERTIFICATES: Certificate[] = [
   {
     name: "ON-THE-JOB TRAINING",
     issuer: "XINYX DESIGN ENGINEERING, INC.",
-    detail: "Digital logic design and peripheral verification — SystemVerilog RTL on AMBA APB3.",
+    detail: "Digital logic design and peripheral verification: SystemVerilog RTL on AMBA APB3.",
     url: "/CERTIFICATE-PREVIEWS/YNTE-XINYX-OJT-CERTIFICATE.pdf",
     downloadName: "YNTE-XINYX-OJT-CERTIFICATE.pdf",
     featured: true,
@@ -330,7 +330,7 @@ export function Credentials() {
         CREDENTIALS<span className="text-iris-bright">.</span>
       </h2>
       <p className="cred-reveal t-label mb-4 text-periwinkle/60">
-        ● 003 — CERTIFICATIONS & CAPABILITY MATRIX
+        ● 003 // CERTIFICATIONS & CAPABILITY MATRIX
       </p>
 
       {/* Terminal Dashboard Container */}

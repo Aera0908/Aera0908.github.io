@@ -25,7 +25,7 @@ const SYSTEMS: ArchiveItem[] = [
     name: "FEHUVIA",
     category: "WEB3 / AI / FULL-STACK",
     blurb:
-      "Open-finance B2B treasury workstation on Morph L2 — T+0 settlements under 2 seconds, zero-custody MetaMask signing, GPT-4o RAG co-pilot with OCR invoicing.",
+      "Open-finance B2B treasury workstation on Morph L2: T+0 settlements under 2 seconds, zero-custody MetaMask signing, GPT-4o RAG co-pilot with OCR invoicing.",
     img: "/projects/fehuvia.webp",
     links: [
       { label: "FEHUVIA.APP", href: "https://www.fehuvia.app/" },
@@ -39,7 +39,7 @@ const SYSTEMS: ArchiveItem[] = [
     badge: "Awarded Best Thesis",
     category: "IOT / AI / MOBILE",
     blurb:
-      "Hybrid fitness ecosystem — custom ESP32-S3 smartwatch, BlazePose form coaching, a 20-floor dungeon RPG, and AERO ERC-20 rewards on Sepolia.",
+      "Hybrid fitness ecosystem: custom ESP32-S3 smartwatch, BlazePose form coaching, a 20-floor dungeon RPG, and AERO ERC-20 rewards on Sepolia.",
     img: "/projects/aerovit.webp",
     links: [{ label: "AEROVIT.DEV", href: "https://aerovit.dev" }],
   },
@@ -49,7 +49,7 @@ const SYSTEMS: ArchiveItem[] = [
     name: "STICKOUT",
     category: "EDA / VLSI / WEB",
     blurb:
-      "Interactive VLSI stick-diagram editor — infinite 2D canvas, same-layer auto-bridging crossovers, LaTeX subscript labels, .stk project files.",
+      "Interactive VLSI stick-diagram editor: infinite 2D canvas, same-layer auto-bridging crossovers, LaTeX subscript labels, .stk project files.",
     img: "/projects/stickout.webp",
     links: [
       { label: "STICKOUT.VERCEL.APP", href: "https://stickout.vercel.app" },
@@ -62,7 +62,7 @@ const SYSTEMS: ArchiveItem[] = [
     name: "EMG CONTROLLER",
     category: "EMBEDDED / HARDWARE",
     blurb:
-      "Real-time electromyography on the ESP32-S3 — 500 Hz DSP pipeline, adaptive calibration, Python visualization GUI, muscle-driven game control.",
+      "Real-time electromyography on the ESP32-S3: 500 Hz DSP pipeline, adaptive calibration, Python visualization GUI, muscle-driven game control.",
     img: "/projects/emg.webp",
     links: [
       { label: "GITHUB", href: "https://github.com/Aera0908/emg-game-controller" },
@@ -74,7 +74,7 @@ const SYSTEMS: ArchiveItem[] = [
     name: "THE SAFEHOUSE",
     category: "3D WEB / SHOWCASE",
     blurb:
-      "Narrative 3D scroll-journey pitch site — procedural R3F forest and campfire world with GSAP + Lenis choreography and reduced-motion fallbacks.",
+      "Narrative 3D scroll-journey pitch site: procedural R3F forest and campfire world with GSAP + Lenis choreography and reduced-motion fallbacks.",
     img: "/projects/safehouse.webp",
     links: [
       { label: "LIVE SITE", href: "https://safehouse-inky.vercel.app/" },
@@ -85,9 +85,9 @@ const SYSTEMS: ArchiveItem[] = [
     index: "S-06",
     slug: "plantio",
     name: "PLANT.IO",
-    category: "MOBILE / IOT — FREELANCE",
+    category: "MOBILE / IOT - FREELANCE",
     blurb:
-      "8-bit retro IoT nursery dashboard — live soil and climate telemetry from ESP32 beds, remote actuators, and an animated plant-mood avatar.",
+      "8-bit retro IoT nursery dashboard: live soil and climate telemetry from ESP32 beds, remote actuators, and an animated plant-mood avatar.",
     img: "/projects/plantio.webp",
     nda: true,
   },
@@ -97,25 +97,25 @@ const SYSTEMS: ArchiveItem[] = [
     name: "MANHWA READER",
     category: "WEB / FRONTEND",
     blurb:
-      "MangaDex-powered reading SPA — discovery feeds, title search, detail pages, and a full chapter reader with persistent themes.",
+      "MangaDex-powered reading SPA: discovery feeds, title search, detail pages, and a full chapter reader with persistent themes.",
     img: "/projects/manhwa.webp",
   },
   {
     index: "S-08",
     slug: "student-consultation",
     name: "STUDENT CONSULTATION SYSTEM",
-    category: "WEB / FULL-STACK — FREELANCE",
+    category: "WEB / FULL-STACK - FREELANCE",
     blurb:
-      "Student–professor consultation platform — role-based dashboards, realtime messaging, scheduling calendar, JWT auth, Sharp image pipeline.",
+      "Student–professor consultation platform: role-based dashboards, realtime messaging, scheduling calendar, JWT auth, Sharp image pipeline.",
     nda: true,
   },
   {
     index: "S-09",
     slug: "walang-basagan",
     name: "WALANG BASAGAN NG THRIFT",
-    category: "WEB / E-COMMERCE — FREELANCE",
+    category: "WEB / E-COMMERCE - FREELANCE",
     blurb:
-      "Y2K-themed thrift storefront — full shopping flow, three-tier role model, admin back office, and a threaded customer-support inbox.",
+      "Y2K-themed thrift storefront: full shopping flow, three-tier role model, admin back office, and a threaded customer-support inbox.",
     nda: true,
   },
   {
@@ -125,7 +125,7 @@ const SYSTEMS: ArchiveItem[] = [
     badge: "IN DEVELOPMENT",
     category: "MOBILE / AI / CV",
     blurb:
-      "Gamified study companion — on-device ML Kit distraction detection, a Flame-rendered creature that grows as you focus, ember-seed hatches, wax-seal achievements. Offline-first Isar + Firebase.",
+      "Gamified study companion: on-device ML Kit distraction detection, a Flame-rendered creature that grows as you focus, ember-seed hatches, wax-seal achievements. Offline-first Isar + Firebase.",
     img: "/projects/familiar-classified.svg",
   },
 ];
@@ -137,7 +137,7 @@ const ARTS_VIDEOS = [
     youtubeId: "aDBoZOoOhd8",
     tools: "FIGMA // ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO",
     blurb:
-      "High-fidelity workstation highlights video — interface functionalities, dual-state data flows, and AI OCR capabilities. Custom visual assets in Figma and Adobe Illustrator, motion graphics in After Effects, edited in Premiere Pro.",
+      "High-fidelity workstation highlights video: interface functionalities, dual-state data flows, and AI OCR capabilities. Custom visual assets in Figma and Adobe Illustrator, motion graphics in After Effects, edited in Premiere Pro.",
   },
   {
     index: "A-02",
@@ -145,7 +145,7 @@ const ARTS_VIDEOS = [
     youtubeId: "rqx192_81zA",
     tools: "ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO",
     blurb:
-      "Curated walkthrough of the hybrid fitness ecosystem — ESP32-S3 smartwatch pairing, MediaPipe BlazePose form tracking, Flame 2D dungeon RPG, and AERO Web3 withdrawals. Vector assets in Illustrator, keyframed animations in After Effects, final edit in Premiere Pro.",
+      "Curated walkthrough of the hybrid fitness ecosystem: ESP32-S3 smartwatch pairing, MediaPipe BlazePose form tracking, Flame 2D dungeon RPG, and AERO Web3 withdrawals. Vector assets in Illustrator, keyframed animations in After Effects, final edit in Premiere Pro.",
   },
 ];
 
@@ -216,7 +216,7 @@ export default function ProjectArchivePage() {
       {/* body */}
       <div className="flex-1 px-6 py-10 md:px-16 z-10">
         <p className="t-label mb-6 text-iris-bright">
-          ● SYSTEMS — HARDWARE & SOFTWARE
+          ● SYSTEMS // HARDWARE & SOFTWARE
         </p>
         {/* Cards are plain containers, NOT role="button": ARIA forbids focusable
             descendants inside a button, and each card carries its own links —
@@ -306,7 +306,7 @@ export default function ProjectArchivePage() {
         </div>
 
         <p className="t-label mb-6 text-iris-bright">
-          ● ARTS — VIDEO / PUBMATS / VISUAL
+          ● ARTS // VIDEO / PUBMATS / VISUAL
         </p>
         <div className="grid gap-6 pb-8 sm:grid-cols-2 lg:grid-cols-2">
           {ARTS_VIDEOS.map((a) => (

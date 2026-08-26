@@ -1,5 +1,5 @@
 /**
- * Case-study content for /projects/[slug] — sourced from the resume
+ * Case-study content for /projects/[slug] - sourced from the resume
  * (web_resume/src/data/projects.json). NDA engagements carry
  * architecture-level information only; no client visuals or copy.
  */
@@ -19,7 +19,7 @@ export type CaseStudy = {
   links?: { label: string; href: string }[];
   badge?: string;
   /**
-   * `poster` is required in spirit for `type: "video"` — the grid renders it
+   * `poster` is required in spirit for `type: "video"` - the grid renders it
    * instead of the media file, so a multi-MB demo is only fetched once the
    * viewer actually opens the lightbox.
    */
@@ -41,17 +41,17 @@ export const CASE_STUDIES: CaseStudy[] = [
     status: "LIVE",
     img: "/projects/fehuvia.webp",
     summary:
-      "Open-finance Web3 B2B treasury workstation for Southeast Asian SMEs — marrying relational database state tracking with smart-contract execution rails on Morph L2 to cut settlement from a 3-day banking standard to under 2 seconds (T+0), at a fraction of a cent per transaction.",
+      "Open-finance Web3 B2B treasury workstation for Southeast Asian SMEs, marrying relational database state tracking with smart-contract execution rails on Morph L2 to cut settlement from a 3-day banking standard to under 2 seconds (T+0), at a fraction of a cent per transaction.",
     highlights: [
       "Atomic sub-2-second payment clearance on Morph L2 via custom Solidity contracts",
       "EVM listener daemon: real-time log syncing into PostgreSQL for dual-state financial auditing",
       "AI financial co-pilot: GPT-4o RAG pipeline for structured cashflow analytics and runway forecasting",
       "AI OCR scan auto-parses uploaded invoice sheets and fills workstation drawers",
       "Self-healing background gas faucet dispenses L2 gas asynchronously to MetaMask operators",
-      "Zero-custody: client-side signing via MetaMask (EIP-1193) — no private keys near the server",
+      "Zero-custody: client-side signing via MetaMask (EIP-1193): no private keys near the server",
     ],
     architecture: [
-      "B2BSettlement.sol — mUSDC ERC-20 clearance mapped to invoice UUIDs, strict checks-effects-interactions, PaymentSettled event telemetry",
+      "B2BSettlement.sol: mUSDC ERC-20 clearance mapped to invoice UUIDs, strict checks-effects-interactions, PaymentSettled event telemetry",
       "Express backend orchestrates AI pipelines and PostgreSQL persistence (pg-pool)",
       "Listener daemon reconciles on-chain events into the relational ledger (dual-state)",
       "Faucet: < 0.005 ETH balance trigger → 0.002 ETH async dispense from a vault key",
@@ -71,12 +71,12 @@ export const CASE_STUDIES: CaseStudy[] = [
       {
         src: "/projects/fehuvia-demo.mp4",
         poster: "/projects/fehuvia-demo-poster.jpg",
-        caption: "Fehuvia Workstation Walkthrough — Real-time Web3 B2B treasury workstation showing L2 payments, invoice parser, and AI co-pilot",
+        caption: "Fehuvia Workstation Walkthrough: Real-time Web3 B2B treasury workstation showing L2 payments, invoice parser, and AI co-pilot",
         type: "video"
       },
       {
         src: "https://www.youtube.com/embed/aDBoZOoOhd8",
-        caption: "Fehuvia Workstation Video Demo — Full walk-through showing invoice OCR, wallet connection, and AI co-pilot functionalities (YouTube)",
+        caption: "Fehuvia Workstation Video Demo: Full walk-through showing invoice OCR, wallet connection, and AI co-pilot functionalities (YouTube)",
         type: "youtube"
       }
     ]
@@ -87,16 +87,16 @@ export const CASE_STUDIES: CaseStudy[] = [
     badge: "Awarded Best Thesis",
     category: "IOT / AI / MOBILE",
     role: "Lead Developer & Embedded Systems Architect",
-    duration: "SEP 2024 — APR 2026",
-    status: "COMPLETE — PROTOTYPE",
+    duration: "SEP 2024 - APR 2026",
+    status: "COMPLETE - PROTOTYPE",
     img: "/projects/aerovit.webp",
     summary:
-      "Hybrid fitness ecosystem pairing a Flutter app with a custom ESP32-S3 smartwatch, MediaPipe BlazePose tracking, adaptive AI coaching, and an ERC-20 reward token on Ethereum Sepolia — complete at demonstration depth as a fully walkable prototype.",
+      "Hybrid fitness ecosystem pairing a Flutter app with a custom ESP32-S3 smartwatch, MediaPipe BlazePose tracking, adaptive AI coaching, and an ERC-20 reward token on Ethereum Sepolia, complete at demonstration depth as a fully walkable prototype.",
     highlights: [
       "Custom smartwatch hardware: ESP32-S3, 1.69\" touch LCD, MAX30102 HR/SpO2, QMI8658 IMU, BLE 5.0",
       "33-landmark BlazePose pipeline with EMA smoothing, joint-angle scoring, and rep/form state machines",
       "Gamification: Hunter ranks (E → National), XP, quests, leaderboards, and a 20-floor turn-based dungeon RPG",
-      "Web3 rewards: AERO ERC-20 on Sepolia — off-chain accrual, 100 AERO minimum, 24h cooldown, 5% burn",
+      "Web3 rewards: AERO ERC-20 on Sepolia: off-chain accrual, 100 AERO minimum, 24h cooldown, 5% burn",
       "AI coaching: RAG (ChromaDB), STT/TTS, low-latency audio, RL-style intensity adaptation",
     ],
     architecture: [
@@ -116,22 +116,22 @@ export const CASE_STUDIES: CaseStudy[] = [
       {
         src: "/projects/aerovit-video.mp4",
         poster: "/projects/aerovit-video-poster.jpg",
-        caption: "Aerovit Smartwatch & Pose Tracking Demo — Real-time ESP32-S3 biometrics and MediaPipe BlazePose intensity mapping",
+        caption: "Aerovit Smartwatch & Pose Tracking Demo: Real-time ESP32-S3 biometrics and MediaPipe BlazePose intensity mapping",
         type: "video"
       },
       {
         src: "https://www.youtube.com/embed/rqx192_81zA",
-        caption: "Aerovit Hybrid Fitness Walkthrough — Detailed demonstration of smartwatch BLE biometrics and MediaPipe pose recognition system (YouTube)",
+        caption: "Aerovit Hybrid Fitness Walkthrough: Detailed demonstration of smartwatch BLE biometrics and MediaPipe pose recognition system (YouTube)",
         type: "youtube"
       },
       {
         src: "/projects/aerovit-watch.jpg",
-        caption: "Aerovit Smartwatch — Custom ESP32-S3 biometrics wearable with custom enclosure and integrated pulse sensor",
+        caption: "Aerovit Smartwatch: Custom ESP32-S3 biometrics wearable with custom enclosure and integrated pulse sensor",
         type: "image"
       },
       {
         src: "/projects/aerovit-poster.jpg",
-        caption: "Aerovit Research & Development Poster — Hardware schematic, MediaPipe processing pipeline, and core systems architecture",
+        caption: "Aerovit Research & Development Poster: Hardware schematic, MediaPipe processing pipeline, and core systems architecture",
         type: "image"
       }
     ]
@@ -141,11 +141,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     name: "STICKOUT",
     category: "EDA / VLSI / WEB",
     role: "Creator & Lead Frontend Engineer",
-    duration: "MAY — JUN 2026",
-    status: "COMPLETE — PRODUCTION DEPTH",
+    duration: "MAY - JUN 2026",
+    status: "COMPLETE - PRODUCTION DEPTH",
     img: "/projects/stickout.webp",
     summary:
-      "Open-source, browser-based EDA tool for creating, editing, and validating VLSI stick diagrams — a custom 2D math viewport on raw HTML5 Canvas with infinite pan/zoom, a Photoshop-style layer stack, and automated design-rule assistants.",
+      "Open-source, browser-based EDA tool for creating, editing, and validating VLSI stick diagrams: a custom 2D math viewport on raw HTML5 Canvas with infinite pan/zoom, a Photoshop-style layer stack, and automated design-rule assistants.",
     highlights: [
       "Infinite 2D viewport: screen↔world coordinate transforms, 0.1×–5× zoom, grid snapping at 60fps",
       "Same-layer wire crossovers auto-bridge with arc loops; right-click overrides register solid junctions",
@@ -174,23 +174,23 @@ export const CASE_STUDIES: CaseStudy[] = [
     badge: "IN DEVELOPMENT",
     category: "MOBILE / AI / COMPUTER VISION",
     role: "Solo Developer & Product Designer",
-    duration: "2026 — PRESENT",
+    duration: "2026 - PRESENT",
     status: "IN DEVELOPMENT",
     img: "/projects/familiar-classified.svg",
     summary:
-      "Gamified study companion (working title) — point the front camera at yourself during a focus session and on-device computer vision watches for signs of distraction: looking away, leaving the desk. Stay focused and your Familiar — a creature hatched from an ember seed — grows alongside your study streaks, earning wax-seal achievements. Offline-first, with a Firebase sync plane.",
+      "Gamified study companion (working title): point the front camera at yourself during a focus session and on-device computer vision watches for signs of distraction: looking away, leaving the desk. Stay focused and your Familiar (a creature hatched from an ember seed) grows alongside your study streaks, earning wax-seal achievements. Offline-first, with a Firebase sync plane.",
     highlights: [
       "On-device distraction detection: front camera stream + Google ML Kit face detection",
-      "Virtual companion creature rendered with Flame — grows through accumulated focus time",
+      "Virtual companion creature rendered with Flame: grows through accumulated focus time",
       "\"Ember seed\" hatch mechanic and collectible wax-seal achievements",
       "Offline-first local persistence on Isar with Firebase Auth / Firestore sync",
-      "Design-token system as single source of truth — aged-paper palette, Fraunces + Inter",
+      "Design-token system as single source of truth: aged-paper palette, Fraunces + Inter",
     ],
     architecture: [
       "Feature-first Flutter architecture: core (theme / routing / constants) → features (home, session, familiar, hatch, rewards, cv) → services (firebase, persistence)",
       "CV service isolates the camera + ML Kit pipeline from session scoring logic",
       "Riverpod state graph bridges session telemetry into creature growth and rewards",
-      "Web3 collectible layer planned behind its own interface — swappable, never load-bearing",
+      "Web3 collectible layer planned behind its own interface: swappable, never load-bearing",
     ],
     stack: [
       { label: "Mobile", items: ["Flutter", "Dart", "Riverpod", "Flame 2D"] },
@@ -207,12 +207,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     status: "COMPLETED",
     img: "/projects/emg.webp",
     summary:
-      "Real-time electromyography signal processing and visualization on the ESP32-S3 — 500 Hz acquisition through a multi-stage DSP pipeline, streamed over UART to a Python GUI, with a game-controller bridge and custom PCB + enclosure.",
+      "Real-time electromyography signal processing and visualization on the ESP32-S3: 500 Hz acquisition through a multi-stage DSP pipeline, streamed over UART to a Python GUI, with a game-controller bridge and custom PCB + enclosure.",
     highlights: [
       "500 Hz EMG sampling on the ESP32-S3 (XIAO), EMG Candy analog front-end",
       "Adaptive threshold calibration per user and muscle group",
       "Real-time Python GUI (pyserial + matplotlib) and Arduino Serial Plotter support",
-      "pynput game bridge — muscle activations drive game input (Roblox tested)",
+      "pynput game bridge: muscle activations drive game input (Roblox tested)",
       "Custom KiCad PCB and Fusion 360 3D-printed enclosure",
     ],
     architecture: [
@@ -234,11 +234,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     name: "THE SAFEHOUSE",
     category: "3D WEB / SHOWCASE",
     role: "Frontend & 3D Web Developer",
-    duration: "2025 — PRESENT",
+    duration: "2025 - PRESENT",
     status: "WORK IN PROGRESS",
     img: "/projects/safehouse.webp",
     summary:
-      "Showcase and pitch site for The Safehouse community, delivered as a guided 3D scroll journey — campfire gathering, forest path, signposts, and a gate — rendered in real-time WebGL with scroll-driven choreography.",
+      "Showcase and pitch site for The Safehouse community, delivered as a guided 3D scroll journey (campfire gathering, forest path, signposts, and a gate) rendered in real-time WebGL with scroll-driven choreography.",
     highlights: [
       "Interactive 3D journey scene in React Three Fiber with procedural terrain and ember particles",
       "GSAP timelines + ScrollTrigger wired to Lenis smooth scroll via a shared Tempus clock",
@@ -264,14 +264,14 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "plantio",
     name: "PLANT.IO",
-    category: "MOBILE / IOT — FREELANCE",
+    category: "MOBILE / IOT - FREELANCE",
     role: "Full-Stack Mobile & IoT Developer",
     duration: "2025",
     status: "DELIVERED",
     img: "/projects/plantio.webp",
     nda: true,
     summary:
-      "Flutter IoT monitoring dashboard for nurseries and garden beds — ESP32 devices stream soil moisture, temperature, humidity, EC, and pH in real time, with remote actuator control and a plant-health scoring system rendered as an animated avatar. 8-bit retro UI throughout.",
+      "Flutter IoT monitoring dashboard for nurseries and garden beds: ESP32 devices stream soil moisture, temperature, humidity, EC, and pH in real time, with remote actuator control and a plant-health scoring system rendered as an animated avatar. 8-bit retro UI throughout.",
     highlights: [
       "Real-time multi-device telemetry over Firebase Realtime Database",
       "Remote actuation: pump, fans, and fertilizer dispensing per bed",
@@ -299,7 +299,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     status: "COMPLETE",
     img: "/projects/manhwa.webp",
     summary:
-      "Single-page app for discovering titles and reading chapters end-to-end via the MangaDex API — home with search and feeds, detail pages, and a dedicated reader with chapter navigation and persistent themes.",
+      "Single-page app for discovering titles and reading chapters end-to-end via the MangaDex API: home with search and feeds, detail pages, and a dedicated reader with chapter navigation and persistent themes.",
     highlights: [
       "Discovery: hero search, popular & recently-updated grids, category chips",
       "Reader: full chapter images, chapter dropdown, prev/next, toggleable controls",
@@ -319,13 +319,13 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "student-consultation",
     name: "STUDENT CONSULTATION SYSTEM",
-    category: "WEB / FULL-STACK — FREELANCE",
+    category: "WEB / FULL-STACK - FREELANCE",
     role: "Full-Stack Developer",
     duration: "2025",
     status: "DELIVERED",
     nda: true,
     summary:
-      "Full-stack platform turning ad-hoc student–professor consultations into a structured, trackable workflow — role-based dashboards, realtime messaging with attachments, an interactive scheduling calendar, and a clear consultation status lifecycle.",
+      "Full-stack platform turning ad-hoc student–professor consultations into a structured, trackable workflow: role-based dashboards, realtime messaging with attachments, an interactive scheduling calendar, and a clear consultation status lifecycle.",
     highlights: [
       "Role-based interfaces for students, professors, and admins",
       "Realtime messaging and calendar scheduling with status lifecycle (pending → approved → ongoing → completed)",
@@ -345,13 +345,13 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "walang-basagan",
     name: "WALANG BASAGAN NG THRIFT",
-    category: "WEB / E-COMMERCE — FREELANCE",
+    category: "WEB / E-COMMERCE - FREELANCE",
     role: "Full-Stack Web Developer",
     duration: "2025",
     status: "DELIVERED",
     nda: true,
     summary:
-      "Y2K-inspired thrift store platform — storefront, role-based authentication, full shopping flow, threaded customer-support inbox, and an admin dashboard for users, products, orders, homepage content, and tickets.",
+      "Y2K-inspired thrift store platform: storefront, role-based authentication, full shopping flow, threaded customer-support inbox, and an admin dashboard for users, products, orders, homepage content, and tickets.",
     highlights: [
       "Full storefront: catalog, detail pages, cart, checkout, order history",
       "Three-tier role model (admin / moderator / buyer) with protected routes; first admin locked from demotion",

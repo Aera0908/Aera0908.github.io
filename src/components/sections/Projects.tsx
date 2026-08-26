@@ -159,7 +159,7 @@ export function Projects() {
       <h2 className="t-h2 mb-1 text-paper">
         THE VAULT<span className="text-iris-bright">.</span>
       </h2>
-      <p className="t-label mb-6 text-periwinkle/60">● 002 — SELECTED BUILDS</p>
+      <p className="t-label mb-6 text-periwinkle/60">● 002 // SELECTED BUILDS</p>
 
       {/* fanned collectible cards (desktop) */}
       <div className="group/vault relative mx-auto hidden h-[460px] max-w-4xl md:block">
@@ -198,7 +198,7 @@ export function Projects() {
           onClick={openNextBuild}
           onMouseEnter={fx.blip}
           className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left w-full max-w-sm min-w-0 rotate-0 px-4 py-2.5 md:w-auto md:max-w-none md:min-w-[1000px] md:rotate-[30deg] md:px-28 md:py-3"
-          aria-label="FAMILIAR — next build, in development. Open case file"
+          aria-label="FAMILIAR - next build, in development. Open case file"
         >
           {/* Caution hazard stripes accent borders */}
           <div className="animate-stripe-slow absolute inset-x-0 top-0 h-1 bg-[repeating-linear-gradient(45deg,#0c0d12,#0c0d12_10px,#e8d90c_10px,#e8d90c_20px)]" />
@@ -249,7 +249,7 @@ export function Projects() {
           {/* Sliding yellow background */}
           <span className="absolute inset-0 bg-iris-bright translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
           <span className="relative z-10 group-hover:text-ink transition-colors duration-300">
-            ◍ OPEN PROJECT ARCHIVE — SYSTEMS + ARTS
+            ◍ OPEN PROJECT ARCHIVE // SYSTEMS + ARTS
           </span>
         </Link>
       </div>

@@ -50,7 +50,7 @@ export function Contact() {
         <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-world-2 to-transparent" />
       </div>
       <p className="contact-reveal t-label mb-6 text-periwinkle/60">
-        ● 004 — UPLINK
+        ● 004 // UPLINK
       </p>
       <h2 className="contact-reveal t-hero mb-10 text-paper">
         LET&apos;S

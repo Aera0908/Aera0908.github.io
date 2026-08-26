@@ -11,6 +11,8 @@ import { Projects } from "@/components/sections/Projects";
 import { Credentials } from "@/components/sections/Credentials";
 import { Contact } from "@/components/sections/Contact";
 import { navReturn } from "@/lib/nav-return";
+import { useSectionSnap } from "@/lib/useSectionSnap";
+import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
 // WebGL only ever renders client-side
 const SceneCanvas = dynamic(() => import("@/components/webgl/SceneCanvas"), {
@@ -53,6 +55,15 @@ export function Home({ initialSection = null }: { initialSection?: string | null
 
   const [entered, setEntered] = useState(!!boot.section);
   const [mountCanvas, setMountCanvas] = useState(!!boot.section);
+  const [heroReady, setHeroReady] = useState(!!boot.section);
+
+  useEffect(() => {
+    if (!entered || heroReady) return;
+    const timer = setTimeout(() => {
+      setHeroReady(true);
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, [entered, heroReady]);
 
   // one-shot: clear the return marker (peeked above) so later navigations —
   // e.g. the navbar logo → "/" — boot normally instead of re-triggering the
@@ -70,6 +81,16 @@ export function Home({ initialSection = null }: { initialSection?: string | null
     setEntered(true);
     setMountCanvas(true);
   };
+
+  const { fx } = useHudAudio();
+
+  useSectionSnap({
+    enabled: heroReady,
+    initialSection: boot.section,
+    onStepChange: () => {
+      fx.blip();
+    },
+  });
 
   const barRef = useRef<HTMLDivElement>(null);
   // the scroll-spy stays muzzled on deep links until the jump lands —
@@ -107,22 +128,14 @@ export function Home({ initialSection = null }: { initialSection?: string | null
   }, []);
 
   /**
-   * Hard scroll lock during the intro (spec §4): while the loader is up we
-   * pin the page to the very top so the master ScrollTrigger can't advance —
-   * otherwise a stray wheel/keypress scrubs the camera into later sections
-   * before the Hero has revealed. `lenis.stop()` alone isn't enough (native
-   * scroll still moves the position), so we also swallow the raw scroll inputs
-   * and snap back to top. The lock lifts only once `entered` is true.
+   * Hard scroll lock during the intro (spec §4): while the loader is up and
+   * the hero entrance animation is playing, we pin the page to the very top.
+   * The lock lifts only once `heroReady` is true.
    */
   useEffect(() => {
-    if (entered) return;
+    if (heroReady) return;
 
-    const html = document.documentElement;
-    const body = document.body;
     const lenis = () => (window as unknown as LenisWindow).lenis;
-
-    html.classList.add("overflow-hidden");
-    body.classList.add("overflow-hidden");
     lenis()?.stop();
 
     // reloads must not restore a mid-page scroll position under the loader
@@ -172,15 +185,13 @@ export function Home({ initialSection = null }: { initialSection?: string | null
       window.removeEventListener("touchmove", swallow, { capture: true } as EventListenerOptions);
       window.removeEventListener("keydown", onKey, { capture: true } as EventListenerOptions);
       window.removeEventListener("scroll", snapTop);
-      html.classList.remove("overflow-hidden");
-      body.classList.remove("overflow-hidden");
       try {
         history.scrollRestoration = prevRestoration;
       } catch {}
       lenis()?.start();
-      ScrollTrigger.refresh();
+      window.scrollTo(0, 0);
     };
-  }, [entered]);
+  }, [heroReady]);
 
   /* deep link: jump once the pins exist, then re-assert after the late
      ScrollTrigger refresh grows the pinned layout (spacer heights land
@@ -248,18 +259,11 @@ export function Home({ initialSection = null }: { initialSection?: string | null
   useEffect(() => {
     const onPop = () => {
       const seg = window.location.pathname.replace(/^\/+|\/+$/g, "");
-      const lenis = (window as unknown as LenisWindow).lenis;
-      if (!seg) {
-        if (lenis) lenis.scrollTo(0, {});
-        else window.scrollTo(0, 0);
-        return;
-      }
-      if (SECTION_IDS.includes(seg)) {
-        const el = document.getElementById(seg);
-        if (!el) return;
-        if (lenis) lenis.scrollTo(el, {});
-        else el.scrollIntoView({ behavior: "auto" });
-      }
+      window.dispatchEvent(
+        new CustomEvent("aera-snap-jump", {
+          detail: { target: seg || "hero-top" },
+        })
+      );
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);

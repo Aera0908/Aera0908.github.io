@@ -69,23 +69,11 @@ export function Hero({ entered }: { entered: boolean }) {
     };
 
     const getWrapCollapsedBounds = () => {
-      const rect = placeholder.getBoundingClientRect();
-      const metaRows = card.querySelectorAll(".hero-card-meta");
-      let metaHeight = 0;
-      metaRows.forEach((row) => {
-        metaHeight += row.getBoundingClientRect().height;
-      });
-      if (metaHeight === 0) {
-        metaHeight = 36;
-      }
-
-      const pWidth = rect.width - 40;
-      const pHeight = rect.height - 40 - metaHeight;
       return {
         left: 0,
-        width: pWidth,
-        top: pHeight * 0.15,
-        height: pHeight * 0.70,
+        width: "100%",
+        top: "15%",
+        height: "70%",
       };
     };
 
@@ -103,12 +91,11 @@ export function Hero({ entered }: { entered: boolean }) {
 
       const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
       if (wrapEl) {
-        const wrapBounds = getWrapCollapsedBounds();
         gsap.set(wrapEl, {
           left: 0,
-          width: wrapBounds.width,
-          top: wrapBounds.top,
-          height: wrapBounds.height,
+          width: "100%",
+          top: "15%",
+          height: "70%",
         });
       }
     };
@@ -139,6 +126,7 @@ export function Hero({ entered }: { entered: boolean }) {
         // Create scroll trigger timeline to pin Hero section and morph the card
         const tl = gsap.timeline({
           scrollTrigger: {
+            id: "hero-pin",
             trigger: root,
             start: "top top",
             end: "+=2800",
@@ -531,7 +519,7 @@ export function Hero({ entered }: { entered: boolean }) {
         <div className="flex-grow flex items-center justify-center relative w-full h-full">
           <div className="hero-intro pointer-events-none absolute inset-0 select-none text-ink opacity-0">
             <span className="t-micro absolute left-[6%] top-[9%] text-ink/65">
-              ■ 001 — OPERATOR PROFILE
+              ■ 001 // OPERATOR PROFILE
             </span>
 
             <h2 className="absolute left-[6%] top-[11%] w-[50%] max-md:w-[88%] font-display font-black uppercase leading-[0.95] tracking-tight text-[clamp(1.6rem,4vw,3.8rem)] max-md:text-[1.4rem]">
@@ -549,14 +537,14 @@ export function Hero({ entered }: { entered: boolean }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/events/base_ph_blockchain4youth.jpg"
-                  alt="Base PH Blockchain4Youth — Presenting Aerovit"
+                  alt="Base PH Blockchain4Youth - Presenting Aerovit"
                   loading="lazy"
                   decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
                 />
               </div>
               <figcaption className="t-micro mt-2 text-ink/60">
-                ■ BLOCKCHAIN4YOUTH — UPHSL
+                ■ BLOCKCHAIN4YOUTH // UPHSL
               </figcaption>
             </figure>
 
@@ -566,14 +554,14 @@ export function Hero({ entered }: { entered: boolean }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/events/dost_imec_2026_aerovit.jpg"
-                  alt="DOST IMEC 2026 — Aerovit Presentation"
+                  alt="DOST IMEC 2026 - Aerovit Presentation"
                   loading="lazy"
                   decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 ease-out hover:scale-110"
                 />
               </div>
               <figcaption className="t-micro mt-2 text-ink/60">
-                ■ DOST IMEC 2026 — ACACIA HOTEL
+                ■ DOST IMEC 2026 // ACACIA HOTEL
               </figcaption>
             </figure>
 
@@ -593,7 +581,7 @@ export function Hero({ entered }: { entered: boolean }) {
                 />
               </div>
               <figcaption className="t-micro mt-2 text-ink/60">
-                ■ BEST THESIS & POSTER — CDM
+                ■ BEST THESIS & POSTER // CDM
               </figcaption>
             </figure>
 
@@ -610,7 +598,7 @@ export function Hero({ entered }: { entered: boolean }) {
                 />
               </div>
               <figcaption className="t-micro mt-2 text-ink/60">
-                ■ RECOGNITION DAY 2026 — CDM
+                ■ RECOGNITION DAY 2026 // CDM
               </figcaption>
             </figure>
 
@@ -623,7 +611,7 @@ export function Hero({ entered }: { entered: boolean }) {
                 before. */}
             <div className="max-md:absolute max-md:left-[6%] max-md:top-[51%] [@media(max-height:620px)]:top-[45%] max-md:flex max-md:w-[88%] max-md:flex-col max-md:gap-2.5 md:contents">
               <p className="md:absolute md:bottom-[10%] md:left-[6%] md:w-[22%] text-sm leading-relaxed text-ink/80">
-                Computer engineer from Muntinlupa — building wearables, EDA tools, and settlement rails.
+                Computer engineer from Muntinlupa: building wearables, EDA tools, and settlement rails.
               </p>
 
               <span className="t-micro md:absolute md:bottom-[10%] md:left-[34%] text-ink/65">
@@ -636,7 +624,7 @@ export function Hero({ entered }: { entered: boolean }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/portrait.webp"
-              alt="AERA Portrait — Aira Josh Ynte"
+              alt="AERA Portrait - Aira Josh Ynte"
               /* the one genuinely above-the-fold image — stays eager and is
                  hinted as the LCP candidate */
               fetchPriority="high"
