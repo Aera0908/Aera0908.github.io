@@ -24,13 +24,13 @@ export function Hero({ entered }: { entered: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const cardPlaceholderRef = useRef<HTMLDivElement>(null);
 
-  /* intro reveal — plays once the loader overlay slides up */
+  /* intro reveal — plays once the loader overlay slides up and AERA has transitioned to target */
   useEffect(() => {
     if (!entered) return;
     
     const ctx = gsap.context(() => {
-      // Stagger reveal name, subtitle, about text, and layout card
-      gsap.timeline()
+      // Stagger reveal name, subtitle, about text, and layout card after logo landing
+      gsap.timeline({ delay: 0.08 })
         .fromTo(
           [".hero-reveal:not(.hero-img-container)", cardRef.current],
           { opacity: 0, y: 35, scale: 0.97 },
@@ -351,7 +351,10 @@ export function Hero({ entered }: { entered: boolean }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-center w-full max-w-7xl mx-auto z-10">
         {/* Left Column: AERA Text Logo & About Me */}
         <div ref={wordsRef} className="flex flex-col items-start gap-6 will-change-transform relative z-10">
-          <div className="hero-logo-target font-display font-black tracking-[-0.08em] text-paper uppercase select-none text-[12vw] md:text-[9vw] leading-none">
+          <div
+            className="hero-logo-target font-display font-black tracking-[-0.08em] text-paper uppercase select-none text-[12vw] md:text-[9vw] leading-none py-4 px-8 -my-4 -mx-8"
+            style={{ opacity: entered ? 1 : 0 }}
+          >
             <div className="flex gap-[0.02em]">
               <span>A</span>
               <span>E</span>

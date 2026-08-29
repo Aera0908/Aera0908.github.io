@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { gsap, ScrollTrigger, EASE, SCRUB } from "@/lib/gsap";
 import { hudState } from "@/lib/hud-state";
@@ -73,14 +73,14 @@ export function Home({ initialSection = null }: { initialSection?: string | null
     navReturn.consume();
   }, []);
 
-  const handleLoaderWaiting = () => {
+  const handleLoaderWaiting = useCallback(() => {
     setMountCanvas(true);
-  };
+  }, []);
 
-  const handleLoaderDone = () => {
+  const handleLoaderDone = useCallback(() => {
     setEntered(true);
     setMountCanvas(true);
-  };
+  }, []);
 
   const { fx } = useHudAudio();
 
