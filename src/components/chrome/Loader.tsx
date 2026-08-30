@@ -361,12 +361,16 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         <div className="pointer-events-none absolute left-4 bottom-4 border-l-2 border-b-2 border-[#0d0d10] w-5 h-5 z-30" />
         <div className="pointer-events-none absolute right-4 bottom-4 border-r-2 border-b-2 border-[#0d0d10] w-5 h-5 z-30" />
 
-        {/* Top right Japanese vertical text + bar */}
+        {/* Top right Japanese vertical text + bar with Scramble Decode Animation */}
         <div className="absolute top-6 right-6 md:top-10 md:right-12 flex items-start gap-3 z-30 pointer-events-none">
           <div className="font-mono text-[11px] tracking-[0.25em] font-bold uppercase [writing-mode:vertical-rl] flex items-center gap-1 text-[#0d0d10]">
-            <span>|| もい ない</span>
+            <JapaneseDecoder isEnglish={phase === "revealing" || phase === "ready"} />
           </div>
-          <div className="w-2.5 h-16 bg-[#0d0d10]" />
+          <div
+            className={`w-2.5 bg-[#0d0d10] transition-all duration-500 ease-out ${
+              phase === "revealing" || phase === "ready" ? "h-28" : "h-20"
+            }`}
+          />
         </div>
 
         {/* Skip button */}
@@ -596,4 +600,44 @@ function TypingLine({
   if (!active && !isComplete) return null;
 
   return <p ref={elRef} />;
+}
+
+const JAPANESE_GLYPHS = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789X#@!%";
+
+/** Scramble text decode animation for vertical cyberpunk Japanese accent with translation on proceed */
+function JapaneseDecoder({ isEnglish = false }: { isEnglish?: boolean }) {
+  const currentTarget = isEnglish ? "|| NEVER FADE AWAY" : "|| 決して消えない";
+  const [displayText, setDisplayText] = useState(currentTarget);
+
+  useEffect(() => {
+    let frame = 0;
+    const totalFrames = isEnglish ? 22 : 28;
+    const interval = setInterval(() => {
+      frame++;
+      const progress = frame / totalFrames;
+      const chars = currentTarget.split("");
+
+      const scrambled = chars
+        .map((char, index) => {
+          if (char === " " || char === "|") return char;
+          const charProgress = index / chars.length;
+          if (progress > charProgress) {
+            return char;
+          }
+          return JAPANESE_GLYPHS[Math.floor(Math.random() * JAPANESE_GLYPHS.length)];
+        })
+        .join("");
+
+      setDisplayText(scrambled);
+
+      if (frame >= totalFrames) {
+        clearInterval(interval);
+        setDisplayText(currentTarget);
+      }
+    }, 32);
+
+    return () => clearInterval(interval);
+  }, [currentTarget, isEnglish]);
+
+  return <span>{displayText}</span>;
 }

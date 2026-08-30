@@ -432,13 +432,23 @@ export function Credentials() {
                   {featured.map((c) => (
                     <div
                       key={c.name}
+                      onPointerMove={(ev) => {
+                        const rect = ev.currentTarget.getBoundingClientRect();
+                        ev.currentTarget.style.setProperty("--mouse-x", `${ev.clientX - rect.left}px`);
+                        ev.currentTarget.style.setProperty("--mouse-y", `${ev.clientY - rect.top}px`);
+                      }}
                       onClick={() => {
                         fx.click();
                         setPreviewCert(c);
                       }}
-                      className="clip-step-tr text-left cursor-pointer relative border border-periwinkle/15 bg-world/40 hover:border-iris-bright/60 transition-colors p-4 flex flex-col justify-between"
+                      className="group/cert clip-step-tr text-left cursor-pointer relative border border-periwinkle/15 bg-world/40 hover:border-iris-bright/60 transition-colors p-4 flex flex-col justify-between overflow-hidden shadow-lg"
                     >
-                      <div>
+                      {/* Radial spotlight glow */}
+                      <div
+                        className="pointer-events-none absolute inset-0 opacity-0 group-hover/cert:opacity-100 transition-opacity duration-300 z-0 bg-[radial-gradient(280px_circle_at_var(--mouse-x,-100px)_var(--mouse-y,-100px),rgba(252,238,10,0.12),transparent_60%)]"
+                        aria-hidden="true"
+                      />
+                      <div className="relative z-10">
                         <div className="flex items-center justify-between gap-2 mb-1.5">
                           <span className="text-[9px] text-iris-bright font-bold">FILE: {c.issuer}_SYS.DB</span>
                           <span className="text-[8px] px-1 bg-iris/10 border border-iris/20 text-iris leading-none">VERIFIED</span>

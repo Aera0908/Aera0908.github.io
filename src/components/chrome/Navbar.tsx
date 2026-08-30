@@ -23,7 +23,7 @@ export function Navbar() {
   // persists across client navigations, so an early return before a hook
   // would desync the hook order and crash React.
   const pathname = usePathname();
-  const { booted, muted, toggleMute, fx } = useHudAudio();
+  const { booted, muted, activePulse, boot, toggleMute, fx } = useHudAudio();
 
   // hidden on the archive route and case files (they carry their own header)
   const hidden = pathname?.startsWith("/vault/archive");
@@ -46,6 +46,11 @@ export function Navbar() {
     window.dispatchEvent(new CustomEvent("aera-snap-jump", { detail: { target: "hero-top" } }));
   };
 
+  const openPalette = () => {
+    fx.click();
+    window.dispatchEvent(new CustomEvent("open-command-palette"));
+  };
+
   if (hidden) return null;
 
   return (
@@ -64,7 +69,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-6 md:gap-10">
+        <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
           {LINKS.map((link) => (
             <Link
               key={link.href}
@@ -82,18 +87,57 @@ export function Navbar() {
             </Link>
           ))}
 
-          {booted && (
-            <button
-              className="nav-link t-label text-white"
-              onMouseEnter={fx.blip}
-              onClick={() => {
-                fx.click();
-                toggleMute();
-              }}
-            >
-              SND {muted ? "OFF" : "ON"}
-            </button>
-          )}
+          {/* Quick Command Palette Trigger */}
+          <button
+            onClick={openPalette}
+            aria-label="Open Command Palette (Cmd + K)"
+            title="Open Command Palette (Cmd + K / Ctrl + K)"
+            onMouseEnter={fx.blip}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-white/25 hover:border-white text-[10px] font-mono tracking-widest text-white transition-all duration-200 cursor-pointer hover:bg-white/10"
+          >
+            <span className="font-bold">⌘K</span>
+            <span className="hidden lg:inline text-[9px] opacity-70">SEARCH</span>
+          </button>
+
+          {/* Audio Equalizer & Mute HUD Toggle (Always visible) */}
+          <button
+            className="flex items-center gap-2 px-2.5 py-1 border border-white/25 hover:border-white text-white text-[10px] font-mono tracking-widest transition-all duration-200 cursor-pointer rounded hover:bg-white/10"
+            onMouseEnter={fx.blip}
+            onClick={() => {
+              if (!booted) {
+                boot();
+              }
+              toggleMute();
+              fx.click();
+            }}
+            title={muted ? "HUD Audio: Muted (Click to enable)" : "HUD Audio: Active (Click to mute)"}
+            aria-label={muted ? "Unmute HUD Audio" : "Mute HUD Audio"}
+          >
+            {/* Equalizer Visualizer Bars */}
+            <div className="flex items-end gap-[2px] h-3.5 w-4" aria-hidden="true">
+              <span
+                className={`w-[2.5px] bg-white rounded-t-sm transition-all duration-200 ${
+                  muted ? "h-[2px] opacity-30" : "animate-eq-1"
+                }`}
+              />
+              <span
+                className={`w-[2.5px] bg-white rounded-t-sm transition-all duration-200 ${
+                  muted ? "h-[2px] opacity-30" : "animate-eq-2"
+                }`}
+              />
+              <span
+                className={`w-[2.5px] bg-white rounded-t-sm transition-all duration-200 ${
+                  muted ? "h-[2px] opacity-30" : "animate-eq-3"
+                }`}
+              />
+              <span
+                className={`w-[2.5px] bg-white rounded-t-sm transition-all duration-200 ${
+                  muted ? "h-[2px] opacity-30" : "animate-eq-4"
+                }`}
+              />
+            </div>
+            <span className="hidden sm:inline font-bold">{muted ? "MUTED" : "AUDIO"}</span>
+          </button>
         </div>
       </nav>
     </header>

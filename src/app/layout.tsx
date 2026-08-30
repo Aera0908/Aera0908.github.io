@@ -9,6 +9,7 @@ import { FrameBorder } from "@/components/chrome/FrameBorder";
 import { Navbar } from "@/components/chrome/Navbar";
 import { StickyDownloadButton } from "@/components/chrome/StickyDownloadButton";
 import { ResumePreviewModal } from "@/components/chrome/ResumePreviewModal";
+import { CommandPalette } from "@/components/chrome/CommandPalette";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -23,7 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 const SITE_URL = "https://aera0908.github.io";
 const SITE_TITLE = "Aira Ynte - Software Engineer & System Architect";
 const SITE_DESCRIPTION =
-  "Immersive scrollytelling portfolio of Aira Ynte (@Aera0908) - full-stack systems, hardware-firmware integration, Web3 settlement rails, and AI copilots. Computer Engineering '26, Metro Manila.";
+  "Portfolio of Aira Ynte (@Aera0908) - Software Engineer & System Architect specializing in full-stack web applications, IC layout design, and distributed systems. Metro Manila.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -132,6 +133,7 @@ export default function RootLayout({
               {children}
               <StickyDownloadButton />
               <ResumePreviewModal />
+              <CommandPalette />
             </PageTransitionProvider>
           </HudAudioProvider>
         </SmoothScrollProvider>

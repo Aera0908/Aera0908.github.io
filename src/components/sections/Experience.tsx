@@ -261,21 +261,32 @@ export function Experience({ entered }: { entered: boolean }) {
         {ENTRIES.map((e) => (
           <article
             key={e.index}
-            className="xp-card clip-bevel-br relative w-[80vw] max-w-[500px] flex-shrink-0 bg-paper p-6 text-ink md:p-12"
+            onPointerMove={(ev) => {
+              const rect = ev.currentTarget.getBoundingClientRect();
+              ev.currentTarget.style.setProperty("--mouse-x", `${ev.clientX - rect.left}px`);
+              ev.currentTarget.style.setProperty("--mouse-y", `${ev.clientY - rect.top}px`);
+            }}
+            className="xp-card group/card clip-bevel-br relative w-[80vw] max-w-[500px] flex-shrink-0 bg-paper p-6 text-ink md:p-12 overflow-hidden shadow-xl"
           >
+            {/* Cyberpunk radial spotlight glow */}
+            <div
+              className="pointer-events-none absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-0 bg-[radial-gradient(400px_circle_at_var(--mouse-x,-100px)_var(--mouse-y,-100px),rgba(252,238,10,0.2),transparent_60%)]"
+              aria-hidden="true"
+            />
             {/* journey-family line accents */}
             <span
-              className="pointer-events-none absolute right-6 top-6 h-6 w-px bg-ink/25"
+              className="pointer-events-none absolute right-6 top-6 h-6 w-px bg-ink/25 z-10"
               aria-hidden="true"
             />
             <span
-              className="pointer-events-none absolute bottom-8 left-8 h-px w-8 bg-ink/20"
+              className="pointer-events-none absolute bottom-8 left-8 h-px w-8 bg-ink/20 z-10"
               aria-hidden="true"
             />
-            <div className="mb-6 flex items-baseline justify-between">
-              <span className="index-marker">● {e.index}</span>
-              <span className="t-micro text-ink-soft">{e.period}</span>
-            </div>
+            <div className="relative z-10">
+              <div className="mb-6 flex items-baseline justify-between">
+                <span className="index-marker">● {e.index}</span>
+                <span className="t-micro text-ink-soft">{e.period}</span>
+              </div>
             <h3 className="t-h2 mb-1 !text-[clamp(1.2rem,2.5vw,2.0rem)]">
               {e.role}
             </h3>
@@ -342,6 +353,7 @@ export function Experience({ entered }: { entered: boolean }) {
                 </li>
               ))}
             </ul>
+            </div>
           </article>
         ))}
       </div>

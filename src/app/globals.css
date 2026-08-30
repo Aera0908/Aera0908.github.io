@@ -390,10 +390,35 @@ body {
   animation-play-state: paused;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-stripe-slow {
-    animation: none;
-  }
+/* ---------- audio equalizer bar animations ---------- */
+@keyframes eq-dance-1 {
+  0%, 100% { height: 3px; }
+  50% { height: 14px; }
+}
+@keyframes eq-dance-2 {
+  0%, 100% { height: 13px; }
+  50% { height: 5px; }
+}
+@keyframes eq-dance-3 {
+  0%, 100% { height: 6px; }
+  50% { height: 15px; }
+}
+@keyframes eq-dance-4 {
+  0%, 100% { height: 12px; }
+  50% { height: 4px; }
+}
+
+.animate-eq-1 {
+  animation: eq-dance-1 0.8s ease-in-out infinite;
+}
+.animate-eq-2 {
+  animation: eq-dance-2 0.65s ease-in-out infinite 0.15s;
+}
+.animate-eq-3 {
+  animation: eq-dance-3 0.75s ease-in-out infinite 0.3s;
+}
+.animate-eq-4 {
+  animation: eq-dance-4 0.9s ease-in-out infinite 0.1s;
 }
 
 
