@@ -66,7 +66,7 @@ export function Contact() {
             href="mailto:08airajosh@gmail.com"
             aria-label="Send Email to 08airajosh@gmail.com"
             title="Email: 08airajosh@gmail.com"
-            className="card-notch flex h-14 w-14 md:h-16 md:w-16 items-center justify-center bg-signal text-ink transition-all duration-300 hover:scale-105 hover:bg-iris-bright hover:shadow-[0_0_25px_rgba(252,238,10,0.45)]"
+            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-signal text-ink transition-all duration-300 hover:scale-110 hover:bg-[#fff024] hover:shadow-[0_0_30px_rgba(232,217,12,0.5)]"
             onMouseEnter={fx.blip}
             onClick={fx.confirm}
           >
@@ -92,7 +92,7 @@ export function Contact() {
             rel="noopener noreferrer me"
             aria-label="GitHub Profile"
             title="GitHub: Aera0908"
-            className="card-notch flex h-14 w-14 md:h-16 md:w-16 items-center justify-center bg-world border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-105 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
+            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
             onMouseEnter={fx.blip}
             onClick={fx.click}
           >
@@ -117,7 +117,7 @@ export function Contact() {
             rel="noopener noreferrer me"
             aria-label="LinkedIn Profile"
             title="LinkedIn: aira-josh-ynte"
-            className="card-notch flex h-14 w-14 md:h-16 md:w-16 items-center justify-center bg-world border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-105 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
+            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
             onMouseEnter={fx.blip}
             onClick={fx.click}
           >
@@ -138,7 +138,7 @@ export function Contact() {
             rel="noopener noreferrer me"
             aria-label="X (Twitter) Profile"
             title="X: @aera0908"
-            className="card-notch flex h-14 w-14 md:h-16 md:w-16 items-center justify-center bg-world border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-105 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
+            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
             onMouseEnter={fx.blip}
             onClick={fx.click}
           >
@@ -156,13 +156,13 @@ export function Contact() {
         {/* Inline Resume & CV buttons under the Uplink buttons */}
         <div className="flex flex-col items-start gap-1.5 font-mono text-[9px] select-none pl-1">
           <span className="text-[8px] text-periwinkle/55">SYS_UPLINK // DOWNLOAD</span>
-          <div className="flex gap-2 bg-world border border-periwinkle/20 p-2 rounded shadow-2xl">
+          <div className="flex gap-2 bg-world-2/90 border border-periwinkle/20 p-2 rounded-md shadow-2xl backdrop-blur-md">
             <button
               onClick={() => {
                 fx.click();
                 window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "resume" } }));
               }}
-              className="px-2.5 py-1.5 border border-iris/30 text-iris hover:bg-iris hover:text-world transition-all duration-300 tracking-wider cursor-pointer"
+              className="px-3 py-1.5 rounded-xs border border-periwinkle/30 text-periwinkle hover:border-signal hover:text-signal hover:bg-signal/10 transition-all duration-200 tracking-wider font-bold cursor-pointer"
               onMouseEnter={fx.blip}
             >
               RESUME
@@ -172,7 +172,7 @@ export function Contact() {
                 fx.click();
                 window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "cv" } }));
               }}
-              className="px-2.5 py-1.5 border border-iris/30 text-iris hover:bg-iris hover:text-world transition-all duration-300 tracking-wider cursor-pointer"
+              className="px-3 py-1.5 rounded-xs border border-periwinkle/30 text-periwinkle hover:border-signal hover:text-signal hover:bg-signal/10 transition-all duration-200 tracking-wider font-bold cursor-pointer"
               onMouseEnter={fx.blip}
             >
               CV

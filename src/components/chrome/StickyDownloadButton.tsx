@@ -59,13 +59,13 @@ export function StickyDownloadButton() {
         visible ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
       }`}
     >
-      <div className="flex gap-2 bg-world-2/95 border border-periwinkle/20 p-2 rounded shadow-2xl backdrop-blur-md">
+      <div className="flex gap-2 bg-world-2/95 border border-periwinkle/20 p-2 rounded-md shadow-2xl backdrop-blur-md">
         <button
           onClick={() => {
             fx.click();
             window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "resume" } }));
           }}
-          className="px-2.5 py-1.5 border border-iris/30 text-iris hover:bg-iris hover:text-world transition-all duration-300 tracking-wider cursor-pointer"
+          className="px-3 py-1.5 rounded-xs border border-periwinkle/30 text-periwinkle hover:border-signal hover:text-signal hover:bg-signal/10 transition-all duration-200 tracking-wider font-bold cursor-pointer"
           onMouseEnter={fx.blip}
         >
           RESUME
@@ -75,7 +75,7 @@ export function StickyDownloadButton() {
             fx.click();
             window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "cv" } }));
           }}
-          className="px-2.5 py-1.5 border border-iris/30 text-iris hover:bg-iris hover:text-world transition-all duration-300 tracking-wider cursor-pointer"
+          className="px-3 py-1.5 rounded-xs border border-periwinkle/30 text-periwinkle hover:border-signal hover:text-signal hover:bg-signal/10 transition-all duration-200 tracking-wider font-bold cursor-pointer"
           onMouseEnter={fx.blip}
         >
           CV

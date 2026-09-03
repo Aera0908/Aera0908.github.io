@@ -238,7 +238,7 @@ export function Projects() {
       <div className="mt-4 flex shrink-0 justify-center">
         <Link
           href="/vault/archive"
-          className="group relative card-notch overflow-hidden border border-periwinkle/30 px-8 py-4 font-mono text-xs tracking-[0.16em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright cursor-pointer"
+          className="group relative overflow-hidden rounded-md border border-periwinkle/30 bg-world-2/60 backdrop-blur-sm px-8 py-3.5 font-mono text-xs tracking-[0.16em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:shadow-[0_0_25px_rgba(252,238,10,0.18)] cursor-pointer"
           onMouseEnter={fx.blip}
           onClick={(e) => {
             e.preventDefault();
@@ -248,8 +248,10 @@ export function Projects() {
         >
           {/* Sliding yellow background */}
           <span className="absolute inset-0 bg-iris-bright translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
-          <span className="relative z-10 group-hover:text-ink transition-colors duration-300">
-            ◍ OPEN PROJECT ARCHIVE // SYSTEMS + ARTS
+          <span className="relative z-10 flex items-center gap-2 group-hover:text-ink transition-colors duration-300">
+            <span className="text-iris-bright group-hover:text-ink">◍</span>
+            OPEN PROJECT ARCHIVE // SYSTEMS + ARTS
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
           </span>
         </Link>
       </div>

@@ -382,13 +382,14 @@ export function Hero({ entered }: { entered: boolean }) {
                   fx.click();
                   window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "resume" } }));
                 }}
-                className="group relative card-notch overflow-hidden border border-transparent bg-white px-5 py-2.5 font-mono text-[9px] tracking-[0.12em] text-ink uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright cursor-pointer"
+                className="group relative overflow-hidden rounded-md border border-signal bg-signal px-5 py-2.5 font-mono text-[9px] font-black tracking-[0.14em] text-[#0c0d12] uppercase transition-all duration-300 hover:scale-105 hover:bg-[#fff024] hover:shadow-[0_0_20px_rgba(232,217,12,0.4)] cursor-pointer"
                 onMouseEnter={fx.blip}
               >
-                {/* Sliding yellow background */}
-                <span className="absolute inset-0 bg-iris-bright translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
-                <span className="relative z-10 transition-colors duration-300">
-                  ◍ VIEW RESUME
+                {/* Subtle shine sweep on hover */}
+                <span className="absolute inset-0 bg-white/25 translate-x-[-100%] group-hover:translate-x-full transition-transform duration-500 ease-out z-0" />
+                <span className="relative z-10 flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#0c0d12]" />
+                  VIEW RESUME
                 </span>
               </button>
             </Magnetic>
@@ -399,13 +400,14 @@ export function Hero({ entered }: { entered: boolean }) {
                   fx.click();
                   window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "cv" } }));
                 }}
-                className="group relative card-notch overflow-hidden border border-transparent bg-white px-5 py-2.5 font-mono text-[9px] tracking-[0.12em] text-ink uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright cursor-pointer"
+                className="group relative overflow-hidden rounded-md border border-periwinkle/35 bg-world-2/80 px-5 py-2.5 font-mono text-[9px] font-bold tracking-[0.14em] text-periwinkle uppercase backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:text-paper hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.15)] cursor-pointer"
                 onMouseEnter={fx.blip}
               >
                 {/* Sliding yellow background */}
-                <span className="absolute inset-0 bg-iris-bright translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
-                <span className="relative z-10 transition-colors duration-300">
-                  ◍ VIEW CV
+                <span className="absolute inset-0 bg-iris-bright/15 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
+                <span className="relative z-10 flex items-center gap-1.5 transition-colors duration-300">
+                  <span className="h-1.5 w-1.5 rounded-full border border-current" />
+                  VIEW CV
                 </span>
               </button>
             </Magnetic>
@@ -419,7 +421,7 @@ export function Hero({ entered }: { entered: boolean }) {
                 href="mailto:08airajosh@gmail.com"
                 aria-label="Send Email to 08airajosh@gmail.com"
                 title="Email: 08airajosh@gmail.com"
-                className="card-notch flex h-10 w-10 md:h-11 md:w-11 items-center justify-center bg-signal text-ink transition-all duration-300 hover:scale-105 hover:bg-iris-bright hover:shadow-[0_0_20px_rgba(252,238,10,0.45)]"
+                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-signal text-ink transition-all duration-300 hover:scale-110 hover:bg-[#fff024] hover:shadow-[0_0_20px_rgba(252,238,10,0.45)]"
                 onMouseEnter={fx.blip}
                 onClick={fx.confirm}
               >
@@ -447,7 +449,7 @@ export function Hero({ entered }: { entered: boolean }) {
                 rel="noopener noreferrer me"
                 aria-label="GitHub Profile"
                 title="GitHub: Aera0908"
-                className="card-notch flex h-10 w-10 md:h-11 md:w-11 items-center justify-center bg-world border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-105 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
+                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
                 onMouseEnter={fx.blip}
                 onClick={fx.click}
               >
@@ -474,7 +476,7 @@ export function Hero({ entered }: { entered: boolean }) {
                 rel="noopener noreferrer me"
                 aria-label="LinkedIn Profile"
                 title="LinkedIn: aira-josh-ynte"
-                className="card-notch flex h-10 w-10 md:h-11 md:w-11 items-center justify-center bg-world border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-105 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
+                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
                 onMouseEnter={fx.blip}
                 onClick={fx.click}
               >
@@ -497,7 +499,7 @@ export function Hero({ entered }: { entered: boolean }) {
                 rel="noopener noreferrer me"
                 aria-label="X (Twitter) Profile"
                 title="X: @aera0908"
-                className="card-notch flex h-10 w-10 md:h-11 md:w-11 items-center justify-center bg-world border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-105 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
+                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
                 onMouseEnter={fx.blip}
                 onClick={fx.click}
               >

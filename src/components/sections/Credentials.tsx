@@ -595,29 +595,21 @@ export function Credentials() {
                 <a
                   href={previewCert.url}
                   download={previewCert.downloadName}
-                  className="group relative card-notch overflow-hidden border border-periwinkle/30 px-3.5 py-1.5 font-mono text-[9px] tracking-widest uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright cursor-pointer"
+                  className="rounded-sm bg-iris-bright text-[#0c0d12] font-mono font-bold px-3.5 py-1.5 text-[9px] tracking-widest uppercase transition-all duration-200 hover:bg-white hover:scale-105 hover:shadow-[0_0_12px_rgba(252,238,10,0.4)] cursor-pointer"
                   onMouseEnter={fx.blip}
                   onClick={fx.click}
                 >
-                  {/* Sliding yellow background */}
-                  <span className="absolute inset-0 bg-iris-bright translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
-                  <span className="relative z-10 text-periwinkle group-hover:text-ink transition-colors duration-300">
-                    ◍ DOWNLOAD PDF
-                  </span>
+                  DOWNLOAD PDF
                 </a>
                 <button
                   onClick={() => {
                     fx.click();
                     setPreviewCert(null);
                   }}
-                  className="group relative card-notch overflow-hidden border border-periwinkle/30 px-3 py-1.5 font-mono text-[9px] tracking-widest uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright cursor-pointer"
+                  className="rounded-sm border border-periwinkle/30 bg-world-2/80 px-3 py-1.5 font-mono text-[9px] tracking-widest uppercase text-periwinkle transition-all duration-200 hover:border-white hover:text-white hover:bg-world-2 cursor-pointer"
                   aria-label="Close preview"
                 >
-                  {/* Sliding yellow background */}
-                  <span className="absolute inset-0 bg-iris-bright translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
-                  <span className="relative z-10 text-periwinkle group-hover:text-ink transition-colors duration-300">
-                    ◍ CLOSE
-                  </span>
+                  ✕ CLOSE
                 </button>
               </div>
             </div>
