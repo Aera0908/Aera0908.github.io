@@ -11,9 +11,17 @@ import { VaultCard } from "@/components/ui/VaultCard";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { usePageTransition } from "@/components/providers/PageTransitionProvider";
 
-/* top three flagships (fanned like collectible cards) — everything else
-   lives in the ProjectGallery overlay; details live in /projects/[slug] */
+/* top four flagships (fanned like collectible cards) — everything else
+   lives in the ProjectGallery overlay; details live in /vault/archive/[slug] */
 const PROJECTS = [
+  {
+    index: "P-01",
+    name: "FEHUVIA",
+    slug: "fehuvia",
+    img: "/projects/notable-project-thumbnails/fehuvia.webp",
+    stack: "SOLIDITY / MORPH L2 / GPT-4O",
+    summary: "Morph L2 B2B Treasury co-pilot",
+  },
   {
     index: "P-02",
     name: "AEROVIT",
@@ -24,20 +32,21 @@ const PROJECTS = [
     badge: "Awarded Best Thesis",
   },
   {
-    index: "P-01",
-    name: "FEHUVIA",
-    slug: "fehuvia",
-    img: "/projects/notable-project-thumbnails/fehuvia.webp",
-    stack: "SOLIDITY / MORPH L2 / GPT-4O",
-    summary: "Morph L2 B2B Treasury co-pilot",
-  },
-  {
     index: "P-03",
     name: "STICKOUT",
     slug: "stickout",
     img: "/projects/notable-project-thumbnails/stickOut.webp",
     stack: "REACT 19 / HTML5 CANVAS / VLSI",
     summary: "VLSI interactive Stick-Diagram editor",
+  },
+  {
+    index: "P-04",
+    name: "GHOSTCUE",
+    slug: "ghostcue",
+    img: "/projects/notable-project-thumbnails/ghostcue.webp",
+    stack: "TAURI v2 / RUST / REACT 19",
+    summary: "AI interview copilot & stealth HUD",
+    badge: "New Release",
   },
 ];
 
@@ -161,19 +170,23 @@ export function Projects() {
       </h2>
       <p className="t-label mb-6 text-periwinkle/60">● 002 // SELECTED BUILDS</p>
 
-      {/* fanned collectible cards (desktop) */}
-      <div className="group/vault relative mx-auto hidden h-[460px] max-w-4xl md:block">
-        {/* hover:z-40 lifts the hovered folder above the center card and
-            snaps back to the fan order on unhover. AEROVIT (the pilot
-            project) holds the elevated center slot. */}
-        <div className="proj-card absolute left-1/2 top-12 w-[250px] -translate-x-[132%] rotate-[-8deg] transition-transform duration-500 ease-out group-hover/vault:-translate-x-[155%] group-hover/vault:rotate-[-14deg] hover:z-40">
-          <VaultCard {...PROJECTS[1]} />
-        </div>
-        <div className="proj-card absolute left-1/2 top-0 z-10 w-[280px] -translate-x-1/2 transition-transform duration-500 ease-out group-hover/vault:-translate-y-4 hover:z-40">
+      {/* fanned collectible cards (desktop, 4 folders in sequence P-01 -> P-04) */}
+      <div className="group/vault relative mx-auto hidden h-[480px] max-w-5xl md:block">
+        {/* Card 0: P-01 FEHUVIA (far left) */}
+        <div className="proj-card absolute left-1/2 top-10 w-[240px] -translate-x-[190%] rotate-[-12deg] z-10 transition-transform duration-500 ease-out group-hover/vault:-translate-x-[212%] group-hover/vault:rotate-[-16deg] hover:z-50">
           <VaultCard {...PROJECTS[0]} />
         </div>
-        <div className="proj-card absolute left-1/2 top-12 w-[250px] translate-x-[32%] rotate-[8deg] transition-transform duration-500 ease-out group-hover/vault:translate-x-[55%] group-hover/vault:rotate-[14deg] hover:z-40">
+        {/* Card 1: P-02 AEROVIT (center-left) */}
+        <div className="proj-card absolute left-1/2 top-2 w-[255px] -translate-x-[102%] rotate-[-4deg] z-20 transition-transform duration-500 ease-out group-hover/vault:-translate-x-[114%] group-hover/vault:-translate-y-2 group-hover/vault:rotate-[-6deg] hover:z-50">
+          <VaultCard {...PROJECTS[1]} />
+        </div>
+        {/* Card 2: P-03 STICKOUT (center-right) */}
+        <div className="proj-card absolute left-1/2 top-2 w-[255px] -translate-x-[6%] rotate-[4deg] z-30 transition-transform duration-500 ease-out group-hover/vault:translate-x-[6%] group-hover/vault:-translate-y-2 group-hover/vault:rotate-[6deg] hover:z-50">
           <VaultCard {...PROJECTS[2]} />
+        </div>
+        {/* Card 3: P-04 GHOSTCUE (far right) */}
+        <div className="proj-card absolute left-1/2 top-10 w-[240px] translate-x-[85%] rotate-[12deg] z-40 transition-transform duration-500 ease-out group-hover/vault:translate-x-[110%] group-hover/vault:rotate-[16deg] hover:z-50">
+          <VaultCard {...PROJECTS[3]} />
         </div>
       </div>
 

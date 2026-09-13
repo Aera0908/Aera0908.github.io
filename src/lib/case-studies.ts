@@ -3,6 +3,16 @@
  * (web_resume/src/data/projects.json). NDA engagements carry
  * architecture-level information only; no client visuals or copy.
  */
+export type CaseStudyDownload = {
+  name: string;
+  format: ".exe" | ".msi" | string;
+  filename: string;
+  href: string;
+  githubHref?: string;
+  size: string;
+  description?: string;
+};
+
 export type CaseStudy = {
   slug: string;
   name: string;
@@ -18,6 +28,7 @@ export type CaseStudy = {
   stack: { label: string; items: string[] }[];
   links?: { label: string; href: string }[];
   badge?: string;
+  downloads?: CaseStudyDownload[];
   /**
    * `poster` is required in spirit for `type: "video"` - the grid renders it
    * instead of the media file, so a multi-MB demo is only fetched once the
@@ -32,6 +43,73 @@ export type CaseStudy = {
 };
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    slug: "ghostcue",
+    name: "GHOSTCUE",
+    badge: "NEW RELEASE",
+    category: "AI / DESKTOP HUD / TAURI",
+    role: "Creator & Systems Architect",
+    duration: "2026",
+    status: "RELEASED - v0.1.0",
+    img: "/projects/ghostcue-banner.png",
+    summary:
+      "Lightweight, uncapturable desktop HUD and AI interview copilot with real-time dual audio transcription, local OCR screen capture, and multi-model LLM orchestration. Built on a native Rust (Tauri v2) backend paired with a React 19 interface, GhostCue captures remote interviewer WASAPI loopback and candidate microphone audio, detects voice activity, transcribes speech with local Whisper GGML or cloud fallbacks, and synthesizes contextual hints, algorithmic solutions, and architectural breakdowns on demand.",
+    highlights: [
+      "Operating system anti-capture protection: hidden from Zoom, Teams, Meet, Discord, and OBS via Windows SetWindowDisplayAffinity(WDA_EXCLUDEFROMCAPTURE) and macOS NSWindowSharingNone",
+      "Focus Shield (WS_EX_NOACTIVATE) and Click-Through mode: moving or interacting with the HUD never steals focus from active IDEs, terminals, or assessment browsers",
+      "Dual-channel audio capture: concurrent remote WASAPI loopback + candidate mic stream resampled to 16 kHz mono 32-bit float PCM",
+      "Energy-based Voice Activity Detection (VAD) with zero-crossing rate analysis and 85 Hz rumble high-pass filtering",
+      "Offline local STT via quantized Whisper GGML (tiny to large-v3-turbo) with streaming Deepgram Nova-2 and Cloud Whisper fallbacks",
+      "Multi-provider LLM orchestration with smart model routing across Gemini 2.5 Flash/Pro, Claude 3.7 Sonnet, GPT-4o, and local Ollama",
+      "Native Windows OCR screen capture parses on-screen coding questions and terminal outputs without incurring repetitive vision token costs",
+      "Mathematical notation and asymptotic proofs ($O(N \\log N)$) rendered natively with KaTeX typesetting",
+      "Project context scanner indexes local directories and manifests (package.json, Cargo.toml, go.mod) to ground AI advice in the candidate's actual architecture",
+      "Stealth Typer character-by-character simulated keyboard injection directly into active code editors",
+    ],
+    architecture: [
+      "Tauri v2 Rust Core: manages native windowing, WASAPI loopback capture (cpal), Whisper.cpp bindings, Windows OCR API, and global shortcut hooks",
+      "React 19 + TypeScript HUD: glassmorphism floating overlay, virtualized transcript stream, audio VU meters, and action controls",
+      "Smart Model Routing Engine: routes instant hints to low-latency models while streaming deep algorithmic solutions to flagship reasoning models",
+      "Dual-stream VAD & Diarization: concurrent candidate and interviewer track separation with pre-roll buffering and dynamic silence gating",
+      "Local Privacy & Zero Telemetry: runs 100% offline with zero data leaving the device when paired with local Whisper and Ollama",
+    ],
+    stack: [
+      { label: "Core & Systems", items: ["Rust 1.75+", "Tauri v2", "Windows WASAPI (cpal)", "Windows Media OCR"] },
+      { label: "Frontend", items: ["React 19", "TypeScript 5.6", "Tailwind CSS", "KaTeX", "Lucide React"] },
+      { label: "AI & STT", items: ["Whisper GGML", "Deepgram Nova-2", "Google Gemini", "Claude 3.7", "OpenAI GPT-4o", "Ollama"] },
+      { label: "Installers", items: ["NSIS Setup (.exe)", "Windows MSI (.msi)", "x64 Release"] },
+    ],
+    links: [
+      { label: "GITHUB", href: "https://github.com/Aera0908/GhostCue" },
+    ],
+    downloads: [
+      {
+        name: "Windows Setup Installer",
+        format: ".exe",
+        filename: "GhostCue_0.1.0_x64-setup.exe",
+        href: "/downloads/GhostCue_0.1.0_x64-setup.exe",
+        githubHref: "https://github.com/Aera0908/GhostCue/raw/main/GhostCue_0.1.0_x64-setup.exe",
+        size: "5.4 MB",
+        description: "Standard NSIS Installer · x64 Windows 10/11",
+      },
+      {
+        name: "Windows MSI Package",
+        format: ".msi",
+        filename: "GhostCue_0.1.0_x64_en-US.msi",
+        href: "/downloads/GhostCue_0.1.0_x64_en-US.msi",
+        githubHref: "https://github.com/Aera0908/GhostCue/raw/main/GhostCue_0.1.0_x64_en-US.msi",
+        size: "6.5 MB",
+        description: "Enterprise MSI Package · x64 Windows 10/11",
+      },
+    ],
+    gallery: [
+      {
+        src: "/projects/ghostcue-banner.png",
+        caption: "GhostCue HUD: Uncapturable Desktop AI Copilot for Technical Assessment Practice and Live Problem Solving",
+        type: "image",
+      },
+    ],
+  },
   {
     slug: "fehuvia",
     name: "FEHUVIA",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { hudState } from "@/lib/hud-state";
 import { expDampAlpha } from "@/lib/scene";
@@ -8,7 +9,13 @@ import { CyberLines } from "@/components/ui/CyberLines";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { Magnetic } from "@/components/ui/Magnetic";
 
-export function Hero({ entered }: { entered: boolean }) {
+export function Hero({
+  entered,
+  isBaseRoute = true,
+}: {
+  entered: boolean;
+  isBaseRoute?: boolean;
+}) {
   const { fx } = useHudAudio();
   /**
    * The pinned scroll timeline fires fx.click() from GSAP callbacks. Depending
@@ -25,29 +32,61 @@ export function Hero({ entered }: { entered: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const cardPlaceholderRef = useRef<HTMLDivElement>(null);
 
-  /* intro reveal — plays once the loader overlay slides up and AERA has transitioned to target */
+  /* intro reveal — plays once the loader overlay slides up on base route */
   useEffect(() => {
     if (!entered) return;
-    
+
+    if (!isBaseRoute) {
+      // On deep links, immediately set hero text & logo to hidden state
+      gsap.set(".hero-reveal:not(.hero-img-container)", { opacity: 0, y: -30, pointerEvents: "none" });
+      gsap.set(".hero-logo-target", { opacity: 0, y: -30, pointerEvents: "none" });
+      gsap.set(".ghostcue-peek", { opacity: 0, pointerEvents: "none" });
+      if (cardRef.current) {
+        gsap.set(cardRef.current, { opacity: 1, scale: 1 });
+      }
+      return;
+    }
+
     const ctx = gsap.context(() => {
-      // Stagger reveal name, subtitle, about text, and layout card after logo landing
-      gsap.timeline({ delay: 0.08 })
-        .fromTo(
-          [".hero-reveal:not(.hero-img-container)", cardRef.current],
-          { opacity: 0, y: 35, scale: 0.97 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1.0,
-            duration: 1.1,
-            ease: "power3.out",
-            stagger: 0.15,
-          }
-        );
+      // Stagger reveal name, subtitle, buttons, social dock, and the portrait card
+      const introTl = gsap.timeline({ delay: 0.08 });
+
+      introTl.fromTo(
+        [".hero-reveal:not(.hero-img-container)", cardRef.current],
+        { opacity: 0, y: 35, scale: 0.97 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1.0,
+          duration: 1.1,
+          ease: "power3.out",
+          stagger: 0.15,
+          clearProps: "transform",
+        }
+      );
+
+      // GhostCue announcement banner: mechanical cyberpunk slide-in right after hero finishes loading
+      introTl.fromTo(
+        ".ghostcue-peek",
+        {
+          opacity: 0,
+          x: 24,
+        },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.55,
+          ease: "power2.out",
+          onStart: () => {
+            fxRef.current.blip();
+          },
+        },
+        "+=0.1"
+      );
     }, rootRef);
-    
+
     return () => ctx.revert();
-  }, [entered]);
+  }, [entered, isBaseRoute]);
 
   /* scrollytelling pin & morph animation of the same card node */
   useEffect(() => {
@@ -61,17 +100,19 @@ export function Hero({ entered }: { entered: boolean }) {
     const getCardBounds = () => {
       const rect = placeholder.getBoundingClientRect();
       const rootRect = root.getBoundingClientRect();
+      const w = rect.width || placeholder.offsetWidth || 380;
+      const h = rect.height || placeholder.offsetHeight || 500;
       return {
         left: rect.left - rootRect.left,
         top: rect.top - rootRect.top,
-        width: rect.width,
-        height: rect.height,
+        width: w,
+        height: h,
       };
     };
 
     const getWrapCollapsedBounds = () => {
       return {
-        left: 0,
+        left: "0%",
         width: "100%",
         top: "15%",
         height: "70%",
@@ -93,7 +134,7 @@ export function Hero({ entered }: { entered: boolean }) {
       const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
       if (wrapEl) {
         gsap.set(wrapEl, {
-          left: 0,
+          left: "0%",
           width: "100%",
           top: "15%",
           height: "70%",
@@ -118,8 +159,8 @@ export function Hero({ entered }: { entered: boolean }) {
         matchPlaceholder();
 
         const wrapExpanded = {
-          left: isMobile ? "6vw" : "58vw",
-          width: isMobile ? "88vw" : "35vw",
+          left: isMobile ? "6%" : "58%",
+          width: isMobile ? "88%" : "35%",
           top: isMobile ? "66%" : "0%",
           height: isMobile ? "28%" : "100%",
         };
@@ -137,14 +178,36 @@ export function Hero({ entered }: { entered: boolean }) {
           },
         });
 
-        // Step A: Reset any intro y-translation, fade out Hero text
-        tl.to(card, { y: 0, duration: 0.1 }, 0)
-          .to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)"], {
+        // Step A: Initial state at scroll 0, fade out Hero text
+        tl.set(".hero-card-img-wrap", {
+          left: "0%",
+          width: "100%",
+          top: "15%",
+          height: "70%",
+        }, 0);
+
+        if (isBaseRoute) {
+          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek"], {
             opacity: 0,
             y: -30,
+            pointerEvents: "none",
             duration: 0.45,
             stagger: 0.05,
           }, 0);
+        } else {
+          tl.fromTo(
+            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek"],
+            { opacity: 1, y: 0, pointerEvents: "auto" },
+            {
+              opacity: 0,
+              y: -30,
+              pointerEvents: "none",
+              duration: 0.45,
+              immediateRender: false,
+            },
+            0
+          );
+        }
 
         // Step B: Morph the exact same card container to cover the full viewport
         tl.fromTo(card, {
@@ -183,10 +246,10 @@ export function Hero({ entered }: { entered: boolean }) {
           immediateRender: false,
         }, 0.1)
         .fromTo(".hero-card-img-wrap", {
-          left: 0,
-          width: () => getWrapCollapsedBounds().width,
-          top: () => getWrapCollapsedBounds().top,
-          height: () => getWrapCollapsedBounds().height,
+          left: "0%",
+          width: "100%",
+          top: "15%",
+          height: "70%",
         }, {
           left: wrapExpanded.left,
           width: wrapExpanded.width,
@@ -287,17 +350,23 @@ export function Hero({ entered }: { entered: boolean }) {
           top: wrapExpanded.top,
           height: wrapExpanded.height,
         }, {
-          left: 0,
-          width: () => getWrapCollapsedBounds().width,
-          top: () => getWrapCollapsedBounds().top,
-          height: () => getWrapCollapsedBounds().height,
+          left: "0%",
+          width: "100%",
+          top: "15%",
+          height: "70%",
           duration: 1.1,
           ease: "power2.inOut",
           immediateRender: false,
         }, 4.0);
 
         // Step G: Hold scroll lock briefly in its closed state before unpinning
-        tl.to({}, { duration: 0.35 });
+        tl.to({}, { duration: 0.35 })
+          .set(".hero-card-img-wrap", {
+            left: "0%",
+            width: "100%",
+            top: "15%",
+            height: "70%",
+          }, 5.1);
       }
     );
 
@@ -312,7 +381,6 @@ export function Hero({ entered }: { entered: boolean }) {
       onResize();
     });
     ro.observe(placeholder);
-    ro.observe(root);
 
     return () => {
       window.removeEventListener("resize", onResize);
@@ -351,10 +419,18 @@ export function Hero({ entered }: { entered: boolean }) {
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-center w-full max-w-7xl mx-auto z-10">
         {/* Left Column: AERA Text Logo & About Me */}
-        <div ref={wordsRef} className="flex flex-col items-start gap-6 will-change-transform relative z-10">
+        <div
+          ref={wordsRef}
+          className="flex flex-col items-start gap-6 will-change-transform relative z-10"
+          style={{
+            pointerEvents: entered ? "auto" : "none",
+          }}
+        >
           <div
             className="hero-logo-target font-display font-black tracking-[-0.08em] text-paper uppercase select-none text-[12vw] md:text-[9vw] leading-none py-4 px-8 -my-4 -mx-8"
-            style={{ opacity: entered ? 1 : 0 }}
+            style={{
+              opacity: entered && isBaseRoute ? 1 : 0,
+            }}
           >
             <div className="flex gap-[0.02em]">
               <span>A</span>
@@ -365,17 +441,17 @@ export function Hero({ entered }: { entered: boolean }) {
           </div>
           
           {/* stacked display words, KPR-style — phrases over paragraphs */}
-          <h1 className="hero-reveal opacity-0 translate-y-8 font-display font-black text-iris-bright text-[7vw] md:text-[3.6vw] leading-[0.95] tracking-tight uppercase">
+          <h1 className="hero-reveal opacity-0 font-display font-black text-iris-bright text-[7vw] md:text-[3.6vw] leading-[0.95] tracking-tight uppercase">
             SOFTWARE
             <br />
             ENGINEER<span className="text-paper">.</span>
           </h1>
 
-          <p className="hero-reveal opacity-0 translate-y-8 t-label text-periwinkle/85">
+          <p className="hero-reveal opacity-0 t-label text-periwinkle/85">
             ● FULL-STACK WEB · IC DESIGN · SYSTEMS
           </p>
 
-          <div className="hero-reveal opacity-0 translate-y-8 flex flex-wrap items-center gap-3 mt-2">
+          <div className="hero-reveal opacity-0 flex flex-wrap items-center gap-3 mt-2">
             <Magnetic strength={0.3}>
               <button
                 onClick={() => {
@@ -414,7 +490,7 @@ export function Hero({ entered }: { entered: boolean }) {
           </div>
 
           {/* Social Links Dock */}
-          <div className="hero-reveal opacity-0 translate-y-8 flex items-center gap-2.5">
+          <div className="hero-reveal opacity-0 flex items-center gap-2.5">
             {/* Email Button */}
             <Magnetic strength={0.35}>
               <a
@@ -519,15 +595,74 @@ export function Hero({ entered }: { entered: boolean }) {
         {/* Right Column Spacer: Reserves card's slot in grid */}
         <div
           ref={cardPlaceholderRef}
-          className="hero-img-container w-full max-w-[290px] sm:max-w-sm md:max-w-md aspect-[3/4] max-md:max-h-[42vh] justify-self-center md:justify-self-end relative pointer-events-none"
-        />
+          className="hero-img-container w-full max-w-[290px] sm:max-w-sm md:max-w-md aspect-[3/4] max-md:max-h-[42vh] justify-self-center md:justify-self-end relative z-40 pointer-events-none"
+        >
+          {/* GhostCue Vertical Announcement Banner: Clean, uncluttered Cyberpunk dossier tag */}
+          <div className="ghostcue-peek pointer-events-auto absolute md:bottom-0 md:top-auto md:right-full max-md:top-[-90px] max-md:left-0 max-md:right-auto opacity-0 select-none z-40">
+            <div
+              className="group relative block w-32 md:w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-iris-bright transition-colors duration-300 shadow-2xl backdrop-blur-md cursor-pointer select-none text-left"
+              style={{
+                clipPath: "polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px)",
+              }}
+            >
+              <Link
+                href="/vault/archive/ghostcue"
+                onClick={() => fx.click()}
+                onMouseEnter={fx.blip}
+                className="relative flex flex-col justify-between w-full h-full bg-world-2/95 p-3 overflow-hidden"
+                style={{
+                  clipPath: "polygon(13px 0, 100% 0, 100% 100%, 0 100%, 0 13px)",
+                }}
+                title="Check GhostCue out - AI Interview Copilot HUD"
+              >
+                {/* Sliding yellow background sweep */}
+                <span className="absolute inset-0 bg-iris-bright translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
+
+                {/* Top: Eye Candy "NEW" Tag */}
+                <div className="relative z-10 flex items-center justify-between">
+                  <span className="font-mono text-[8px] font-black px-1.5 py-0.5 bg-signal text-[#0c0d12] leading-none rounded-xs tracking-wider uppercase group-hover:bg-ink group-hover:text-signal transition-colors duration-300">
+                    NEW
+                  </span>
+                  <span className="font-mono text-[8px] text-periwinkle/40 group-hover:text-ink/60 transition-colors duration-300">
+                    S-01
+                  </span>
+                </div>
+
+                {/* Center: App Logo & Name */}
+                <div className="relative z-10 my-auto flex flex-col items-center text-center">
+                  <div className="h-14 w-14 rounded-xs border border-periwinkle/20 bg-world/90 p-2 shadow-inner group-hover:border-ink/30 group-hover:bg-ink/10 transition-colors duration-300">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/projects/ghostcue-icon.png"
+                      alt="GhostCue Icon"
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                  <h3 className="font-display text-base font-black uppercase tracking-tight text-paper group-hover:text-ink transition-colors duration-300 leading-none mt-2.5">
+                    GHOSTCUE<span className="text-iris group-hover:text-ink">.</span>
+                  </h3>
+                </div>
+
+                {/* Bottom: Check Out CTA */}
+                <div className="relative z-10 flex items-center justify-between pt-2 border-t border-periwinkle/15 group-hover:border-ink/20 transition-colors duration-300 font-mono text-[8.5px] font-black tracking-widest text-signal group-hover:text-ink uppercase">
+                  <span>CHECK OUT</span>
+                  <span className="text-signal group-hover:text-ink group-hover:translate-x-1 transition-transform duration-300">
+                    →
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Pinned Card: Used for both layout and scrollytelling expansion */}
       <div
         ref={cardRef}
         className="card-notch absolute z-30 bg-paper text-ink p-5 flex flex-col justify-between overflow-hidden opacity-0 transform-gpu will-change-transform"
-        style={{ pointerEvents: entered ? "auto" : "none" }}
+        style={{
+          pointerEvents: entered ? "auto" : "none",
+        }}
       >
         <CyberLines tone="ink" />
         <div className="hero-card-meta flex justify-between t-micro text-ink-soft">

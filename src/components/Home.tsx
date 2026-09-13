@@ -53,6 +53,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
     return { section: null, isReturn: false };
   });
 
+  const isBaseRoute = !boot.section;
   const [entered, setEntered] = useState(!!boot.section);
   const [mountCanvas, setMountCanvas] = useState(!!boot.section);
   const [heroReady, setHeroReady] = useState(!!boot.section);
@@ -84,12 +85,14 @@ export function Home({ initialSection = null }: { initialSection?: string | null
 
   const { fx } = useHudAudio();
 
+  const handleStepChange = useCallback(() => {
+    fx.blip();
+  }, [fx]);
+
   useSectionSnap({
     enabled: heroReady,
     initialSection: boot.section,
-    onStepChange: () => {
-      fx.blip();
-    },
+    onStepChange: handleStepChange,
   });
 
   const barRef = useRef<HTMLDivElement>(null);
@@ -221,7 +224,16 @@ export function Home({ initialSection = null }: { initialSection?: string | null
           ? null // restored to "/" — stay at the top
           : boot.section;
 
+    let userScrolled = false;
+    const markUserScrolled = () => {
+      userScrolled = true;
+    };
+    window.addEventListener("wheel", markUserScrolled, { passive: true, capture: true });
+    window.addEventListener("touchstart", markUserScrolled, { passive: true, capture: true });
+    window.addEventListener("keydown", markUserScrolled, { capture: true });
+
     const jump = () => {
+      if (userScrolled) return;
       if (!target) {
         spyArmedRef.current = true;
         return;
@@ -241,17 +253,15 @@ export function Home({ initialSection = null }: { initialSection?: string | null
       jump();
     }, 700);
     const t2 = setTimeout(() => {
-      jump();
       ScrollTrigger.refresh();
-    }, 1500);
-    const t3 = setTimeout(() => {
       jump();
-      ScrollTrigger.refresh();
-    }, 2600);
+    }, 1400);
     return () => {
+      window.removeEventListener("wheel", markUserScrolled, { capture: true } as EventListenerOptions);
+      window.removeEventListener("touchstart", markUserScrolled, { capture: true } as EventListenerOptions);
+      window.removeEventListener("keydown", markUserScrolled, { capture: true } as EventListenerOptions);
       clearTimeout(t1);
       clearTimeout(t2);
-      clearTimeout(t3);
     };
   }, [boot]);
 
@@ -326,7 +336,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
         />
       </div>
 
-      <Hero entered={entered} />
+      <Hero entered={entered} isBaseRoute={isBaseRoute} />
       <Experience entered={entered} />
       <Projects />
       <Credentials />

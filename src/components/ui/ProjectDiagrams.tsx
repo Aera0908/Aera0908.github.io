@@ -626,6 +626,103 @@ const StickOutArchitecture = () => {
   );
 };
 
+
+// =====================================================================
+// GhostCue — System Architecture
+// =====================================================================
+const GhostCueArchitecture = () => {
+  const rowH = 78;
+  const rowGap = 26;
+  const padX = 40;
+  const width = 1200;
+  const labelCol = 130;
+
+  const rows = [
+    {
+      label: "CAPTURE STREAMS",
+      accent: "blue" as const,
+      nodes: [
+        { label: "System Loopback", sub: "WASAPI / cpal 16 kHz mono" },
+        { label: "Candidate Microphone", sub: "Zero-Crossing VAD & 85Hz Filter" },
+        { label: "Live Screen OCR", sub: "Native Windows OCR Buffer" },
+        { label: "Project Codebase", sub: "Manifest & AST Context Indexer" },
+      ],
+    },
+    {
+      label: "SPEECH-TO-TEXT",
+      accent: "emerald" as const,
+      nodes: [
+        { label: "Local Whisper GGML", sub: "On-device whisper.cpp engine" },
+        { label: "Deepgram Streaming", sub: "Low-latency WebSocket fallback" },
+        { label: "Speaker Diarization", sub: "Candidate vs Interviewer tags" },
+      ],
+    },
+    {
+      label: "LLM ORCHESTRATION",
+      accent: "amber" as const,
+      nodes: [
+        { label: "Smart Model Router", sub: "Low-latency vs reasoning classification" },
+        { label: "Multi-Provider Gateway", sub: "Gemini 2.5 / Claude 3.7 / GPT-4o / Ollama" },
+        { label: "LaTeX / KaTeX Engine", sub: "Algorithmic notation & O(N log N) bounds" },
+      ],
+    },
+    {
+      label: "STEALTH DESKTOP HUD",
+      accent: "violet" as const,
+      nodes: [
+        { label: "Tauri v2 Native Rust", sub: "Window management & IPC" },
+        { label: "Anti-Capture Shield", sub: "WDA_EXCLUDEFROMCAPTURE" },
+        { label: "Focus Shield", sub: "WS_EX_NOACTIVATE & Click-Through" },
+        { label: "Stealth Typer", sub: "Simulated keyboard injection" },
+      ],
+    },
+  ];
+
+  const height = padX * 2 + rows.length * rowH + (rows.length - 1) * rowGap;
+
+  return (
+    <DiagramFrame viewBox={`0 0 ${width} ${height}`}>
+      {rows.map((row, rIdx) => {
+        const y = padX + rIdx * (rowH + rowGap);
+        const available = width - padX * 2 - labelCol;
+        const gap = 18;
+        const totalGap = gap * (row.nodes.length - 1);
+        const boxW = (available - totalGap) / row.nodes.length;
+
+        return (
+          <g key={rIdx}>
+            <RowLabel x={padX} y={y + rowH / 2 + 3} text={`> ${row.label}`} />
+            {row.nodes.map((n, i) => (
+              <DiagramNode
+                key={i}
+                x={padX + labelCol + i * (boxW + gap)}
+                y={y}
+                w={boxW}
+                h={rowH}
+                label={n.label}
+                sublabel={n.sub}
+                accent={row.accent}
+              />
+            ))}
+            {rIdx < rows.length - 1 && (
+              <line
+                x1={width / 2}
+                x2={width / 2}
+                y1={y + rowH + 2}
+                y2={y + rowH + rowGap - 2}
+                stroke={palette.strokeStrong}
+                strokeWidth={1.4}
+                strokeDasharray="3 4"
+                markerEnd="url(#arrow-muted)"
+              />
+            )}
+          </g>
+        );
+      })}
+    </DiagramFrame>
+  );
+};
+
 // =====================================================================
 // Registry + public components
 // =====================================================================
@@ -634,6 +731,7 @@ const registry: Record<string, () => ReactNode> = {
   "aerovit-dataflow": AeroVitDataFlow,
   "emg-pipeline": EmgPipeline,
   "fehuvia-architecture": FehuviaArchitecture,
+  "ghostcue-architecture": GhostCueArchitecture,
   "stickout-architecture": StickOutArchitecture,
 };
 
@@ -908,6 +1006,9 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
 };
 
 const DIAGRAMS_BY_SLUG: Record<string, { id: string; caption?: string }[]> = {
+  ghostcue: [
+    { id: "ghostcue-architecture", caption: "GhostCue Real-Time Audio Capture & Stealth HUD Architecture" }
+  ],
   fehuvia: [
     { id: "fehuvia-architecture", caption: "Dual-State Treasury Workstation Architecture" }
   ],

@@ -164,7 +164,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     // 1. Fade out boot chrome elements & fetching badge smoothly
     tl.to([".boot-chrome", fetchingBadge], {
       opacity: 0,
-      duration: 0.35,
+      duration: 0.4,
       ease: "power2.out",
     }, 0);
 
@@ -355,6 +355,25 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         }`}
         style={{ clipPath: "inset(0% 0% 0% 0%)" }}
       >
+        {/* Tactile Moving Risograph Noise Layer: softened and actively animated at 24fps */}
+        <div
+          className="pointer-events-none absolute -inset-20 z-10 opacity-[0.06] mix-blend-multiply select-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='posterNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23posterNoise)'/%3E%3C/svg%3E")`,
+            animation: "grain-shift 0.22s steps(6) infinite",
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Micro CRT Scanline Texture: subtle glare diffusion */}
+        <div
+          className="pointer-events-none absolute inset-0 z-10 opacity-[0.018] select-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, #000 0px, #000 1px, transparent 1px, transparent 3px)",
+          }}
+          aria-hidden="true"
+        />
         {/* Framing corner tick marks */}
         <div className="pointer-events-none absolute left-4 top-4 border-l-2 border-t-2 border-[#0d0d10] w-5 h-5 z-30" />
         <div className="pointer-events-none absolute right-4 top-4 border-r-2 border-t-2 border-[#0d0d10] w-5 h-5 z-30" />
@@ -526,10 +545,10 @@ function ProceedPrompt({ onProceed }: { onProceed: () => void }) {
       className="group flex flex-col items-center gap-3 p-6 text-center cursor-pointer select-none focus-visible:outline-none"
     >
       <div className="flex items-center justify-center gap-2 font-mono text-xl sm:text-2xl md:text-4xl font-black uppercase tracking-[0.12em] text-[#0d0d10] group-hover:scale-105 transition-transform duration-200">
-        <span className="text-[#008ba3]">❯</span>
+        <span className="text-[#0d0d10]/60">❯</span>
         <span>{displayedText}</span>
         <span
-          className="inline-block w-3.5 h-6 sm:w-4 sm:h-7 md:w-5 md:h-9 bg-[#00E5FF] shadow-[0_0_14px_#00E5FF] animate-pulse ml-0.5"
+          className="inline-block w-3.5 h-6 sm:w-4 sm:h-7 md:w-5 md:h-9 bg-[#0d0d10] opacity-80 animate-pulse ml-0.5"
           aria-hidden="true"
         />
       </div>

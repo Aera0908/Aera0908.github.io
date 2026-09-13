@@ -224,11 +224,11 @@ export function Experience({ entered }: { entered: boolean }) {
   useEffect(() => {
     if (!entered) return;
 
-    // Delayed refresh & sort to let Hero.tsx settle
+    // Delayed refresh & sort to let Hero.tsx settle (Hero intro takes ~1.6s)
     const timer = setTimeout(() => {
       ScrollTrigger.sort();
       ScrollTrigger.refresh();
-    }, 300);
+    }, 1800);
     return () => clearTimeout(timer);
   }, [entered]);
 

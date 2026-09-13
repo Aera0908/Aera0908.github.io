@@ -7,6 +7,7 @@ import { ProjectDiagramsSection } from "@/components/ui/ProjectDiagrams";
 import { CaseStudyGallery } from "@/components/ui/CaseStudyGallery";
 import { CaseStudyBackButton } from "@/components/ui/CaseStudyBackButton";
 import { CaseEnter } from "@/components/ui/CaseEnter";
+import { CaseStudyDownloads } from "@/components/ui/CaseStudyDownloads";
 
 export async function generateStaticParams() {
   return CASE_STUDIES.map((c) => ({ slug: c.slug }));
@@ -91,6 +92,11 @@ export default async function CaseStudyPage({
         <div className="grid gap-12 lg:grid-cols-[1fr_320px]">
           {/* left: narrative */}
           <div>
+            {/* Installers Section in Body Content */}
+            {cs.downloads && cs.downloads.length > 0 && (
+              <CaseStudyDownloads downloads={cs.downloads} />
+            )}
+
             <h2 className="t-h3 mb-4 text-paper">EXECUTIVE SUMMARY</h2>
             <p className="mb-10 text-base leading-relaxed text-periwinkle/85">
               {cs.summary}

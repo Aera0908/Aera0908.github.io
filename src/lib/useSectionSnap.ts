@@ -78,19 +78,23 @@ export function useSectionSnap({
     const heroDur = 5.45;
 
     // Timeline positions in Hero.tsx
-    const heroFig1Y = heroStart + (heroEnd - heroStart) * (1.4 / heroDur); // ~719px (Expanded profile start)
-    const heroFig2Y = heroStart + (heroEnd - heroStart) * (1.9 / heroDur);
-    const heroFig3Y = heroStart + (heroEnd - heroStart) * (2.4 / heroDur);
-    const heroFig4Y = heroStart + (heroEnd - heroStart) * (3.0 / heroDur); // ~1541px (Last image in expanded profile)
-    const heroProfileExitY = heroStart + (heroEnd - heroStart) * (3.25 / heroDur); // ~1670px
+    // Expanded profile starts around 1.3 (~667px) and finishes before card shrinks at 3.5 (~1798px)
+    const heroExpandedStart = heroStart + (heroEnd - heroStart) * (1.3 / heroDur);
+    const heroExpandedEnd = heroStart + (heroEnd - heroStart) * (3.5 / heroDur);
 
-    const journeyStart = journeyST ? journeyST.start : heroEnd;
-    const journeyEnd = journeyST ? journeyST.end : journeyStart + 3000;
+    const journeyEl = document.getElementById("journey");
+    const journeyStart = journeyST
+      ? journeyST.start
+      : journeyEl
+        ? Math.round(journeyEl.getBoundingClientRect().top + window.scrollY)
+        : heroEnd;
 
     const vaultEl = document.getElementById("vault");
     const vaultY = vaultEl
       ? Math.round(vaultEl.getBoundingClientRect().top + window.scrollY)
-      : journeyEnd;
+      : (journeyST ? journeyST.end : journeyStart + 3000);
+
+    const journeyEnd = journeyST ? journeyST.end : vaultY;
 
     const credEl = document.getElementById("credentials");
     const credentialsY = credEl
@@ -104,11 +108,10 @@ export function useSectionSnap({
 
     return {
       heroTop: 0,
-      heroFig1: heroFig1Y,
-      heroFig2: heroFig2Y,
-      heroFig3: heroFig3Y,
-      heroFig4: heroFig4Y,
-      heroProfileExit: heroProfileExitY,
+      heroExpandedStart,
+      heroExpandedEnd,
+      heroFig1: heroExpandedStart,
+      heroProfileExit: heroExpandedEnd,
       journeyStart,
       journeyEnd,
       vaultY,
@@ -134,6 +137,7 @@ export function useSectionSnap({
         if (sectionPath !== undefined) {
           window.history.replaceState(null, "", sectionPath ? `/${sectionPath}` : "/");
         }
+        ScrollTrigger.update();
         return;
       }
 
@@ -145,9 +149,22 @@ export function useSectionSnap({
       }
 
       const easing =
-        duration >= 3.0
-          ? (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2) // smooth in-out for 3x slower sequence
-          : (t: number) => 1 - Math.pow(1 - t, 3); // power3.out for crisp section snaps
+        duration >= 2.0
+          ? (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2) // smooth in-out for slow sequence
+          : (t: number) => 1 - Math.pow(1 - t, 2.6); // smooth cubic ease for responsive section snaps
+
+      if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
+      // Hard safety timer to prevent any lock deadlock
+      lockTimerRef.current = setTimeout(() => {
+        isLockedRef.current = false;
+      }, Math.round(duration * 1000) + 300);
+
+      const unlock = () => {
+        if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
+        lockTimerRef.current = setTimeout(() => {
+          isLockedRef.current = false;
+        }, 180);
+      };
 
       const lenis = (window as unknown as LenisWindow).lenis;
       if (lenis) {
@@ -155,24 +172,15 @@ export function useSectionSnap({
           duration,
           easing,
           lock: true,
-          onComplete: () => {
-            if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
-            lockTimerRef.current = setTimeout(() => {
-              isLockedRef.current = false;
-            }, 260);
-          },
+          force: true,
+          onComplete: unlock,
         });
       } else {
         gsap.to(window, {
           scrollTo: targetY,
           duration,
-          ease: duration >= 3.0 ? "power2.inOut" : "power3.out",
-          onComplete: () => {
-            if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
-            lockTimerRef.current = setTimeout(() => {
-              isLockedRef.current = false;
-            }, 260);
-          },
+          ease: duration >= 2.0 ? "power2.inOut" : "power2.out",
+          onComplete: unlock,
         });
       }
     },
@@ -189,10 +197,10 @@ export function useSectionSnap({
           smoothScrollTo(coords.heroTop, 1.8, "", { immediate });
           break;
         case "hero-profile":
-          smoothScrollTo(coords.heroFig1, 1.8, "", { immediate });
+          smoothScrollTo(coords.heroExpandedStart, 1.8, "", { immediate });
           break;
         case "journey":
-          smoothScrollTo(coords.journeyStart, 4.0, "journey", { immediate });
+          smoothScrollTo(coords.journeyStart, 1.4, "journey", { immediate });
           break;
         case "vault":
           smoothScrollTo(coords.vaultY, 1.0, "vault", { immediate });
@@ -216,9 +224,11 @@ export function useSectionSnap({
     [getCoordinates, smoothScrollTo]
   );
 
-  // Deep-link initial section landing
+  const initialLandedRef = useRef(false);
+  // Deep-link initial section landing - strictly one-shot on mount
   useEffect(() => {
-    if (!initialSection) return;
+    if (!initialSection || initialLandedRef.current) return;
+    initialLandedRef.current = true;
     const t = setTimeout(() => {
       goToSection(initialSection, true);
     }, 600);
@@ -229,125 +239,38 @@ export function useSectionSnap({
   useEffect(() => {
     if (!enabled) return;
 
-    const handleStepNavigation = (direction: 1 | -1, isKeyboard = false) => {
+    const handleStepNavigation = (direction: 1 | -1) => {
       const coords = getCoordinates();
       const curY = window.scrollY;
 
-      // 1. HERO TOP ZONE
-      if (curY <= coords.heroTop + 100) {
-        if (direction === 1) {
-          // Slow, cinematic scroll from Hero Top to Expanded Profile
-          smoothScrollTo(coords.heroFig1, 1.8, "");
-        }
-        return;
-      }
-
-      // 2. EXPANDED PROFILE ZONE (between Fig 1 and Fig Exit)
-      if (curY >= coords.heroFig1 - 60 && curY <= coords.heroProfileExit + 60) {
-        if (direction === 1) {
-          if (isKeyboard) {
-            // Arrow Down steps through the figures
-            if (curY < coords.heroFig2 - 40) {
-              smoothScrollTo(coords.heroFig2, 0.7, "");
-            } else if (curY < coords.heroFig3 - 40) {
-              smoothScrollTo(coords.heroFig3, 0.7, "");
-            } else if (curY < coords.heroFig4 - 40) {
-              smoothScrollTo(coords.heroFig4, 0.7, "");
-            } else {
-              // From last image, 3x slower cinematic transition to Journey (4.0s)
-              smoothScrollTo(coords.journeyStart, 4.0, "journey");
-            }
-          } else {
-            // Mouse wheel / trackpad: only lock when reaching the last image going down
-            if (curY >= coords.heroFig4 - 20) {
-              smoothScrollTo(coords.journeyStart, 4.0, "journey");
-            }
-          }
-        } else {
-          if (isKeyboard) {
-            // Arrow Up steps back through the figures
-            if (curY > coords.heroFig4 + 40) {
-              smoothScrollTo(coords.heroFig4, 0.7, "");
-            } else if (curY > coords.heroFig3 + 40) {
-              smoothScrollTo(coords.heroFig3, 0.7, "");
-            } else if (curY > coords.heroFig2 + 40) {
-              smoothScrollTo(coords.heroFig2, 0.7, "");
-            } else if (curY > coords.heroFig1 + 40) {
-              smoothScrollTo(coords.heroFig1, 0.7, "");
-            } else {
-              // From first image, smooth transition to Hero Top
-              smoothScrollTo(coords.heroTop, 1.8, "");
-            }
-          } else {
-            // Mouse wheel / trackpad: only lock when reaching the first image going up
-            if (curY <= coords.heroFig1 + 40) {
-              smoothScrollTo(coords.heroTop, 1.8, "");
-            }
-          }
-        }
-        return;
-      }
-
-      // Transition bridge between Expanded Profile exit and Journey
-      if (curY > coords.heroProfileExit && curY < coords.journeyStart) {
-        if (direction === 1) {
-          smoothScrollTo(coords.journeyStart, 4.0, "journey");
-        } else {
-          smoothScrollTo(coords.heroFig4, 4.0, "");
-        }
-        return;
-      }
-
-      // 3. JOURNEY ZONE (normal scroll on cards, lock on boundaries)
-      if (curY >= coords.journeyStart - 20 && curY <= coords.journeyEnd + 20) {
-        if (direction === 1) {
-          // When at or near the last card / end of Journey
-          if (curY >= coords.journeyEnd - 30) {
-            smoothScrollTo(coords.vaultY, 1.0, "vault");
-          }
-        } else {
-          // When at or near the first card / start of Journey (3x slower back to Expanded Profile)
-          if (curY <= coords.journeyStart + 30) {
-            smoothScrollTo(coords.heroFig4, 4.0, "");
-          }
-        }
-        return;
-      }
-
-      // Transition bridge between Journey and Vault
-      if (curY > coords.journeyEnd && curY < coords.vaultY - 40) {
-        if (direction === 1) {
+      if (direction === 1) {
+        // DOWNWARDS STEP NAVIGATION (Between Sections)
+        if (curY < coords.heroExpandedStart - 40) {
+          smoothScrollTo(coords.heroExpandedStart, 1.6, "");
+        } else if (curY < coords.journeyStart - 40) {
+          smoothScrollTo(coords.journeyStart, 1.4, "journey");
+        } else if (curY < coords.vaultY - 40) {
           smoothScrollTo(coords.vaultY, 1.0, "vault");
-        } else {
-          smoothScrollTo(coords.journeyEnd, 1.0, "journey");
-        }
-        return;
-      }
-
-      // 4. THE VAULT ZONE
-      if (curY >= coords.vaultY - 40 && curY < coords.credentialsY - 40) {
-        if (direction === 1) {
+        } else if (curY < coords.credentialsY - 40) {
           smoothScrollTo(coords.credentialsY, 0.9, "credentials");
-        } else {
-          smoothScrollTo(coords.journeyEnd, 1.0, "journey");
-        }
-        return;
-      }
-
-      // 5. CREDENTIALS ZONE
-      if (curY >= coords.credentialsY - 40 && curY < coords.contactY - 40) {
-        if (direction === 1) {
+        } else if (curY < coords.contactY - 40) {
           smoothScrollTo(coords.contactY, 0.9, "contact");
-        } else {
-          smoothScrollTo(coords.vaultY, 0.9, "vault");
         }
         return;
-      }
-
-      // 6. CONTACT ZONE
-      if (curY >= coords.contactY - 40) {
-        if (direction === -1) {
+      } else {
+        // UPWARDS STEP NAVIGATION (Between Sections)
+        if (curY >= coords.contactY - 40) {
           smoothScrollTo(coords.credentialsY, 0.9, "credentials");
+        } else if (curY >= coords.credentialsY - 40) {
+          smoothScrollTo(coords.vaultY, 0.9, "vault");
+        } else if (curY >= coords.vaultY - 40) {
+          smoothScrollTo(coords.journeyEnd, 1.0, "journey");
+        } else if (curY >= coords.journeyStart - 40) {
+          smoothScrollTo(coords.heroExpandedEnd, 1.4, "");
+        } else if (curY > coords.heroExpandedStart + 40) {
+          smoothScrollTo(coords.heroTop, 1.8, "");
+        } else {
+          smoothScrollTo(coords.heroTop, 1.8, "");
         }
         return;
       }
@@ -364,58 +287,93 @@ export function useSectionSnap({
       const curY = window.scrollY;
       const coords = getCoordinates();
 
-      // Check if we are in a Free-Scroll Zone:
-      // A) Inside Expanded Profile (between Fig 1 and Fig 4)
-      const isInExpandedProfileMiddle =
-        curY > coords.heroFig1 + 40 && curY < coords.heroFig4 - 20;
+      // Free scroll zone 1: Inside Expanded White (photos & profile content)
+      const isInExpandedWhiteMiddle =
+        curY > coords.heroExpandedStart + 40 && curY < coords.heroExpandedEnd - 40;
 
-      // B) Inside Journey (between start + 30 and end - 30)
-      const isInJourneyMiddle =
-        curY > coords.journeyStart + 30 && curY < coords.journeyEnd - 30;
-
-      // If user is inside Journey middle or Expanded Profile middle, let them scroll normally!
-      if (isInExpandedProfileMiddle || isInJourneyMiddle) {
-        if (isInExpandedProfileMiddle) {
-          if (e.deltaY > 0 && curY >= coords.heroFig4 - 50) {
-            e.preventDefault();
-            if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
-              handleStepNavigation(1, false);
-            }
-            return;
-          }
-          if (e.deltaY < 0 && curY <= coords.heroFig1 + 60) {
-            e.preventDefault();
-            if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
-              handleStepNavigation(-1, false);
-            }
-            return;
-          }
-          return; // Allow normal smooth wheel scroll inside profile
-        }
-
-        if (isInJourneyMiddle) {
-          if (e.deltaY > 0 && curY >= coords.journeyEnd - 60) {
-            e.preventDefault();
-            if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
-              handleStepNavigation(1, false);
-            }
-            return;
-          }
-          if (e.deltaY < 0 && curY <= coords.journeyStart + 60) {
-            e.preventDefault();
-            if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
-              handleStepNavigation(-1, false);
-            }
-            return;
-          }
-          return; // Allow normal smooth wheel scroll across cards
-        }
+      if (isInExpandedWhiteMiddle) {
+        // Freely browse between photos and collage inside Expanded White
+        return;
       }
 
-      // In all locked zones (Hero Top, Vault, Credentials, Contact, and zone boundaries):
-      // ALWAYS prevent default to completely eliminate micro-scrolling/drifting!
+      // Free scroll zone 2: Inside Journey (horizontal cards scrub)
+      const isInJourneyMiddle =
+        curY > coords.journeyStart + 40 && curY < coords.journeyEnd - 40;
+
+      if (isInJourneyMiddle) {
+        // Freely browse between horizontal cards inside Journey
+        return;
+      }
+
+      // Boundary: Expanded White top edge -> snap up to Hero Top
+      if (curY <= coords.heroExpandedStart + 40 && curY > coords.heroTop + 40) {
+        if (e.deltaY < 0) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
+          if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
+            smoothScrollTo(coords.heroTop, 1.8, "");
+          }
+          return;
+        }
+        // If scrolling down, let user scroll into Expanded White content freely
+        return;
+      }
+
+      // Boundary: Expanded White bottom edge -> snap down to Journey Start
+      if (curY >= coords.heroExpandedEnd - 40 && curY < coords.journeyStart - 40) {
+        if (e.deltaY > 0) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
+          if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
+            smoothScrollTo(coords.journeyStart, 1.4, "journey");
+          }
+          return;
+        }
+        // If scrolling up, let user scroll back into Expanded White content freely
+        return;
+      }
+
+      // Boundary: Journey start edge -> snap up to Expanded White
+      if (curY <= coords.journeyStart + 40 && curY >= coords.heroExpandedEnd) {
+        if (e.deltaY < 0) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
+          if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
+            smoothScrollTo(coords.heroExpandedEnd, 1.4, "");
+          }
+          return;
+        }
+        // If scrolling down, let user scroll into Journey cards freely
+        return;
+      }
+
+      // Boundary: Journey end edge -> snap down to Vault
+      if (curY >= coords.journeyEnd - 40 && curY < coords.vaultY - 40) {
+        if (e.deltaY > 0) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
+          if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
+            smoothScrollTo(coords.vaultY, 1.0, "vault");
+          }
+          return;
+        }
+        // If scrolling up, let user scroll back into Journey cards freely
+        return;
+      }
+
+      // Section locking for Hero Top, Vault, Credentials, Contact:
       e.preventDefault();
       e.stopPropagation();
+      e.stopImmediatePropagation();
+      (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
 
       if (isLockedRef.current) return;
 
@@ -423,7 +381,7 @@ export function useSectionSnap({
       if (Math.abs(delta) < 14) return;
 
       const direction = delta > 0 ? 1 : -1;
-      handleStepNavigation(direction, false);
+      handleStepNavigation(direction);
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -460,10 +418,25 @@ export function useSectionSnap({
       if (dir !== 0) {
         if (e.key === " " && t?.closest("button, a, [role='button']")) return;
 
+        const curY = window.scrollY;
+        const coords = getCoordinates();
+        const isInJourneyMiddle =
+          curY > coords.journeyStart + 40 && curY < coords.journeyEnd - 40;
+        const isInExpandedWhiteMiddle =
+          curY > coords.heroExpandedStart + 40 && curY < coords.heroExpandedEnd - 40;
+
+        if (isInJourneyMiddle || isInExpandedWhiteMiddle) {
+          e.preventDefault();
+          window.scrollBy({ top: dir * 450, behavior: "smooth" });
+          return;
+        }
+
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         if (isLockedRef.current) return;
 
-        handleStepNavigation(dir, true);
+        handleStepNavigation(dir);
       }
     };
 
@@ -492,27 +465,43 @@ export function useSectionSnap({
 
       const curY = window.scrollY;
       const coords = getCoordinates();
-      const isInExpandedProfileMiddle =
-        curY > coords.heroFig1 + 40 && curY < coords.heroFig4 - 20;
-      const isInJourneyMiddle =
-        curY > coords.journeyStart + 30 && curY < coords.journeyEnd - 30;
 
-      if (isInExpandedProfileMiddle || isInJourneyMiddle) {
-        return;
-      }
+      const isInExpandedWhiteMiddle =
+        curY > coords.heroExpandedStart + 40 && curY < coords.heroExpandedEnd - 40;
+      if (isInExpandedWhiteMiddle) return;
+
+      const isInJourneyMiddle =
+        curY > coords.journeyStart + 40 && curY < coords.journeyEnd - 40;
+      if (isInJourneyMiddle) return;
 
       const absX = Math.abs(deltaX);
       const absY = Math.abs(deltaY);
 
       if (absY > 40 || absX > 40) {
-        e.preventDefault();
-        if (isLockedRef.current) return;
-
         const primaryDelta = absY >= absX ? deltaY : deltaX;
         const dir = primaryDelta > 0 ? 1 : -1;
-        touchStartRef.current = null;
 
-        handleStepNavigation(dir, false);
+        if (dir > 0 && curY <= coords.heroExpandedStart + 40 && curY > coords.heroTop + 40) {
+          return;
+        }
+        if (dir < 0 && curY >= coords.heroExpandedEnd - 40 && curY < coords.journeyStart - 40) {
+          return;
+        }
+        if (dir > 0 && curY <= coords.journeyStart + 40 && curY >= coords.heroExpandedEnd) {
+          return;
+        }
+        if (dir < 0 && curY >= coords.journeyEnd - 40 && curY < coords.vaultY - 40) {
+          return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
+        if (isLockedRef.current) return;
+
+        touchStartRef.current = null;
+        handleStepNavigation(dir);
       }
     };
 
@@ -528,19 +517,19 @@ export function useSectionSnap({
       }
     };
 
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    window.addEventListener("keydown", onKeyDown, { capture: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true, capture: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true, capture: true });
     window.addEventListener("aera-snap-jump", onJumpEvent as EventListener);
 
     return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("wheel", onWheel, { capture: true } as EventListenerOptions);
+      window.removeEventListener("keydown", onKeyDown, { capture: true } as EventListenerOptions);
+      window.removeEventListener("touchstart", onTouchStart, { capture: true } as EventListenerOptions);
+      window.removeEventListener("touchmove", onTouchMove, { capture: true } as EventListenerOptions);
+      window.removeEventListener("touchend", onTouchEnd, { capture: true } as EventListenerOptions);
       window.removeEventListener("aera-snap-jump", onJumpEvent as EventListener);
       if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
     };
