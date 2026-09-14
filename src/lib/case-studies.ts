@@ -13,6 +13,13 @@ export type CaseStudyDownload = {
   description?: string;
 };
 
+export type Collaborator = {
+  name: string;
+  role?: string;
+  github: string;
+  avatar?: string;
+};
+
 export type CaseStudy = {
   slug: string;
   name: string;
@@ -26,6 +33,7 @@ export type CaseStudy = {
   highlights: string[];
   architecture: string[];
   stack: { label: string; items: string[] }[];
+  collaborators?: Collaborator[];
   links?: { label: string; href: string }[];
   badge?: string;
   downloads?: CaseStudyDownload[];
@@ -141,6 +149,11 @@ export const CASE_STUDIES: CaseStudy[] = [
       { label: "Backend", items: ["Node.js", "Express", "PostgreSQL", "OCR engine"] },
       { label: "AI", items: ["OpenAI GPT-4o", "Context-aware RAG"] },
     ],
+    collaborators: [
+      { name: "Milbert De Paz", role: "Collaborator", github: "milbertxd" },
+      { name: "Mico Alano", role: "Collaborator", github: "okimsz" },
+      { name: "Yancy Arguedo", role: "Collaborator", github: "crispychili" },
+    ],
     links: [
       { label: "FEHUVIA.APP", href: "https://www.fehuvia.app/" },
       { label: "GITHUB", href: "https://github.com/Aera0908/Project_Fehuvia" },
@@ -188,6 +201,9 @@ export const CASE_STUDIES: CaseStudy[] = [
       { label: "Hardware", items: ["ESP32-S3", "MAX30102", "QMI8658", "BLE 5.0"] },
       { label: "AI/ML", items: ["MediaPipe BlazePose", "ChromaDB RAG", "PPO coaching"] },
       { label: "Backend / Web3", items: ["Firebase", "Cloud Functions", "Ethereum Sepolia", "ERC-20"] },
+    ],
+    collaborators: [
+      { name: "Yancy Arguedo", role: "Collaborator", github: "crispychili" },
     ],
     links: [{ label: "AEROVIT.DEV", href: "https://aerovit.dev" }],
     gallery: [

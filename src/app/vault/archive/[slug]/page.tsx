@@ -8,6 +8,7 @@ import { CaseStudyGallery } from "@/components/ui/CaseStudyGallery";
 import { CaseStudyBackButton } from "@/components/ui/CaseStudyBackButton";
 import { CaseEnter } from "@/components/ui/CaseEnter";
 import { CaseStudyDownloads } from "@/components/ui/CaseStudyDownloads";
+import { CaseStudyCollaborators } from "@/components/ui/CaseStudyCollaborators";
 
 export async function generateStaticParams() {
   return CASE_STUDIES.map((c) => ({ slug: c.slug }));
@@ -153,6 +154,12 @@ export default async function CaseStudyPage({
                   </ul>
                 </div>
               ))}
+
+              {cs.collaborators && cs.collaborators.length > 0 && (
+                <div className="mt-6 border-t border-periwinkle/15 pt-6">
+                  <CaseStudyCollaborators collaborators={cs.collaborators} />
+                </div>
+              )}
             </div>
 
             {cs.nda && (

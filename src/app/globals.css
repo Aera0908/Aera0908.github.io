@@ -432,4 +432,40 @@ body {
   animation: eq-dance-4 0.9s ease-in-out infinite 0.1s;
 }
 
+/* ---------- collaborator social tooltip pop animation ---------- */
+@keyframes tooltip-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateX(10px);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.025) translateX(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+@keyframes tooltip-pop-out {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9) translateX(8px);
+  }
+}
+
+.animate-tooltip-in {
+  animation: tooltip-pop-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: right center;
+}
+
+.animate-tooltip-out {
+  animation: tooltip-pop-out 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: right center;
+}
 
