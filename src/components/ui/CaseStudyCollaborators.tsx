@@ -79,6 +79,42 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
     collaborator.avatar ||
     (cleanUsername ? `https://github.com/${cleanUsername}.png?size=160` : "");
 
+  const forceClose = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setIsOpen(false);
+    setIsClosing(false);
+  }, []);
+
+  // When redirecting or switching tabs, immediately dismiss the tooltip
+  useEffect(() => {
+    const handleWindowBlur = () => {
+      forceClose();
+    };
+    window.addEventListener("blur", handleWindowBlur);
+    return () => {
+      window.removeEventListener("blur", handleWindowBlur);
+    };
+  }, [forceClose]);
+
+  // Escape key closes tooltip
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        forceClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, forceClose]);
+
   // Load profile data and optionally refresh in background
   useEffect(() => {
     if (!cleanUsername) return;
@@ -154,6 +190,13 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
     }, 220);
   }, []);
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    fx.click();
+    forceClose();
+    // Blur to drop focus state so returning to the tab doesn't re-trigger the tooltip
+    e.currentTarget.blur();
+  };
+
   const displayName = profile?.name || collaborator.name || `@${cleanUsername}`;
   const displayBio = profile?.bio || collaborator.role;
 
@@ -170,7 +213,7 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
         href={profileUrl}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={fx.click}
+        onClick={handleClick}
         className="group flex items-center gap-3 border border-periwinkle/15 bg-world/50 p-2.5 transition-all duration-300 ease-out hover:border-iris-bright hover:bg-world-3/60 hover:-translate-y-0.5 focus-visible:border-signal outline-none"
         title={`View ${collaborator.name} (@${cleanUsername}) on GitHub`}
       >
@@ -268,7 +311,7 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
                   href={profileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={fx.click}
+                  onClick={handleClick}
                   className="group/btn flex items-center gap-1 border border-periwinkle/25 bg-world-2 px-2.5 py-1 text-[10px] font-mono text-periwinkle/90 transition-all duration-200 hover:border-iris-bright hover:bg-iris/15 hover:text-paper cursor-pointer"
                 >
                   <span>Profile</span>
