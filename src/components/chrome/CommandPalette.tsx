@@ -23,56 +23,44 @@ interface CommandItem {
   }) => void;
 }
 
-export function CommandPalette() {
-  const [open, setOpen] = useState(false);
+function CommandPaletteModal({
+  onClose,
+  fx,
+  toggleMute,
+}: {
+  onClose: () => void;
+  fx: ReturnType<typeof useHudAudio>["fx"];
+  toggleMute: () => void;
+}) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
   const router = useRouter();
-  const { fx, toggleMute } = useHudAudio();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Global shortcut listener: Cmd+K or Ctrl+K or custom event
+  // Lock body scroll and focus input when palette opens
+  useEffect(() => {
+    lockScroll();
+    const t = setTimeout(() => inputRef.current?.focus(), 20);
+    return () => {
+      clearTimeout(t);
+      unlockScroll();
+    };
+  }, []);
+
+  // Escape key closes palette
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setOpen((prev) => {
-          if (!prev) fx.click();
-          return !prev;
-        });
-      } else if (e.key === "Escape" && open) {
+      if (e.key === "Escape") {
         e.preventDefault();
         fx.click();
-        setOpen(false);
+        onClose();
       }
     };
-
-    const handleCustomOpen = () => {
-      fx.click();
-      setOpen(true);
-    };
-
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("open-command-palette", handleCustomOpen);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("open-command-palette", handleCustomOpen);
-    };
-  }, [open, fx]);
-
-  // Lock body scroll when palette is open
-  useEffect(() => {
-    if (open) {
-      lockScroll();
-      setQuery("");
-      setSelectedIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 20);
-    } else {
-      unlockScroll();
-    }
-  }, [open]);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [fx, onClose]);
 
   // Build command dictionary
   const commands: CommandItem[] = useMemo(() => {
@@ -305,7 +293,7 @@ export function CommandPalette() {
         targetCmd.perform({
           router,
           fx,
-          close: () => setOpen(false),
+          close: onClose,
           showToast: (msg) => {
             setToast(msg);
             setTimeout(() => setToast(null), 2500);
@@ -326,8 +314,6 @@ export function CommandPalette() {
     }
   }, [selectedIndex]);
 
-  if (!open) return null;
-
   return (
     <div
       className="fixed inset-0 z-[110] flex items-start justify-center pt-[12vh] md:pt-[15vh] px-4 font-mono select-none animate-fade-in"
@@ -340,7 +326,7 @@ export function CommandPalette() {
         className="absolute inset-0 bg-[#050507]/85 backdrop-blur-md"
         onClick={() => {
           fx.click();
-          setOpen(false);
+          onClose();
         }}
       />
 
@@ -359,7 +345,7 @@ export function CommandPalette() {
             <button
               onClick={() => {
                 fx.click();
-                setOpen(false);
+                onClose();
               }}
               className="text-signal hover:text-white transition-colors cursor-pointer"
             >
@@ -414,7 +400,7 @@ export function CommandPalette() {
                     cmd.perform({
                       router,
                       fx,
-                      close: () => setOpen(false),
+                      close: onClose,
                       showToast: (msg) => {
                         setToast(msg);
                         setTimeout(() => setToast(null), 2500);
@@ -496,5 +482,45 @@ export function CommandPalette() {
         </div>
       </div>
     </div>
+  );
+}
+
+export function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const { fx, toggleMute } = useHudAudio();
+
+  // Global shortcut listener: Cmd+K or Ctrl+K or custom event
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setOpen((prev) => {
+          if (!prev) fx.click();
+          return !prev;
+        });
+      }
+    };
+
+    const handleCustomOpen = () => {
+      fx.click();
+      setOpen(true);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("open-command-palette", handleCustomOpen);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("open-command-palette", handleCustomOpen);
+    };
+  }, [fx]);
+
+  if (!open) return null;
+
+  return (
+    <CommandPaletteModal
+      onClose={() => setOpen(false)}
+      fx={fx}
+      toggleMute={toggleMute}
+    />
   );
 }

@@ -23,7 +23,7 @@ export function Navbar() {
   // persists across client navigations, so an early return before a hook
   // would desync the hook order and crash React.
   const pathname = usePathname();
-  const { booted, muted, activePulse, boot, toggleMute, fx } = useHudAudio();
+  const { booted, muted, boot, toggleMute, fx } = useHudAudio();
 
   // hidden on the archive route and case files (they carry their own header)
   const hidden = pathname?.startsWith("/vault/archive");

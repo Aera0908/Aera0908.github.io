@@ -328,12 +328,17 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     }
   };
 
+  const proceedRef = useRef(proceed);
+  useEffect(() => {
+    proceedRef.current = proceed;
+  });
+
   /* Listen for any keypress (Enter, Space, etc.) to proceed */
   useEffect(() => {
     if (phase !== "waiting") return;
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      proceed();
+      proceedRef.current();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

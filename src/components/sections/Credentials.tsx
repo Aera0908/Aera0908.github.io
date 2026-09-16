@@ -68,6 +68,14 @@ const CERTIFICATES: Certificate[] = [
     featured: true,
   },
   {
+    name: "DIGITAL & ANALOG IC LAYOUT",
+    issuer: "XINYX LABS",
+    detail: "Block-level, digital full-custom, and analog layout using industry-standard EDA tools (396 tool hours).",
+    url: "/CERTIFICATE-PREVIEWS/YNTE-XINYX%20IC%20LAYOUT%20CERTIFICATE.pdf",
+    downloadName: "YNTE-XINYX-IC-LAYOUT-CERTIFICATE.pdf",
+    featured: true,
+  },
+  {
     name: "BLOCKCHAIN4YOUTH",
     issuer: "BITGET",
     detail: "Certification in blockchain technology, smart contract development, and Web3 fundamentals.",

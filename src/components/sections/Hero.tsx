@@ -110,14 +110,6 @@ export function Hero({
       };
     };
 
-    const getWrapCollapsedBounds = () => {
-      return {
-        left: "0%",
-        width: "100%",
-        top: "15%",
-        height: "70%",
-      };
-    };
 
     // Helper to position the absolute card exactly over its layout placeholder
     const matchPlaceholder = () => {
@@ -388,7 +380,7 @@ export function Hero({
       ro.disconnect();
       mm.revert();
     };
-  }, [entered]);
+  }, [entered, isBaseRoute]);
 
   /* mouse parallax on the left column block — damped, ±10px */
   useEffect(() => {

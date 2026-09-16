@@ -109,6 +109,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                         resolves we show the bare play HUD over black rather
                         than a broken-image icon. */}
                     {thumb && (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={thumb}
                         alt={item.caption}
@@ -130,6 +131,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                     </div>
                   </>
                 ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={item.src}
                     alt={item.caption}
@@ -207,6 +209,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                   className="h-full w-full object-contain"
                 />
               ) : (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={activeItem.src}
                   alt={activeItem.caption}

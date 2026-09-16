@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import type { Collaborator } from "@/lib/case-studies";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 
@@ -60,7 +60,7 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [profile, setProfile] = useState<GitHubProfileData | null>(null);
+  const [liveProfile, setLiveProfile] = useState<GitHubProfileData | null>(null);
 
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -115,19 +115,22 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, forceClose]);
 
-  // Load profile data and optionally refresh in background
-  useEffect(() => {
-    if (!cleanUsername) return;
-
-    if (profileCache[cleanUsername]) {
-      setProfile(profileCache[cleanUsername]);
-    } else {
-      setProfile({
+  const initialProfile = useMemo(() => {
+    if (!cleanUsername) return null;
+    return (
+      profileCache[cleanUsername] ?? {
         name: collaborator.name,
         login: cleanUsername,
         bio: collaborator.role,
-      });
-    }
+      }
+    );
+  }, [cleanUsername, collaborator.name, collaborator.role]);
+
+  const profile = liveProfile || initialProfile;
+
+  // Load profile data and optionally refresh in background
+  useEffect(() => {
+    if (!cleanUsername) return;
 
     let isMounted = true;
     fetch(`https://api.github.com/users/${cleanUsername}`)
@@ -148,7 +151,7 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
           joinedYear: data.created_at ? new Date(data.created_at).getFullYear().toString() : undefined,
         };
         profileCache[cleanUsername] = updated;
-        setProfile(updated);
+        setLiveProfile(updated);
       })
       .catch(() => {
         // Retain preset cache
