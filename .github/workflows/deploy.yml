@@ -4,6 +4,9 @@ on:
   # deploy on every push to main
   push:
     branches: [main]
+  # auto-refresh Search Console stats weekly on Mondays
+  schedule:
+    - cron: '0 0 * * 1'
   # ...and allow manual runs from the Actions tab
   workflow_dispatch:
 
@@ -39,6 +42,11 @@ jobs:
         # reconciles it on the runner. --ignore-scripts skips native
         # postinstalls (sharp, unrs-resolver) the static build never needs.
         run: npm install --no-audit --no-fund --ignore-scripts
+
+      - name: Fetch Search Console analytics
+        run: node scripts/fetch-gsc.mjs
+        env:
+          GSC_CREDENTIALS: ${{ secrets.GSC_CREDENTIALS }}
 
       - name: Build static export
         run: npm run build

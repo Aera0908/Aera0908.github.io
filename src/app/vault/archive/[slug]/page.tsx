@@ -9,6 +9,7 @@ import { CaseStudyBackButton } from "@/components/ui/CaseStudyBackButton";
 import { CaseEnter } from "@/components/ui/CaseEnter";
 import { CaseStudyDownloads } from "@/components/ui/CaseStudyDownloads";
 import { CaseStudyCollaborators } from "@/components/ui/CaseStudyCollaborators";
+import { SearchConsoleTelemetry } from "@/components/ui/SearchConsoleTelemetry";
 
 export async function generateStaticParams() {
   return CASE_STUDIES.map((c) => ({ slug: c.slug }));
@@ -131,6 +132,9 @@ export default async function CaseStudyPage({
 
             {/* Diagrams section */}
             <ProjectDiagramsSection slug={cs.slug} />
+
+            {/* Google Search Console Telemetry */}
+            {cs.slug === "stickout" && <SearchConsoleTelemetry />}
 
             {/* Gallery Section */}
             {cs.gallery && cs.gallery.length > 0 && (

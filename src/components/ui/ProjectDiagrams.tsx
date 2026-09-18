@@ -1029,7 +1029,7 @@ export const ProjectDiagramsSection = ({ slug }: { slug: string }) => {
   if (!diagrams || diagrams.length === 0) return null;
 
   return (
-    <div className="mt-12 space-y-10">
+    <div className="mb-10 space-y-10">
       {diagrams.map((d) => (
         <ProjectDiagram key={d.id} id={d.id} caption={d.caption} />
       ))}

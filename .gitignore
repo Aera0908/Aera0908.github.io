@@ -49,3 +49,9 @@ AGENTS.md
 IMAGE_SIZING_GUIDE.md
 graphify-out/
 
+# secrets & keys
+gsc-key.json
+*service-account*.json
+portfolio-analytics-*.json
+*.key.json
+.env*.local
