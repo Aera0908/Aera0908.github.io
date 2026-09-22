@@ -316,7 +316,7 @@ function CommandPaletteModal({
 
   return (
     <div
-      className="fixed inset-0 z-[110] flex items-start justify-center pt-[12vh] md:pt-[15vh] px-4 font-mono select-none animate-fade-in"
+      className="fixed inset-0 z-[110] flex items-start justify-center pt-[8vh] md:pt-[15vh] px-3 sm:px-4 font-mono select-none animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-label="Cyberpunk Command Palette"
@@ -334,20 +334,21 @@ function CommandPaletteModal({
       <div className="relative w-full max-w-2xl bg-[#0c0d12] border-2 border-signal/40 shadow-[0_25px_60px_rgba(0,0,0,0.8),0_0_30px_rgba(252,238,10,0.15)] flex flex-col overflow-hidden rounded text-paper z-10">
         
         {/* Terminal Header Bar */}
-        <div className="flex items-center justify-between px-4 py-2.5 bg-[#12131a] border-b border-signal/20 text-[10px] tracking-widest text-signal font-bold uppercase">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-signal animate-ping" />
-            <span>SYS_NAV // COMMAND TERMINAL</span>
+        <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-2.5 bg-[#12131a] border-b border-signal/20 text-[9px] sm:text-[10px] tracking-widest text-signal font-bold uppercase">
+          <div className="flex items-center gap-2 truncate pr-2">
+            <span className="w-2 h-2 rounded-full bg-signal animate-ping shrink-0" />
+            <span className="truncate">SYS_NAV // COMMAND TERMINAL</span>
           </div>
-          <div className="flex items-center gap-3 text-periwinkle/60">
-            <span>[↑↓] NAVIGATE</span>
-            <span>[↵] SELECT</span>
+          <div className="flex items-center gap-2 sm:gap-3 text-periwinkle/60 shrink-0">
+            <span className="hidden sm:inline">[↑↓] NAVIGATE</span>
+            <span className="hidden sm:inline">[↵] SELECT</span>
             <button
               onClick={() => {
                 fx.click();
                 onClose();
               }}
-              className="text-signal hover:text-white transition-colors cursor-pointer"
+              className="text-signal hover:text-white transition-colors cursor-pointer px-1 py-0.5 rounded-xs"
+              aria-label="Close command palette"
             >
               [ESC]
             </button>

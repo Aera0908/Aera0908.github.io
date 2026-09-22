@@ -12,6 +12,7 @@ const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** boot log lines for professional portfolio initialization */
+/** boot log lines for professional portfolio initialization */
 const BOOT_LINES: Array<{ at: number; text: string; status?: string }> = [
   { at: 5, text: "$ boot portfolio.sys // v2.6.4", status: "OK" },
   { at: 15, text: "> mounting /dev/webgl3d ...........", status: "OK" },
@@ -23,6 +24,14 @@ const BOOT_LINES: Array<{ at: number; text: string; status?: string }> = [
   { at: 84, text: "> authenticating operator // @AERA0908", status: "GRANTED" },
   { at: 92, text: "> system ready // sector aera 384,400 KM", status: "NOMINAL" },
   { at: 98, text: "// ALL SYSTEMS OPERATIONAL: AWAITING USER", status: "READY" },
+];
+
+/** Streamlined milestones for mobile screens to eliminate crowding */
+const BOOT_LINES_MOBILE: Array<{ at: number; text: string; status?: string }> = [
+  { at: 10, text: "$ boot portfolio.sys // v2.6", status: "OK" },
+  { at: 35, text: "> mounting 3D graphics & shaders", status: "OK" },
+  { at: 65, text: "> loading engineering vault", status: "OK" },
+  { at: 92, text: "// ALL SYSTEMS OPERATIONAL", status: "READY" },
 ];
 
 /**
@@ -52,7 +61,9 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
   const [phase, setPhase] = useState<Phase>("loading");
   const [activeLineCount, setActiveLineCount] = useState(0);
+  const [activeMobileCount, setActiveMobileCount] = useState(0);
   const activeCountRef = useRef(0);
+  const activeMobileRef = useRef(0);
 
   useEffect(() => {
     if (phase !== "waiting") return;
@@ -96,6 +107,18 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         if (count !== activeCountRef.current) {
           activeCountRef.current = count;
           setActiveLineCount(count);
+        }
+
+        let mobileCount = 0;
+        BOOT_LINES_MOBILE.forEach((line) => {
+          if (proxy.v >= line.at) {
+            mobileCount++;
+          }
+        });
+
+        if (mobileCount !== activeMobileRef.current) {
+          activeMobileRef.current = mobileCount;
+          setActiveMobileCount(mobileCount);
         }
       },
       onComplete: () => {
@@ -386,7 +409,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         <div className="pointer-events-none absolute right-4 bottom-4 border-r-2 border-b-2 border-[#0d0d10] w-5 h-5 z-30" />
 
         {/* Top right Japanese vertical text + bar with Scramble Decode Animation */}
-        <div className="absolute top-6 right-6 md:top-10 md:right-12 flex items-start gap-3 z-30 pointer-events-none">
+        <div className="absolute top-6 right-6 md:top-10 md:right-12 hidden sm:flex items-start gap-3 z-30 pointer-events-none">
           <div className="font-mono text-[11px] tracking-[0.25em] font-bold uppercase [writing-mode:vertical-rl] flex items-center gap-1 text-[#0d0d10]">
             <JapaneseDecoder isEnglish={phase === "revealing" || phase === "ready"} />
           </div>
@@ -407,16 +430,16 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
             skipIntro();
           }}
           aria-label="Skip intro and go straight to the site"
-          className="absolute left-6 top-5 z-30 cursor-pointer font-mono text-[0.625rem] font-bold uppercase tracking-[0.14em] text-[#0d0d10]/80 transition-colors hover:text-[#0d0d10] focus-visible:text-[#0d0d10] md:left-12 md:top-8"
+          className="absolute left-4 top-4 md:left-12 md:top-8 z-30 cursor-pointer font-mono text-[0.625rem] font-bold uppercase tracking-[0.14em] text-[#0d0d10]/80 transition-colors hover:text-[#0d0d10] focus-visible:text-[#0d0d10] px-2 py-0.5 border border-[#0d0d10]/20 bg-[#e6e200]/60 rounded-xs"
         >
           SKIP INTRO →
         </button>
 
-        {/* Click anywhere to proceed prompt with cyan blinking typing animation */}
+        {/* Click/tap anywhere to proceed prompt */}
         {phase === "waiting" && (
           <div
             ref={promptRef}
-            className="absolute inset-0 flex flex-col items-center justify-center z-20 select-none px-6"
+            className="absolute inset-0 flex flex-col items-center justify-center z-20 select-none px-4 md:px-6"
             style={{ opacity: 0 }}
           >
             <ProceedPrompt onProceed={proceed} />
@@ -424,18 +447,18 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         )}
 
         {/* Boot Chrome & Poster Layout */}
-        <div className="boot-chrome pointer-events-none absolute inset-0 flex flex-col justify-between p-6 md:p-12 z-20">
+        <div className={`boot-chrome pointer-events-none absolute inset-0 flex flex-col justify-between p-4 sm:p-6 md:p-12 z-20 transition-opacity duration-300 ${phase === "waiting" ? "opacity-25 md:opacity-100" : "opacity-100"}`}>
           {/* Top bar info */}
-          <div className="flex items-baseline justify-between border-t-2 border-[#0d0d10]/40 pt-2 max-w-sm">
-            <span className="t-micro text-[#0d0d10] font-bold">
-              GITHUB.COM/AERA0908 // SOFTWARE ENGINEER & SYSTEM ARCHITECT
+          <div className="flex items-baseline justify-between border-t-2 border-[#0d0d10]/40 pt-2 max-w-xs md:max-w-sm mt-8 md:mt-0">
+            <span className="t-micro text-[#0d0d10] font-bold tracking-wider">
+              GITHUB.COM/AERA0908 // SOFTWARE & SYSTEMS
             </span>
           </div>
 
           {/* Bottom area */}
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 w-full mt-auto">
-            {/* Lower Left content (terminal logs matching reference picture) */}
-            <div className="flex flex-col items-start font-mono text-[0.75rem] leading-[1.7] tracking-[0.08em] text-[#0d0d10] font-bold max-w-lg">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 md:gap-6 w-full mt-auto">
+            {/* Desktop Terminal Logs */}
+            <div className="hidden md:flex flex-col items-start font-mono text-[0.75rem] leading-[1.7] tracking-[0.08em] text-[#0d0d10] font-bold max-w-lg">
               {BOOT_LINES.map((line, i) => (
                 <TypingLine
                   key={line.at}
@@ -471,16 +494,33 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
               </div>
             </div>
 
+            {/* Mobile Streamlined Terminal Logs */}
+            <div className="flex md:hidden flex-col items-start font-mono text-[0.7rem] leading-[1.6] tracking-[0.06em] text-[#0d0d10] font-bold w-full">
+              {BOOT_LINES_MOBILE.map((line, i) => (
+                <TypingLine
+                  key={line.at}
+                  text={line.text}
+                  status={line.status}
+                  active={activeMobileCount > i}
+                  isComplete={phase === "waiting" || phase === "revealing" || phase === "ready"}
+                />
+              ))}
+
+              <div className="mt-2 font-mono text-[10px] font-black tracking-widest text-[#0d0d10] flex items-center gap-1.5">
+                <span className="animate-pulse">❯❯</span> READY // SECTOR AERA
+              </div>
+            </div>
+
             {/* Bottom Right: Cross arrow directional box icon + progress bar */}
-            <div className="flex flex-col items-end gap-3 self-end">
-              <div className="w-12 h-12 border-2 border-[#0d0d10] flex items-center justify-center p-1.5 relative bg-[#e6e200]">
+            <div className="flex flex-col items-end gap-2 md:gap-3 w-full md:w-auto self-end">
+              <div className="hidden md:flex w-12 h-12 border-2 border-[#0d0d10] items-center justify-center p-1.5 relative bg-[#e6e200]">
                 <svg viewBox="0 0 24 24" className="w-full h-full text-[#0d0d10] fill-none stroke-current stroke-[2.2]">
                   <path d="M4 4l16 16M20 4L4 20" />
                   <path d="M4 8V4h4M16 4h4v4M4 16v4h4M20 16v4h-4" />
                 </svg>
               </div>
 
-              <div className="flex flex-col gap-1 w-48 border-t-2 border-[#0d0d10]/40 pt-2">
+              <div className="flex flex-col gap-1 w-full md:w-48 border-t-2 border-[#0d0d10]/40 pt-2">
                 <div className="h-1.5 w-full bg-[#0d0d10]/20 rounded-full overflow-hidden">
                   <div
                     ref={progressBarRef}
@@ -526,7 +566,18 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
 /** Click anywhere to proceed prompt with cyan typing animation & blinking cyan block cursor */
 function ProceedPrompt({ onProceed }: { onProceed: () => void }) {
-  const fullText = "CLICK ANYWHERE TO PROCEED";
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 767px)").matches : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const fullText = isMobile ? "TAP TO PROCEED" : "CLICK ANYWHERE TO PROCEED";
   const [displayedText, setDisplayedText] = useState("");
 
   useEffect(() => {
@@ -537,7 +588,7 @@ function ProceedPrompt({ onProceed }: { onProceed: () => void }) {
       if (currentIdx >= fullText.length) {
         clearInterval(interval);
       }
-    }, 40);
+    }, 35);
 
     return () => clearInterval(interval);
   }, [fullText]);
@@ -546,19 +597,19 @@ function ProceedPrompt({ onProceed }: { onProceed: () => void }) {
     <button
       type="button"
       onClick={onProceed}
-      aria-label="Click anywhere to proceed"
-      className="group flex flex-col items-center gap-3 p-6 text-center cursor-pointer select-none focus-visible:outline-none"
+      aria-label="Proceed to portfolio"
+      className="group flex flex-col items-center gap-2.5 md:gap-3 p-4 md:p-6 text-center cursor-pointer select-none focus-visible:outline-none"
     >
-      <div className="flex items-center justify-center gap-2 font-mono text-xl sm:text-2xl md:text-4xl font-black uppercase tracking-[0.12em] text-[#0d0d10] group-hover:scale-105 transition-transform duration-200">
+      <div className="flex items-center justify-center gap-1.5 md:gap-2 font-mono text-xl sm:text-2xl md:text-4xl font-black uppercase tracking-[0.1em] md:tracking-[0.12em] text-[#0d0d10] group-hover:scale-105 transition-transform duration-200">
         <span className="text-[#0d0d10]/60">❯</span>
         <span>{displayedText}</span>
         <span
-          className="inline-block w-3.5 h-6 sm:w-4 sm:h-7 md:w-5 md:h-9 bg-[#0d0d10] opacity-80 animate-pulse ml-0.5"
+          className="inline-block w-3 h-5 sm:w-4 sm:h-7 md:w-5 md:h-9 bg-[#0d0d10] opacity-80 animate-pulse ml-0.5"
           aria-hidden="true"
         />
       </div>
-      <span className="font-mono text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em] text-[#0d0d10]/75">
-        [ SYSTEM READY // CLICK ANYWHERE OR PRESS ANY KEY ]
+      <span className="font-mono text-[9px] sm:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.25em] text-[#0d0d10]/75">
+        [ SYSTEM READY // TAP ANYWHERE TO ENTER ]
       </span>
     </button>
   );

@@ -517,19 +517,58 @@ export function useSectionSnap({
       }
     };
 
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    window.addEventListener("keydown", onKeyDown, { capture: true });
-    window.addEventListener("touchstart", onTouchStart, { passive: true, capture: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true, capture: true });
-    window.addEventListener("aera-snap-jump", onJumpEvent as EventListener);
+    const isMobileQuery = window.matchMedia("(max-width: 767px)");
+    let isMobile = isMobileQuery.matches;
 
-    return () => {
+    const attachDesktopListeners = () => {
+      window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+      window.addEventListener("keydown", onKeyDown, { capture: true });
+      window.addEventListener("touchstart", onTouchStart, { passive: true, capture: true });
+      window.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
+      window.addEventListener("touchend", onTouchEnd, { passive: true, capture: true });
+    };
+
+    const removeDesktopListeners = () => {
       window.removeEventListener("wheel", onWheel, { capture: true } as EventListenerOptions);
       window.removeEventListener("keydown", onKeyDown, { capture: true } as EventListenerOptions);
       window.removeEventListener("touchstart", onTouchStart, { capture: true } as EventListenerOptions);
       window.removeEventListener("touchmove", onTouchMove, { capture: true } as EventListenerOptions);
       window.removeEventListener("touchend", onTouchEnd, { capture: true } as EventListenerOptions);
+    };
+
+    if (!isMobile) {
+      attachDesktopListeners();
+    }
+
+    const onMediaChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        // Switched to mobile -> detach snapping
+        isMobile = true;
+        removeDesktopListeners();
+      } else {
+        // Switched to desktop -> attach snapping
+        isMobile = false;
+        attachDesktopListeners();
+      }
+    };
+
+    if (isMobileQuery.addEventListener) {
+      isMobileQuery.addEventListener("change", onMediaChange);
+    } else {
+      isMobileQuery.addListener(onMediaChange);
+    }
+
+    window.addEventListener("aera-snap-jump", onJumpEvent as EventListener);
+
+    return () => {
+      if (!isMobile) {
+        removeDesktopListeners();
+      }
+      if (isMobileQuery.removeEventListener) {
+        isMobileQuery.removeEventListener("change", onMediaChange);
+      } else {
+        isMobileQuery.removeListener(onMediaChange);
+      }
       window.removeEventListener("aera-snap-jump", onJumpEvent as EventListener);
       if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
     };

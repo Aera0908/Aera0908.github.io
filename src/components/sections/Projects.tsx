@@ -161,7 +161,7 @@ export function Projects() {
     <section
       id="vault"
       ref={rootRef}
-      className="relative z-10 overflow-hidden bg-world px-6 min-h-screen md:h-screen w-screen flex flex-col justify-center pt-24 pb-10 md:pb-4 md:px-16"
+      className="relative z-10 overflow-hidden bg-world px-5 sm:px-6 min-h-screen md:h-screen w-full max-w-full flex flex-col justify-center pt-24 pb-10 md:pb-4 md:px-16"
     >
       <CyberLines />
 

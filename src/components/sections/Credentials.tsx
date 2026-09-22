@@ -330,7 +330,7 @@ export function Credentials() {
     <section
       id="credentials"
       ref={rootRef}
-      className="relative z-10 overflow-hidden border-t border-periwinkle/10 bg-world min-h-screen md:h-screen w-screen flex flex-col justify-center px-6 pt-20 pb-8 md:pb-4 md:px-16"
+      className="relative z-10 overflow-hidden border-t border-periwinkle/10 bg-world min-h-screen md:h-screen w-full max-w-full flex flex-col justify-center px-4 sm:px-6 pt-20 pb-8 md:pb-4 md:px-16"
     >
       <CyberLines flip />
 

@@ -104,7 +104,9 @@ export function Experience({ entered }: { entered: boolean }) {
         isDesktop: "(min-width: 768px)",
         isMobile: "(max-width: 767px)",
       },
-      () => {
+      (context) => {
+        const { isMobile } = context.conditions as { isMobile: boolean; isDesktop: boolean };
+
         // Horizontal travel: translate the track until the LAST card's center
         // sits on the viewport center. rect.left minus the track's current x
         // gives the untransformed position (the flip rotation is origin-left,
@@ -161,7 +163,7 @@ export function Experience({ entered }: { entered: boolean }) {
             id: "journey-pin",
             trigger: section,
             start: "top top",
-            end: () => `+=${getScrollWidth() + 1600}`, // dynamic duration
+            end: () => `+=${getScrollWidth() + (isMobile ? 500 : 1600)}`, // dynamic duration
             pin: true,
             scrub: true,
             invalidateOnRefresh: true,
@@ -199,12 +201,12 @@ export function Experience({ entered }: { entered: boolean }) {
           const naturalLeft = card.getBoundingClientRect().left - trackX0;
           const reach = isLast
             ? travel
-            : Math.max(0, naturalLeft - window.innerWidth * 0.58);
+            : Math.max(0, naturalLeft - window.innerWidth * (isMobile ? 0.65 : 0.58));
           const startTime = (Math.min(reach, travel) / travel) * 3.0;
           tl.fromTo(card, {
             transformPerspective: 1200,
-            rotationY: -75,
-            scale: 0.86,
+            rotationY: isMobile ? -35 : -75,
+            scale: isMobile ? 0.92 : 0.86,
             opacity: 0,
             transformOrigin: "left center",
           }, {
@@ -236,7 +238,7 @@ export function Experience({ entered }: { entered: boolean }) {
     <section
       id="journey"
       ref={rootRef}
-      className="relative z-10 h-screen w-screen overflow-hidden flex flex-col justify-center bg-transparent px-6 md:px-16"
+      className="relative z-10 h-screen w-full max-w-full overflow-x-hidden flex flex-col justify-center bg-transparent px-5 sm:px-6 md:px-16"
     >
       {/* drifting mono coordinates */}
       <span
@@ -256,7 +258,7 @@ export function Experience({ entered }: { entered: boolean }) {
 
       <div
         ref={containerRef}
-        className="flex flex-row flex-nowrap gap-[8vw] pl-[58vw] pr-[50vw] mt-8 md:mt-12 w-max items-center"
+        className="flex flex-row flex-nowrap gap-[6vw] md:gap-[8vw] pl-[58vw] pr-[50vw] mt-6 md:mt-12 w-max items-center"
       >
         {ENTRIES.map((e) => (
           <article
@@ -266,7 +268,7 @@ export function Experience({ entered }: { entered: boolean }) {
               ev.currentTarget.style.setProperty("--mouse-x", `${ev.clientX - rect.left}px`);
               ev.currentTarget.style.setProperty("--mouse-y", `${ev.clientY - rect.top}px`);
             }}
-            className="xp-card group/card clip-bevel-br relative w-[80vw] max-w-[500px] flex-shrink-0 bg-paper p-6 text-ink md:p-12 overflow-hidden shadow-xl"
+            className="xp-card group/card clip-bevel-br relative w-[85vw] max-w-[420px] md:max-w-[500px] flex-shrink-0 bg-paper p-5 sm:p-6 text-ink md:p-12 overflow-hidden shadow-xl"
           >
             {/* Cyberpunk radial spotlight glow */}
             <div

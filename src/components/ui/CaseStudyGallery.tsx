@@ -35,35 +35,43 @@ function thumbFor(item: GalleryItem): string | undefined {
 }
 
 export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; slug: string }) {
-  const [activeItem, setActiveItem] = useState<GalleryItem | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const activeItem = activeIndex !== null ? gallery[activeIndex] : null;
   const { fx } = useHudAudio();
   /** the tile that opened the lightbox, so focus can go back to it on close */
   const openerRef = useRef<HTMLElement | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const touchStartXRef = useRef<number | null>(null);
 
-  const handleOpen = (item: GalleryItem, opener?: HTMLElement | null) => {
+  const handleOpen = (index: number, opener?: HTMLElement | null) => {
     openerRef.current = opener ?? null;
-    setActiveItem(item);
+    setActiveIndex(index);
     fx.click();
   };
 
   const handleClose = () => {
-    setActiveItem(null);
+    setActiveIndex(null);
     fx.deny();
     openerRef.current?.focus();
   };
 
-  /* Escape closes, and the page behind must not scroll while it is open.
-     `stopPropagation` matters: the archive listing binds Escape on window to
-     navigate back to /vault, so without it one keypress would both close this
-     and leave the page. */
+  /* Escape closes, arrows navigate, and the page behind must not scroll while it is open. */
   useEffect(() => {
-    if (!activeItem) return;
+    if (activeIndex === null) return;
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      e.stopPropagation();
-      handleClose();
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        handleClose();
+      } else if (e.key === "ArrowLeft") {
+        e.stopPropagation();
+        setActiveIndex((prev) => (prev !== null ? (prev - 1 + gallery.length) % gallery.length : null));
+        fx.blip();
+      } else if (e.key === "ArrowRight") {
+        e.stopPropagation();
+        setActiveIndex((prev) => (prev !== null ? (prev + 1) % gallery.length : null));
+        fx.blip();
+      }
     };
     window.addEventListener("keydown", onKey, { capture: true });
 
@@ -75,7 +83,24 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
       unlockScroll();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeItem]);
+  }, [activeIndex, gallery.length]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const delta = touchStartXRef.current - e.changedTouches[0].clientX;
+    if (delta > 45) {
+      setActiveIndex((prev) => (prev !== null ? (prev + 1) % gallery.length : null));
+      fx.blip();
+    } else if (delta < -45) {
+      setActiveIndex((prev) => (prev !== null ? (prev - 1 + gallery.length) % gallery.length : null));
+      fx.blip();
+    }
+    touchStartXRef.current = null;
+  };
 
   return (
     <>
@@ -91,11 +116,11 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
               tabIndex={0}
               aria-haspopup="dialog"
               aria-label={`Open ${item.caption}`}
-              onClick={(e) => handleOpen(item, e.currentTarget)}
+              onClick={(e) => handleOpen(idx, e.currentTarget)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  handleOpen(item, e.currentTarget);
+                  handleOpen(idx, e.currentTarget);
                 }
               }}
               className="group relative overflow-hidden border border-periwinkle/15 bg-world-2 p-3 transition-colors duration-500 hover:border-iris-bright/40 cursor-pointer clip-tab-tl focus-visible:outline-2"
@@ -103,11 +128,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/40 flex items-center justify-center">
                 {item.type === "video" || item.type === "youtube" ? (
                   <>
-                    {/* Always a still in the grid — never the media itself.
-                        An autoplaying <video> here pulled the whole demo file
-                        (50–64 MB) on page load, before any click. If no still
-                        resolves we show the bare play HUD over black rather
-                        than a broken-image icon. */}
+                    {/* Always a still in the grid — never the media itself. */}
                     {thumb && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -151,9 +172,9 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
         </div>
       </div>
 
-      {/* Modal Lightbox — portaled to <body> and above the sticky download bar
-          (z-60), which previously painted over this and stayed clickable. */}
+      {/* Modal Lightbox — full-screen edge-to-edge on mobile, cyber card frame on desktop */}
       {activeItem &&
+        activeIndex !== null &&
         createPortal(
         <div
           ref={dialogRef}
@@ -162,42 +183,54 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
           aria-label={activeItem.caption}
           tabIndex={-1}
           onClick={handleClose}
-          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 p-4 backdrop-blur-md transition-opacity duration-300 cursor-zoom-out focus:outline-none"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/98 md:bg-black/95 p-0 md:p-4 backdrop-blur-md transition-opacity duration-300 cursor-zoom-out focus:outline-none select-none"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-5xl overflow-hidden border border-periwinkle/25 bg-world p-4 shadow-[0_0_30px_rgba(0,0,0,0.8)] clip-tab-tl md:p-6 cursor-default animate-modal-enter"
+            className="relative w-full h-[100dvh] md:h-auto md:max-w-5xl flex flex-col justify-between overflow-hidden border-0 md:border border-periwinkle/25 bg-black md:bg-world p-3 md:p-6 shadow-none md:shadow-[0_0_30px_rgba(0,0,0,0.8)] clip-none md:clip-tab-tl cursor-default animate-modal-enter"
           >
-            {/* HUD border line-work inside modal */}
-            <CyberLines tone="light" />
-            
-            {/* Close button */}
-            <button
-              onClick={handleClose}
-              className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-sm border border-periwinkle/20 bg-world-2 text-periwinkle transition-all duration-300 hover:border-iris-bright hover:text-iris-bright hover:shadow-[0_0_10px_rgba(156,66,245,0.3)]"
-              aria-label="Close modal"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            {/* Modal header/meta */}
-            <div className="mb-4 flex justify-between pr-14 t-micro text-periwinkle/55 font-mono">
-              <span><span>● CASE FILE EVIDENCE // </span>{slug.toUpperCase()}</span>
-              <span className="text-iris-bright">{activeItem.type === "youtube" ? "YOUTUBE BROADCAST" : activeItem.type === "video" ? "VIDEO FEED" : "IMAGE STILL"}</span>
+            {/* HUD border line-work inside modal (desktop only) */}
+            <div className="hidden md:block">
+              <CyberLines tone="light" />
             </div>
 
-            {/* Media content */}
-            <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden bg-black border border-periwinkle/10">
+            {/* Modal header/meta */}
+            <div className="relative z-10 mb-2 flex items-center justify-between border-b border-periwinkle/15 pb-2.5 text-[10px] text-periwinkle/70 font-mono">
+              <div className="flex items-center gap-2 truncate pr-2">
+                <span className="h-2 w-2 rounded-full bg-signal shrink-0 animate-ping" />
+                <span className="font-bold text-paper truncate">EVIDENCE // {slug.toUpperCase()}</span>
+                <span className="text-iris-bright hidden sm:inline">[{activeItem.type === "youtube" ? "YOUTUBE BROADCAST" : activeItem.type === "video" ? "VIDEO FEED" : "IMAGE STILL"}]</span>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="font-bold text-iris-bright font-mono text-[10px]">
+                  {activeIndex + 1} / {gallery.length}
+                </span>
+                <button
+                  onClick={handleClose}
+                  className="flex h-8 w-8 items-center justify-center rounded-xs border border-periwinkle/30 bg-world-2 text-paper hover:border-iris-bright hover:text-iris-bright transition-colors cursor-pointer"
+                  aria-label="Close modal"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Media content — adaptive to maximize viewport on mobile without forced 16:9 */}
+            <div className="relative flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden bg-black/60 my-auto rounded-xs">
               {activeItem.type === "youtube" ? (
-                <iframe
-                  src={`${activeItem.src}?autoplay=1`}
-                  title={activeItem.caption}
-                  className="absolute inset-0 h-full w-full border-0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
+                <div className="relative aspect-video w-full max-h-[78dvh] overflow-hidden">
+                  <iframe
+                    src={`${activeItem.src}?autoplay=1`}
+                    title={activeItem.caption}
+                    className="absolute inset-0 h-full w-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
               ) : activeItem.type === "video" ? (
                 <video
                   src={activeItem.src}
@@ -206,21 +239,49 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                   autoPlay
                   playsInline
                   preload="auto"
-                  className="h-full w-full object-contain"
+                  className="max-h-[78dvh] max-w-full w-auto h-auto object-contain"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={activeItem.src}
                   alt={activeItem.caption}
-                  className="h-full w-full object-contain"
+                  className="max-h-[78dvh] max-w-full w-auto h-auto object-contain transition-transform duration-300"
                 />
+              )}
+
+              {/* Prev / Next buttons */}
+              {gallery.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fx.blip();
+                      setActiveIndex((prev) => (prev !== null ? (prev - 1 + gallery.length) % gallery.length : 0));
+                    }}
+                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 md:h-11 md:w-11 items-center justify-center rounded-full bg-black/70 border border-periwinkle/25 text-paper hover:border-iris-bright hover:text-iris-bright transition-all backdrop-blur-sm cursor-pointer"
+                    aria-label="Previous image"
+                  >
+                    <span className="text-lg md:text-xl font-bold">‹</span>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fx.blip();
+                      setActiveIndex((prev) => (prev !== null ? (prev + 1) % gallery.length : 0));
+                    }}
+                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 md:h-11 md:w-11 items-center justify-center rounded-full bg-black/70 border border-periwinkle/25 text-paper hover:border-iris-bright hover:text-iris-bright transition-all backdrop-blur-sm cursor-pointer"
+                    aria-label="Next image"
+                  >
+                    <span className="text-lg md:text-xl font-bold">›</span>
+                  </button>
+                </>
               )}
             </div>
 
             {/* Caption */}
-            <div className="mt-4 border-t border-periwinkle/10 pt-4">
-              <p className="t-micro leading-relaxed text-periwinkle/80 font-mono">
+            <div className="relative z-10 border-t border-periwinkle/15 pt-2.5 mt-2 bg-world/90 md:bg-transparent px-1">
+              <p className="t-micro leading-relaxed text-periwinkle/85 font-mono line-clamp-2 md:line-clamp-none">
                 ■ {activeItem.caption.toUpperCase()}
               </p>
             </div>

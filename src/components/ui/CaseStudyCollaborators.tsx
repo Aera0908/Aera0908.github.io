@@ -265,7 +265,7 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
           role="tooltip"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className={`absolute z-[80] w-[280px] sm:w-[310px] top-full mt-2 left-0 sm:left-auto sm:right-[calc(100%+14px)] sm:top-[-8px] pointer-events-auto ${
+          className={`absolute z-[80] w-[270px] max-w-[calc(100vw-3rem)] sm:w-[310px] top-full mt-2 left-0 sm:left-auto sm:right-[calc(100%+14px)] sm:top-[-8px] pointer-events-auto ${
             isClosing ? "animate-tooltip-out" : "animate-tooltip-in"
           }`}
         >

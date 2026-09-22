@@ -163,7 +163,7 @@ export function Hero({
             id: "hero-pin",
             trigger: root,
             start: "top top",
-            end: "+=2800",
+            end: isMobile ? "+=1400" : "+=2800",
             pin: true,
             scrub: true,
             invalidateOnRefresh: true,
@@ -589,10 +589,11 @@ export function Hero({
           ref={cardPlaceholderRef}
           className="hero-img-container w-full max-w-[290px] sm:max-w-sm md:max-w-md aspect-[3/4] max-md:max-h-[42vh] justify-self-center md:justify-self-end relative z-40 pointer-events-none"
         >
-          {/* GhostCue Vertical Announcement Banner: Clean, uncluttered Cyberpunk dossier tag */}
-          <div className="ghostcue-peek pointer-events-auto absolute md:bottom-0 md:top-auto md:right-full max-md:top-[-90px] max-md:left-0 max-md:right-auto opacity-0 select-none z-40">
+          {/* GhostCue Announcement Banner: Desktop vertical tag / Mobile sleek inline teaser pill */}
+          <div className="ghostcue-peek pointer-events-auto opacity-0 select-none z-40 md:absolute md:bottom-0 md:top-auto md:right-full max-md:relative max-md:mb-3 max-md:w-full">
+            {/* Desktop card view */}
             <div
-              className="group relative block w-32 md:w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-iris-bright transition-colors duration-300 shadow-2xl backdrop-blur-md cursor-pointer select-none text-left"
+              className="hidden md:block group relative w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-iris-bright transition-colors duration-300 shadow-2xl backdrop-blur-md cursor-pointer select-none text-left"
               style={{
                 clipPath: "polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px)",
               }}
@@ -642,6 +643,43 @@ export function Hero({
                     →
                   </span>
                 </div>
+              </Link>
+            </div>
+
+            {/* Mobile horizontal pill teaser view */}
+            <div className="block md:hidden w-full max-w-[290px] sm:max-w-sm mx-auto">
+              <Link
+                href="/vault/archive/ghostcue"
+                onClick={() => fx.click()}
+                className="group relative flex items-center justify-between p-2 rounded-sm border border-periwinkle/25 bg-world-2/95 shadow-lg backdrop-blur-md overflow-hidden"
+              >
+                <span className="absolute inset-0 bg-iris-bright translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
+                <div className="relative z-10 flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-xs border border-periwinkle/20 bg-world/90 p-1 shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/projects/ghostcue-icon.png"
+                      alt="GhostCue Icon"
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-display text-xs font-black uppercase tracking-tight text-paper group-hover:text-ink transition-colors">
+                        GHOSTCUE<span className="text-iris group-hover:text-ink">.</span>
+                      </span>
+                      <span className="font-mono text-[6.5px] font-black px-1 py-0.5 bg-signal text-[#0c0d12] leading-none rounded-xs tracking-wider uppercase group-hover:bg-ink group-hover:text-signal transition-colors">
+                        NEW
+                      </span>
+                    </div>
+                    <span className="font-mono text-[7.5px] text-periwinkle/60 group-hover:text-ink/80 transition-colors">
+                      AI Interview Copilot HUD
+                    </span>
+                  </div>
+                </div>
+                <span className="relative z-10 font-mono text-[8px] font-black text-signal group-hover:text-ink flex items-center gap-1 uppercase tracking-wider pr-1">
+                  VIEW →
+                </span>
               </Link>
             </div>
           </div>
