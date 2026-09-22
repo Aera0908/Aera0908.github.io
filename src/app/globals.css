@@ -172,6 +172,20 @@ body {
   );
 }
 
+@media (max-width: 767px) {
+  .clip-tab-tl {
+    border-radius: 6px;
+    clip-path: polygon(
+      0 0,
+      min(75px, 45%) 0,
+      min(92px, 56%) 12px,
+      100% 12px,
+      100% 100%,
+      0 100%
+    );
+  }
+}
+
 /* credentials: pixel staircase on the top-right */
 .clip-step-tr {
   border-radius: 10px;

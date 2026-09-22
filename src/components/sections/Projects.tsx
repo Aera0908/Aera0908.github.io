@@ -127,14 +127,15 @@ export function Projects() {
           scrollTrigger: { trigger: rootRef.current, start: "top 95%", once: true },
         });
 
-        reveal.from(".proj-card", {
-          y: 70,
+        const cardsSelector = isDesktop ? ".group\\/vault .proj-card" : ".vault-mobile-grid .proj-card";
+        reveal.from(cardsSelector, {
+          y: isDesktop ? 70 : 35,
           opacity: 0,
-          duration: 0.6,
+          duration: 0.55,
           ease: "power2.out",
-          stagger: 0.06,
+          stagger: 0.05,
           onComplete: () => {
-            gsap.set(".proj-card", { clearProps: "all" });
+            gsap.set(cardsSelector, { clearProps: "all" });
           },
         });
 
@@ -161,7 +162,7 @@ export function Projects() {
     <section
       id="vault"
       ref={rootRef}
-      className="relative z-10 overflow-hidden bg-world px-5 sm:px-6 min-h-screen md:h-screen w-full max-w-full flex flex-col justify-center pt-24 pb-10 md:pb-4 md:px-16"
+      className="relative z-10 overflow-hidden bg-world px-4 sm:px-6 min-h-screen md:h-screen w-full max-w-full flex flex-col justify-center pt-20 pb-8 sm:pt-24 sm:pb-10 md:pb-4 md:px-16"
     >
       <CyberLines />
 
@@ -190,8 +191,8 @@ export function Projects() {
         </div>
       </div>
 
-      {/* stacked on small screens */}
-      <div className="mx-auto grid w-full max-w-sm gap-6 md:hidden">
+      {/* 2x2 grid on small screens */}
+      <div className="vault-mobile-grid mx-auto grid grid-cols-2 w-full max-w-md gap-3 sm:gap-4 md:hidden">
         {PROJECTS.map((p) => (
           <div key={p.index} className="proj-card">
             <VaultCard {...p} />
@@ -210,7 +211,7 @@ export function Projects() {
         <button
           onClick={openNextBuild}
           onMouseEnter={fx.blip}
-          className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left w-full max-w-sm min-w-0 rotate-0 px-4 py-2.5 md:w-auto md:max-w-none md:min-w-[1000px] md:rotate-[30deg] md:px-28 md:py-3"
+          className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left w-full max-w-md min-w-0 rotate-0 px-4 py-2.5 md:w-auto md:max-w-none md:min-w-[1000px] md:rotate-[30deg] md:px-28 md:py-3"
           aria-label="FAMILIAR - next build, in development. Open case file"
         >
           {/* Caution hazard stripes accent borders */}
