@@ -9,7 +9,7 @@ import { navReturn } from "@/lib/nav-return";
 
 interface CommandItem {
   id: string;
-  category: "NAV" | "CASE FILE" | "DOC" | "ACTION";
+  category: "NAV" | "CASE FILE" | "DOC" | "ACTION" | "LIVE APP";
   title: string;
   subtitle?: string;
   shortcut?: string;
@@ -243,6 +243,25 @@ function CommandPaletteModal({
       },
     ];
 
+    // Live Web Apps direct launcher injection
+    CASE_STUDIES.forEach((cs) => {
+      const live = cs.links?.find((l) => !l.href.includes("github.com") && !l.href.includes("youtube.com"));
+      if (live) {
+        list.push({
+          id: `live-${cs.slug}`,
+          category: "LIVE APP",
+          title: `Launch ${cs.name} (${live.label})`,
+          subtitle: `Open production web app: ${live.href}`,
+          badge: "LIVE ↗",
+          perform: ({ close, fx }) => {
+            fx.confirm();
+            close();
+            window.open(live.href, "_blank", "noopener,noreferrer");
+          },
+        });
+      }
+    });
+
     // Case studies injection
     CASE_STUDIES.forEach((cs) => {
       list.push({
@@ -426,6 +445,8 @@ function CommandPaletteModal({
                       className={`text-[9px] font-black px-1.5 py-0.5 rounded-sm tracking-wider uppercase shrink-0 ${
                         isSelected
                           ? "bg-[#0c0d12] text-signal"
+                          : cmd.category === "LIVE APP"
+                          ? "bg-signal text-[#0c0d12] font-black shadow-[0_0_8px_rgba(252,238,10,0.35)]"
                           : "bg-white/10 text-periwinkle"
                       }`}
                     >
