@@ -21,8 +21,6 @@ const PROJECTS = [
     img: "/projects/notable-project-thumbnails/fehuvia.webp",
     stack: "SOLIDITY / MORPH L2 / GPT-4O",
     summary: "Morph L2 B2B Treasury co-pilot",
-    liveUrl: "https://www.fehuvia.app/",
-    liveLabel: "FEHUVIA.APP",
   },
   {
     index: "P-02",
@@ -32,8 +30,6 @@ const PROJECTS = [
     stack: "ESP32-S3 / FLUTTER / MEDIAPIPE",
     summary: "ESP32 fitness RPG & wearables",
     badge: "Awarded Best Thesis",
-    liveUrl: "https://aerovit.dev",
-    liveLabel: "AEROVIT.DEV",
   },
   {
     index: "P-03",
@@ -42,8 +38,6 @@ const PROJECTS = [
     img: "/projects/notable-project-thumbnails/stickOut.webp",
     stack: "REACT 19 / HTML5 CANVAS / VLSI",
     summary: "VLSI interactive Stick-Diagram editor",
-    liveUrl: "https://stickout.vercel.app",
-    liveLabel: "STICKOUT.VERCEL.APP",
   },
   {
     index: "P-04",

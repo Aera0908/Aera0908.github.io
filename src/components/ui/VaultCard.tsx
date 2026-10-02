@@ -23,8 +23,6 @@ export function VaultCard({
   img,
   slug,
   badge,
-  liveUrl,
-  liveLabel,
 }: {
   index: string;
   name: string;
@@ -33,8 +31,6 @@ export function VaultCard({
   slug: string;
   summary: string;
   badge?: string;
-  liveUrl?: string;
-  liveLabel?: string;
 }) {
   const router = useRouter();
   const { fx } = useHudAudio();
@@ -217,21 +213,6 @@ export function VaultCard({
                      )}
                    </h4>
                     <p className="font-mono text-[6.5px] md:text-[8px] text-ink-soft leading-tight md:leading-relaxed tracking-tight line-clamp-1 md:line-clamp-none">{stack}</p>
-                    {liveUrl && (
-                      <a
-                        href={liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          fx.click();
-                        }}
-                        className="inline-flex items-center gap-1 text-[6.5px] md:text-[7.5px] font-mono font-black text-[#0c0d12] bg-[#e8d90c] px-1.5 py-0.5 rounded-xs hover:bg-black hover:text-[#e8d90c] transition-colors uppercase cursor-pointer shadow-xs mt-0.5"
-                      >
-                        <span>● LAUNCH APP</span>
-                        <span>↗</span>
-                      </a>
-                    )}
                 </div>
                <div className="border-t border-dashed border-ink/15 pt-1 md:pt-2 mt-1 md:mt-2">
                  <div className="flex justify-between font-mono text-[6px] md:text-[7px] text-ink-soft tracking-wider">
@@ -267,24 +248,6 @@ export function VaultCard({
             >
               ● {index}
             </span>
-
-            {/* Live Web App Badge on Front Cover */}
-            {liveUrl && (
-              <a
-                href={liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  fx.click();
-                }}
-                className="z-30 pointer-events-auto absolute top-2.5 right-2.5 md:top-3.5 md:right-3.5 flex items-center gap-1 px-1.5 md:px-2 py-0.5 rounded-xs bg-[#0c0d12]/95 border border-signal text-signal hover:bg-signal hover:text-[#0c0d12] font-mono text-[6.5px] md:text-[7.5px] font-black uppercase tracking-wider backdrop-blur-md transition-all shadow-[0_0_12px_rgba(252,238,10,0.35)] hover:scale-105 cursor-pointer"
-                title={`Launch live web app: ${liveLabel || name}`}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-signal animate-ping" />
-                <span>LIVE APP ↗</span>
-              </a>
-            )}
 
             <div className="absolute inset-x-2.5 sm:inset-x-3 md:inset-x-5 bottom-2.5 sm:bottom-3.5 md:bottom-5 flex flex-col gap-1 md:gap-2">
               {badge && (

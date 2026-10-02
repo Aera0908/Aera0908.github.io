@@ -40,7 +40,7 @@ export function Hero({
       // On deep links, immediately set hero text & logo to hidden state
       gsap.set(".hero-reveal:not(.hero-img-container)", { opacity: 0, y: -30, pointerEvents: "none" });
       gsap.set(".hero-logo-target", { opacity: 0, y: -30, pointerEvents: "none" });
-      gsap.set(".down-peek", { opacity: 0, pointerEvents: "none" });
+      gsap.set(".ghostcue-peek", { opacity: 0, pointerEvents: "none" });
       if (cardRef.current) {
         gsap.set(cardRef.current, { opacity: 1, scale: 1 });
       }
@@ -65,10 +65,10 @@ export function Hero({
         }
       );
 
-      // Down? announcement banner: mechanical cyberpunk slide-in right after hero finishes loading (desktop only)
+      // GhostCue announcement banner: mechanical cyberpunk slide-in right after hero finishes loading (desktop only)
       if (typeof window !== "undefined" && window.innerWidth >= 768) {
         introTl.fromTo(
-          ".down-peek",
+          ".ghostcue-peek",
           {
             opacity: 0,
             x: 24,
@@ -181,7 +181,7 @@ export function Hero({
         }, 0);
 
         if (isBaseRoute) {
-          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".down-peek"], {
+          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek"], {
             opacity: 0,
             y: -30,
             pointerEvents: "none",
@@ -190,7 +190,7 @@ export function Hero({
           }, 0);
         } else {
           tl.fromTo(
-            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".down-peek"],
+            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek"],
             { opacity: 1, y: 0, pointerEvents: "auto" },
             {
               opacity: 0,
@@ -481,27 +481,6 @@ export function Hero({
                 </span>
               </button>
             </Magnetic>
-
-            {/* Direct Launch Live Web App Chip */}
-            <Magnetic strength={0.3}>
-              <a
-                href="https://www.down-app.party"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={fx.confirm}
-                onMouseEnter={fx.blip}
-                className="group relative overflow-hidden rounded-md border border-[#CCFF00]/60 bg-[#CCFF00]/10 px-4 py-2.5 font-mono text-[9px] font-black tracking-[0.14em] text-[#CCFF00] uppercase backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-[#CCFF00] hover:text-[#0c0d12] hover:shadow-[0_0_20px_rgba(204,255,0,0.45)] cursor-pointer"
-                title="Launch Down? Web App (down-app.party)"
-              >
-                <span className="relative z-10 flex items-center gap-1.5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-current" />
-                  </span>
-                  <span>LIVE: DOWN? ↗</span>
-                </span>
-              </a>
-            </Magnetic>
           </div>
 
           {/* Social Links Dock */}
@@ -612,82 +591,61 @@ export function Hero({
           ref={cardPlaceholderRef}
           className="hero-img-container w-full max-w-[290px] sm:max-w-sm md:max-w-md aspect-[3/4] max-md:max-h-[42vh] justify-self-center md:justify-self-end relative z-40 pointer-events-none"
         >
-          {/* Down? Announcement Banner: Desktop vertical tag (hidden on mobile) */}
-          <div className="down-peek pointer-events-auto opacity-0 select-none z-40 hidden md:block md:absolute md:bottom-0 md:top-auto md:right-full">
+          {/* GhostCue Announcement Banner: Desktop vertical tag (hidden on mobile) */}
+          <div className="ghostcue-peek pointer-events-auto opacity-0 select-none z-40 hidden md:block md:absolute md:bottom-0 md:top-auto md:right-full">
             {/* Desktop card view */}
             <div
-              className="group relative w-36 h-[205px] p-[1px] bg-periwinkle/25 hover:bg-[#CCFF00] transition-colors duration-300 shadow-2xl backdrop-blur-md select-none text-left"
+              className="group relative w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-iris-bright transition-colors duration-300 shadow-2xl backdrop-blur-md cursor-pointer select-none text-left"
               style={{
-                clipPath: "polygon(14px 0, 100% 0, 100% 100%, 0 14px)",
+                clipPath: "polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px)",
               }}
             >
-              <div
-                className="relative flex flex-col justify-between w-full h-full bg-world-2/95 p-2.5 overflow-hidden"
+              <Link
+                href="/vault/archive/ghostcue"
+                onClick={() => fx.click()}
+                onMouseEnter={fx.blip}
+                className="relative flex flex-col justify-between w-full h-full bg-world-2/95 p-3 overflow-hidden"
                 style={{
                   clipPath: "polygon(13px 0, 100% 0, 100% 100%, 0 100%, 0 13px)",
                 }}
+                title="Check GhostCue out - AI Interview Copilot HUD"
               >
-                {/* Sliding neon lime background sweep */}
-                <span className="absolute inset-0 bg-[#CCFF00] translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
+                {/* Sliding yellow background sweep */}
+                <span className="absolute inset-0 bg-iris-bright translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
 
-                <Link
-                  href="/vault/archive/down"
-                  onClick={() => fx.click()}
-                  onMouseEnter={fx.blip}
-                  className="relative z-10 flex flex-col justify-between flex-1"
-                  title="View Down? Case Study Dossier"
-                >
-                  {/* Top: Eye Candy "NEW" Tag */}
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[8px] font-black px-1.5 py-0.5 bg-signal text-[#0c0d12] leading-none rounded-xs tracking-wider uppercase group-hover:bg-ink group-hover:text-signal transition-colors duration-300">
-                      NEW APP
-                    </span>
-                    <span className="font-mono text-[8px] text-periwinkle/40 group-hover:text-ink/60 transition-colors duration-300">
-                      S-01
-                    </span>
-                  </div>
-
-                  {/* Center: App Logo & Name */}
-                  <div className="my-auto flex flex-col items-center text-center">
-                    <div className="h-12 w-12 rounded-xs border border-periwinkle/20 bg-world/90 p-1.5 shadow-inner group-hover:border-ink/30 group-hover:bg-ink/10 transition-colors duration-300 flex items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src="/projects/down-icon.svg"
-                        alt="Down? Icon"
-                        className="h-full w-full object-contain"
-                      />
-                    </div>
-                    <h3 className="font-display text-sm font-black uppercase tracking-tight text-paper group-hover:text-ink transition-colors duration-300 leading-none mt-2">
-                      DOWN<span className="text-[#FF1E44] group-hover:text-ink">?</span>
-                    </h3>
-                  </div>
-
-                  {/* Case Dossier link */}
-                  <div className="flex items-center justify-between pt-1 font-mono text-[8px] font-bold text-periwinkle/70 group-hover:text-ink uppercase">
-                    <span>CASE DOSSIER</span>
-                    <span>→</span>
-                  </div>
-                </Link>
-
-                {/* Bottom: Direct Live Web App Button */}
-                <div className="relative z-10 pt-1.5 border-t border-periwinkle/15 group-hover:border-ink/20">
-                  <a
-                    href="https://www.down-app.party"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fx.confirm();
-                    }}
-                    onMouseEnter={fx.blip}
-                    className="w-full py-1 px-1.5 text-center bg-[#CCFF00] group-hover:bg-ink text-[#0c0d12] group-hover:text-[#CCFF00] font-mono text-[8px] font-black uppercase tracking-wider rounded-xs shadow-md transition-all hover:scale-105 cursor-pointer flex items-center justify-center gap-1"
-                    title="Direct Link: https://www.down-app.party"
-                  >
-                    <span>LAUNCH APP</span>
-                    <span>↗</span>
-                  </a>
+                {/* Top: Eye Candy "NEW" Tag */}
+                <div className="relative z-10 flex items-center justify-between">
+                  <span className="font-mono text-[8px] font-black px-1.5 py-0.5 bg-signal text-[#0c0d12] leading-none rounded-xs tracking-wider uppercase group-hover:bg-ink group-hover:text-signal transition-colors duration-300">
+                    NEW
+                  </span>
+                  <span className="font-mono text-[8px] text-periwinkle/40 group-hover:text-ink/60 transition-colors duration-300">
+                    S-01
+                  </span>
                 </div>
-              </div>
+
+                {/* Center: App Logo & Name */}
+                <div className="relative z-10 my-auto flex flex-col items-center text-center">
+                  <div className="h-14 w-14 rounded-xs border border-periwinkle/20 bg-world/90 p-2 shadow-inner group-hover:border-ink/30 group-hover:bg-ink/10 transition-colors duration-300">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/projects/ghostcue-icon.png"
+                      alt="GhostCue Icon"
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                  <h3 className="font-display text-base font-black uppercase tracking-tight text-paper group-hover:text-ink transition-colors duration-300 leading-none mt-2.5">
+                    GHOSTCUE<span className="text-iris group-hover:text-ink">.</span>
+                  </h3>
+                </div>
+
+                {/* Bottom: Check Out CTA */}
+                <div className="relative z-10 flex items-center justify-between pt-2 border-t border-periwinkle/15 group-hover:border-ink/20 transition-colors duration-300 font-mono text-[8.5px] font-black tracking-widest text-signal group-hover:text-ink uppercase">
+                  <span>CHECK OUT</span>
+                  <span className="text-signal group-hover:text-ink group-hover:translate-x-1 transition-transform duration-300">
+                    →
+                  </span>
+                </div>
+              </Link>
             </div>
           </div>
         </div>
