@@ -601,14 +601,14 @@ export function Hero({
               }}
             >
               <Link
-                href="/vault/archive/ghostcue"
+                href="/vault/archive/down"
                 onClick={() => fx.click()}
                 onMouseEnter={fx.blip}
                 className="relative flex flex-col justify-between w-full h-full bg-world-2/95 p-3 overflow-hidden"
                 style={{
                   clipPath: "polygon(13px 0, 100% 0, 100% 100%, 0 100%, 0 13px)",
                 }}
-                title="Check GhostCue out - AI Interview Copilot HUD"
+                title="Check Down? out - Group Meetup & Hangout Decider"
               >
                 {/* Sliding yellow background sweep */}
                 <span className="absolute inset-0 bg-iris-bright translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
@@ -625,16 +625,16 @@ export function Hero({
 
                 {/* Center: App Logo & Name */}
                 <div className="relative z-10 my-auto flex flex-col items-center text-center">
-                  <div className="h-14 w-14 rounded-xs border border-periwinkle/20 bg-world/90 p-2 shadow-inner group-hover:border-ink/30 group-hover:bg-ink/10 transition-colors duration-300">
+                  <div className="h-14 w-14 rounded-xs border border-periwinkle/20 bg-world/90 p-2 shadow-inner group-hover:border-ink/30 group-hover:bg-ink/10 transition-colors duration-300 flex items-center justify-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/projects/ghostcue-icon.png"
-                      alt="GhostCue Icon"
+                      src="/projects/down-icon.svg"
+                      alt="Down? Icon"
                       className="h-full w-full object-contain"
                     />
                   </div>
                   <h3 className="font-display text-base font-black uppercase tracking-tight text-paper group-hover:text-ink transition-colors duration-300 leading-none mt-2.5">
-                    GHOSTCUE<span className="text-iris group-hover:text-ink">.</span>
+                    DOWN<span className="text-[#FF1E44] group-hover:text-ink">?</span>
                   </h3>
                 </div>
 
