@@ -21,9 +21,23 @@ type ArchiveItem = {
 const SYSTEMS: ArchiveItem[] = [
   {
     index: "S-01",
+    slug: "down",
+    name: "DOWN?",
+    badge: "LATEST RELEASE",
+    category: "NEXT.JS / REALTIME / GEO",
+    blurb:
+      "Group meetup & hangout decider web app: 60-second barkada consensus, zero-install instant rooms, real-time Firebase & SSE sync, Framer Motion Tinder-style card deck, Leaflet & Overpass POI radar.",
+    img: "/projects/down-banner.png",
+    links: [
+      { label: "DOWN-APP.PARTY", href: "https://www.down-app.party" },
+      { label: "GITHUB", href: "https://github.com/Aera0908/down-app" },
+    ],
+  },
+  {
+    index: "S-02",
     slug: "ghostcue",
     name: "GHOSTCUE",
-    badge: "NEW RELEASE",
+    badge: "RELEASED",
     category: "AI / DESKTOP HUD / TAURI",
     blurb:
       "Uncapturable desktop HUD & AI interview copilot: real-time dual-audio WASAPI loopback, local Whisper GGML STT, screen OCR, multi-model LLM routing (Gemini, Claude, GPT-4o, Ollama), anti-capture stealth.",
@@ -33,7 +47,7 @@ const SYSTEMS: ArchiveItem[] = [
     ],
   },
   {
-    index: "S-02",
+    index: "S-03",
     slug: "fehuvia",
     name: "FEHUVIA",
     category: "WEB3 / AI / FULL-STACK",
@@ -46,7 +60,7 @@ const SYSTEMS: ArchiveItem[] = [
     ],
   },
   {
-    index: "S-03",
+    index: "S-04",
     slug: "aerovit",
     name: "AEROVIT",
     badge: "Awarded Best Thesis",
@@ -57,7 +71,7 @@ const SYSTEMS: ArchiveItem[] = [
     links: [{ label: "AEROVIT.DEV", href: "https://aerovit.dev" }],
   },
   {
-    index: "S-04",
+    index: "S-05",
     slug: "stickout",
     name: "STICKOUT",
     category: "EDA / VLSI / WEB",
@@ -70,7 +84,7 @@ const SYSTEMS: ArchiveItem[] = [
     ],
   },
   {
-    index: "S-05",
+    index: "S-06",
     slug: "emg-controller",
     name: "EMG CONTROLLER",
     category: "EMBEDDED / HARDWARE",
@@ -82,7 +96,7 @@ const SYSTEMS: ArchiveItem[] = [
     ],
   },
   {
-    index: "S-06",
+    index: "S-07",
     slug: "safehouse",
     name: "THE SAFEHOUSE",
     category: "3D WEB / SHOWCASE",
@@ -95,7 +109,7 @@ const SYSTEMS: ArchiveItem[] = [
     ],
   },
   {
-    index: "S-07",
+    index: "S-08",
     slug: "plantio",
     name: "PLANT.IO",
     category: "MOBILE / IOT - FREELANCE",
@@ -105,7 +119,7 @@ const SYSTEMS: ArchiveItem[] = [
     nda: true,
   },
   {
-    index: "S-08",
+    index: "S-09",
     slug: "manhwa-reader",
     name: "MANHWA READER",
     category: "WEB / FRONTEND",
@@ -114,7 +128,7 @@ const SYSTEMS: ArchiveItem[] = [
     img: "/projects/manhwa.webp",
   },
   {
-    index: "S-09",
+    index: "S-10",
     slug: "student-consultation",
     name: "STUDENT CONSULTATION SYSTEM",
     category: "WEB / FULL-STACK - FREELANCE",
@@ -123,7 +137,7 @@ const SYSTEMS: ArchiveItem[] = [
     nda: true,
   },
   {
-    index: "S-10",
+    index: "S-11",
     slug: "walang-basagan",
     name: "WALANG BASAGAN NG THRIFT",
     category: "WEB / E-COMMERCE - FREELANCE",
@@ -132,7 +146,7 @@ const SYSTEMS: ArchiveItem[] = [
     nda: true,
   },
   {
-    index: "S-11",
+    index: "S-12",
     slug: "familiar",
     name: "FAMILIAR",
     badge: "IN DEVELOPMENT",

@@ -121,21 +121,21 @@ const DiagramNode = ({ x, y, w, h, label, sublabel, accent = "neutral", variant 
       />
       <text
         x={x + w / 2}
-        y={sublabel ? y + h / 2 - 4 : y + h / 2 + 5}
+        y={sublabel ? y + h / 2 - 5 : y + h / 2 + 5}
         textAnchor="middle"
-        fontSize={14}
+        fontSize={13.5}
         fontWeight={600}
         fill={palette.slateText}
-        style={{ fontFamily: "var(--font-archivo), sans-serif", letterSpacing: "0.03em" }}
+        style={{ fontFamily: "var(--font-archivo), sans-serif", letterSpacing: "0.02em" }}
       >
         {label}
       </text>
       {sublabel && (
         <text
           x={x + w / 2}
-          y={y + h / 2 + 14}
+          y={y + h / 2 + 13}
           textAnchor="middle"
-          fontSize={11}
+          fontSize={sublabel.length > 28 ? 9.5 : sublabel.length > 22 ? 10 : 10.5}
           fill={palette.slateMuted}
           style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
         >
@@ -628,6 +628,105 @@ const StickOutArchitecture = () => {
 
 
 // =====================================================================
+// Down? — System Architecture
+// =====================================================================
+const DownArchitecture = () => {
+  const rowH = 80;
+  const rowGap = 24;
+  const padX = 40;
+  const width = 1340;
+  const labelCol = 145;
+
+  const rows = [
+    {
+      label: "GEOSPATIAL RADAR",
+      accent: "blue" as const,
+      nodes: [
+        { label: "Interactive Leaflet Map", sub: "Metro Manila Coordinates" },
+        { label: "Nominatim Geocoding", sub: "Forward Venue Search" },
+        { label: "Overpass OSM Query", sub: "Radius POI Filter (1-10 km)" },
+        { label: "Category Filter", sub: "Food, Cafe, Nightlife, Cinema" },
+      ],
+    },
+    {
+      label: "REAL-TIME ENGINE",
+      accent: "emerald" as const,
+      nodes: [
+        { label: "Firebase Firestore", sub: "Live Snapshot Room Sync" },
+        { label: "SSE Fallback Channel", sub: "Edge Route Events Stream" },
+        { label: "Presence & Heartbeat", sub: "Active Lobby Tracking" },
+        { label: "License Plate Code", sub: "Ephemeral 6-Char Room ID" },
+      ],
+    },
+    {
+      label: "SWIPE & CONSENSUS",
+      accent: "amber" as const,
+      nodes: [
+        { label: "Framer Motion Deck", sub: "Gesture Kinematics & Toss" },
+        { label: "Card Vote Matrix", sub: "DOWN vs PASS Per User" },
+        { label: "Consensus Resolver", sub: "Unanimous Match Detector" },
+        { label: "Tie-Breaker Ranker", sub: "Consensus Leaderboard" },
+      ],
+    },
+    {
+      label: "DISPATCH & UI",
+      accent: "violet" as const,
+      nodes: [
+        { label: "Match Celebration", sub: "Sync Broadcast Modal" },
+        { label: "DirectionMap Route", sub: "Leaflet Polyline Display" },
+        { label: "Navigation Dispatch", sub: "One-Tap Waze & G-Maps" },
+        { label: "Neo-Brutalism UI", sub: "Tailwind v4 Neon Theme" },
+      ],
+    },
+  ];
+
+  const height = padX * 2 + rows.length * rowH + (rows.length - 1) * rowGap;
+
+  return (
+    <DiagramFrame viewBox={`0 0 ${width} ${height}`}>
+      {rows.map((row, rIdx) => {
+        const y = padX + rIdx * (rowH + rowGap);
+        const available = width - padX * 2 - labelCol;
+        const gap = 18;
+        const totalGap = gap * (row.nodes.length - 1);
+        const boxW = (available - totalGap) / row.nodes.length;
+
+        return (
+          <g key={rIdx}>
+            <RowLabel x={padX} y={y + rowH / 2 + 3} text={`> ${row.label}`} />
+            {row.nodes.map((n, i) => (
+              <DiagramNode
+                key={i}
+                x={padX + labelCol + i * (boxW + gap)}
+                y={y}
+                w={boxW}
+                h={rowH}
+                label={n.label}
+                sublabel={n.sub}
+                accent={row.accent}
+              />
+            ))}
+            {rIdx < rows.length - 1 && (
+              <line
+                x1={width / 2}
+                x2={width / 2}
+                y1={y + rowH + 2}
+                y2={y + rowH + rowGap - 2}
+                stroke={palette.strokeStrong}
+                strokeWidth={1.4}
+                strokeDasharray="3 4"
+                markerEnd="url(#arrow-muted)"
+              />
+            )}
+          </g>
+        );
+      })}
+    </DiagramFrame>
+  );
+};
+
+
+// =====================================================================
 // GhostCue — System Architecture
 // =====================================================================
 const GhostCueArchitecture = () => {
@@ -729,6 +828,7 @@ const GhostCueArchitecture = () => {
 const registry: Record<string, () => ReactNode> = {
   "aerovit-architecture": AeroVitArchitecture,
   "aerovit-dataflow": AeroVitDataFlow,
+  "down-architecture": DownArchitecture,
   "emg-pipeline": EmgPipeline,
   "fehuvia-architecture": FehuviaArchitecture,
   "ghostcue-architecture": GhostCueArchitecture,
@@ -1006,6 +1106,9 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
 };
 
 const DIAGRAMS_BY_SLUG: Record<string, { id: string; caption?: string }[]> = {
+  down: [
+    { id: "down-architecture", caption: "Down? Real-Time Room Consensus & Geo-Spatial Discovery Architecture" }
+  ],
   ghostcue: [
     { id: "ghostcue-architecture", caption: "GhostCue Real-Time Audio Capture & Stealth HUD Architecture" }
   ],

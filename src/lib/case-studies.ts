@@ -52,9 +52,66 @@ export type CaseStudy = {
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
+    slug: "down",
+    name: "DOWN?",
+    badge: "LATEST RELEASE",
+    category: "NEXT.JS / REALTIME / GEO",
+    role: "Creator & Lead Full-Stack Architect",
+    duration: "2026",
+    status: "RELEASED - LIVE",
+    img: "/projects/down-banner.png",
+    summary:
+      "Real-time, mobile-first group decision engine designed to eliminate the notorious 'kahit saan' deadlock in barkada hangouts. Built on Next.js 16 (App Router), React 19, Firebase Firestore, and Leaflet OpenStreetMap, Down? lets a room host pinpoint any meetup epicenter and radius across Metro Manila (or custom coordinates), spin up an ephemeral 6-character room, and invite friends via zero-install instant links. Participants swipe right (DOWN) or left (PASS) on venue cards with fluid Framer Motion physics, while a realtime consensus engine detects unanimous agreement and triggers an instant match celebration with live directions, distance calculations, and navigation dispatch.",
+    highlights: [
+      "60-Second Barkada Consensus Engine: eliminates decision paralysis with frictionless mobile web swiping — no app downloads or account logins required",
+      "Live Ephemeral Rooms with Custom Codes: hosts generate customizable rooms (food, cafes, nightlife, gaming, cinema) with interactive radius boundaries (1 km to 10 km)",
+      "Interactive Geo-Spatial Radius Engine: Leaflet-powered location pinner with live Metro Manila quick-selects, address geocoding via Nominatim, and Overpass API POI filtering",
+      "Gesture-Driven Tinder-Style Swiping: high-performance Framer Motion physics with drag thresholds, rotation spring kinematics, and velocity toss gestures",
+      "Dual-Engine Real-Time Sync: primary Firebase Firestore snapshot listeners with Server-Sent Events (SSE) and in-memory room store fallback for zero-downtime voting states",
+      "Instant Match Celebration Modal: real-time detection of unanimous approvals or ranked consensus with haptic-styled audio cues, route overlays, and Waze/Google Maps shortcuts",
+      "High-Voltage Neo-Brutalist Design System: bold 3px-4px miter borders, deep 3D block shadows, high-voltage lime (#CCFF00) and hazard crimson (#FF1E44) palette, and Archivo Black typography",
+      "Multi-Criteria Place Discovery: automatically curates top-rated spots with ratings, price tiers, categories, distance offsets, and OSM metadata",
+      "Responsive PWA-Ready Mobile Web Architecture: optimized for mobile viewport constraints, safe-area-inset padding, and fluid dark/light mode transitions",
+    ],
+    architecture: [
+      "Client Layer: Next.js 16 App Router + React 19 client components, dynamic Leaflet map loaders (SSR-disabled), Framer Motion swipe physics, and Lucide React iconography",
+      "Real-Time Sync Engine: Firebase Firestore snapshot listeners and atomic batch transactions for room state, participant presence, and card upvote matrices",
+      "Fallback SSE / In-Memory Store: Next.js route handlers supporting Server-Sent Events (/api/rooms/[code]/events) and action endpoints for local dev and edge runtimes",
+      "Geo-Spatial Discovery Pipeline: Overpass API queries tagged with osm.ts filter matrices to fetch live POIs bounded by circular coordinate radiuses",
+      "Consensus Resolver: calculates active voter intersections per card on every vote payload; dispatches MATCH_FOUND broadcast the moment consensus criteria are fulfilled",
+    ],
+    stack: [
+      { label: "Framework & Core", items: ["Next.js 16 (App Router)", "React 19", "TypeScript 5", "Turbopack"] },
+      { label: "Styling & Motion", items: ["Tailwind CSS v4", "Framer Motion 12", "Neo-Brutalism UI", "Lucide React"] },
+      { label: "Maps & Spatial", items: ["Leaflet 1.9", "OpenStreetMap", "Overpass API", "Nominatim Geocoding"] },
+      { label: "Realtime & Cloud", items: ["Firebase Firestore", "Server-Sent Events (SSE)", "Vercel Functions"] },
+    ],
+    links: [
+      { label: "LIVE APP", href: "https://www.down-app.party" },
+      { label: "GITHUB", href: "https://github.com/Aera0908/down-app" },
+    ],
+    gallery: [
+      {
+        src: "/projects/down-banner.png",
+        caption: "Down? App: Neo-Brutalist Group Hangout & Meetup Decider Web App (Dark Showcase Edition)",
+        type: "image",
+      },
+      {
+        src: "/projects/down-banner-light.png",
+        caption: "Down? Signature Warm Paper Aesthetic & Real-Time Deck Showcase",
+        type: "image",
+      },
+      {
+        src: "/projects/down-og.png",
+        caption: "Down? Mobile Card Swiping Deck & Consensus Match Preview",
+        type: "image",
+      },
+    ],
+  },
+  {
     slug: "ghostcue",
     name: "GHOSTCUE",
-    badge: "NEW RELEASE",
+    badge: "RELEASED",
     category: "AI / DESKTOP HUD / TAURI",
     role: "Creator & Systems Architect",
     duration: "2026",

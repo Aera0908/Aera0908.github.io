@@ -46,7 +46,7 @@ const PROJECTS = [
     img: "/projects/notable-project-thumbnails/ghostcue.webp",
     stack: "TAURI v2 / RUST / REACT 19",
     summary: "AI interview copilot & stealth HUD",
-    badge: "New Release",
+    badge: "Desktop HUD",
   },
 ];
 
@@ -112,13 +112,9 @@ export function Projects() {
            The entry vector is layout-dependent: on desktop the tape is a slanted
            full-bleed ribbon, so it slides in ALONG its own 30-degree angle. On
            mobile it is an ordinary button sitting under the archive link, so that
-           diagonal would fly it in from off-canvas — it just rises instead. */
-        gsap.set(
-          ".next-build-teaser",
-          isDesktop
-            ? { autoAlpha: 0, x: -350, y: -202 }
-            : { autoAlpha: 0, x: 0, y: 24 },
-        );
+        if (isDesktop) {
+          gsap.set(".next-build-teaser", { autoAlpha: 0, x: -350, y: -202 });
+        }
 
         /* once: true — this is a one-shot entrance. Without it a deep link to
            /vault (or a return from a case file) replays the card tween on each of
@@ -141,17 +137,19 @@ export function Projects() {
 
         /* Cued AFTER cards finish entry animation: slides in along its exact 30-degree slanted angle,
            settling with ease-in and bounce-out (back.out). */
-        reveal.to(
-          ".next-build-teaser",
-          {
-            autoAlpha: 1,
-            x: 0,
-            y: 0,
-            duration: 0.85,
-            ease: "back.out(1.4)",
-          },
-          "+=0.4",
-        );
+        if (isDesktop) {
+          reveal.to(
+            ".next-build-teaser",
+            {
+              autoAlpha: 1,
+              x: 0,
+              y: 0,
+              duration: 0.85,
+              ease: "back.out(1.4)",
+            },
+            "+=0.4",
+          );
+        }
       }
     );
 
@@ -200,18 +198,12 @@ export function Projects() {
         ))}
       </div>
 
-      {/* NEXT BUILD — FAMILIAR teaser ribbon tape: Extended length yellow caution tape
-          slanted DOWNWARD across lower-left area, expanded 50% on both sides. Click → case file. */}
-      {/* On mobile the slanted full-bleed ribbon cannot work — rotated and
-          750px wide it lies across the stacked cards — so it becomes an
-          ordinary in-flow button. `order-last` drops it BELOW the archive link
-          (which is earlier in the DOM); on md it goes back to being absolutely
-          positioned, where order is irrelevant. */}
-      <div className="next-build-teaser pointer-events-none z-20 order-last mt-5 flex w-full justify-center md:absolute md:order-none md:mt-0 md:block md:w-auto md:bottom-90 md:-left-28">
+      {/* NEXT BUILD — FAMILIAR teaser ribbon tape: Desktop-only slanted caution tape. Hidden on mobile. */}
+      <div className="next-build-teaser pointer-events-none z-20 hidden md:block md:absolute md:order-none md:mt-0 md:w-auto md:bottom-90 md:-left-28">
         <button
           onClick={openNextBuild}
           onMouseEnter={fx.blip}
-          className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left w-full max-w-md min-w-0 rotate-0 px-4 py-2.5 md:w-auto md:max-w-none md:min-w-[1000px] md:rotate-[30deg] md:px-28 md:py-3"
+          className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left w-auto min-w-[1000px] rotate-[30deg] px-28 py-3"
           aria-label="FAMILIAR - next build, in development. Open case file"
         >
           {/* Caution hazard stripes accent borders */}
@@ -252,7 +244,7 @@ export function Projects() {
       <div className="mt-4 flex shrink-0 justify-center">
         <Link
           href="/vault/archive"
-          className="group relative overflow-hidden rounded-md border border-periwinkle/30 bg-world-2/60 backdrop-blur-sm px-8 py-3.5 font-mono text-xs tracking-[0.16em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:shadow-[0_0_25px_rgba(252,238,10,0.18)] cursor-pointer"
+          className="group relative overflow-hidden rounded-md border border-periwinkle/30 bg-world-2/60 backdrop-blur-sm px-6 py-3 md:px-8 md:py-3.5 font-mono text-xs tracking-[0.16em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:shadow-[0_0_25px_rgba(252,238,10,0.18)] cursor-pointer"
           onMouseEnter={fx.blip}
           onClick={(e) => {
             e.preventDefault();
@@ -264,7 +256,8 @@ export function Projects() {
           <span className="absolute inset-0 bg-iris-bright translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
           <span className="relative z-10 flex items-center gap-2 group-hover:text-ink transition-colors duration-300">
             <span className="text-iris-bright group-hover:text-ink">◍</span>
-            OPEN PROJECT ARCHIVE // SYSTEMS + ARTS
+            <span className="md:hidden">OPEN ARCHIVE</span>
+            <span className="hidden md:inline">OPEN PROJECT ARCHIVE // SYSTEMS + ARTS</span>
             <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
           </span>
         </Link>

@@ -72,7 +72,7 @@ export function Cursor() {
       <div
         ref={crossRef}
         aria-hidden="true"
-        className="cursor-cross pointer-events-none fixed top-0 left-0 z-[120] hidden mix-blend-difference"
+        className="cursor-cross pointer-events-none fixed top-0 left-0 z-[9999] hidden mix-blend-difference"
       >
         <div className="relative h-9 w-9">
           <span className="absolute top-0 left-1/2 h-3 w-px -translate-x-1/2 bg-white" />
@@ -87,7 +87,7 @@ export function Cursor() {
       <div
         ref={circleRef}
         aria-hidden="true"
-        className="cursor-circle pointer-events-none fixed top-0 left-0 z-[120] hidden mix-blend-difference"
+        className="cursor-circle pointer-events-none fixed top-0 left-0 z-[9999] hidden mix-blend-difference"
       >
         <div className="relative h-10 w-10">
           <span className="reticle-spin absolute inset-0 rounded-full border border-dashed border-white/90" />
@@ -103,7 +103,7 @@ export function Cursor() {
       <div
         ref={dotRef}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-[119] hidden h-1.5 w-1.5 rounded-full bg-iris-bright"
+        className="pointer-events-none fixed top-0 left-0 z-[9998] hidden h-1.5 w-1.5 rounded-full bg-iris-bright"
       />
     </>
   );

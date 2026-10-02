@@ -40,7 +40,7 @@ export function Hero({
       // On deep links, immediately set hero text & logo to hidden state
       gsap.set(".hero-reveal:not(.hero-img-container)", { opacity: 0, y: -30, pointerEvents: "none" });
       gsap.set(".hero-logo-target", { opacity: 0, y: -30, pointerEvents: "none" });
-      gsap.set(".ghostcue-peek", { opacity: 0, pointerEvents: "none" });
+      gsap.set(".down-peek", { opacity: 0, pointerEvents: "none" });
       if (cardRef.current) {
         gsap.set(cardRef.current, { opacity: 1, scale: 1 });
       }
@@ -65,24 +65,26 @@ export function Hero({
         }
       );
 
-      // GhostCue announcement banner: mechanical cyberpunk slide-in right after hero finishes loading
-      introTl.fromTo(
-        ".ghostcue-peek",
-        {
-          opacity: 0,
-          x: 24,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.55,
-          ease: "power2.out",
-          onStart: () => {
-            fxRef.current.blip();
+      // Down? announcement banner: mechanical cyberpunk slide-in right after hero finishes loading (desktop only)
+      if (typeof window !== "undefined" && window.innerWidth >= 768) {
+        introTl.fromTo(
+          ".down-peek",
+          {
+            opacity: 0,
+            x: 24,
           },
-        },
-        "+=0.1"
-      );
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.55,
+            ease: "power2.out",
+            onStart: () => {
+              fxRef.current.blip();
+            },
+          },
+          "+=0.1"
+        );
+      }
     }, rootRef);
 
     return () => ctx.revert();
@@ -179,7 +181,7 @@ export function Hero({
         }, 0);
 
         if (isBaseRoute) {
-          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek"], {
+          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".down-peek"], {
             opacity: 0,
             y: -30,
             pointerEvents: "none",
@@ -188,7 +190,7 @@ export function Hero({
           }, 0);
         } else {
           tl.fromTo(
-            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek"],
+            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".down-peek"],
             { opacity: 1, y: 0, pointerEvents: "auto" },
             {
               opacity: 0,
@@ -589,27 +591,27 @@ export function Hero({
           ref={cardPlaceholderRef}
           className="hero-img-container w-full max-w-[290px] sm:max-w-sm md:max-w-md aspect-[3/4] max-md:max-h-[42vh] justify-self-center md:justify-self-end relative z-40 pointer-events-none"
         >
-          {/* GhostCue Announcement Banner: Desktop vertical tag / Mobile sleek inline teaser pill */}
-          <div className="ghostcue-peek pointer-events-auto opacity-0 select-none z-40 md:absolute md:bottom-0 md:top-auto md:right-full max-md:relative max-md:mb-3 max-md:w-full">
+          {/* Down? Announcement Banner: Desktop vertical tag (hidden on mobile) */}
+          <div className="down-peek pointer-events-auto opacity-0 select-none z-40 hidden md:block md:absolute md:bottom-0 md:top-auto md:right-full">
             {/* Desktop card view */}
             <div
-              className="hidden md:block group relative w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-iris-bright transition-colors duration-300 shadow-2xl backdrop-blur-md cursor-pointer select-none text-left"
+              className="group relative w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-[#CCFF00] transition-colors duration-300 shadow-2xl backdrop-blur-md cursor-pointer select-none text-left"
               style={{
                 clipPath: "polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px)",
               }}
             >
               <Link
-                href="/vault/archive/ghostcue"
+                href="/vault/archive/down"
                 onClick={() => fx.click()}
                 onMouseEnter={fx.blip}
                 className="relative flex flex-col justify-between w-full h-full bg-world-2/95 p-3 overflow-hidden"
                 style={{
                   clipPath: "polygon(13px 0, 100% 0, 100% 100%, 0 100%, 0 13px)",
                 }}
-                title="Check GhostCue out - AI Interview Copilot HUD"
+                title="Check Down? out - Group Meetup & Hangout Decider"
               >
-                {/* Sliding yellow background sweep */}
-                <span className="absolute inset-0 bg-iris-bright translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
+                {/* Sliding neon lime background sweep */}
+                <span className="absolute inset-0 bg-[#CCFF00] translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
 
                 {/* Top: Eye Candy "NEW" Tag */}
                 <div className="relative z-10 flex items-center justify-between">
@@ -623,16 +625,16 @@ export function Hero({
 
                 {/* Center: App Logo & Name */}
                 <div className="relative z-10 my-auto flex flex-col items-center text-center">
-                  <div className="h-14 w-14 rounded-xs border border-periwinkle/20 bg-world/90 p-2 shadow-inner group-hover:border-ink/30 group-hover:bg-ink/10 transition-colors duration-300">
+                  <div className="h-14 w-14 rounded-xs border border-periwinkle/20 bg-world/90 p-1.5 shadow-inner group-hover:border-ink/30 group-hover:bg-ink/10 transition-colors duration-300 flex items-center justify-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/projects/ghostcue-icon.png"
-                      alt="GhostCue Icon"
+                      src="/projects/down-icon.svg"
+                      alt="Down? Icon"
                       className="h-full w-full object-contain"
                     />
                   </div>
                   <h3 className="font-display text-base font-black uppercase tracking-tight text-paper group-hover:text-ink transition-colors duration-300 leading-none mt-2.5">
-                    GHOSTCUE<span className="text-iris group-hover:text-ink">.</span>
+                    DOWN<span className="text-[#FF1E44] group-hover:text-ink">?</span>
                   </h3>
                 </div>
 
@@ -643,43 +645,6 @@ export function Hero({
                     →
                   </span>
                 </div>
-              </Link>
-            </div>
-
-            {/* Mobile horizontal pill teaser view */}
-            <div className="block md:hidden w-full max-w-[290px] sm:max-w-sm mx-auto">
-              <Link
-                href="/vault/archive/ghostcue"
-                onClick={() => fx.click()}
-                className="group relative flex items-center justify-between p-2 rounded-sm border border-periwinkle/25 bg-world-2/95 shadow-lg backdrop-blur-md overflow-hidden"
-              >
-                <span className="absolute inset-0 bg-iris-bright translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
-                <div className="relative z-10 flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-xs border border-periwinkle/20 bg-world/90 p-1 shrink-0">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/projects/ghostcue-icon.png"
-                      alt="GhostCue Icon"
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-display text-xs font-black uppercase tracking-tight text-paper group-hover:text-ink transition-colors">
-                        GHOSTCUE<span className="text-iris group-hover:text-ink">.</span>
-                      </span>
-                      <span className="font-mono text-[6.5px] font-black px-1 py-0.5 bg-signal text-[#0c0d12] leading-none rounded-xs tracking-wider uppercase group-hover:bg-ink group-hover:text-signal transition-colors">
-                        NEW
-                      </span>
-                    </div>
-                    <span className="font-mono text-[7.5px] text-periwinkle/60 group-hover:text-ink/80 transition-colors">
-                      AI Interview Copilot HUD
-                    </span>
-                  </div>
-                </div>
-                <span className="relative z-10 font-mono text-[8px] font-black text-signal group-hover:text-ink flex items-center gap-1 uppercase tracking-wider pr-1">
-                  VIEW →
-                </span>
               </Link>
             </div>
           </div>
@@ -813,7 +778,7 @@ export function Hero({
                  hinted as the LCP candidate */
               fetchPriority="high"
               decoding="async"
-              className="absolute inset-0 h-full w-full object-cover object-[center_15%] scale-[1.5] transform-gpu will-change-transform transition-transform duration-700 ease-out group-hover/portrait:scale-[1.55]"
+              className="absolute inset-0 h-full w-full object-cover max-md:scale-100 max-md:object-[center_28%] md:scale-[1.5] md:object-[center_15%] transform-gpu will-change-transform transition-transform duration-700 ease-out group-hover/portrait:scale-[1.05] md:group-hover/portrait:scale-[1.55]"
             />
             {/* full name lives inside the frame */}
             <div

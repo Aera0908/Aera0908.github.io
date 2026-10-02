@@ -68,7 +68,8 @@ body {
   body,
   a,
   button,
-  [role="button"] {
+  [role="button"],
+  [class*="cursor-"] {
     cursor: none;
   }
 }
