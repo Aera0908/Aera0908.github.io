@@ -125,22 +125,32 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
               }}
               className="group relative overflow-hidden border border-periwinkle/15 bg-world-2 p-3 transition-colors duration-500 hover:border-iris-bright/40 cursor-pointer clip-tab-tl focus-visible:outline-2"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/40 flex items-center justify-center">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/60 flex items-center justify-center">
                 {item.type === "video" || item.type === "youtube" ? (
                   <>
                     {/* Always a still in the grid — never the media itself. */}
                     {thumb && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={thumb}
-                        alt={item.caption}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-700 ease-out group-hover:scale-105"
-                      />
+                      <>
+                        {/* Ambient backdrop */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={thumb}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute inset-0 h-full w-full object-cover blur-md opacity-25 scale-110 pointer-events-none"
+                        />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={thumb}
+                          alt={item.caption}
+                          loading="lazy"
+                          decoding="async"
+                          className="relative z-10 h-full w-full object-contain p-2 opacity-90 group-hover:opacity-100 transition-all duration-700 ease-out group-hover:scale-105"
+                        />
+                      </>
                     )}
                     {/* Play HUD overlay indicator */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors duration-500">
+                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors duration-500">
                       <div className="flex h-14 w-14 items-center justify-center rounded-full border border-iris-bright/60 bg-world/80 text-iris-bright backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:border-iris-bright group-hover:shadow-[0_0_15px_rgba(156,66,245,0.4)]">
                         <svg
                           className="h-6 w-6 fill-current ml-0.5"
@@ -152,16 +162,26 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                     </div>
                   </>
                 ) : (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={item.src}
-                    alt={item.caption}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
+                  <>
+                    {/* Ambient backdrop */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.src}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 h-full w-full object-cover blur-md opacity-25 scale-110 pointer-events-none"
+                    />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.src}
+                      alt={item.caption}
+                      loading="lazy"
+                      decoding="async"
+                      className="relative z-10 h-full w-full object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                  </>
                 )}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-world/40 to-transparent" />
+                <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-world/40 to-transparent" />
               </div>
               <p className="t-micro mt-4 leading-relaxed text-periwinkle/60 transition-colors duration-300 group-hover:text-periwinkle font-mono">
                 ■ {item.type === "video" ? "[ VIDEO DEMO ] " : item.type === "youtube" ? "[ YOUTUBE FEED ] " : ""}{item.caption.toUpperCase()}

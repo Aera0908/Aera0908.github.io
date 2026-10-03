@@ -92,6 +92,53 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
     gallery: [
       {
+        src: "/projects/down-app-images/DownPromoAd.mp4",
+        poster: "/projects/down-app-images/down-promo-poster.jpg",
+        caption: "Down? Promo Ad: High-Voltage 30-Second Motion Graphics Showcase & Feature Breakdown (Remotion Video)",
+        type: "video",
+      },
+      {
+        src: "/projects/down-app-images/down-video-records.mp4",
+        poster: "/projects/down-app-images/down-record-poster.jpg",
+        caption: "Down? Live App Screen Recording: Full End-to-End Walkthrough of Ephemeral Room Creation, Geo Radius Selection, Card Swiping & Realtime Match Consensus",
+        type: "video",
+      },
+      {
+        src: "/projects/down-app-images/down-first-screen.png",
+        caption: "Down? Landing Hub: Quick 60-Second Meetup Consensus Launchpad & Instant Ephemeral Room Generator",
+        type: "image",
+      },
+      {
+        src: "/projects/down-app-images/down-name.png",
+        caption: "Down? Host & Guest Setup: Frictionless Nickname Selection & Color-Coded Avatar Identification",
+        type: "image",
+      },
+      {
+        src: "/projects/down-app-images/down-pin-location.png",
+        caption: "Down? Geo-Spatial Location Pinner: Interactive Leaflet Map Radius Selector with Metro Manila Quick-Presets",
+        type: "image",
+      },
+      {
+        src: "/projects/down-app-images/down-category.png",
+        caption: "Down? Category Selector: Tailored Activity Matrices for Dining, Cafes, Bars, Gaming & Entertainment",
+        type: "image",
+      },
+      {
+        src: "/projects/down-app-images/down-lobby.png",
+        caption: "Down? Realtime Waiting Room: 6-Character Shareable Code, Dynamic Member Roster & Host Launch Control",
+        type: "image",
+      },
+      {
+        src: "/projects/down-app-images/down-swipe.png",
+        caption: "Down? Tinder-Style Swiping Deck: High-Performance Framer Motion Physics with Ratings, Price Tiers & Live Distance Offsets",
+        type: "image",
+      },
+      {
+        src: "/projects/down-app-images/down-match-found.png",
+        caption: "Down? Instant Match Celebration: Unanimous Consensus Modal with Integrated Waze & Google Maps Navigation Dispatch",
+        type: "image",
+      },
+      {
         src: "/projects/down-banner.png",
         caption: "Down? App: Neo-Brutalist Group Hangout & Meetup Decider Web App (Dark Showcase Edition)",
         type: "image",
