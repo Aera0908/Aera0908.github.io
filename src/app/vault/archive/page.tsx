@@ -26,7 +26,7 @@ const SYSTEMS: ArchiveItem[] = [
     badge: "LATEST RELEASE",
     category: "NEXT.JS / REALTIME / GEO",
     blurb:
-      "Group meetup & hangout decider web app: 60-second barkada consensus, zero-install instant rooms, real-time Firebase & SSE sync, Framer Motion Tinder-style card deck, Leaflet & Overpass POI radar.",
+      "Group meetup & hangout decider web app: 30-second barkada consensus, zero-install instant rooms, real-time Firebase & SSE sync, Framer Motion Tinder-style card deck, Leaflet & Overpass POI radar.",
     img: "/projects/down-banner.png",
     links: [
       { label: "DOWN-APP.PARTY", href: "https://www.down-app.party" },

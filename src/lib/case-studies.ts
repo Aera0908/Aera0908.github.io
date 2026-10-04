@@ -63,7 +63,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     summary:
       "Real-time, mobile-first group decision engine designed to eliminate the notorious 'kahit saan' deadlock in barkada hangouts. Built on Next.js 16 (App Router), React 19, Firebase Firestore, and Leaflet OpenStreetMap, Down? lets a room host pinpoint any meetup epicenter and radius across Metro Manila (or custom coordinates), spin up an ephemeral 6-character room, and invite friends via zero-install instant links. Participants swipe right (DOWN) or left (PASS) on venue cards with fluid Framer Motion physics, while a realtime consensus engine detects unanimous agreement and triggers an instant match celebration with live directions, distance calculations, and navigation dispatch.",
     highlights: [
-      "60-Second Barkada Consensus Engine: eliminates decision paralysis with frictionless mobile web swiping — no app downloads or account logins required",
+      "30-Second Barkada Consensus Engine: eliminates decision paralysis with frictionless mobile web swiping — no app downloads or account logins required",
       "Live Ephemeral Rooms with Custom Codes: hosts generate customizable rooms (food, cafes, nightlife, gaming, cinema) with interactive radius boundaries (1 km to 10 km)",
       "Interactive Geo-Spatial Radius Engine: Leaflet-powered location pinner with live Metro Manila quick-selects, address geocoding via Nominatim, and Overpass API POI filtering",
       "Gesture-Driven Tinder-Style Swiping: high-performance Framer Motion physics with drag thresholds, rotation spring kinematics, and velocity toss gestures",
@@ -105,7 +105,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       },
       {
         src: "/projects/down-app-images/down-first-screen.png",
-        caption: "Down? Landing Hub: Quick 60-Second Meetup Consensus Launchpad & Instant Ephemeral Room Generator",
+        caption: "Down? Landing Hub: Quick 30-Second Meetup Consensus Launchpad & Instant Ephemeral Room Generator",
         type: "image",
       },
       {
