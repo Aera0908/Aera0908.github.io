@@ -286,7 +286,7 @@ export function Experience({ entered }: { entered: boolean }) {
             />
             <div className="relative z-10">
               <div className="mb-6 flex items-baseline justify-between">
-                <span className="index-marker">● {e.index}</span>
+                <span className="font-mono text-xs font-bold tracking-[0.16em] text-ink">● {e.index}</span>
                 <span className="t-micro text-ink-soft">{e.period}</span>
               </div>
             <h3 className="t-h2 mb-1 !text-[clamp(1.2rem,2.5vw,2.0rem)]">
@@ -302,7 +302,7 @@ export function Experience({ entered }: { entered: boolean }) {
                   className="group/org-link inline-flex items-center gap-3 transition-transform hover:translate-x-1"
                 >
                   {e.logo ? (
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-[5px] border border-ink/15 bg-white shadow-xs transition-colors group-hover/org-link:border-iris">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-[5px] border border-ink/15 bg-white shadow-xs transition-colors group-hover/org-link:border-ink">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={e.logo}
@@ -312,11 +312,11 @@ export function Experience({ entered }: { entered: boolean }) {
                       />
                     </span>
                   ) : e.Icon ? (
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[5px] border border-ink/15 bg-ink/[0.04] p-1.5 shadow-xs transition-colors group-hover/org-link:border-iris">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[5px] border border-ink/15 bg-ink/[0.04] p-1.5 shadow-xs transition-colors group-hover/org-link:border-ink">
                       <e.Icon className="h-full w-full object-contain" />
                     </span>
                   ) : null}
-                  <span className="t-label flex items-center gap-1.5 text-iris transition-colors group-hover/org-link:text-ink">
+                  <span className="t-label flex items-center gap-1.5 font-bold text-ink transition-colors group-hover/org-link:text-ink-soft">
                     <span>{e.org}</span>
                     <span className="text-[0.65rem] opacity-70 group-hover/org-link:opacity-100">↗</span>
                   </span>
@@ -338,7 +338,7 @@ export function Experience({ entered }: { entered: boolean }) {
                       <e.Icon className="h-full w-full object-contain" />
                     </span>
                   ) : null}
-                  <p className="t-label text-iris">{e.org}</p>
+                  <p className="t-label font-bold text-ink">{e.org}</p>
                 </div>
               )}
             </div>

@@ -165,7 +165,7 @@ export function Hero({
             id: "hero-pin",
             trigger: root,
             start: "top top",
-            end: isMobile ? "+=1400" : "+=2800",
+            end: isMobile ? "+=1100" : "+=1700",
             pin: true,
             scrub: true,
             invalidateOnRefresh: true,
@@ -220,7 +220,7 @@ export function Hero({
           borderRadius: 0,
           padding: 0,
           "--notch": "0px",
-          duration: 1.0,
+          duration: 0.9,
           ease: "power2.inOut",
           immediateRender: false,
         }, 0.1)
@@ -229,7 +229,7 @@ export function Hero({
           earthOpacity: 0.0,
           oldMoonY: -2.0,
           oldMoonOpacity: 0.0,
-          duration: 1.0,
+          duration: 0.9,
           ease: "power2.inOut",
         }, 0.1)
         .fromTo(".hero-card-meta", {
@@ -249,7 +249,7 @@ export function Hero({
           width: wrapExpanded.width,
           top: wrapExpanded.top,
           height: wrapExpanded.height,
-          duration: 1.0,
+          duration: 0.9,
           ease: "power2.inOut",
           immediateRender: false,
         }, 0.1);
@@ -261,48 +261,48 @@ export function Hero({
         }, {
           opacity: 1,
           y: 0,
-          duration: 0.55,
+          duration: 0.45,
           ease: "power2.out",
-        }, 0.9);
+        }, 0.8);
 
         // Step D: Sequential photo reveals as you scroll
         tl.fromTo(".feed-fig-1",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
-          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
-          1.3
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.35, onStart: () => { fxRef.current.click(); } },
+          1.2
         )
-        .to(".feed-fig-1", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 1.8);
+        .to(".feed-fig-1", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.35 }, 1.65);
 
         tl.fromTo(".feed-fig-2",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
-          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
-          1.8
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.35, onStart: () => { fxRef.current.click(); } },
+          1.65
         )
-        .to(".feed-fig-2", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 2.3);
+        .to(".feed-fig-2", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.35 }, 2.1);
 
         tl.fromTo(".feed-fig-3",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
-          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
-          2.3
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.35, onStart: () => { fxRef.current.click(); } },
+          2.1
         )
-        .to(".feed-fig-3", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 2.8);
+        .to(".feed-fig-3", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.35 }, 2.55);
 
         tl.fromTo(".feed-fig-4",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
-          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, onStart: () => { fxRef.current.click(); } },
-          2.8
+          { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.35, onStart: () => { fxRef.current.click(); } },
+          2.55
         )
-        .to(".feed-fig-4", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.4 }, 3.3);
+        .to(".feed-fig-4", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.35 }, 2.95);
 
-        // Step E: hold the collage static, then fade it before closing
+        // Step E: Fade collage before closing
         tl.to(".hero-intro", {
           opacity: 0,
           y: -20,
-          duration: 0.45,
+          duration: 0.3,
           ease: "power2.in",
-        }, 3.6);
+        }, 2.95);
 
-        // Step F: Shrink card back to placeholder bounds, slide up
+        // Step F: Shrink card back to placeholder bounds, slide up cleanly
         tl.fromTo(card, {
           left: 0,
           top: 0,
@@ -319,25 +319,25 @@ export function Hero({
           borderRadius: "10px",
           padding: "1.25rem",
           "--notch": "22px",
-          duration: 1.1,
+          duration: 0.55,
           ease: "power2.inOut",
           immediateRender: false,
-        }, 4.0)
+        }, 3.05)
         .to(hudState, {
           earthY: 24.0,
           earthOpacity: 0.0,
           oldMoonY: -2.0,
           oldMoonOpacity: 0.0,
-          duration: 1.1,
+          duration: 0.55,
           ease: "power2.inOut",
-        }, 4.0)
+        }, 3.05)
         .fromTo(".hero-card-meta", {
           opacity: 0,
         }, {
           opacity: 1,
-          duration: 0.35,
+          duration: 0.25,
           immediateRender: false,
-        }, 4.0)
+        }, 3.05)
         .fromTo(".hero-card-img-wrap", {
           left: wrapExpanded.left,
           width: wrapExpanded.width,
@@ -348,19 +348,19 @@ export function Hero({
           width: "100%",
           top: "15%",
           height: "70%",
-          duration: 1.1,
+          duration: 0.55,
           ease: "power2.inOut",
           immediateRender: false,
-        }, 4.0);
+        }, 3.05);
 
-        // Step G: Hold scroll lock briefly in its closed state before unpinning
-        tl.to({}, { duration: 0.35 })
+        // Step G: Tight hold before unpinning
+        tl.to({}, { duration: 0.05 })
           .set(".hero-card-img-wrap", {
             left: "0%",
             width: "100%",
             top: "15%",
             height: "70%",
-          }, 5.1);
+          }, 3.6);
       }
     );
 

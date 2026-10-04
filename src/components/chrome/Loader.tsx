@@ -420,21 +420,6 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
           />
         </div>
 
-        {/* Skip button */}
-        <button
-          type="button"
-          onPointerDown={(e) => e.stopPropagation()}
-          onPointerUp={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            skipIntro();
-          }}
-          aria-label="Skip intro and go straight to the site"
-          className="absolute left-4 top-4 md:left-12 md:top-8 z-30 cursor-pointer font-mono text-[0.625rem] font-bold uppercase tracking-[0.14em] text-[#0d0d10]/80 transition-colors hover:text-[#0d0d10] focus-visible:text-[#0d0d10] px-2 py-0.5 border border-[#0d0d10]/20 bg-[#e6e200]/60 rounded-xs"
-        >
-          SKIP INTRO →
-        </button>
-
         {/* Click/tap anywhere to proceed prompt */}
         {phase === "waiting" && (
           <div
@@ -447,16 +432,35 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         )}
 
         {/* Boot Chrome & Poster Layout */}
-        <div className={`boot-chrome pointer-events-none absolute inset-0 flex flex-col justify-between p-4 sm:p-6 md:p-12 z-20 transition-opacity duration-300 ${phase === "waiting" ? "opacity-25 md:opacity-100" : "opacity-100"}`}>
+        <div className="boot-chrome pointer-events-none absolute inset-0 flex flex-col justify-between p-4 sm:p-6 md:p-12 z-20">
           {/* Top bar info */}
-          <div className="flex items-baseline justify-between border-t-2 border-[#0d0d10]/40 pt-2 max-w-xs md:max-w-sm mt-8 md:mt-0">
+          <div className="flex items-baseline justify-between border-t-2 border-[#0d0d10]/40 pt-2.5 max-w-xs md:max-w-sm mt-8 md:mt-0 select-none">
             <span className="t-micro text-[#0d0d10] font-bold tracking-wider">
               GITHUB.COM/AERA0908 // SOFTWARE & SYSTEMS
             </span>
           </div>
 
+          {/* Skip Intro button: upper center below header on mobile, bottom center on desktop */}
+          {(phase === "loading" || phase === "waiting") && (
+            <div className="absolute top-[5.25rem] left-1/2 -translate-x-1/2 md:top-auto md:bottom-8 z-30 pointer-events-auto">
+              <button
+                type="button"
+                onPointerDown={(e) => e.stopPropagation()}
+                onPointerUp={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  skipIntro();
+                }}
+                aria-label="Skip intro and go straight to the site"
+                className="cursor-pointer font-mono text-[10px] md:text-xs font-black uppercase tracking-[0.14em] text-[#0d0d10] transition-all hover:bg-[#0d0d10] hover:text-[#fcee0a] hover:scale-105 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-[#0d0d10] px-4 py-2 min-h-[38px] md:min-h-[40px] flex items-center justify-center border-2 border-[#0d0d10] bg-[#e6e200] rounded-xs shadow-md whitespace-nowrap"
+              >
+                SKIP INTRO →
+              </button>
+            </div>
+          )}
+
           {/* Bottom area */}
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 md:gap-6 w-full mt-auto">
+          <div className={`flex flex-col md:flex-row items-start md:items-end justify-between gap-4 md:gap-6 w-full mt-auto transition-opacity duration-300 ${phase === "waiting" ? "opacity-25 md:opacity-100" : "opacity-100"}`}>
             {/* Desktop Terminal Logs */}
             <div className="hidden md:flex flex-col items-start font-mono text-[0.75rem] leading-[1.7] tracking-[0.08em] text-[#0d0d10] font-bold max-w-lg">
               {BOOT_LINES.map((line, i) => (

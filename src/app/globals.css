@@ -328,6 +328,10 @@ body {
   html {
     scroll-behavior: auto;
   }
+  .grain {
+    animation: none;
+    display: none;
+  }
 }
 
 /* ---------- modal zoom-in entrance animation ---------- */

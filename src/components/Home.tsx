@@ -320,7 +320,7 @@ export function Home({ initialSection = null }: { initialSection?: string | null
   }, [entered]);
 
   return (
-    <div id="scroll-space" className="relative">
+    <main id="scroll-space" className="relative">
        {!boot.section && (
         <Loader onDone={handleLoaderDone} onWaiting={handleLoaderWaiting} />
       )}
@@ -341,6 +341,6 @@ export function Home({ initialSection = null }: { initialSection?: string | null
       <Projects />
       <Credentials />
       <Contact />
-    </div>
+    </main>
   );
 }

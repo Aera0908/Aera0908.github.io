@@ -361,6 +361,11 @@ function CommandPaletteModal({
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-expanded="true"
+            aria-autocomplete="list"
+            aria-controls="command-results-list"
+            aria-activedescendant={filteredCommands[selectedIndex] ? `cmd-${filteredCommands[selectedIndex].id}` : undefined}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -383,6 +388,9 @@ function CommandPaletteModal({
         {/* Command Results List */}
         <div
           ref={listRef}
+          id="command-results-list"
+          role="listbox"
+          aria-label="Command search results"
           className="max-h-[50vh] overflow-y-auto divide-y divide-white/5 py-1 scrollbar-thin scrollbar-thumb-signal/20"
         >
           {filteredCommands.length === 0 ? (
@@ -396,6 +404,9 @@ function CommandPaletteModal({
               return (
                 <div
                   key={cmd.id}
+                  id={`cmd-${cmd.id}`}
+                  role="option"
+                  aria-selected={isSelected}
                   data-index={idx}
                   onClick={() => {
                     cmd.perform({

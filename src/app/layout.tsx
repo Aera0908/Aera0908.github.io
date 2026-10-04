@@ -126,6 +126,12 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
+        <a
+          href="#scroll-space"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2 focus:bg-signal focus:text-ink focus:font-mono focus:text-xs focus:font-black focus:uppercase focus:tracking-wider focus:shadow-2xl focus:border focus:border-black focus:outline-none"
+        >
+          Skip to main content
+        </a>
         <SmoothScrollProvider>
           <HudAudioProvider>
             <PageTransitionProvider>

@@ -74,13 +74,13 @@ export function useSectionSnap({
     const journeyST = ScrollTrigger.getById("journey-pin");
 
     const heroStart = heroST ? heroST.start : 0;
-    const heroEnd = heroST ? heroST.end : 2800;
-    const heroDur = 5.45;
+    const heroEnd = heroST ? heroST.end : 1700;
+    const heroDur = 3.6;
 
     // Timeline positions in Hero.tsx
-    // Expanded profile starts around 1.3 (~667px) and finishes before card shrinks at 3.5 (~1798px)
-    const heroExpandedStart = heroStart + (heroEnd - heroStart) * (1.3 / heroDur);
-    const heroExpandedEnd = heroStart + (heroEnd - heroStart) * (3.5 / heroDur);
+    // Expanded profile starts around 0.8 and finishes before card shrinks at ~2.95
+    const heroExpandedStart = heroStart + (heroEnd - heroStart) * (0.8 / heroDur);
+    const heroExpandedEnd = heroStart + (heroEnd - heroStart) * (2.95 / heroDur);
 
     const journeyEl = document.getElementById("journey");
     const journeyStart = journeyST
@@ -266,7 +266,7 @@ export function useSectionSnap({
         } else if (curY >= coords.vaultY - 40) {
           smoothScrollTo(coords.journeyEnd, 1.0, "journey");
         } else if (curY >= coords.journeyStart - 40) {
-          smoothScrollTo(coords.heroExpandedEnd, 1.4, "");
+          smoothScrollTo(coords.heroExpandedStart, 1.4, "");
         } else if (curY > coords.heroExpandedStart + 40) {
           smoothScrollTo(coords.heroTop, 1.8, "");
         } else {
@@ -287,21 +287,12 @@ export function useSectionSnap({
       const curY = window.scrollY;
       const coords = getCoordinates();
 
-      // Free scroll zone 1: Inside Expanded White (photos & profile content)
-      const isInExpandedWhiteMiddle =
-        curY > coords.heroExpandedStart + 40 && curY < coords.heroExpandedEnd - 40;
+      // Free scroll zone: From Expanded White through all Journey horizontal cards
+      const isInFreeScrollExperience =
+        curY > coords.heroExpandedStart + 40 && curY < coords.journeyEnd - 40;
 
-      if (isInExpandedWhiteMiddle) {
-        // Freely browse between photos and collage inside Expanded White
-        return;
-      }
-
-      // Free scroll zone 2: Inside Journey (horizontal cards scrub)
-      const isInJourneyMiddle =
-        curY > coords.journeyStart + 40 && curY < coords.journeyEnd - 40;
-
-      if (isInJourneyMiddle) {
-        // Freely browse between horizontal cards inside Journey
+      if (isInFreeScrollExperience) {
+        // Freely browse photos, morphing card, and horizontal cards inside Journey
         return;
       }
 
@@ -318,38 +309,6 @@ export function useSectionSnap({
           return;
         }
         // If scrolling down, let user scroll into Expanded White content freely
-        return;
-      }
-
-      // Boundary: Expanded White bottom edge -> snap down to Journey Start
-      if (curY >= coords.heroExpandedEnd - 40 && curY < coords.journeyStart - 40) {
-        if (e.deltaY > 0) {
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
-          if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
-            smoothScrollTo(coords.journeyStart, 1.4, "journey");
-          }
-          return;
-        }
-        // If scrolling up, let user scroll back into Expanded White content freely
-        return;
-      }
-
-      // Boundary: Journey start edge -> snap up to Expanded White
-      if (curY <= coords.journeyStart + 40 && curY >= coords.heroExpandedEnd) {
-        if (e.deltaY < 0) {
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
-          if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
-            smoothScrollTo(coords.heroExpandedEnd, 1.4, "");
-          }
-          return;
-        }
-        // If scrolling down, let user scroll into Journey cards freely
         return;
       }
 
@@ -420,12 +379,10 @@ export function useSectionSnap({
 
         const curY = window.scrollY;
         const coords = getCoordinates();
-        const isInJourneyMiddle =
-          curY > coords.journeyStart + 40 && curY < coords.journeyEnd - 40;
-        const isInExpandedWhiteMiddle =
-          curY > coords.heroExpandedStart + 40 && curY < coords.heroExpandedEnd - 40;
+        const isInFreeScrollExperience =
+          curY > coords.heroExpandedStart + 40 && curY < coords.journeyEnd - 40;
 
-        if (isInJourneyMiddle || isInExpandedWhiteMiddle) {
+        if (isInFreeScrollExperience) {
           e.preventDefault();
           window.scrollBy({ top: dir * 450, behavior: "smooth" });
           return;
@@ -466,13 +423,9 @@ export function useSectionSnap({
       const curY = window.scrollY;
       const coords = getCoordinates();
 
-      const isInExpandedWhiteMiddle =
-        curY > coords.heroExpandedStart + 40 && curY < coords.heroExpandedEnd - 40;
-      if (isInExpandedWhiteMiddle) return;
-
-      const isInJourneyMiddle =
-        curY > coords.journeyStart + 40 && curY < coords.journeyEnd - 40;
-      if (isInJourneyMiddle) return;
+      const isInFreeScrollExperience =
+        curY > coords.heroExpandedStart + 40 && curY < coords.journeyEnd - 40;
+      if (isInFreeScrollExperience) return;
 
       const absX = Math.abs(deltaX);
       const absY = Math.abs(deltaY);
@@ -482,12 +435,6 @@ export function useSectionSnap({
         const dir = primaryDelta > 0 ? 1 : -1;
 
         if (dir > 0 && curY <= coords.heroExpandedStart + 40 && curY > coords.heroTop + 40) {
-          return;
-        }
-        if (dir < 0 && curY >= coords.heroExpandedEnd - 40 && curY < coords.journeyStart - 40) {
-          return;
-        }
-        if (dir > 0 && curY <= coords.journeyStart + 40 && curY >= coords.heroExpandedEnd) {
           return;
         }
         if (dir < 0 && curY >= coords.journeyEnd - 40 && curY < coords.vaultY - 40) {
