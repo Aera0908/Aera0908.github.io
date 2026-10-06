@@ -41,6 +41,7 @@ export function Hero({
       gsap.set(".hero-reveal:not(.hero-img-container)", { opacity: 0, y: -30, pointerEvents: "none" });
       gsap.set(".hero-logo-target", { opacity: 0, y: -30, pointerEvents: "none" });
       gsap.set(".ghostcue-peek", { opacity: 0, pointerEvents: "none" });
+      gsap.set(".hero-scroll-cue", { opacity: 0, pointerEvents: "none" });
       if (cardRef.current) {
         gsap.set(cardRef.current, { opacity: 1, scale: 1 });
       }
@@ -85,6 +86,22 @@ export function Hero({
           "+=0.1"
         );
       }
+
+      // Scroll down cue: emerges smoothly once everything in hero section has fully settled
+      introTl.fromTo(
+        ".hero-scroll-cue",
+        {
+          opacity: 0,
+          y: -10,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        "+=0.15"
+      );
     }, rootRef);
 
     return () => ctx.revert();
@@ -181,7 +198,7 @@ export function Hero({
         }, 0);
 
         if (isBaseRoute) {
-          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek"], {
+          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek", ".hero-scroll-cue"], {
             opacity: 0,
             y: -30,
             pointerEvents: "none",
@@ -190,7 +207,7 @@ export function Hero({
           }, 0);
         } else {
           tl.fromTo(
-            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek"],
+            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek", ".hero-scroll-cue"],
             { opacity: 1, y: 0, pointerEvents: "auto" },
             {
               opacity: 0,
@@ -404,6 +421,25 @@ export function Hero({
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, []);
+
+  const handleScrollDown = () => {
+    fxRef.current.click();
+    window.dispatchEvent(
+      new CustomEvent("aera-snap-jump", {
+        detail: { target: "hero-profile" },
+      })
+    );
+    // Smooth scroll fallback in case snap listeners are not attached or detached (e.g. mobile)
+    const heroST = ScrollTrigger.getById("hero-pin");
+    const targetY = heroST
+      ? heroST.start + (heroST.end - heroST.start) * (0.8 / 3.6) + 10
+      : window.innerHeight * 0.8;
+    setTimeout(() => {
+      if (window.scrollY < 50) {
+        window.scrollTo({ top: targetY, behavior: "smooth" });
+      }
+    }, 100);
+  };
 
   return (
     <section
@@ -814,6 +850,41 @@ export function Hero({
           </div>
           <span className="font-bold text-ink">@AERA0908</span>
         </div>
+      </div>
+
+      {/* Scroll Down Visualizer */}
+      <div
+        className="hero-scroll-cue absolute bottom-5 md:bottom-8 left-1/2 -translate-x-1/2 z-20 opacity-0 select-none pointer-events-none [@media(max-height:550px)]:hidden"
+        style={{
+          pointerEvents: entered && isBaseRoute ? "auto" : "none",
+        }}
+      >
+        <Magnetic strength={0.25}>
+          <button
+            type="button"
+            onClick={handleScrollDown}
+            onMouseEnter={() => fxRef.current.blip()}
+            aria-label="Scroll down to explore profile"
+            title="Scroll down"
+            className="group relative flex flex-col items-center justify-center cursor-pointer p-3 focus:outline-none"
+          >
+            {/* Smooth floating micro-animation container */}
+            <div className="animate-scroll-float flex flex-col items-center">
+              {/* Bold, prominent Chevron Arrow */}
+              <svg
+                className="h-7 w-7 md:h-8 md:w-8 text-signal transition-all duration-300 group-hover:translate-y-1.5 group-hover:text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </div>
+          </button>
+        </Magnetic>
       </div>
     </section>
   );

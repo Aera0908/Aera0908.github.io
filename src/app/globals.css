@@ -488,3 +488,45 @@ body {
   transform-origin: right center;
 }
 
+/* ---------- hero scroll down cue animations ---------- */
+@keyframes scroll-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes scroll-beam {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  65% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(220%);
+    opacity: 0;
+  }
+}
+
+.animate-scroll-float {
+  animation: scroll-float 2.4s ease-in-out infinite;
+}
+
+.animate-scroll-beam {
+  animation: scroll-beam 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll-float,
+  .animate-scroll-beam {
+    animation: none;
+  }
+}
+

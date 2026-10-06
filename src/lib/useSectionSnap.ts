@@ -245,11 +245,7 @@ export function useSectionSnap({
 
       if (direction === 1) {
         // DOWNWARDS STEP NAVIGATION (Between Sections)
-        if (curY < coords.heroExpandedStart - 40) {
-          smoothScrollTo(coords.heroExpandedStart, 1.6, "");
-        } else if (curY < coords.journeyStart - 40) {
-          smoothScrollTo(coords.journeyStart, 1.4, "journey");
-        } else if (curY < coords.vaultY - 40) {
+        if (curY < coords.vaultY - 40) {
           smoothScrollTo(coords.vaultY, 1.0, "vault");
         } else if (curY < coords.credentialsY - 40) {
           smoothScrollTo(coords.credentialsY, 0.9, "credentials");
@@ -265,12 +261,6 @@ export function useSectionSnap({
           smoothScrollTo(coords.vaultY, 0.9, "vault");
         } else if (curY >= coords.vaultY - 40) {
           smoothScrollTo(coords.journeyEnd, 1.0, "journey");
-        } else if (curY >= coords.journeyStart - 40) {
-          smoothScrollTo(coords.heroExpandedStart, 1.4, "");
-        } else if (curY > coords.heroExpandedStart + 40) {
-          smoothScrollTo(coords.heroTop, 1.8, "");
-        } else {
-          smoothScrollTo(coords.heroTop, 1.8, "");
         }
         return;
       }
@@ -287,28 +277,11 @@ export function useSectionSnap({
       const curY = window.scrollY;
       const coords = getCoordinates();
 
-      // Free scroll zone: From Expanded White through all Journey horizontal cards
-      const isInFreeScrollExperience =
-        curY > coords.heroExpandedStart + 40 && curY < coords.journeyEnd - 40;
+      // Free scroll zone: Entire Hero through Journey scrollytelling experience!
+      const isInFreeScrollExperience = curY < coords.journeyEnd - 40;
 
       if (isInFreeScrollExperience) {
-        // Freely browse photos, morphing card, and horizontal cards inside Journey
-        return;
-      }
-
-      // Boundary: Expanded White top edge -> snap up to Hero Top
-      if (curY <= coords.heroExpandedStart + 40 && curY > coords.heroTop + 40) {
-        if (e.deltaY < 0) {
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation();
-          (e as unknown as { lenisStopPropagation?: boolean }).lenisStopPropagation = true;
-          if (!isLockedRef.current && Math.abs(e.deltaY) > 12) {
-            smoothScrollTo(coords.heroTop, 1.8, "");
-          }
-          return;
-        }
-        // If scrolling down, let user scroll into Expanded White content freely
+        // Freely browse hero card morph, white box container, photos, and horizontal cards inside Journey
         return;
       }
 
@@ -328,7 +301,7 @@ export function useSectionSnap({
         return;
       }
 
-      // Section locking for Hero Top, Vault, Credentials, Contact:
+      // Section locking for Vault, Credentials, Contact:
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
@@ -379,8 +352,7 @@ export function useSectionSnap({
 
         const curY = window.scrollY;
         const coords = getCoordinates();
-        const isInFreeScrollExperience =
-          curY > coords.heroExpandedStart + 40 && curY < coords.journeyEnd - 40;
+        const isInFreeScrollExperience = curY < coords.journeyEnd - 40;
 
         if (isInFreeScrollExperience) {
           e.preventDefault();
@@ -423,8 +395,7 @@ export function useSectionSnap({
       const curY = window.scrollY;
       const coords = getCoordinates();
 
-      const isInFreeScrollExperience =
-        curY > coords.heroExpandedStart + 40 && curY < coords.journeyEnd - 40;
+      const isInFreeScrollExperience = curY < coords.journeyEnd - 40;
       if (isInFreeScrollExperience) return;
 
       const absX = Math.abs(deltaX);
@@ -434,9 +405,6 @@ export function useSectionSnap({
         const primaryDelta = absY >= absX ? deltaY : deltaX;
         const dir = primaryDelta > 0 ? 1 : -1;
 
-        if (dir > 0 && curY <= coords.heroExpandedStart + 40 && curY > coords.heroTop + 40) {
-          return;
-        }
         if (dir < 0 && curY >= coords.journeyEnd - 40 && curY < coords.vaultY - 40) {
           return;
         }
