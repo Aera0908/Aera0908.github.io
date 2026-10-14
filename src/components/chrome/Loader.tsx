@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, MOTION } from "@/lib/gsap";
+import { hudState } from "@/lib/hud-state";
 import { hudAudio } from "@/lib/audio";
 
 type Phase = "loading" | "waiting" | "revealing" | "ready" | "gone";
@@ -58,6 +59,25 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   useEffect(() => {
     onDoneRef.current = onDone;
   }, [onDone]);
+
+  /* camera waits below its rest pose until the loader lifts (see arrive()) */
+  useEffect(() => {
+    if (!prefersReducedMotion()) hudState.introArrival = 1;
+    return () => {
+      gsap.killTweensOf(hudState, "introArrival");
+      hudState.introArrival = 0;
+    };
+  }, []);
+
+  /** rise the camera into place — its own tween so it never delays onDone */
+  function arrive(duration: number, ease: string | gsap.EaseFunction) {
+    gsap.killTweensOf(hudState, "introArrival");
+    if (prefersReducedMotion()) {
+      hudState.introArrival = 0;
+      return;
+    }
+    gsap.to(hudState, { introArrival: 0, duration, ease });
+  }
 
   const [phase, setPhase] = useState<Phase>("loading");
   const [activeLineCount, setActiveLineCount] = useState(0);
@@ -144,6 +164,10 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     } catch (e) {
       console.warn("Audio autoplay blocked by browser policy.", e);
     }
+
+    // continues the liftoff: the camera keeps climbing and docks as the
+    // yellow layer wipes up (bg wipe below runs 0.08s → 1.28s)
+    arrive(2.4, MOTION.servo);
 
     const logo = logoRef.current;
     if (!logo) {
@@ -313,6 +337,8 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
       hudAudio.boot();
       hudAudio.setMuted(false);
     } catch {}
+
+    arrive(0.9, MOTION.snap);
 
     const done = () => {
       setPhase("gone");

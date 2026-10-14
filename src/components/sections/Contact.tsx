@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { CyberLines } from "@/components/ui/CyberLines";
+import { DecodeText } from "@/components/ui/DecodeText";
 
 /**
  * Uplink: the camera rises into the particle streams; one big CTA.
@@ -53,9 +54,9 @@ export function Contact() {
         ● 004 // UPLINK
       </p>
       <h2 className="contact-reveal t-hero mb-10 text-paper">
-        LET&apos;S
-        <br />
-        BUILD<span className="text-iris-bright">.</span>
+        <DecodeText text="LET'S" className="block" />
+        <DecodeText text="BUILD" />
+        <span className="text-iris-bright">.</span>
       </h2>
 
       <div className="contact-reveal flex flex-col items-start gap-6">

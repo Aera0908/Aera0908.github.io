@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap, ScrollTrigger, MOTION, DUR } from "@/lib/gsap";
+import { decodeTween, scrambled } from "@/lib/decode";
 import { hudState } from "@/lib/hud-state";
 import { expDampAlpha } from "@/lib/scene";
 import { CyberLines } from "@/components/ui/CyberLines";
@@ -48,63 +49,96 @@ export function Hero({
       return;
     }
 
+    // decoded text is written straight to the DOM, so remember the real
+    // copy and put it back if the intro is torn down mid-decode
+    const decodeTargets = gsap.utils.toArray<HTMLElement>(
+      ".hero-decode, .hero-label-decode",
+      rootRef.current,
+    );
+    const finals = decodeTargets.map((el) => el.textContent ?? "");
+
     const ctx = gsap.context(() => {
-      // Stagger reveal name, subtitle, buttons, social dock, and the portrait card
-      const introTl = gsap.timeline({ delay: 0.08 });
+      // Headline decodes word by word, the label resolves after it, then the
+      // controls and portrait card servo-dock in. Total ~1.3s, well inside the
+      // 1.8s scroll lock in Home.
+      const introTl = gsap.timeline({ delay: 0.05 });
+      const words = gsap.utils.toArray<HTMLElement>(".hero-decode");
+      const label = rootRef.current?.querySelector<HTMLElement>(".hero-label-decode");
+
+      // every word starts as noise the moment the headline appears
+      introTl.call(() => words.forEach((w) => (w.textContent = scrambled(w.textContent ?? ""))), [], 0);
+      introTl.set(".hero-headline", { opacity: 1 }, 0);
+      words.forEach((w, i) => {
+        introTl.add(decodeTween(w, { duration: 0.55 }), i * 0.12);
+      });
 
       introTl.fromTo(
-        [".hero-reveal:not(.hero-img-container)", cardRef.current],
-        { opacity: 0, y: 35, scale: 0.97 },
+        ".hero-label",
+        { opacity: 0 },
+        { opacity: 1, duration: DUR.feedback, ease: MOTION.snap },
+        0.18,
+      );
+      if (label) introTl.add(decodeTween(label, { duration: DUR.enter }), 0.18);
+
+      introTl.fromTo(
+        ".hero-dock",
+        { opacity: 0, y: 14 },
         {
           opacity: 1,
           y: 0,
-          scale: 1.0,
-          duration: 1.1,
-          ease: "power3.out",
-          stagger: 0.15,
+          duration: DUR.enter,
+          ease: MOTION.servo,
+          stagger: 0.08,
           clearProps: "transform",
-        }
+        },
+        0.35,
       );
 
-      // GhostCue announcement banner: mechanical cyberpunk slide-in right after hero finishes loading (desktop only)
+      introTl.fromTo(
+        cardRef.current,
+        { opacity: 0, y: 28, scale: 0.96 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.7,
+          ease: MOTION.servo,
+          clearProps: "transform",
+        },
+        0.25,
+      );
+
+      // GhostCue announcement banner: snaps in once the hero has docked (desktop only)
       if (typeof window !== "undefined" && window.innerWidth >= 768) {
         introTl.fromTo(
           ".ghostcue-peek",
-          {
-            opacity: 0,
-            x: 24,
-          },
+          { opacity: 0, x: 24 },
           {
             opacity: 1,
             x: 0,
-            duration: 0.55,
-            ease: "power2.out",
+            duration: 0.4,
+            ease: MOTION.snap,
             onStart: () => {
               fxRef.current.blip();
             },
           },
-          "+=0.1"
+          "+=0.05",
         );
       }
 
-      // Scroll down cue: emerges smoothly once everything in hero section has fully settled
+      // Scroll down cue: last, once everything has settled
       introTl.fromTo(
         ".hero-scroll-cue",
-        {
-          opacity: 0,
-          y: -10,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out",
-        },
-        "+=0.15"
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: DUR.enter, ease: MOTION.snap },
+        "+=0.1",
       );
     }, rootRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      decodeTargets.forEach((el, i) => (el.textContent = finals[i]));
+    };
   }, [entered, isBaseRoute]);
 
   /* scrollytelling pin & morph animation of the same card node */
@@ -471,17 +505,23 @@ export function Hero({
           </div>
           
           {/* stacked display words, KPR-style — phrases over paragraphs */}
-          <h1 className="hero-reveal opacity-0 font-display font-black text-iris-bright text-[7vw] md:text-[3.6vw] leading-[0.95] tracking-tight uppercase">
-            SOFTWARE
-            <br />
-            ENGINEER<span className="text-paper">.</span>
+          <h1 className="hero-reveal hero-headline opacity-0 font-display font-black text-iris-bright text-[7vw] md:text-[3.6vw] leading-[0.95] tracking-tight uppercase">
+            <span className="sr-only">Software Engineer.</span>
+            <span aria-hidden="true">
+              <span className="hero-decode block">SOFTWARE</span>
+              <span className="hero-decode">ENGINEER</span>
+              <span className="text-paper">.</span>
+            </span>
           </h1>
 
-          <p className="hero-reveal opacity-0 t-label text-periwinkle/85">
-            ● FULL-STACK WEB · IC DESIGN · SYSTEMS
+          <p className="hero-reveal hero-label opacity-0 t-label text-periwinkle/85">
+            <span className="sr-only">Full-stack web, IC design, systems</span>
+            <span aria-hidden="true" className="hero-label-decode">
+              ● FULL-STACK WEB · IC DESIGN · SYSTEMS
+            </span>
           </p>
 
-          <div className="hero-reveal opacity-0 flex flex-wrap items-center gap-3 mt-2">
+          <div className="hero-reveal hero-dock opacity-0 flex flex-wrap items-center gap-3 mt-2">
             <Magnetic strength={0.3}>
               <button
                 onClick={() => {
@@ -520,7 +560,7 @@ export function Hero({
           </div>
 
           {/* Social Links Dock */}
-          <div className="hero-reveal opacity-0 flex items-center gap-2.5">
+          <div className="hero-reveal hero-dock opacity-0 flex items-center gap-2.5">
             {/* Email Button */}
             <Magnetic strength={0.35}>
               <a

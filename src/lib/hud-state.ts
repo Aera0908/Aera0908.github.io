@@ -8,6 +8,12 @@ export const hudState = {
   pointer: { x: 0, y: 0 },
   /** master scroll progress 0..1 — written by the master ScrollTrigger (Step 5) */
   scrollProgress: 0,
+  /**
+   * intro camera arrival, 1 → 0: the camera starts below and behind its rest
+   * pose and rises into place as the loader lifts, continuing the liftoff.
+   * Stays 0 on deep links (the loader never mounts).
+   */
+  introArrival: 0,
 
   // Background parallax Y offsets (for slide-in from bottom)
   earthY: 14.5,

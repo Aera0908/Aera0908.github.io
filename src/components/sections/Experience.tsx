@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { hudState } from "@/lib/hud-state";
 import { VariousClientsIcon } from "@/components/ui/OrgIcons";
+import { DecodeText } from "@/components/ui/DecodeText";
 
 interface JourneyEntry {
   index: string;
@@ -249,7 +250,8 @@ export function Experience({ entered }: { entered: boolean }) {
 
       <div className="journey-header opacity-0 max-w-2xl select-none">
         <h2 className="t-h2 mb-2 text-paper uppercase">
-          THE JOURNEY<span className="text-iris-bright">.</span>
+          <DecodeText text="THE JOURNEY" trigger="#journey" start="top 20%" />
+          <span className="text-iris-bright">.</span>
         </h2>
         <p className="t-label text-periwinkle/60">
           ● 001 // EXPERIENCE LOG

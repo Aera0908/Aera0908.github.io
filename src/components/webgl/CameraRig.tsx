@@ -9,6 +9,9 @@ import { CAMERA_PATH, expDampAlpha, getLookTarget } from "@/lib/scene";
 /** mouse influence on camera position (world units at full deflection) */
 const MOUSE_X = 0.6;
 const MOUSE_Y = 0.35;
+/** intro arrival offset at full strength (world units, below + behind) */
+const ARRIVAL_Y = -2.2;
+const ARRIVAL_Z = 3.0;
 /** damping stiffness — spec §3 says λ = 4–6 */
 const LAMBDA = 4.5;
 
@@ -33,6 +36,11 @@ export function CameraRig() {
     offset.lerp(target, expDampAlpha(LAMBDA, delta));
 
     camera.position.copy(pathPos).add(offset);
+    const a = hudState.introArrival;
+    if (a > 0) {
+      camera.position.y += ARRIVAL_Y * a;
+      camera.position.z += ARRIVAL_Z * a;
+    }
     camera.lookAt(lookAt);
   });
 

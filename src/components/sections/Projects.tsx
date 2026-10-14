@@ -8,6 +8,7 @@ import { hudState } from "@/lib/hud-state";
 import { navReturn } from "@/lib/nav-return";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { VaultCard } from "@/components/ui/VaultCard";
+import { DecodeText } from "@/components/ui/DecodeText";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { usePageTransition } from "@/components/providers/PageTransitionProvider";
 
@@ -165,7 +166,8 @@ export function Projects() {
       <CyberLines />
 
       <h2 className="t-h2 mb-1 text-paper">
-        THE VAULT<span className="text-iris-bright">.</span>
+        <DecodeText text="THE VAULT" />
+        <span className="text-iris-bright">.</span>
       </h2>
       <p className="t-label mb-6 text-periwinkle/60">● 002 // SELECTED BUILDS</p>
 

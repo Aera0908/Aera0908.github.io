@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { gsap } from "@/lib/gsap";
 import { CyberLines } from "@/components/ui/CyberLines";
+import { DecodeText } from "@/components/ui/DecodeText";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { lockScroll, unlockScroll } from "@/lib/scroll-lock";
 
@@ -335,7 +336,8 @@ export function Credentials() {
       <CyberLines flip />
 
       <h2 className="cred-reveal t-h2 mb-2 text-paper">
-        CREDENTIALS<span className="text-iris-bright">.</span>
+        <DecodeText text="CREDENTIALS" start="top 65%" />
+        <span className="text-iris-bright">.</span>
       </h2>
       <p className="cred-reveal t-label mb-4 text-periwinkle/60">
         ● 003 // CERTIFICATIONS & CAPABILITY MATRIX
