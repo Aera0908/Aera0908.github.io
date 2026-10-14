@@ -271,7 +271,11 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     };
   }, [phase]);
 
-  function enter(withSound: boolean) {
+  /**
+   * Hand over to the site. `viaDoors`: the bulkhead reveal already removed
+   * the poster and started the camera, so only the logo flight remains.
+   */
+  function enter(withSound: boolean, viaDoors = false) {
     if (enteredRef.current) return;
     enteredRef.current = true;
 
@@ -284,7 +288,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
     // continues the liftoff: the camera keeps climbing and docks as the
     // yellow layer wipes up (bg wipe below runs 0.08s → 1.28s)
-    arrive(2.4, MOTION.servo);
+    if (!viaDoors) arrive(2.4, MOTION.servo);
 
     const logo = logoRef.current;
     if (!logo) {
@@ -325,10 +329,10 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     });
 
     // 1. Fade out the poster frame chrome
-    tl.to(".boot-chrome", { opacity: 0, duration: 0.4, ease: "power2.out" }, 0);
+    if (!viaDoors) tl.to(".boot-chrome", { opacity: 0, duration: 0.4, ease: "power2.out" }, 0);
 
     // 2. Wipe the yellow background layer up via clipPath
-    if (bgLayerRef.current) {
+    if (bgLayerRef.current && !viaDoors) {
       tl.to(
         bgLayerRef.current,
         {
@@ -357,15 +361,15 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
           x: dx,
           y: dy,
           scale,
-          duration: 1.25,
+          duration: viaDoors ? 1.1 : 1.25,
           ease: "power3.inOut",
           transformOrigin: "50% 50%",
         },
-        0.08,
+        viaDoors ? 0 : 0.08,
       );
 
       // ink → paper as the yellow layer lifts
-      tl.to(letters, { color: "#f4f3ee", duration: 0.95, ease: "power2.inOut" }, 0.2);
+      if (!viaDoors) tl.to(letters, { color: "#f4f3ee", duration: 0.95, ease: "power2.inOut" }, 0.2);
     }
   }
 
@@ -420,8 +424,11 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     const hit = 1.05;
     tl.call(
       () => {
+        // behind the sealed doors the poster is struck: they open onto the
+        // live world, with AERA in paper white waiting at the centre
         showLogo();
-        gsap.set(letters, { yPercent: 40, opacity: 0, x: 0 });
+        if (bgLayerRef.current) bgLayerRef.current.style.visibility = "hidden";
+        gsap.set(letters, { yPercent: 40, opacity: 0, x: 0, color: "#f4f3ee" });
         sfx(() => hudAudio.thump())();
       },
       [],
@@ -458,6 +465,9 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
     // 5. crack open against resistance: stick, slip, stick
     const crack = rel + 0.45;
+    // the camera starts its climb as the seal breaks, so the world is
+    // already moving when the first light comes through the seam
+    tl.call(() => arrive(2.6, MOTION.servo), [], crack - 0.05);
     tl.to(".k-door-l", { keyframes: { xPercent: [-1.2, -1, -2.8, -2.6, -4.5] }, duration: 0.55, ease: "none" }, crack);
     tl.to(".k-door-r", { keyframes: { xPercent: [1.2, 1, 2.8, 2.6, 4.5] }, duration: 0.55, ease: "none" }, crack);
 
@@ -467,7 +477,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     tl.to(".k-door-l", { xPercent: -101, duration: 0.85, ease: MOTION.hydraulicOpen }, open);
     tl.to(".k-door-r", { xPercent: 101, duration: 0.85, ease: MOTION.hydraulicOpen }, open);
     tl.to(letters, { yPercent: 0, opacity: 1, duration: 0.45, ease: MOTION.servo, stagger: 0.06 }, open + 0.35);
-    tl.call(() => enter(true), [], open + 1.0);
+    tl.call(() => enter(true, true), [], open + 1.0);
 
     return () => {
       tl.kill();
@@ -789,8 +799,8 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
             </g>
           </svg>
           <p
-            className="k-lock-label absolute left-1/2 top-full mt-12 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] font-black tracking-[0.3em]"
-            style={{ color: POSTER }}
+            className="k-lock-label absolute left-1/2 top-full mt-12 -translate-x-1/2 whitespace-nowrap px-3 py-1 font-mono text-xs font-black tracking-[0.3em] md:text-sm"
+            style={{ color: INK, background: POSTER }}
           >
             SEALING
           </p>
@@ -865,30 +875,38 @@ function DoorFace({ side }: { side: "l" | "r" }) {
           style={{ top: `calc(50% + ${dir * BOLT_OFFSET}px - 10px)`, borderColor: `${POSTER}80` }}
         />
       ))}
-      {/* plate label + pressure-seal gauge */}
+      {/* door plate, near the seam where the eye is */}
       <div
-        className={`absolute bottom-10 flex flex-col gap-1.5 font-mono text-[9px] font-bold tracking-[0.22em] ${
-          port ? "left-6 md:left-10" : "right-6 items-end md:right-10"
+        className={`absolute top-[14%] flex flex-col gap-1.5 font-mono ${
+          port ? "right-8 items-end md:right-16" : "left-8 items-start md:left-16"
         }`}
-        style={{ color: `${POSTER}b3` }}
       >
-        <span>{port ? "BAY DOOR // PORT" : "BAY DOOR // STBD"}</span>
-        <span className="flex items-center gap-2">
-          SEAL
-          <span className="relative block h-1.5 w-20 border md:w-28" style={{ borderColor: `${POSTER}80` }}>
-            <span
-              className="k-seal-fill absolute inset-0"
-              style={{ background: POSTER, transform: "scaleX(0)", transformOrigin: port ? "0% 50%" : "100% 50%" }}
-            />
-          </span>
+        <span
+          className="px-2 py-1 text-[10px] font-black tracking-[0.18em] md:px-2.5 md:text-sm md:tracking-[0.22em]"
+          style={{ background: POSTER, color: INK }}
+        >
+          {port ? "BAY DOOR // PORT" : "BAY DOOR // STBD"}
+        </span>
+        <span className="text-[10px] font-bold tracking-[0.22em] md:text-xs" style={{ color: POSTER }}>
+          SECTOR AERA
         </span>
       </div>
-      <span
-        className={`absolute top-10 font-mono text-[9px] font-bold tracking-[0.22em] ${port ? "left-6 md:left-10" : "right-6 md:right-10"}`}
-        style={{ color: `${POSTER}80` }}
+
+      {/* pressure-seal gauge */}
+      <div
+        className={`absolute bottom-[14%] flex flex-col gap-1.5 font-mono text-[10px] font-bold tracking-[0.22em] md:text-xs ${
+          port ? "right-8 items-end md:right-16" : "left-8 items-start md:left-16"
+        }`}
+        style={{ color: POSTER }}
       >
-        SECTOR AERA
-      </span>
+        <span>PRESSURE SEAL</span>
+        <span className="relative block h-2.5 w-24 border-2 md:w-44" style={{ borderColor: POSTER }}>
+          <span
+            className="k-seal-fill absolute inset-0"
+            style={{ background: POSTER, transform: "scaleX(0)", transformOrigin: port ? "100% 50%" : "0% 50%" }}
+          />
+        </span>
+      </div>
     </div>
   );
 }
