@@ -22,17 +22,28 @@ interface JourneyEntry {
 const ENTRIES: JourneyEntry[] = [
   {
     index: "001",
+    role: "Junior Software Engineer",
+    org: "NAAXTECH",
+    period: "2026 - PRESENT",
+    url: "https://naaxtech.com/",
+    blurb:
+      "Building client systems at Naaxtech, a technology execution partner that streamlines business operations, connects teams, data and tools, and grows revenue through integrated software.",
+    tags: ["Software Engineering", "Business Systems", "Integrations"],
+    logo: "/icons/naaxtech-logo.svg",
+  },
+  {
+    index: "002",
     role: "IC Layout Trainee",
     org: "XINYX LABS",
-    period: "2026 - PRESENT",
+    period: "2026 - SEP 2026",
     url: "https://www.labsbyxinyx.com/",
     blurb:
-      "Undergoing specialized industry training in integrated circuit (IC) physical layout design: floorplanning, standard cell layout, DRC/LVS physical verification rule decks, and parasitic extraction workflows.",
+      "Completed specialized industry training in integrated circuit (IC) physical layout design: floorplanning, standard cell layout, DRC/LVS physical verification rule decks, and parasitic extraction workflows.",
     tags: ["IC Layout", "DRC/LVS", "Physical Design", "VLSI", "Semiconductor"],
     logo: "/icons/xinyx-labs.jpg",
   },
   {
-    index: "002",
+    index: "003",
     role: "Lead Web3 & Full-Stack Developer",
     org: "FEHUVIA",
     period: "2026",
@@ -43,7 +54,7 @@ const ENTRIES: JourneyEntry[] = [
     logo: "/icons/fehuvia-logo.png",
   },
   {
-    index: "003",
+    index: "004",
     role: "Lead Hardware & Software Engineer",
     org: "AEROVIT",
     period: "2024 - 2026",
@@ -54,7 +65,7 @@ const ENTRIES: JourneyEntry[] = [
     logo: "/icons/aerovit-logo.png",
   },
   {
-    index: "004",
+    index: "005",
     role: "Freelance Web3 & Full-Stack Developer",
     org: "VARIOUS CLIENTS",
     period: "2023 - NOW",
@@ -64,7 +75,7 @@ const ENTRIES: JourneyEntry[] = [
     Icon: VariousClientsIcon,
   },
   {
-    index: "005",
+    index: "006",
     role: "IC Design Intern",
     org: "XINYX DESIGN",
     period: "OJT",
@@ -75,7 +86,7 @@ const ENTRIES: JourneyEntry[] = [
     logo: "/icons/xinyx-design-with-text.jpg",
   },
   {
-    index: "006",
+    index: "007",
     role: "B.S. Computer Engineering (Magna Cum Laude)",
     org: "COLEGIO DE MUNTINLUPA",
     period: "2022 - 2026",
