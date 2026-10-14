@@ -925,11 +925,8 @@ function DoorFace({ side }: { side: "l" | "r" }) {
         <path d="M 600 408 A 92 92 0 0 0 600 592" fill="none" stroke={POSTER} strokeOpacity={0.45} strokeWidth={1.5} strokeDasharray="3 6" />
       </svg>
 
-      {/* hazard seam */}
-      <div
-        className={`absolute inset-y-0 w-3 ${port ? "right-0" : "left-0"}`}
-        style={{ backgroundImage: `repeating-linear-gradient(45deg, ${POSTER} 0 8px, ${INK} 8px 16px)` }}
-      />
+      {/* seam edge: a thin solid line, so the doors read as meeting */}
+      <div className={`absolute inset-y-0 w-[2px] ${port ? "right-0" : "left-0"}`} style={{ background: POSTER }} />
       {/* bolt sockets on the seam */}
       {[-1, 1].map((dir) => (
         <div
