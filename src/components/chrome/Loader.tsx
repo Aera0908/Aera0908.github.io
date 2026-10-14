@@ -60,6 +60,10 @@ const TRACES = [
   "M 470 910 V 720 L 530 660 V 600",
 ];
 const RIVETS = Array.from({ length: 13 }, (_, i) => 30 + i * 45);
+/** resting heights of the pressure meter bars (fraction of full) */
+const EQ_REST = [0.35, 0.6, 0.45, 0.8, 0.5, 0.7, 0.3, 0.55];
+/** the line shown when the doors open: AERA is the destination, not the viewer */
+const ARRIVAL_LINE = "NOW ARRIVING";
 
 /**
  * Intro: the poster assembles itself mechanically. Measuring lines draw
@@ -328,8 +332,9 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
       },
     });
 
-    // 1. Fade out the poster frame chrome
+    // 1. Fade out the poster frame chrome (or, via the doors, the arrival line)
     if (!viaDoors) tl.to(".boot-chrome", { opacity: 0, duration: 0.4, ease: "power2.out" }, 0);
+    else tl.to(".k-arrive", { opacity: 0, y: "-=12", duration: 0.3, ease: MOTION.snap }, 0);
 
     // 2. Wipe the yellow background layer up via clipPath
     if (bgLayerRef.current && !viaDoors) {
@@ -387,7 +392,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
       return;
     }
     const letters = Array.from(logo.querySelectorAll<HTMLElement>(".aera-letter"));
-    const lockLabel = doors.querySelector<HTMLElement>(".k-lock-label");
+    const arriveText = overlayRef.current?.querySelector<HTMLElement>(".k-arrive-text") ?? null;
     const sfx = (fn: () => void) => () => {
       try {
         fn();
@@ -419,6 +424,12 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     tl.call(sfx(() => hudAudio.hydraulic(0.95)), [], 0.05);
     tl.to(".k-door-l", { xPercent: 0, duration: 0.95, ease: MOTION.hydraulic }, 0.1);
     tl.to(".k-door-r", { xPercent: 0, duration: 0.95, ease: MOTION.hydraulic }, 0.1);
+    // chevrons run toward the seam while the doors travel
+    tl.to(
+      ".k-chev",
+      { keyframes: { opacity: [0.25, 1, 0.25] }, duration: 0.32, ease: "none", stagger: 0.08, repeat: 2 },
+      0.1,
+    );
 
     // 2. impact: rebound off the stop, inner plates carry on a beat
     const hit = 1.05;
@@ -443,23 +454,36 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     // 3. lock: dial seats, traces power up toward it, dial ratchets, bolts fire
     tl.fromTo(".k-lock", { opacity: 1, scale: 0.7 }, { scale: 1, duration: 0.16, ease: "steps(3)" }, hit + 0.12);
     tl.to(".k-trace", { strokeDashoffset: 0, duration: 0.55, ease: "power2.in", stagger: 0.04 }, hit + 0.12);
-    if (lockLabel) tl.add(decodeTween(lockLabel, { duration: 0.35, text: "SEALING" }), hit + 0.16);
+    // pressure meter jitters while the chamber is held
+    tl.to(
+      ".k-eq",
+      {
+        scaleY: () => gsap.utils.random(0.15, 1),
+        duration: 0.07,
+        ease: "steps(1)",
+        repeat: 22,
+        repeatRefresh: true,
+        stagger: 0.015,
+      },
+      hit + 0.12,
+    );
     [0.45, 0.72, 0.99].forEach((at, i) => {
       tl.to(".k-dial", { rotation: (i + 1) * 30, svgOrigin: "130 130", duration: 0.13, ease: MOTION.servo }, hit + at);
       tl.call(sfx(() => hudAudio.ratchet()), [], hit + at);
+      tl.to(`.k-pip-${i}`, { scale: 1, duration: 0.1, ease: "steps(2)" }, hit + at);
       tl.to([".k-door-l", ".k-door-r"], { keyframes: { x: [2, -1, 0] }, duration: 0.1, ease: "none" }, hit + at + 0.02);
     });
     tl.to(".k-bolt", { scaleX: 1, duration: 0.16, ease: "power4.in", stagger: 0.05 }, hit + 0.6);
     tl.call(sfx(() => hudAudio.thump(0.1)), [], hit + 0.76);
     tl.to(".k-seal-fill", { scaleX: 1, duration: 0.36, ease: "steps(6)" }, hit + 1.1);
-    if (lockLabel) tl.add(decodeTween(lockLabel, { duration: 0.3, text: "SEALED" }), hit + 1.15);
 
     // 4. release: dial spins back, bolts retract, pressure vents
     const rel = hit + 1.6;
     tl.to(".k-dial", { rotation: -30, svgOrigin: "130 130", duration: 0.3, ease: MOTION.servo }, rel);
     tl.to(".k-bolt", { scaleX: 0, duration: 0.14, ease: "power3.in", stagger: 0.04 }, rel + 0.08);
     tl.call(sfx(() => hudAudio.hiss(1.0)), [], rel + 0.1);
-    if (lockLabel) tl.add(decodeTween(lockLabel, { duration: 0.3, text: "RELEASE" }), rel + 0.05);
+    tl.to(".k-pip", { scale: 0, duration: 0.1, ease: "steps(2)", stagger: 0.05 }, rel + 0.05);
+    tl.to(".k-eq", { scaleY: 0.1, duration: 0.3, ease: MOTION.snap, stagger: 0.02 }, rel + 0.1);
     tl.to(".k-seal-fill", { scaleX: 0, duration: 0.3, ease: "steps(6)" }, rel + 0.1);
     tl.to(".k-lock", { scale: 0.7, opacity: 0, duration: 0.16, ease: "steps(3)" }, rel + 0.35);
 
@@ -476,8 +500,30 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     tl.call(sfx(() => hudAudio.hydraulic(0.8)), [], open - 0.05);
     tl.to(".k-door-l", { xPercent: -101, duration: 0.85, ease: MOTION.hydraulicOpen }, open);
     tl.to(".k-door-r", { xPercent: 101, duration: 0.85, ease: MOTION.hydraulicOpen }, open);
-    tl.to(letters, { yPercent: 0, opacity: 1, duration: 0.45, ease: MOTION.servo, stagger: 0.06 }, open + 0.35);
-    tl.call(() => enter(true, true), [], open + 1.0);
+
+    // 7. arrival: the line decodes over the world, lifts, and the AERA sign
+    // docks beneath it, like a floor indicator naming the destination
+    tl.set(".k-arrive", { opacity: 1, y: 0 }, open + 0.45);
+    tl.call(sfx(() => hudAudio.blip()), [], open + 0.45);
+    if (arriveText) tl.add(decodeTween(arriveText, { duration: 0.55, text: ARRIVAL_LINE }), open + 0.45);
+    tl.to(".k-arrive-rule", { scaleX: 1, duration: 0.45, ease: MOTION.snap }, open + 0.55);
+    tl.to(
+      ".k-arrive",
+      {
+        y: () => {
+          const wrap = logo.querySelector<HTMLElement>(".aera-letters-wrapper");
+          const msg = overlayRef.current?.querySelector<HTMLElement>(".k-arrive");
+          if (!wrap || !msg) return -120;
+          return -(wrap.offsetHeight / 2 + msg.offsetHeight / 2 - 4);
+        },
+        duration: 0.45,
+        ease: MOTION.servo,
+      },
+      open + 1.5,
+    );
+    tl.to(letters, { yPercent: 0, opacity: 1, duration: 0.45, ease: MOTION.servo, stagger: 0.06 }, open + 1.55);
+    tl.call(sfx(() => hudAudio.confirm()), [], open + 1.6);
+    tl.call(() => enter(true, true), [], open + 2.45);
 
     return () => {
       tl.kill();
@@ -733,6 +779,18 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         )}
       </div>
 
+      {/* arrival line: shown when the doors open, then lifts above AERA */}
+      <div
+        className="k-arrive pointer-events-none absolute inset-x-0 top-1/2 z-[115] flex -translate-y-1/2 flex-col items-center gap-3"
+        style={{ opacity: 0 }}
+        aria-hidden="true"
+      >
+        <p className="k-arrive-text font-mono text-xs font-black tracking-[0.5em] md:text-sm" style={{ color: "#f4f3ee" }}>
+          {ARRIVAL_LINE}
+        </p>
+        <span className="k-arrive-rule block h-[2px] w-40 md:w-72" style={{ background: POSTER, transform: "scaleX(0)" }} />
+      </div>
+
       {/* AERA logo (outside the clipped layer so the wipe never cuts it) */}
       <div ref={logoRef} className="pointer-events-none absolute inset-0 z-[110] hidden items-center justify-center">
         <div className="aera-letters-wrapper relative z-[2] flex gap-[0.02em] overflow-hidden px-8 py-4 font-display text-[16vw] font-black uppercase leading-none tracking-[-0.08em] select-none md:text-[12vw]" style={{ color: INK }}>
@@ -798,12 +856,17 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
               <circle cx={130} cy={130} r={16} fill={INK} stroke={POSTER} strokeWidth={3} />
             </g>
           </svg>
-          <p
-            className="k-lock-label absolute left-1/2 top-full mt-12 -translate-x-1/2 whitespace-nowrap px-3 py-1 font-mono text-xs font-black tracking-[0.3em] md:text-sm"
-            style={{ color: INK, background: POSTER }}
-          >
-            SEALING
-          </p>
+          {/* status pips: one fills per ratchet click */}
+          <div className="absolute left-1/2 top-full mt-12 flex -translate-x-1/2 gap-2.5">
+            {[0, 1, 2].map((i) => (
+              <span key={i} className="relative block h-3.5 w-3.5 border-2" style={{ borderColor: POSTER }}>
+                <span
+                  className={`k-pip k-pip-${i} absolute inset-[2px]`}
+                  style={{ background: POSTER, transform: "scale(0)" }}
+                />
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -875,36 +938,51 @@ function DoorFace({ side }: { side: "l" | "r" }) {
           style={{ top: `calc(50% + ${dir * BOLT_OFFSET}px - 10px)`, borderColor: `${POSTER}80` }}
         />
       ))}
-      {/* door plate, near the seam where the eye is */}
+      {/* chevrons pointing at the seam + pressure meter, near where the eye is */}
       <div
-        className={`absolute top-[14%] flex flex-col gap-1.5 font-mono ${
+        className={`absolute top-[14%] flex flex-col gap-3 ${
           port ? "right-8 items-end md:right-16" : "left-8 items-start md:left-16"
         }`}
       >
-        <span
-          className="px-2 py-1 text-[10px] font-black tracking-[0.18em] md:px-2.5 md:text-sm md:tracking-[0.22em]"
-          style={{ background: POSTER, color: INK }}
-        >
-          {port ? "BAY DOOR // PORT" : "BAY DOOR // STBD"}
-        </span>
-        <span className="text-[10px] font-bold tracking-[0.22em] md:text-xs" style={{ color: POSTER }}>
-          SECTOR AERA
-        </span>
+        <div className={`flex gap-1.5 ${port ? "" : "flex-row-reverse"}`}>
+          {[0, 1, 2, 3].map((i) => (
+            <svg key={i} viewBox="0 0 10 16" className="k-chev h-4 w-2.5 md:h-5 md:w-3" style={{ opacity: 0.25 }}>
+              <polyline
+                points={port ? "1,1 8,8 1,15" : "9,1 2,8 9,15"}
+                fill="none"
+                stroke={POSTER}
+                strokeWidth={2.5}
+              />
+            </svg>
+          ))}
+        </div>
+        <div className={`flex h-8 items-end gap-1 md:h-10 ${port ? "" : "flex-row-reverse"}`}>
+          {EQ_REST.map((h, i) => (
+            <span
+              key={i}
+              className="k-eq block h-full w-1.5 md:w-2"
+              style={{ background: POSTER, transform: `scaleY(${h})`, transformOrigin: "50% 100%" }}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* pressure-seal gauge */}
+      {/* pressure-seal gauge with tick marks */}
       <div
-        className={`absolute bottom-[14%] flex flex-col gap-1.5 font-mono text-[10px] font-bold tracking-[0.22em] md:text-xs ${
+        className={`absolute bottom-[14%] flex flex-col gap-1 ${
           port ? "right-8 items-end md:right-16" : "left-8 items-start md:left-16"
         }`}
-        style={{ color: POSTER }}
       >
-        <span>PRESSURE SEAL</span>
         <span className="relative block h-2.5 w-24 border-2 md:w-44" style={{ borderColor: POSTER }}>
           <span
             className="k-seal-fill absolute inset-0"
             style={{ background: POSTER, transform: "scaleX(0)", transformOrigin: port ? "100% 50%" : "0% 50%" }}
           />
+        </span>
+        <span className="flex w-24 justify-between md:w-44">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <span key={i} className="block h-1.5 w-[2px]" style={{ background: POSTER }} />
+          ))}
         </span>
       </div>
     </div>
