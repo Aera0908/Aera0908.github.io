@@ -171,9 +171,16 @@ const SYSTEMS: ArchiveItem[] = [
   },
 ];
 
-const ARTS_VIDEOS = [
+const ARTS_VIDEOS: { index: string; name: string; youtubeId: string; tools?: string; blurb: string }[] = [
   {
     index: "A-01",
+    name: "DOWN? VIDEO EXPLAINER",
+    youtubeId: "k4_VRURl6m4",
+    blurb:
+      "\"Barkada can't decide where to eat? Swipe together on Down?\" Explainer for the group hangout decider: one shared room, everyone swipes on nearby spots, and the group lands on a unanimous pick.",
+  },
+  {
+    index: "A-02",
     name: "FEHUVIA WORKSTATION SHOWCASE",
     youtubeId: "aDBoZOoOhd8",
     tools: "FIGMA // ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO",
@@ -181,7 +188,7 @@ const ARTS_VIDEOS = [
       "High-fidelity workstation highlights video: interface functionalities, dual-state data flows, and AI OCR capabilities. Custom visual assets in Figma and Adobe Illustrator, motion graphics in After Effects, edited in Premiere Pro.",
   },
   {
-    index: "A-02",
+    index: "A-03",
     name: "AEROVIT ECOSYSTEM WALKTHROUGH",
     youtubeId: "rqx192_81zA",
     tools: "ILLUSTRATOR // AFTER EFFECTS // PREMIERE PRO",
@@ -560,7 +567,7 @@ export default function ProjectArchivePage() {
         <p className="t-label mb-6 text-iris-bright">
           ● ARTS // VIDEO / PUBMATS / VISUAL
         </p>
-        <div className="grid gap-6 pb-8 sm:grid-cols-2 lg:grid-cols-2">
+        <div className="grid gap-6 pb-8 sm:grid-cols-2 lg:grid-cols-3">
           {ARTS_VIDEOS.map((a) => (
             <div
               key={a.index}
@@ -583,7 +590,7 @@ export default function ProjectArchivePage() {
                     {a.name}
                   </span>
                 </div>
-                <p className="t-micro mb-3 text-iris-bright/70">{a.tools}</p>
+                {a.tools && <p className="t-micro mb-3 text-iris-bright/70">{a.tools}</p>}
                 <p className="text-xs leading-relaxed text-periwinkle/70">
                   {a.blurb}
                 </p>

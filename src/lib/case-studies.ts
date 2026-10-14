@@ -98,6 +98,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         type: "video",
       },
       {
+        src: "https://www.youtube.com/embed/k4_VRURl6m4",
+        caption: "Down? Video Explainer: Barkada Can't Decide Where to Eat? Swipe Together on Down? (YouTube)",
+        type: "youtube",
+      },
+      {
         src: "/projects/down-app-images/down-video-records.mp4",
         poster: "/projects/down-app-images/down-record-poster.jpg",
         caption: "Down? Live App Screen Recording: Full End-to-End Walkthrough of Ephemeral Room Creation, Geo Radius Selection, Card Swiping & Realtime Match Consensus",
