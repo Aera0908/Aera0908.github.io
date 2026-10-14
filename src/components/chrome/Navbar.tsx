@@ -217,7 +217,7 @@ export function Navbar() {
 
       {/* Cybernetic Mobile Navigation Drawer (isolated from mix-blend-difference for crisp dark contrast) */}
       <div
-        className={`fixed inset-0 z-[71] md:hidden flex flex-col justify-between bg-[#0a0a0c]/98 backdrop-blur-2xl transition-all duration-300 ease-out pt-20 px-6 pb-8 ${
+        className={`fixed inset-0 z-[71] md:hidden flex flex-col justify-between bg-[#0a0a0c]/98 transition-all duration-300 ease-out pt-20 px-6 pb-8 ${
           menuOpen
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 -translate-y-4 pointer-events-none"
@@ -230,7 +230,7 @@ export function Navbar() {
         <div className="relative z-10 flex items-center justify-between border-b border-periwinkle/15 pb-3 font-mono text-[9px] tracking-widest text-periwinkle/60 uppercase">
           <span>■ SYS {"//"} NAVIGATION_INDEX</span>
           <span className="flex items-center gap-1.5 text-signal font-bold">
-            <span className="h-1.5 w-1.5 rounded-full bg-signal animate-ping" />
+            <span className="h-1.5 w-1.5 rounded-full bg-signal" />
             ACTIVE
           </span>
         </div>

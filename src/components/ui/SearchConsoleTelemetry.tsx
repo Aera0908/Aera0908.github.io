@@ -45,12 +45,9 @@ export function SearchConsoleTelemetry() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-periwinkle/15 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-iris opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-iris-bright" />
-            </span>
+            <span className="h-2 w-2 rounded-full bg-iris-bright" />
             <p className="t-micro text-iris-bright font-mono tracking-widest uppercase">
-              LIVE TELEMETRY // GOOGLE SEARCH CONSOLE
+              TELEMETRY SNAPSHOT // GOOGLE SEARCH CONSOLE
             </p>
           </div>
           <h2 className="t-h3 mt-1 text-paper">ORGANIC SEARCH TRACTION</h2>
@@ -66,64 +63,45 @@ export function SearchConsoleTelemetry() {
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-6">
-        {/* Metric 1: Clicks */}
-        <div className="border border-periwinkle/15 bg-world-2 p-4 transition-colors hover:border-iris/40">
-          <div className="flex items-center justify-between text-periwinkle/50 mb-2">
+      {/* KPI strip: one container, metrics split by dividers */}
+      <dl className="mb-6 grid grid-cols-2 border border-periwinkle/15 bg-world-2 sm:grid-cols-4 [&>div]:p-4 [&>div]:border-periwinkle/15 max-sm:[&>div:nth-child(-n+2)]:border-b max-sm:[&>div:nth-child(odd)]:border-r sm:[&>div:not(:last-child)]:border-r">
+        <div>
+          <dt className="flex items-center justify-between text-periwinkle/50 mb-2">
             <span className="t-micro font-mono">ORGANIC CLICKS</span>
-            <MousePointerClick className="h-4 w-4 text-iris-bright" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-paper">
-            {summary.clicks}
-          </div>
-          <p className="mt-1 text-[10px] text-iris-bright font-mono">
-            High-intent EDA engineers
-          </p>
+            <MousePointerClick className="h-4 w-4 text-iris-bright" aria-hidden="true" />
+          </dt>
+          <dd className="text-2xl font-bold font-mono text-paper">{summary.clicks}</dd>
+          <dd className="mt-1 text-[10px] text-periwinkle/60 font-mono">From Google search</dd>
         </div>
-
-        {/* Metric 2: Impressions */}
-        <div className="border border-periwinkle/15 bg-world-2 p-4 transition-colors hover:border-iris/40">
-          <div className="flex items-center justify-between text-periwinkle/50 mb-2">
+        <div>
+          <dt className="flex items-center justify-between text-periwinkle/50 mb-2">
             <span className="t-micro font-mono">IMPRESSIONS</span>
-            <Eye className="h-4 w-4 text-periwinkle/70" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-paper">
-            {summary.impressions}
-          </div>
-          <p className="mt-1 text-[10px] text-periwinkle/60 font-mono">
-            Google search appearances
-          </p>
+            <Eye className="h-4 w-4 text-periwinkle/70" aria-hidden="true" />
+          </dt>
+          <dd className="text-2xl font-bold font-mono text-paper">{summary.impressions}</dd>
+          <dd className="mt-1 text-[10px] text-periwinkle/60 font-mono">Google search appearances</dd>
         </div>
-
-        {/* Metric 3: CTR */}
-        <div className="border border-periwinkle/15 bg-world-2 p-4 transition-colors hover:border-iris/40">
-          <div className="flex items-center justify-between text-periwinkle/50 mb-2">
+        <div>
+          <dt className="flex items-center justify-between text-periwinkle/50 mb-2">
             <span className="t-micro font-mono">AVG CTR</span>
-            <TrendingUp className="h-4 w-4 text-signal" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-signal">
-            {(summary.ctr * 100).toFixed(1)}%
-          </div>
-          <p className="mt-1 text-[10px] text-signal/80 font-mono">
-            ★ Top 5% SaaS benchmark
-          </p>
+            <TrendingUp className="h-4 w-4 text-signal" aria-hidden="true" />
+          </dt>
+          <dd className="text-2xl font-bold font-mono text-signal">{(summary.ctr * 100).toFixed(1)}%</dd>
+          <dd className="mt-1 text-[10px] text-periwinkle/60 font-mono">
+            {summary.clicks} of {summary.impressions} impressions
+          </dd>
         </div>
-
-        {/* Metric 4: Position */}
-        <div className="border border-periwinkle/15 bg-world-2 p-4 transition-colors hover:border-iris/40">
-          <div className="flex items-center justify-between text-periwinkle/50 mb-2">
+        <div>
+          <dt className="flex items-center justify-between text-periwinkle/50 mb-2">
             <span className="t-micro font-mono">AVG RANK</span>
-            <Award className="h-4 w-4 text-iris-bright" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-paper">
-            #{summary.position}
-          </div>
-          <p className="mt-1 text-[10px] text-iris-bright font-mono">
-            Page 1 Google rank
-          </p>
+            <Award className="h-4 w-4 text-iris-bright" aria-hidden="true" />
+          </dt>
+          <dd className="text-2xl font-bold font-mono text-paper">#{summary.position}</dd>
+          <dd className="mt-1 text-[10px] text-periwinkle/60 font-mono">
+            {summary.position <= 10 ? "Page 1 of Google results" : "Average result position"}
+          </dd>
         </div>
-      </div>
+      </dl>
 
       {/* Timeline Sparkline Section */}
       <div className="mb-6 border border-periwinkle/15 bg-world-2 p-4">
@@ -241,7 +219,7 @@ export function SearchConsoleTelemetry() {
                         {(q.ctr * 100).toFixed(1)}%
                       </span>
                     ) : (
-                      "—"
+                      "N/A"
                     )}
                   </td>
                   <td className="py-2.5 text-right">

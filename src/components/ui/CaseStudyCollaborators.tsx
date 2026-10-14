@@ -275,7 +275,7 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
             aria-hidden="true"
           />
 
-          <div className="relative overflow-hidden border border-periwinkle/20 bg-[#0e0f17]/95 shadow-[0_16px_40px_rgba(0,0,0,0.85)] backdrop-blur-2xl rounded-xs">
+          <div className="relative overflow-hidden border border-periwinkle/20 bg-[#0e0f17]/95 shadow-[0_16px_40px_rgba(0,0,0,0.85)] rounded-xs">
             {/* Ambient subtle top line */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-iris-bright/60 to-transparent" />
 
@@ -365,7 +365,7 @@ function CollaboratorItem({ collaborator }: { collaborator: Collaborator }) {
               )}
 
               {/* GitHub Stats Row */}
-              <div className="grid grid-cols-3 gap-1 border border-periwinkle/15 bg-world-2/60 p-2 text-center rounded-xs">
+              <div className="grid grid-cols-3 gap-1 border-t border-periwinkle/15 pt-2 text-center">
                 <div>
                   <p className="font-mono text-xs font-bold text-paper">
                     {profile?.public_repos ?? 0}

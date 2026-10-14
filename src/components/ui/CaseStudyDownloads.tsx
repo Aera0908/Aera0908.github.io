@@ -49,7 +49,7 @@ export function CaseStudyDownloads({ downloads }: CaseStudyDownloadsProps) {
                     onMouseEnter={fx.blip}
                     disabled={isDownloading}
                     aria-label={`Download ${item.name}`}
-                    className="group relative overflow-hidden rounded-md border border-signal bg-signal px-5 py-2.5 font-mono text-[9px] font-black tracking-[0.14em] text-[#0c0d12] uppercase transition-all duration-300 hover:scale-105 hover:bg-[#fff024] hover:shadow-[0_0_20px_rgba(232,217,12,0.4)] cursor-pointer disabled:cursor-wait"
+                    className="group relative overflow-hidden rounded-md border border-signal bg-signal px-5 py-2.5 font-mono text-[9px] font-black tracking-[0.14em] text-[#0c0d12] uppercase transition-all duration-300 hover:scale-105 hover:bg-[#fff024] cursor-pointer disabled:cursor-wait"
                   >
                     {/* Subtle shine sweep on hover */}
                     <span className="absolute inset-0 bg-white/25 translate-x-[-100%] group-hover:translate-x-full transition-transform duration-500 ease-out z-0" />
@@ -74,7 +74,7 @@ export function CaseStudyDownloads({ downloads }: CaseStudyDownloadsProps) {
                     onMouseEnter={fx.blip}
                     disabled={isDownloading}
                     aria-label={`Download ${item.name}`}
-                    className="group relative overflow-hidden rounded-md border border-periwinkle/35 bg-world-2/80 px-5 py-2.5 font-mono text-[9px] font-bold tracking-[0.14em] text-periwinkle uppercase backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:text-paper hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.15)] cursor-pointer disabled:cursor-wait"
+                    className="group relative overflow-hidden rounded-md border border-periwinkle/35 bg-world-2/95 px-5 py-2.5 font-mono text-[9px] font-bold tracking-[0.14em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:text-paper hover:bg-world-2 cursor-pointer disabled:cursor-wait"
                   >
                     {/* Sliding yellow background */}
                     <span className="absolute inset-0 bg-iris-bright/15 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />

@@ -339,7 +339,7 @@ export default function ProjectArchivePage() {
           {ARTS_VIDEOS.map((a) => (
             <div
               key={a.index}
-              className="group card-notch overflow-hidden border border-periwinkle/15 bg-world-2 transition-all duration-300 hover:border-iris-bright/50 hover:shadow-[0_0_20px_rgba(252,238,10,0.08)]"
+              className="group card-notch overflow-hidden border border-periwinkle/15 bg-world-2 transition-all duration-300 hover:border-iris-bright/50"
             >
               <div className="relative aspect-video w-full overflow-hidden bg-black">
                 <iframe

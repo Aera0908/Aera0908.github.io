@@ -41,7 +41,7 @@ export function ResumePreviewModal() {
 
   const url = type === "resume" ? "/YNTE_RESUME.pdf" : "/YNTE_CV.pdf";
   const downloadName = type === "resume" ? "YNTE_RESUME.pdf" : "YNTE_CV.pdf";
-  const title = type === "resume" ? "AIRA YNTE — RESUME" : "AIRA YNTE — CURRICULUM VITAE";
+  const title = type === "resume" ? "AIRA YNTE: RESUME" : "AIRA YNTE: CURRICULUM VITAE";
 
   return (
     <div
@@ -52,7 +52,7 @@ export function ResumePreviewModal() {
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-[#050507]/90 backdrop-blur-md"
+        className="absolute inset-0 bg-[#050507]/90"
         onClick={() => {
           fx.click();
           setType(null);
@@ -60,7 +60,7 @@ export function ResumePreviewModal() {
       />
 
       {/* Cybernetic Solid Yellow Modal Container */}
-      <div className="animate-zoom-in relative w-full max-w-4xl h-[92dvh] md:h-[85vh] border-2 border-[#0a0a0c] bg-signal rounded flex flex-col overflow-hidden font-mono shadow-[0_20px_50px_rgba(232,217,12,0.15)] z-10">
+      <div className="animate-zoom-in relative w-full max-w-4xl h-[92dvh] md:h-[85vh] border-2 border-[#0a0a0c] bg-signal rounded flex flex-col overflow-hidden font-mono z-10">
         
         {/* Tactical Crosshair / Corner Details */}
         <div className="absolute top-1 left-1 text-[8px] text-[#0a0a0c]/40 pointer-events-none select-none">┌ SEC_PREVIEW ┐</div>
@@ -69,14 +69,14 @@ export function ResumePreviewModal() {
         {/* Modal Header (Solid Black bar with solid yellow text) */}
         <div className="bg-[#0a0a0c] text-signal px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between text-xs font-black border-b-2 border-[#0a0a0c] select-none gap-2">
           <div className="flex min-w-0 items-center gap-2 truncate">
-            <span className="w-2 h-2 shrink-0 rounded-full bg-signal animate-ping" />
+            <span className="w-2 h-2 shrink-0 rounded-full bg-signal" />
             <span className="tracking-widest truncate text-[10px] sm:text-xs">{title}</span>
           </div>
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <a
               href={url}
               download={downloadName}
-              className="bg-signal text-[#0a0a0c] font-black px-2.5 sm:px-4 py-1.5 sm:py-2 border border-signal sm:border-2 hover:bg-transparent hover:text-signal transition-colors font-mono text-[8px] sm:text-[9px] tracking-wider sm:tracking-widest uppercase leading-none shadow-[0_4px_12px_rgba(232,217,12,0.25)] cursor-pointer shrink-0"
+              className="bg-signal text-[#0a0a0c] font-black px-2.5 sm:px-4 py-1.5 sm:py-2 border border-signal sm:border-2 hover:bg-transparent hover:text-signal transition-colors font-mono text-[8px] sm:text-[9px] tracking-wider sm:tracking-widest uppercase leading-none cursor-pointer shrink-0"
               onMouseEnter={fx.blip}
               onClick={fx.click}
             >

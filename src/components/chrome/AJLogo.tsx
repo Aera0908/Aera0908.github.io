@@ -8,7 +8,7 @@ export function AJLogo({ className = "h-6 w-auto" }: { className?: string }) {
       viewBox="0 0 128 72"
       className={className}
       role="img"
-      aria-label="AJ — Aera logo"
+      aria-label="AJ: Aera logo"
     >
       {/* A */}
       <path

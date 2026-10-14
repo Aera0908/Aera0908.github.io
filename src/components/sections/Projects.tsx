@@ -219,7 +219,7 @@ export function Projects() {
               >
                 <span className="opacity-40">●</span>
                 <span className="flex items-center gap-1.5 font-bold">
-                  <span className="h-2.5 w-2.5 rounded-full bg-black animate-ping" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-black" />
                   P-04 // FAMILIAR
                 </span>
                 <span className="opacity-40">●</span>
@@ -244,7 +244,7 @@ export function Projects() {
       <div className="mt-4 flex shrink-0 justify-center">
         <Link
           href="/vault/archive"
-          className="group relative overflow-hidden rounded-md border border-periwinkle/30 bg-world-2/60 backdrop-blur-sm px-6 py-3 md:px-8 md:py-3.5 font-mono text-xs tracking-[0.16em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:shadow-[0_0_25px_rgba(252,238,10,0.18)] cursor-pointer"
+          className="group relative overflow-hidden rounded-md border border-periwinkle/30 bg-world-2/95 px-6 py-3 md:px-8 md:py-3.5 font-mono text-xs tracking-[0.16em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright cursor-pointer"
           onMouseEnter={fx.blip}
           onClick={(e) => {
             e.preventDefault();

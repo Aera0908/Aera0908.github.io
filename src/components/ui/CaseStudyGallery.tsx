@@ -151,7 +151,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                     )}
                     {/* Play HUD overlay indicator */}
                     <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors duration-500">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-iris-bright/60 bg-world/80 text-iris-bright backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:border-iris-bright group-hover:shadow-[0_0_15px_rgba(156,66,245,0.4)]">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-iris-bright/60 bg-world/95 text-iris-bright transition-all duration-300 group-hover:scale-110 group-hover:border-iris-bright">
                         <svg
                           className="h-6 w-6 fill-current ml-0.5"
                           viewBox="0 0 24 24"
@@ -205,7 +205,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
           onClick={handleClose}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
-          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/98 md:bg-black/95 p-0 md:p-4 backdrop-blur-md transition-opacity duration-300 cursor-zoom-out focus:outline-none select-none"
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/98 md:bg-black/95 p-0 md:p-4 transition-opacity duration-300 cursor-zoom-out focus:outline-none select-none"
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -219,7 +219,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
             {/* Modal header/meta */}
             <div className="relative z-10 mb-2 flex items-center justify-between border-b border-periwinkle/15 pb-2.5 text-[10px] text-periwinkle/70 font-mono">
               <div className="flex items-center gap-2 truncate pr-2">
-                <span className="h-2 w-2 rounded-full bg-signal shrink-0 animate-ping" />
+                <span className="h-2 w-2 rounded-full bg-signal shrink-0" />
                 <span className="font-bold text-paper truncate">EVIDENCE // {slug.toUpperCase()}</span>
                 <span className="text-iris-bright hidden sm:inline">[{activeItem.type === "youtube" ? "YOUTUBE BROADCAST" : activeItem.type === "video" ? "VIDEO FEED" : "IMAGE STILL"}]</span>
               </div>
@@ -279,7 +279,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                       fx.blip();
                       setActiveIndex((prev) => (prev !== null ? (prev - 1 + gallery.length) % gallery.length : 0));
                     }}
-                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 md:h-11 md:w-11 items-center justify-center rounded-full bg-black/70 border border-periwinkle/25 text-paper hover:border-iris-bright hover:text-iris-bright transition-all backdrop-blur-sm cursor-pointer"
+                    className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 md:h-11 md:w-11 items-center justify-center rounded-full bg-black/90 border border-periwinkle/25 text-paper hover:border-iris-bright hover:text-iris-bright transition-all cursor-pointer"
                     aria-label="Previous image"
                   >
                     <span className="text-lg md:text-xl font-bold">‹</span>
@@ -290,7 +290,7 @@ export function CaseStudyGallery({ gallery, slug }: { gallery: GalleryItem[]; sl
                       fx.blip();
                       setActiveIndex((prev) => (prev !== null ? (prev + 1) % gallery.length : 0));
                     }}
-                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 md:h-11 md:w-11 items-center justify-center rounded-full bg-black/70 border border-periwinkle/25 text-paper hover:border-iris-bright hover:text-iris-bright transition-all backdrop-blur-sm cursor-pointer"
+                    className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 md:h-11 md:w-11 items-center justify-center rounded-full bg-black/90 border border-periwinkle/25 text-paper hover:border-iris-bright hover:text-iris-bright transition-all cursor-pointer"
                     aria-label="Next image"
                   >
                     <span className="text-lg md:text-xl font-bold">›</span>

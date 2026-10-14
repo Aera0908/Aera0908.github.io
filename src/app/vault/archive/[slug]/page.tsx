@@ -102,7 +102,7 @@ export default async function CaseStudyPage({
               href={liveLink.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xs bg-signal px-6 py-3 font-mono text-xs font-black uppercase tracking-wider text-[#0c0d12] shadow-[0_0_20px_rgba(252,238,10,0.35)] transition-all duration-200 hover:scale-[1.02] hover:bg-white cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xs bg-signal px-6 py-3 font-mono text-xs font-black uppercase tracking-wider text-[#0c0d12] transition-all duration-200 hover:scale-[1.02] hover:bg-white cursor-pointer"
             >
               <span>OPEN LIVE WEB APP</span>
               <span className="font-bold">[{liveLink.label}]</span>

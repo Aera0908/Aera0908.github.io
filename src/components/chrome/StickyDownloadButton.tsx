@@ -59,7 +59,7 @@ export function StickyDownloadButton() {
         visible ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
       }`}
     >
-      <div className="flex gap-2 bg-world-2/95 border border-periwinkle/20 p-2 rounded-md shadow-2xl backdrop-blur-md">
+      <div className="flex gap-2 bg-world-2/95 border border-periwinkle/20 p-2 rounded-md shadow-2xl">
         <button
           onClick={() => {
             fx.click();

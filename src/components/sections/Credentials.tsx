@@ -347,7 +347,7 @@ export function Credentials() {
         {/* Terminal Header Bar */}
         <div className="bg-world border-b border-periwinkle/15 px-4 py-2 flex items-center justify-between text-xs text-iris-bright select-none">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-signal animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-signal" />
             <span>AERA_SYS // MODULE: CREDENTIALS_DB_v2.0</span>
           </div>
           <div className="text-periwinkle/55 hidden sm:block">
@@ -359,7 +359,7 @@ export function Credentials() {
         {terminalState === "loading" ? (
           <div className="flex-1 flex flex-col items-center justify-center text-iris-bright text-xs font-mono space-y-4 min-h-[380px] select-none">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-signal animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-signal" />
               <span>DECRYPTING SECURE CREDENTIALS DATASET...</span>
             </div>
             <div className="w-64 h-2 border border-iris/30 rounded overflow-hidden p-0.5 bg-world-2">
@@ -432,7 +432,7 @@ export function Credentials() {
                   )}
                 </p>
 
-                <div className={`grid gap-3 sm:grid-cols-2 lg:grid-cols-3 flex-1 transition-opacity duration-500 ${terminalState === "ready" || cmd2Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+                <div className={`grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 flex-1 transition-opacity duration-500 ${terminalState === "ready" || cmd2Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
                   {/* Cards are not role="button" — each contains its own
                       [PREVIEW] button and [DOWNLOAD] link, and ARIA forbids
                       focusable descendants inside a button. Those two controls
@@ -440,22 +440,12 @@ export function Credentials() {
                   {featured.map((c) => (
                     <div
                       key={c.name}
-                      onPointerMove={(ev) => {
-                        const rect = ev.currentTarget.getBoundingClientRect();
-                        ev.currentTarget.style.setProperty("--mouse-x", `${ev.clientX - rect.left}px`);
-                        ev.currentTarget.style.setProperty("--mouse-y", `${ev.clientY - rect.top}px`);
-                      }}
                       onClick={() => {
                         fx.click();
                         setPreviewCert(c);
                       }}
-                      className="group/cert clip-step-tr text-left cursor-pointer relative border border-periwinkle/15 bg-world/40 hover:border-iris-bright/60 transition-colors p-4 flex flex-col justify-between overflow-hidden shadow-lg"
+                      className="group/cert text-left cursor-pointer relative border-t border-periwinkle/20 hover:border-iris-bright transition-colors pt-3 flex flex-col justify-between"
                     >
-                      {/* Radial spotlight glow */}
-                      <div
-                        className="pointer-events-none absolute inset-0 opacity-0 group-hover/cert:opacity-100 transition-opacity duration-300 z-0 bg-[radial-gradient(280px_circle_at_var(--mouse-x,-100px)_var(--mouse-y,-100px),rgba(252,238,10,0.12),transparent_60%)]"
-                        aria-hidden="true"
-                      />
                       <div className="relative z-10">
                         <div className="flex items-center justify-between gap-2 mb-1.5">
                           <span className="text-[9px] text-iris-bright font-bold">FILE: {c.issuer}_SYS.DB</span>
@@ -580,14 +570,14 @@ export function Credentials() {
         >
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-[#050507]/90 backdrop-blur-md"
+            className="absolute inset-0 bg-[#050507]/90"
             onClick={() => {
               fx.click();
               setPreviewCert(null);
             }}
           />
           {/* Refined Dark Theme Modal Container */}
-          <div className="relative w-full max-w-4xl h-[85vh] border border-periwinkle/20 bg-world/95 rounded-lg flex flex-col overflow-hidden font-mono shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-xl z-10 animate-zoom-in">
+          <div className="relative w-full max-w-4xl h-[85vh] border border-periwinkle/20 bg-world/95 rounded-lg flex flex-col overflow-hidden font-mono shadow-[0_20px_60px_rgba(0,0,0,0.8)] z-10 animate-zoom-in">
             
             {/* Tactical Crosshair / Corner Details */}
             <div className="absolute top-1 left-1 text-[8px] text-periwinkle/20 pointer-events-none select-none">┌ SEC_PREVIEW ┐</div>
@@ -596,14 +586,14 @@ export function Credentials() {
             {/* Modal Header */}
             <div className="bg-world-2/40 text-paper px-6 py-4 flex items-center justify-between text-xs font-bold border-b border-periwinkle/15 select-none z-10">
               <div className="flex min-w-0 items-center gap-2">
-                <span className="w-2 h-2 shrink-0 rounded-full bg-iris-bright animate-ping" />
+                <span className="w-2 h-2 shrink-0 rounded-full bg-iris-bright" />
                 <span className="truncate tracking-widest text-periwinkle">DECRYPTING: {previewCert.downloadName}</span>
               </div>
               <div className="flex items-center gap-3">
                 <a
                   href={previewCert.url}
                   download={previewCert.downloadName}
-                  className="rounded-sm bg-iris-bright text-[#0c0d12] font-mono font-bold px-3.5 py-1.5 text-[9px] tracking-widest uppercase transition-all duration-200 hover:bg-white hover:scale-105 hover:shadow-[0_0_12px_rgba(252,238,10,0.4)] cursor-pointer"
+                  className="rounded-sm bg-iris-bright text-[#0c0d12] font-mono font-bold px-3.5 py-1.5 text-[9px] tracking-widest uppercase transition-all duration-200 hover:bg-white hover:scale-105 cursor-pointer"
                   onMouseEnter={fx.blip}
                   onClick={fx.click}
                 >

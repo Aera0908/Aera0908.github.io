@@ -488,7 +488,7 @@ export function Hero({
                   fx.click();
                   window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "resume" } }));
                 }}
-                className="group relative overflow-hidden rounded-md border border-signal bg-signal px-5 py-2.5 font-mono text-[9px] font-black tracking-[0.14em] text-[#0c0d12] uppercase transition-all duration-300 hover:scale-105 hover:bg-[#fff024] hover:shadow-[0_0_20px_rgba(232,217,12,0.4)] cursor-pointer"
+                className="group relative overflow-hidden rounded-md border border-signal bg-signal px-5 py-2.5 font-mono text-[9px] font-black tracking-[0.14em] text-[#0c0d12] uppercase transition-all duration-300 hover:scale-105 hover:bg-[#fff024] cursor-pointer"
                 onMouseEnter={fx.blip}
               >
                 {/* Subtle shine sweep on hover */}
@@ -506,7 +506,7 @@ export function Hero({
                   fx.click();
                   window.dispatchEvent(new CustomEvent("open-resume-preview", { detail: { type: "cv" } }));
                 }}
-                className="group relative overflow-hidden rounded-md border border-periwinkle/35 bg-world-2/80 px-5 py-2.5 font-mono text-[9px] font-bold tracking-[0.14em] text-periwinkle uppercase backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:text-paper hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.15)] cursor-pointer"
+                className="group relative overflow-hidden rounded-md border border-periwinkle/35 bg-world-2/95 px-5 py-2.5 font-mono text-[9px] font-bold tracking-[0.14em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright hover:text-paper hover:bg-world-2 cursor-pointer"
                 onMouseEnter={fx.blip}
               >
                 {/* Sliding yellow background */}
@@ -527,7 +527,7 @@ export function Hero({
                 href="mailto:08airajosh@gmail.com"
                 aria-label="Send Email to 08airajosh@gmail.com"
                 title="Email: 08airajosh@gmail.com"
-                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-signal text-ink transition-all duration-300 hover:scale-110 hover:bg-[#fff024] hover:shadow-[0_0_20px_rgba(252,238,10,0.45)]"
+                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-signal text-ink transition-all duration-300 hover:scale-110 hover:bg-[#fff024]"
                 onMouseEnter={fx.blip}
                 onClick={fx.confirm}
               >
@@ -555,7 +555,7 @@ export function Hero({
                 rel="noopener noreferrer me"
                 aria-label="GitHub Profile"
                 title="GitHub: Aera0908"
-                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
+                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/95 border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2"
                 onMouseEnter={fx.blip}
                 onClick={fx.click}
               >
@@ -582,7 +582,7 @@ export function Hero({
                 rel="noopener noreferrer me"
                 aria-label="LinkedIn Profile"
                 title="LinkedIn: aira-josh-ynte"
-                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
+                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/95 border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2"
                 onMouseEnter={fx.blip}
                 onClick={fx.click}
               >
@@ -605,7 +605,7 @@ export function Hero({
                 rel="noopener noreferrer me"
                 aria-label="X (Twitter) Profile"
                 title="X: @aera0908"
-                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_15px_rgba(252,238,10,0.25)]"
+                className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-world-2/95 border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2"
                 onMouseEnter={fx.blip}
                 onClick={fx.click}
               >
@@ -631,7 +631,7 @@ export function Hero({
           <div className="ghostcue-peek pointer-events-auto opacity-0 select-none z-40 hidden md:block md:absolute md:bottom-0 md:top-auto md:right-full">
             {/* Desktop card view */}
             <div
-              className="group relative w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-iris-bright transition-colors duration-300 shadow-2xl backdrop-blur-md cursor-pointer select-none text-left"
+              className="group relative w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-iris-bright transition-colors duration-300 shadow-2xl cursor-pointer select-none text-left"
               style={{
                 clipPath: "polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px)",
               }}

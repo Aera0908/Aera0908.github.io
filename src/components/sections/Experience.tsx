@@ -263,18 +263,8 @@ export function Experience({ entered }: { entered: boolean }) {
         {ENTRIES.map((e) => (
           <article
             key={e.index}
-            onPointerMove={(ev) => {
-              const rect = ev.currentTarget.getBoundingClientRect();
-              ev.currentTarget.style.setProperty("--mouse-x", `${ev.clientX - rect.left}px`);
-              ev.currentTarget.style.setProperty("--mouse-y", `${ev.clientY - rect.top}px`);
-            }}
             className="xp-card group/card clip-bevel-br relative w-[85vw] max-w-[420px] md:max-w-[500px] flex-shrink-0 bg-paper p-5 sm:p-6 text-ink md:p-12 overflow-hidden shadow-xl"
           >
-            {/* Cyberpunk radial spotlight glow */}
-            <div
-              className="pointer-events-none absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 z-0 bg-[radial-gradient(400px_circle_at_var(--mouse-x,-100px)_var(--mouse-y,-100px),rgba(252,238,10,0.2),transparent_60%)]"
-              aria-hidden="true"
-            />
             {/* journey-family line accents */}
             <span
               className="pointer-events-none absolute right-6 top-6 h-6 w-px bg-ink/25 z-10"

@@ -66,7 +66,7 @@ export function Contact() {
             href="mailto:08airajosh@gmail.com"
             aria-label="Send Email to 08airajosh@gmail.com"
             title="Email: 08airajosh@gmail.com"
-            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-signal text-ink transition-all duration-300 hover:scale-110 hover:bg-[#fff024] hover:shadow-[0_0_30px_rgba(232,217,12,0.5)]"
+            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-signal text-ink transition-all duration-300 hover:scale-110 hover:bg-[#fff024]"
             onMouseEnter={fx.blip}
             onClick={fx.confirm}
           >
@@ -92,7 +92,7 @@ export function Contact() {
             rel="noopener noreferrer me"
             aria-label="GitHub Profile"
             title="GitHub: Aera0908"
-            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
+            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/95 border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2"
             onMouseEnter={fx.blip}
             onClick={fx.click}
           >
@@ -117,7 +117,7 @@ export function Contact() {
             rel="noopener noreferrer me"
             aria-label="LinkedIn Profile"
             title="LinkedIn: aira-josh-ynte"
-            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
+            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/95 border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2"
             onMouseEnter={fx.blip}
             onClick={fx.click}
           >
@@ -138,7 +138,7 @@ export function Contact() {
             rel="noopener noreferrer me"
             aria-label="X (Twitter) Profile"
             title="X: @aera0908"
-            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/80 border border-periwinkle/25 text-periwinkle backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2 hover:shadow-[0_0_20px_rgba(252,238,10,0.25)]"
+            className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-world-2/95 border border-periwinkle/25 text-periwinkle transition-all duration-300 hover:scale-110 hover:border-signal hover:text-signal hover:bg-world-2"
             onMouseEnter={fx.blip}
             onClick={fx.click}
           >
@@ -156,7 +156,7 @@ export function Contact() {
         {/* Inline Resume & CV buttons under the Uplink buttons */}
         <div className="flex flex-col items-start gap-1.5 font-mono text-[9px] select-none pl-1">
           <span className="text-[8px] text-periwinkle/55">SYS_UPLINK // DOWNLOAD</span>
-          <div className="flex gap-2 bg-world-2/90 border border-periwinkle/20 p-2 rounded-md shadow-2xl backdrop-blur-md">
+          <div className="flex gap-2 bg-world-2/90 border border-periwinkle/20 p-2 rounded-md shadow-2xl">
             <button
               onClick={() => {
                 fx.click();

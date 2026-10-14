@@ -955,7 +955,7 @@ export const ProjectDiagram = ({ id, caption }: { id: string; caption?: string }
           className="group relative block w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-iris-bright/40 cursor-pointer"
           aria-label="Open diagram larger"
         >
-          <span className="absolute right-2 top-2 z-10 border border-periwinkle/20 bg-world px-2 py-1 font-mono text-[9px] uppercase tracking-widest text-periwinkle/70 opacity-90 backdrop-blur-sm transition group-hover:border-iris-bright group-hover:text-iris-bright">
+          <span className="absolute right-2 top-2 z-10 border border-periwinkle/20 bg-world px-2 py-1 font-mono text-[9px] uppercase tracking-widest text-periwinkle/70 opacity-90 transition group-hover:border-iris-bright group-hover:text-iris-bright">
             Tap to enlarge
           </span>
           <div className="overflow-x-auto p-3 sm:p-4">
