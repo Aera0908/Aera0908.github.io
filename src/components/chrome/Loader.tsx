@@ -116,10 +116,15 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
   const [phase, setPhase] = useState<Phase>("loading");
 
+  /* reticle cursor only while the boot screen is up. Keyed on phase, not
+     mount: the Loader stays mounted (rendering null) after the intro, so a
+     mount-only cleanup left the reticle on for the whole visit. */
+  const introActive = phase !== "gone";
   useEffect(() => {
+    if (!introActive) return;
     document.body.classList.add("intro-cursor");
     return () => document.body.classList.remove("intro-cursor");
-  }, []);
+  }, [introActive]);
 
   /* ---------- build sequence: the screen assembles itself ----------
      Layout effect so the hidden start states land before first paint.
