@@ -41,7 +41,6 @@ export function Hero({
       // On deep links, immediately set hero text & logo to hidden state
       gsap.set(".hero-reveal:not(.hero-img-container)", { opacity: 0, y: -30, pointerEvents: "none" });
       gsap.set(".hero-logo-target", { opacity: 0, y: -30, pointerEvents: "none" });
-      gsap.set(".ghostcue-peek", { opacity: 0, pointerEvents: "none" });
       gsap.set(".hero-scroll-cue", { opacity: 0, pointerEvents: "none" });
       if (cardRef.current) {
         gsap.set(cardRef.current, { opacity: 1, scale: 1 });
@@ -107,24 +106,6 @@ export function Hero({
         },
         0.25,
       );
-
-      // GhostCue announcement banner: snaps in once the hero has docked (desktop only)
-      if (typeof window !== "undefined" && window.innerWidth >= 768) {
-        introTl.fromTo(
-          ".ghostcue-peek",
-          { opacity: 0, x: 24 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.4,
-            ease: MOTION.snap,
-            onStart: () => {
-              fxRef.current.blip();
-            },
-          },
-          "+=0.05",
-        );
-      }
 
       // Scroll down cue: last, once everything has settled
       introTl.fromTo(
@@ -232,7 +213,7 @@ export function Hero({
         }, 0);
 
         if (isBaseRoute) {
-          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek", ".hero-scroll-cue"], {
+          tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".hero-scroll-cue"], {
             opacity: 0,
             y: -30,
             pointerEvents: "none",
@@ -241,7 +222,7 @@ export function Hero({
           }, 0);
         } else {
           tl.fromTo(
-            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".ghostcue-peek", ".hero-scroll-cue"],
+            [".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".hero-scroll-cue"],
             { opacity: 1, y: 0, pointerEvents: "auto" },
             {
               opacity: 0,
@@ -285,8 +266,10 @@ export function Hero({
         }, 0.1)
         .fromTo(".hero-card-meta", {
           opacity: 1,
+          pointerEvents: "auto",
         }, {
           opacity: 0,
+          pointerEvents: "none",
           duration: 0.3,
           immediateRender: false,
         }, 0.1)
@@ -384,8 +367,10 @@ export function Hero({
         }, 3.05)
         .fromTo(".hero-card-meta", {
           opacity: 0,
+          pointerEvents: "none",
         }, {
           opacity: 1,
+          pointerEvents: "auto",
           duration: 0.25,
           immediateRender: false,
         }, 3.05)
@@ -666,65 +651,7 @@ export function Hero({
         <div
           ref={cardPlaceholderRef}
           className="hero-img-container w-full max-w-[290px] sm:max-w-sm md:max-w-md aspect-[3/4] max-md:max-h-[42vh] justify-self-center md:justify-self-end relative z-40 pointer-events-none"
-        >
-          {/* GhostCue Announcement Banner: Desktop vertical tag (hidden on mobile) */}
-          <div className="ghostcue-peek pointer-events-auto opacity-0 select-none z-40 hidden md:block md:absolute md:bottom-0 md:top-auto md:right-full">
-            {/* Desktop card view */}
-            <div
-              className="group relative w-34 h-[195px] p-[1px] bg-periwinkle/25 hover:bg-iris-bright transition-colors duration-300 shadow-2xl cursor-pointer select-none text-left"
-              style={{
-                clipPath: "polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px)",
-              }}
-            >
-              <Link
-                href="/vault/archive/down"
-                onClick={() => fx.click()}
-                onMouseEnter={fx.blip}
-                className="relative flex flex-col justify-between w-full h-full bg-world-2/95 p-3 overflow-hidden"
-                style={{
-                  clipPath: "polygon(13px 0, 100% 0, 100% 100%, 0 100%, 0 13px)",
-                }}
-                title="Check Down? out - Group Meetup & Hangout Decider"
-              >
-                {/* Sliding yellow background sweep */}
-                <span className="absolute inset-0 bg-iris-bright translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out z-0 pointer-events-none" />
-
-                {/* Top: Eye Candy "NEW" Tag */}
-                <div className="relative z-10 flex items-center justify-between">
-                  <span className="font-mono text-[8px] font-black px-1.5 py-0.5 bg-signal text-[#0c0d12] leading-none rounded-xs tracking-wider uppercase group-hover:bg-ink group-hover:text-signal transition-colors duration-300">
-                    NEW
-                  </span>
-                  <span className="font-mono text-[8px] text-periwinkle/40 group-hover:text-ink/60 transition-colors duration-300">
-                    S-01
-                  </span>
-                </div>
-
-                {/* Center: App Logo & Name */}
-                <div className="relative z-10 my-auto flex flex-col items-center text-center">
-                  <div className="h-14 w-14 rounded-xs border border-periwinkle/20 bg-world/90 p-2 shadow-inner group-hover:border-ink/30 group-hover:bg-ink/10 transition-colors duration-300 flex items-center justify-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/projects/down-icon.svg"
-                      alt="Down? Icon"
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                  <h3 className="font-display text-base font-black uppercase tracking-tight text-paper group-hover:text-ink transition-colors duration-300 leading-none mt-2.5">
-                    DOWN<span className="text-[#FF1E44] group-hover:text-ink">?</span>
-                  </h3>
-                </div>
-
-                {/* Bottom: Check Out CTA */}
-                <div className="relative z-10 flex items-center justify-between pt-2 border-t border-periwinkle/15 group-hover:border-ink/20 transition-colors duration-300 font-mono text-[8.5px] font-black tracking-widest text-signal group-hover:text-ink uppercase">
-                  <span>CHECK OUT</span>
-                  <span className="text-signal group-hover:text-ink group-hover:translate-x-1 transition-transform duration-300">
-                    →
-                  </span>
-                </div>
-              </Link>
-            </div>
-          </div>
-        </div>
+        />
       </div>
 
       {/* Pinned Card: Used for both layout and scrollytelling expansion */}
@@ -883,12 +810,42 @@ export function Hero({
           </div>
         </div>
 
-        <div className="hero-card-meta flex justify-between items-end t-micro text-ink-soft">
+        <div className="hero-card-meta flex flex-col gap-2.5">
+          {/* latest release: a line of the operator dossier, not a separate badge */}
+          <Link
+            href="/vault/archive/down"
+            onClick={() => fx.click()}
+            onMouseEnter={fx.blip}
+            aria-label="Latest build: Down?, group meetup and hangout decider"
+            className="group/release relative flex items-center justify-between gap-3 overflow-hidden border-y border-ink/15 py-2 t-micro text-ink-soft"
+          >
+            <span
+              className="absolute inset-0 -translate-x-[101%] bg-iris-bright transition-transform duration-300 ease-out group-hover/release:translate-x-0"
+              aria-hidden="true"
+            />
+            <span className="relative flex items-center gap-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/projects/down-icon.svg" alt="" className="h-4 w-4 object-contain" />
+              <span>LATEST BUILD {"//"}</span>
+              <span className="font-display text-xs font-black tracking-tight text-ink">
+                DOWN<span className="text-[#FF1E44] transition-colors group-hover/release:text-ink">?</span>
+              </span>
+            </span>
+            <span
+              className="relative font-bold text-ink transition-transform duration-300 group-hover/release:translate-x-1"
+              aria-hidden="true"
+            >
+              →
+            </span>
+          </Link>
+
+          <div className="flex justify-between items-end t-micro text-ink-soft">
           <div className="flex flex-col gap-0.5">
             <span className="font-bold text-ink">AERA.SYS</span>
             <span>B.S. COMPUTER ENGINEERING</span>
           </div>
           <span className="font-bold text-ink">@AERA0908</span>
+          </div>
         </div>
       </div>
 
