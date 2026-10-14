@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gsap, MOTION } from "@/lib/gsap";
 import { hudState } from "@/lib/hud-state";
 import { hudAudio } from "@/lib/audio";
+import { decodeTween } from "@/lib/decode";
 
 type Phase = "loading" | "waiting" | "revealing" | "ready" | "gone";
 
@@ -12,31 +13,47 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/** boot log lines for professional portfolio initialization */
-/** boot log lines for professional portfolio initialization */
-const BOOT_LINES: Array<{ at: number; text: string; status?: string }> = [
-  { at: 5, text: "$ boot portfolio.sys // v2.6.4", status: "OK" },
-  { at: 15, text: "> mounting /dev/webgl3d ...........", status: "OK" },
-  { at: 25, text: "> compiling shader pipeline [2/2] ...", status: "OK" },
-  { at: 38, text: "> spawning neural particles [14,000]", status: "OK" },
-  { at: 50, text: "> binding fullstack & embedded runtime", status: "OK" },
-  { at: 62, text: "> loading engineering vault & case files", status: "OK" },
-  { at: 74, text: "> establishing high-speed telemetry uplink", status: "ONLINE" },
-  { at: 84, text: "> authenticating operator // @AERA0908", status: "GRANTED" },
-  { at: 92, text: "> system ready // sector aera 384,400 KM", status: "NOMINAL" },
-  { at: 98, text: "// ALL SYSTEMS OPERATIONAL: AWAITING USER", status: "READY" },
-];
+const INK = "#0d0d10";
+const POSTER = "#e6e200";
 
-/** Streamlined milestones for mobile screens to eliminate crowding */
-const BOOT_LINES_MOBILE: Array<{ at: number; text: string; status?: string }> = [
-  { at: 10, text: "$ boot portfolio.sys // v2.6", status: "OK" },
-  { at: 35, text: "> mounting 3D graphics & shaders", status: "OK" },
-  { at: 65, text: "> loading engineering vault", status: "OK" },
-  { at: 92, text: "// ALL SYSTEMS OPERATIONAL", status: "READY" },
+/* ---------- chamber geometry (SVG viewBox 0 0 400 400, centre 200,200) ---------- */
+
+const C = 200;
+const RING_R = 170;
+const RING_LEN = +(2 * Math.PI * RING_R).toFixed(1);
+/** rounded so server and client render byte-identical SVG */
+const r2 = (n: number) => Math.round(n * 100) / 100;
+const polar = (r: number, deg: number) => {
+  const a = ((deg - 90) * Math.PI) / 180;
+  return [r2(C + r * Math.cos(a)), r2(C + r * Math.sin(a))];
+};
+const TICKS = Array.from({ length: 48 }, (_, i) => {
+  const major = i % 6 === 0;
+  const [x1, y1] = polar(major ? 138 : 148, i * 7.5);
+  const [x2, y2] = polar(160, i * 7.5);
+  return { x1, y1, x2, y2, major };
+});
+const arcPath = (r: number, from: number, to: number) => {
+  const [x1, y1] = polar(r, from);
+  const [x2, y2] = polar(r, to);
+  return `M ${x1} ${y1} A ${r} ${r} 0 ${to - from > 180 ? 1 : 0} 1 ${x2} ${y2}`;
+};
+/** clamps sit just outside the ring and slide in radially to lock it */
+const CLAMPS = [
+  { x: 192, y: 2, w: 16, h: 24, from: { y: -60 } },
+  { x: 374, y: 192, w: 24, h: 16, from: { x: 60 } },
+  { x: 192, y: 374, w: 16, h: 24, from: { y: 60 } },
+  { x: 2, y: 192, w: 24, h: 16, from: { x: -60 } },
 ];
+const GAUGE_SEGMENTS = 12;
+const STAGES = ["FRAME", "CORE", "LINK"];
 
 /**
- * Cyberpunk Industrial Yellow Poster Terminal Loader.
+ * Intro: the poster assembles itself mechanically. Measuring lines draw
+ * out, the frame clamps in, then a central chamber builds (ring, ratcheting
+ * tick ring, locking arcs, clamps, diamond core). The gate waits for a tap;
+ * on proceed, elevator doors slam shut and part to reveal AERA, which then
+ * flies into the hero while the yellow layer wipes away.
  */
 export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: () => void }) {
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -44,10 +61,11 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   const pctRef = useRef<HTMLSpanElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
+  const doorsRef = useRef<HTMLDivElement>(null);
   const enteredRef = useRef(false);
   const revealTlRef = useRef<gsap.core.Timeline | null>(null);
+  const buildTlRef = useRef<gsap.core.Timeline | null>(null);
   const promptRef = useRef<HTMLDivElement>(null);
-  const progressTweenRef = useRef<gsap.core.Tween | null>(null);
   const launchedRef = useRef(false);
 
   const onWaitingRef = useRef(onWaiting);
@@ -80,79 +98,165 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   }
 
   const [phase, setPhase] = useState<Phase>("loading");
-  const [activeLineCount, setActiveLineCount] = useState(0);
-  const [activeMobileCount, setActiveMobileCount] = useState(0);
-  const activeCountRef = useRef(0);
-  const activeMobileRef = useRef(0);
-
-  useEffect(() => {
-    if (phase !== "waiting") return;
-    const prompt = promptRef.current;
-    if (!prompt) return;
-
-    gsap.fromTo(
-      prompt,
-      { opacity: 0, y: 15 },
-      { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }
-    );
-  }, [phase]);
 
   useEffect(() => {
     document.body.classList.add("intro-cursor");
     return () => document.body.classList.remove("intro-cursor");
   }, []);
 
-  /* progress tween drives % readouts and reveals boot lines */
-  useEffect(() => {
-    const proxy = { v: 0 };
-    const tween = gsap.to(proxy, {
-      v: 100,
-      duration: 2.2,
-      ease: "power1.inOut",
-      onUpdate: () => {
-        const pctVal = Math.round(proxy.v);
-        const pctStr = String(pctVal);
-        if (pctRef.current) pctRef.current.textContent = pctStr;
-        if (progressBarRef.current) {
-          progressBarRef.current.style.width = `${pctVal}%`;
-        }
+  /* ---------- build sequence: the screen assembles itself ----------
+     Layout effect so the hidden start states land before first paint.
+     Every shape starts hidden in markup (opacity-0 / full dash offset), so
+     the server-rendered frame never flashes a finished build. */
+  useLayoutEffect(() => {
+    const root = overlayRef.current;
+    if (!root) return;
 
-        let count = 0;
-        BOOT_LINES.forEach((line) => {
-          if (proxy.v >= line.at) {
-            count++;
-          }
-        });
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        onUpdate: () => {
+          const pct = Math.round(tl.progress() * 100);
+          if (pctRef.current) pctRef.current.textContent = String(pct);
+          if (progressBarRef.current) progressBarRef.current.style.width = `${pct}%`;
+        },
+        onComplete: () => {
+          if (enteredRef.current) return;
+          setPhase("waiting");
+          onWaitingRef.current?.();
+        },
+      });
+      buildTlRef.current = tl;
 
-        if (count !== activeCountRef.current) {
-          activeCountRef.current = count;
-          setActiveLineCount(count);
-        }
+      // 1. measuring lines draw out from the centre
+      tl.fromTo(".k-hline", { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.4, ease: MOTION.snap }, 0);
+      tl.fromTo(".k-vline", { scaleY: 0, opacity: 1 }, { scaleY: 1, duration: 0.4, ease: MOTION.snap }, 0.08);
 
-        let mobileCount = 0;
-        BOOT_LINES_MOBILE.forEach((line) => {
-          if (proxy.v >= line.at) {
-            mobileCount++;
-          }
-        });
+      // 2. frame brackets fly in from the centre and clamp to the corners
+      tl.fromTo(
+        ".k-corner",
+        {
+          opacity: 0,
+          scale: 0.5,
+          x: (i: number) => (i % 2 === 0 ? 70 : -70),
+          y: (i: number) => (i < 2 ? 70 : -70),
+        },
+        { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.45, ease: MOTION.servo, stagger: 0.05 },
+        0.2,
+      );
+      tl.fromTo(".k-rail", { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.35, ease: MOTION.snap }, 0.35);
+      tl.set(".k-rail-text", { opacity: 1 }, 0.45);
+      const railText = root.querySelector<HTMLElement>(".k-rail-text");
+      if (railText) tl.add(decodeTween(railText, { duration: 0.45 }), 0.45);
 
-        if (mobileCount !== activeMobileRef.current) {
-          activeMobileRef.current = mobileCount;
-          setActiveMobileCount(mobileCount);
-        }
-      },
-      onComplete: () => {
-        if (enteredRef.current) return;
-        setPhase("waiting");
-        onWaitingRef.current?.();
-      },
-    });
-    progressTweenRef.current = tween;
+      // 3. the chamber: ring draws, tick ring ratchets, arcs lock, clamps engage
+      tl.to(".k-ring", { strokeDashoffset: 0, duration: 0.7, ease: "power3.inOut" }, 0.45);
+      tl.fromTo(".k-ticks", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: MOTION.glitch }, 0.6);
+      [1.0, 1.25, 1.5].forEach((at, i) => {
+        tl.to(".k-ticks", { rotation: (i + 1) * 15, svgOrigin: "200 200", duration: 0.12, ease: MOTION.servo }, at);
+      });
+      tl.fromTo(
+        ".k-arc-a",
+        { opacity: 1, rotation: -140, svgOrigin: "200 200" },
+        { rotation: 0, svgOrigin: "200 200", duration: 0.6, ease: MOTION.servo },
+        0.75,
+      );
+      tl.fromTo(
+        ".k-arc-b",
+        { opacity: 1, rotation: 140, svgOrigin: "200 200" },
+        { rotation: 0, svgOrigin: "200 200", duration: 0.6, ease: MOTION.servo },
+        0.8,
+      );
+      tl.fromTo(
+        ".k-clamp",
+        { opacity: 0, x: (i: number) => CLAMPS[i].from.x ?? 0, y: (i: number) => CLAMPS[i].from.y ?? 0 },
+        { opacity: 1, x: 0, y: 0, duration: 0.32, ease: MOTION.servo, stagger: 0.06 },
+        1.05,
+      );
+      tl.fromTo(
+        ".k-diamond",
+        { opacity: 1, scale: 0, transformOrigin: "50% 50%" },
+        { scale: 1, duration: 0.4, ease: MOTION.servo },
+        1.3,
+      );
+      tl.fromTo(
+        ".k-core",
+        { opacity: 1, scale: 0, transformOrigin: "50% 50%" },
+        { scale: 1, duration: 0.15, ease: "steps(3)" },
+        1.6,
+      );
+
+      // 4. side modules: power gauge fills, hazard strip docks, status plate
+      tl.fromTo(
+        ".k-seg",
+        { opacity: 0.15 },
+        { opacity: 1, duration: 0.01, stagger: 0.14 },
+        0.5,
+      );
+      tl.fromTo(".k-gauge", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.35, ease: MOTION.servo }, 0.3);
+      tl.fromTo(".k-hazard", { opacity: 1, xPercent: 160 }, { xPercent: 0, duration: 0.5, ease: MOTION.servo }, 1.4);
+      tl.fromTo(
+        ".k-status",
+        { opacity: 1, scaleX: 0, transformOrigin: "100% 50%" },
+        { scaleX: 1, duration: 0.3, ease: MOTION.snap },
+        0.5,
+      );
+      tl.fromTo(".k-stages", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: MOTION.glitch }, 0.4);
+      [0.6, 1.5, 2.2].forEach((at, i) => {
+        tl.fromTo(
+          `.k-stage-fill-${i}`,
+          { scale: 0 },
+          { scale: 1, duration: 0.12, ease: "steps(3)" },
+          at,
+        );
+      });
+
+      // 5. measuring lines recede once the build has locked
+      tl.to([".k-hline", ".k-vline"], { opacity: 0.25, duration: 0.3, ease: MOTION.snap }, 2.2);
+
+      if (prefersReducedMotion()) tl.progress(1);
+    }, root);
+
     return () => {
-      tween.kill();
-      progressTweenRef.current = null;
+      buildTlRef.current = null;
+      ctx.revert();
     };
   }, []);
+
+  /* ---------- gate: prompt plate snaps in, tick ring idles on a ratchet ---------- */
+  useEffect(() => {
+    if (phase !== "waiting") return;
+    const prompt = promptRef.current;
+    const plate = prompt?.querySelector<HTMLElement>(".k-plate");
+    const label = prompt?.querySelector<HTMLElement>(".k-plate-text");
+    if (!prompt || !plate) return;
+
+    const tl = gsap.timeline();
+    tl.set(prompt, { opacity: 1 });
+    tl.fromTo(plate, { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: MOTION.snap });
+    if (label) tl.add(decodeTween(label, { duration: 0.45 }), 0.12);
+    tl.fromTo(".k-plate-sub", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: MOTION.glitch }, 0.35);
+
+    // one ratchet click every couple of seconds — the only idle motion
+    let idle: gsap.core.Tween | null = null;
+    const ratchet = () => {
+      idle = gsap.to(".k-ticks", {
+        rotation: "+=7.5",
+        svgOrigin: "200 200",
+        duration: 0.14,
+        ease: MOTION.servo,
+        onComplete: () => {
+          idle = gsap.delayedCall(2.2, ratchet);
+        },
+      });
+    };
+    if (!prefersReducedMotion()) idle = gsap.delayedCall(1.2, ratchet);
+
+    return () => {
+      tl.kill();
+      idle?.kill();
+      gsap.killTweensOf(".k-ticks");
+    };
+  }, [phase]);
 
   function enter(withSound: boolean) {
     if (enteredRef.current) return;
@@ -194,7 +298,6 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     const target = document.querySelector(".hero-logo-target");
     const source = logo.querySelector(".aera-letters-wrapper");
     const letters = logo.querySelectorAll(".aera-letter");
-    const fetchingBadge = logo.querySelector(".fetching-badge");
 
     revealTlRef.current?.kill();
     revealTlRef.current = null;
@@ -208,12 +311,8 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
       },
     });
 
-    // 1. Fade out boot chrome elements & fetching badge smoothly
-    tl.to([".boot-chrome", fetchingBadge], {
-      opacity: 0,
-      duration: 0.4,
-      ease: "power2.out",
-    }, 0);
+    // 1. Fade out the poster frame chrome
+    tl.to(".boot-chrome", { opacity: 0, duration: 0.4, ease: "power2.out" }, 0);
 
     // 2. Wipe the yellow background layer up via clipPath
     if (bgLayerRef.current) {
@@ -224,22 +323,19 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
           duration: 1.2,
           ease: "power3.inOut",
         },
-        0.08
+        0.08,
       );
     }
 
-    // 3. Smooth FLIP morph: move & scale the AERA logo directly to the Hero target
+    // 3. FLIP morph: move & scale the AERA logo directly onto the Hero target
     if (target && source) {
       const sourceRect = source.getBoundingClientRect();
       const targetRect = target.getBoundingClientRect();
 
-      const sourceCenterX = sourceRect.left + sourceRect.width / 2;
-      const sourceCenterY = sourceRect.top + sourceRect.height / 2;
-      const targetCenterX = targetRect.left + targetRect.width / 2;
-      const targetCenterY = targetRect.top + targetRect.height / 2;
-
-      const dx = targetCenterX - sourceCenterX;
-      const dy = targetCenterY - sourceCenterY;
+      const dx =
+        targetRect.left + targetRect.width / 2 - (sourceRect.left + sourceRect.width / 2);
+      const dy =
+        targetRect.top + targetRect.height / 2 - (sourceRect.top + sourceRect.height / 2);
       const scale = targetRect.width / sourceRect.width;
 
       tl.to(
@@ -247,75 +343,68 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         {
           x: dx,
           y: dy,
-          scale: scale,
+          scale,
           duration: 1.25,
           ease: "power3.inOut",
           transformOrigin: "50% 50%",
         },
-        0.08
+        0.08,
       );
 
-      // Transition text color from black (#0d0d10) to paper-white (#f4f3ee) as the yellow background lifts
-      tl.to(
-        letters,
-        {
-          color: "#f4f3ee",
-          duration: 0.95,
-          ease: "power2.inOut",
-        },
-        0.2
-      );
+      // ink → paper as the yellow layer lifts
+      tl.to(letters, { color: "#f4f3ee", duration: 0.95, ease: "power2.inOut" }, 0.2);
     }
   }
 
-  /* AERA letter-by-letter reveal entry animation */
+  /* ---------- reveal: elevator doors slam shut, then part on AERA ---------- */
   useEffect(() => {
     if (phase !== "revealing") return;
 
     const logo = logoRef.current;
-    if (!logo) {
+    const doors = doorsRef.current;
+    if (!logo || !doors) {
       enter(true);
       return;
     }
-    logo.style.display = "flex";
-
     const letters = Array.from(logo.querySelectorAll<HTMLElement>(".aera-letter"));
-    if (letters.length === 0) {
-      enter(true);
-      return;
-    }
+
+    const showLogo = () => {
+      gsap.set([".k-chamber", ".k-hline", ".k-vline"], { opacity: 0 });
+      logo.style.display = "flex";
+    };
 
     if (prefersReducedMotion()) {
-      gsap.set(letters, { yPercent: 0, opacity: 1 });
+      showLogo();
       enter(true);
       return;
     }
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        enter(true);
-      },
-    });
+    gsap.set(".k-door-l", { xPercent: -101 });
+    gsap.set(".k-door-r", { xPercent: 101 });
+    doors.style.visibility = "visible";
+
+    const tl = gsap.timeline();
     revealTlRef.current = tl;
 
-    // Letters rise up sequentially from mask
-    gsap.set(letters, { yPercent: 130, opacity: 1, x: 0 });
-    tl.to(
-      letters,
-      {
-        yPercent: 0,
-        duration: 0.85,
-        stagger: 0.12,
-        ease: "power3.out",
-      },
-      0
-    );
+    tl.to(".k-door-l", { xPercent: 0, duration: 0.34, ease: "power4.in" }, 0.05);
+    tl.to(".k-door-r", { xPercent: 0, duration: 0.34, ease: "power4.in" }, 0.05);
+    // impact: swap the chamber for the logo behind the closed doors
+    tl.call(() => {
+      showLogo();
+      gsap.set(letters, { yPercent: 40, opacity: 0, x: 0 });
+      try {
+        hudAudio.click();
+      } catch {}
+    }, [], 0.39);
+    tl.to(doors, { keyframes: { x: [-7, 6, -3, 0] }, duration: 0.18, ease: "none" }, 0.39);
+    tl.fromTo(".k-latch", { scale: 0, rotation: 45 }, { scale: 1, duration: 0.12, ease: "steps(3)" }, 0.39);
+    tl.to(".k-latch", { scale: 0, duration: 0.1, ease: MOTION.glitch }, 0.66);
 
-    // Subtle misprint registration settle
-    if (letters[1] && letters[2]) {
-      tl.to(letters[1], { x: -3, duration: 0.08, ease: "steps(2)", yoyo: true, repeat: 1 }, 0.9);
-      tl.to(letters[2], { x: 3, duration: 0.08, ease: "steps(2)", yoyo: true, repeat: 1 }, 0.9);
-    }
+    // doors part — fast out, then the letters stamp into place
+    tl.to(".k-door-l", { xPercent: -101, duration: 0.55, ease: MOTION.snap }, 0.74);
+    tl.to(".k-door-r", { xPercent: 101, duration: 0.55, ease: MOTION.snap }, 0.74);
+    tl.to(letters, { yPercent: 0, opacity: 1, duration: 0.4, ease: MOTION.servo, stagger: 0.05 }, 0.78);
+    tl.call(() => enter(true), [], 1.4);
 
     return () => {
       tl.kill();
@@ -329,7 +418,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     enteredRef.current = true;
     launchedRef.current = true;
 
-    progressTweenRef.current?.kill();
+    buildTlRef.current?.kill();
     revealTlRef.current?.kill();
     revealTlRef.current = null;
 
@@ -365,11 +454,10 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     const prompt = promptRef.current;
     if (prompt) {
       gsap.to(prompt, {
+        scaleX: 0,
         opacity: 0,
-        y: -15,
-        scale: 0.96,
-        duration: 0.35,
-        ease: "power2.inOut",
+        duration: 0.18,
+        ease: "power2.in",
         onComplete: () => setPhase("revealing"),
       });
     } else {
@@ -396,20 +484,17 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   if (phase === "gone") return null;
 
   return (
-    <div
-      ref={overlayRef}
-      className="fixed inset-0 z-[100] pointer-events-none"
-    >
-      {/* Yellow Poster Background Layer (Click anywhere to proceed) */}
+    <div ref={overlayRef} className="fixed inset-0 z-[100] pointer-events-none">
+      {/* Yellow poster layer (click anywhere to proceed) */}
       <div
         ref={bgLayerRef}
         onClick={phase === "waiting" ? proceed : undefined}
-        className={`absolute inset-0 bg-[#e6e200] text-[#0d0d10] overflow-hidden select-none font-mono pointer-events-auto ${
+        className={`absolute inset-0 overflow-hidden select-none font-mono pointer-events-auto ${
           phase === "waiting" ? "cursor-pointer" : ""
         }`}
-        style={{ clipPath: "inset(0% 0% 0% 0%)" }}
+        style={{ clipPath: "inset(0% 0% 0% 0%)", background: POSTER, color: INK }}
       >
-        {/* Tactile Moving Risograph Noise Layer: softened and actively animated at 24fps */}
+        {/* risograph grain */}
         <div
           className="pointer-events-none absolute -inset-20 z-10 opacity-[0.06] mix-blend-multiply select-none"
           style={{
@@ -419,292 +504,232 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
           aria-hidden="true"
         />
 
-        {/* Micro CRT Scanline Texture: subtle glare diffusion */}
-        <div
-          className="pointer-events-none absolute inset-0 z-10 opacity-[0.018] select-none"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, #000 0px, #000 1px, transparent 1px, transparent 3px)",
-          }}
-          aria-hidden="true"
-        />
-        {/* Framing corner tick marks */}
-        <div className="pointer-events-none absolute left-4 top-4 border-l-2 border-t-2 border-[#0d0d10] w-5 h-5 z-30" />
-        <div className="pointer-events-none absolute right-4 top-4 border-r-2 border-t-2 border-[#0d0d10] w-5 h-5 z-30" />
-        <div className="pointer-events-none absolute left-4 bottom-4 border-l-2 border-b-2 border-[#0d0d10] w-5 h-5 z-30" />
-        <div className="pointer-events-none absolute right-4 bottom-4 border-r-2 border-b-2 border-[#0d0d10] w-5 h-5 z-30" />
+        <div className="boot-chrome pointer-events-none absolute inset-0 z-20" aria-hidden="true">
+          {/* measuring lines */}
+          <div className="k-hline absolute left-0 right-0 top-1/2 h-px opacity-0" style={{ background: INK }} />
+          <div className="k-vline absolute top-0 bottom-0 left-1/2 w-px opacity-0" style={{ background: INK }} />
 
-        {/* Top right Japanese vertical text + bar with Scramble Decode Animation */}
-        <div className="absolute top-6 right-6 md:top-10 md:right-12 hidden sm:flex items-start gap-3 z-30 pointer-events-none">
-          <div className="font-mono text-[11px] tracking-[0.25em] font-bold uppercase [writing-mode:vertical-rl] flex items-center gap-1 text-[#0d0d10]">
+          {/* frame brackets */}
+          <div className="k-corner absolute left-4 top-4 h-6 w-6 border-l-[3px] border-t-[3px] opacity-0" style={{ borderColor: INK }} />
+          <div className="k-corner absolute right-4 top-4 h-6 w-6 border-r-[3px] border-t-[3px] opacity-0" style={{ borderColor: INK }} />
+          <div className="k-corner absolute left-4 bottom-4 h-6 w-6 border-l-[3px] border-b-[3px] opacity-0" style={{ borderColor: INK }} />
+          <div className="k-corner absolute right-4 bottom-4 h-6 w-6 border-r-[3px] border-b-[3px] opacity-0" style={{ borderColor: INK }} />
+
+          {/* top rail */}
+          <div className="absolute left-6 top-8 md:left-12 md:top-12 w-[min(22rem,70vw)]">
+            <div className="k-rail h-[2px] origin-left opacity-0" style={{ background: INK }} />
+            <p className="k-rail-text t-micro mt-2 font-bold opacity-0">GITHUB.COM/AERA0908 // SOFTWARE &amp; SYSTEMS</p>
+          </div>
+
+          {/* power gauge (desktop) */}
+          <div className="k-gauge absolute left-12 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-1 opacity-0 md:flex">
+            <span className="t-micro mb-1 font-bold">PWR</span>
+            {Array.from({ length: GAUGE_SEGMENTS }).map((_, i) => (
+              <span key={i} className="k-seg block h-3 w-4 opacity-[0.15]" style={{ background: INK }} />
+            ))}
+          </div>
+
+          {/* hazard strip (desktop) */}
+          <div
+            className="k-hazard absolute right-12 top-1/2 hidden h-44 w-3 -translate-y-1/2 opacity-0 md:block"
+            style={{
+              backgroundImage: `repeating-linear-gradient(45deg, ${INK} 0 6px, transparent 6px 12px)`,
+            }}
+          />
+
+          {/* build stages */}
+          <div className="k-stages absolute bottom-10 left-6 flex gap-4 opacity-0 md:bottom-12 md:left-12">
+            {STAGES.map((s, i) => (
+              <span key={s} className="flex items-center gap-1.5 t-micro font-bold">
+                <span className="relative block h-2.5 w-2.5 border-2" style={{ borderColor: INK }}>
+                  <span
+                    className={`k-stage-fill-${i} absolute inset-0`}
+                    style={{ background: INK, transform: "scale(0)" }}
+                  />
+                </span>
+                {s}
+              </span>
+            ))}
+          </div>
+
+          {/* status plate */}
+          <div
+            className="k-status absolute bottom-10 right-6 w-40 border-2 px-3 py-2 opacity-0 md:bottom-12 md:right-12 md:w-48"
+            style={{ borderColor: INK }}
+          >
+            <div className="h-1 w-full" style={{ background: `${INK}33` }}>
+              <div ref={progressBarRef} className="h-full" style={{ width: "0%", background: INK }} />
+            </div>
+            <span className="t-micro mt-1.5 flex justify-between font-bold">
+              <span>{phase === "loading" ? "ASSEMBLING" : "READY"}</span>
+              <span>
+                <span ref={pctRef}>0</span>%
+              </span>
+            </span>
+          </div>
+        </div>
+
+        {/* Japanese vertical accent, translates on proceed */}
+        <div className="pointer-events-none absolute right-6 top-6 z-30 hidden items-start gap-3 sm:flex md:right-12 md:top-10">
+          <div className="flex items-center gap-1 font-mono text-[11px] font-bold uppercase tracking-[0.25em] [writing-mode:vertical-rl]">
             <JapaneseDecoder isEnglish={phase === "revealing" || phase === "ready"} />
           </div>
           <div
-            className={`w-2.5 bg-[#0d0d10] transition-all duration-500 ease-out ${
+            className={`w-2.5 transition-all duration-500 ease-out ${
               phase === "revealing" || phase === "ready" ? "h-28" : "h-20"
             }`}
+            style={{ background: INK }}
           />
         </div>
 
-        {/* Click/tap anywhere to proceed prompt */}
-        {phase === "waiting" && (
-          <div
-            ref={promptRef}
-            className="absolute inset-0 flex flex-col items-center justify-center z-20 select-none px-4 md:px-6"
-            style={{ opacity: 0 }}
-          >
-            <ProceedPrompt onProceed={proceed} />
+        {/* the chamber */}
+        <div className="k-chamber pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+          <div className="relative aspect-square w-[min(78vw,56vh,520px)]">
+            <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full overflow-visible" aria-hidden="true">
+              <circle
+                className="k-ring"
+                cx={C}
+                cy={C}
+                r={RING_R}
+                fill="none"
+                stroke={INK}
+                strokeWidth={2}
+                strokeDasharray={RING_LEN}
+                strokeDashoffset={RING_LEN}
+                transform={`rotate(-90 ${C} ${C})`}
+              />
+              <g className="k-ticks opacity-0">
+                {TICKS.map((t, i) => (
+                  <line
+                    key={i}
+                    x1={t.x1}
+                    y1={t.y1}
+                    x2={t.x2}
+                    y2={t.y2}
+                    stroke={INK}
+                    strokeWidth={t.major ? 3 : 1.5}
+                  />
+                ))}
+              </g>
+              <path className="k-arc-a opacity-0" d={arcPath(186, -40, 40)} fill="none" stroke={INK} strokeWidth={9} />
+              <path className="k-arc-b opacity-0" d={arcPath(186, 140, 220)} fill="none" stroke={INK} strokeWidth={9} />
+              {CLAMPS.map((c, i) => (
+                <rect key={i} className="k-clamp opacity-0" x={c.x} y={c.y} width={c.w} height={c.h} fill={INK} />
+              ))}
+              <polygon
+                className="k-diamond opacity-0"
+                points="200,150 250,200 200,250 150,200"
+                fill="none"
+                stroke={INK}
+                strokeWidth={3}
+              />
+              <polygon className="k-core opacity-0" points="200,180 220,200 200,220 180,200" fill={INK} />
+            </svg>
+
+            {/* gate prompt plate, docked under the chamber */}
+            {phase === "waiting" && (
+              <div
+                ref={promptRef}
+                className="pointer-events-auto absolute left-1/2 top-[calc(100%+1.25rem)] z-30 -translate-x-1/2"
+                style={{ opacity: 0 }}
+              >
+                <ProceedPrompt onProceed={proceed} />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Skip intro: upper centre on mobile, bottom centre on desktop */}
+        {(phase === "loading" || phase === "waiting") && (
+          <div className="absolute left-1/2 top-[5.25rem] z-30 -translate-x-1/2 pointer-events-auto md:top-auto md:bottom-8">
+            <button
+              type="button"
+              onPointerDown={(e) => e.stopPropagation()}
+              onPointerUp={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                skipIntro();
+              }}
+              aria-label="Skip intro and go straight to the site"
+              className="flex min-h-[38px] cursor-pointer items-center justify-center whitespace-nowrap rounded-xs border-2 px-4 py-2 font-mono text-[10px] font-black uppercase tracking-[0.14em] transition-colors hover:bg-[#0d0d10] hover:text-[#fcee0a] focus-visible:outline-2 focus-visible:outline-[#0d0d10] active:translate-y-[2px] md:min-h-[40px] md:text-xs"
+              style={{ borderColor: INK, background: POSTER, color: INK }}
+            >
+              SKIP INTRO →
+            </button>
           </div>
         )}
+      </div>
 
-        {/* Boot Chrome & Poster Layout */}
-        <div className="boot-chrome pointer-events-none absolute inset-0 flex flex-col justify-between p-4 sm:p-6 md:p-12 z-20">
-          {/* Top bar info */}
-          <div className="flex items-baseline justify-between border-t-2 border-[#0d0d10]/40 pt-2.5 max-w-xs md:max-w-sm mt-8 md:mt-0 select-none">
-            <span className="t-micro text-[#0d0d10] font-bold tracking-wider">
-              GITHUB.COM/AERA0908 // SOFTWARE & SYSTEMS
-            </span>
-          </div>
-
-          {/* Skip Intro button: upper center below header on mobile, bottom center on desktop */}
-          {(phase === "loading" || phase === "waiting") && (
-            <div className="absolute top-[5.25rem] left-1/2 -translate-x-1/2 md:top-auto md:bottom-8 z-30 pointer-events-auto">
-              <button
-                type="button"
-                onPointerDown={(e) => e.stopPropagation()}
-                onPointerUp={(e) => e.stopPropagation()}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  skipIntro();
-                }}
-                aria-label="Skip intro and go straight to the site"
-                className="cursor-pointer font-mono text-[10px] md:text-xs font-black uppercase tracking-[0.14em] text-[#0d0d10] transition-all hover:bg-[#0d0d10] hover:text-[#fcee0a] hover:scale-105 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-[#0d0d10] px-4 py-2 min-h-[38px] md:min-h-[40px] flex items-center justify-center border-2 border-[#0d0d10] bg-[#e6e200] rounded-xs shadow-md whitespace-nowrap"
-              >
-                SKIP INTRO →
-              </button>
-            </div>
-          )}
-
-          {/* Bottom area */}
-          <div className={`flex flex-col md:flex-row items-start md:items-end justify-between gap-4 md:gap-6 w-full mt-auto transition-opacity duration-300 ${phase === "waiting" ? "opacity-25 md:opacity-100" : "opacity-100"}`}>
-            {/* Desktop Terminal Logs */}
-            <div className="hidden md:flex flex-col items-start font-mono text-[0.75rem] leading-[1.7] tracking-[0.08em] text-[#0d0d10] font-bold max-w-lg">
-              {BOOT_LINES.map((line, i) => (
-                <TypingLine
-                  key={line.at}
-                  text={line.text}
-                  status={line.status}
-                  active={activeLineCount > i}
-                  isComplete={phase === "waiting" || phase === "revealing" || phase === "ready"}
-                />
-              ))}
-
-              {/* Segmented Square Block Progress Bar */}
-              <div className="mt-3 flex items-center">
-                <div className="flex items-center gap-1 p-1 border-2 border-[#0d0d10] bg-[#e6e200]">
-                  {Array.from({ length: 14 }).map((_, idx) => {
-                    const isFilled =
-                      phase !== "loading" ||
-                      Math.floor((activeLineCount / BOOT_LINES.length) * 14) > idx;
-                    return (
-                      <div
-                        key={idx}
-                        className={`w-2.5 h-3.5 transition-colors duration-75 ${
-                          isFilled ? "bg-[#0d0d10]" : "bg-transparent border border-[#0d0d10]/20"
-                        }`}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Bottom status line */}
-              <div className="mt-4 font-mono text-xs font-black tracking-widest text-[#0d0d10] flex items-center gap-2">
-                <span className="animate-pulse">❯❯</span> UPLINK ONLINE // INITIALIZATION COMPLETE...
-              </div>
-            </div>
-
-            {/* Mobile Streamlined Terminal Logs */}
-            <div className="flex md:hidden flex-col items-start font-mono text-[0.7rem] leading-[1.6] tracking-[0.06em] text-[#0d0d10] font-bold w-full">
-              {BOOT_LINES_MOBILE.map((line, i) => (
-                <TypingLine
-                  key={line.at}
-                  text={line.text}
-                  status={line.status}
-                  active={activeMobileCount > i}
-                  isComplete={phase === "waiting" || phase === "revealing" || phase === "ready"}
-                />
-              ))}
-
-              <div className="mt-2 font-mono text-[10px] font-black tracking-widest text-[#0d0d10] flex items-center gap-1.5">
-                <span className="animate-pulse">❯❯</span> READY // SECTOR AERA
-              </div>
-            </div>
-
-            {/* Bottom Right: Cross arrow directional box icon + progress bar */}
-            <div className="flex flex-col items-end gap-2 md:gap-3 w-full md:w-auto self-end">
-              <div className="hidden md:flex w-12 h-12 border-2 border-[#0d0d10] items-center justify-center p-1.5 relative bg-[#e6e200]">
-                <svg viewBox="0 0 24 24" className="w-full h-full text-[#0d0d10] fill-none stroke-current stroke-[2.2]">
-                  <path d="M4 4l16 16M20 4L4 20" />
-                  <path d="M4 8V4h4M16 4h4v4M4 16v4h4M20 16v4h-4" />
-                </svg>
-              </div>
-
-              <div className="flex flex-col gap-1 w-full md:w-48 border-t-2 border-[#0d0d10]/40 pt-2">
-                <div className="h-1.5 w-full bg-[#0d0d10]/20 rounded-full overflow-hidden">
-                  <div
-                    ref={progressBarRef}
-                    className="h-full bg-[#0d0d10] rounded-full transition-all duration-100"
-                    style={{ width: phase === "loading" ? "0%" : "100%" }}
-                  />
-                </div>
-                <span className="t-micro flex justify-between text-[#0d0d10] font-bold font-mono">
-                  <span>STATUS: {phase === "loading" ? "BOOTING" : "READY"}</span>
-                  <span>
-                    <span ref={pctRef}>{phase === "loading" ? "0" : "100"}</span>%
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
+      {/* AERA logo (outside the clipped layer so the wipe never cuts it) */}
+      <div ref={logoRef} className="pointer-events-none absolute inset-0 z-[110] hidden items-center justify-center">
+        <div className="aera-letters-wrapper relative z-[2] flex gap-[0.02em] overflow-hidden px-8 py-4 font-display text-[16vw] font-black uppercase leading-none tracking-[-0.08em] select-none md:text-[12vw]" style={{ color: INK }}>
+          <span className="aera-letter inline-block">A</span>
+          <span className="aera-letter inline-block">E</span>
+          <span className="aera-letter inline-block">R</span>
+          <span className="aera-letter inline-block">A</span>
         </div>
       </div>
 
-      {/* AERA Logo Layer (Separate from the clipping background layer so it NEVER gets cut off) */}
+      {/* elevator doors: parked off-screen until the reveal */}
       <div
-        ref={logoRef}
-        className="pointer-events-none absolute inset-0 hidden items-center justify-center z-[110]"
+        ref={doorsRef}
+        className="pointer-events-none absolute inset-0 z-[120] overflow-hidden"
+        style={{ visibility: "hidden" }}
+        aria-hidden="true"
       >
-        <div className="relative flex flex-col items-center justify-center">
-          <div className="aera-letters-wrapper relative z-[2] flex gap-[0.02em] font-display font-black tracking-[-0.08em] text-[#0d0d10] text-[16vw] md:text-[12vw] leading-none uppercase select-none overflow-hidden py-4 px-8">
-            <span className="aera-letter inline-block">A</span>
-            <span className="aera-letter inline-block">E</span>
-            <span className="aera-letter inline-block">R</span>
-            <span className="aera-letter inline-block">A</span>
-          </div>
-
-          {/* _2K.045_FETCHING badge - fades out cleanly on morph */}
-          <div className="fetching-badge flex items-center gap-2 mt-2 font-mono text-xs font-black tracking-widest text-[#0d0d10] self-end pr-8">
-            <span className="inline-block w-3 h-3 bg-[#0d0d10]" />
-            <span>_2K.045_FETCHING</span>
-          </div>
+        <div className="k-door-l absolute inset-y-0 left-0 w-1/2" style={{ background: INK }}>
+          <div
+            className="absolute inset-y-0 right-0 w-3"
+            style={{ backgroundImage: `repeating-linear-gradient(45deg, ${POSTER} 0 8px, ${INK} 8px 16px)` }}
+          />
         </div>
+        <div className="k-door-r absolute inset-y-0 right-0 w-1/2" style={{ background: INK }}>
+          <div
+            className="absolute inset-y-0 left-0 w-3"
+            style={{ backgroundImage: `repeating-linear-gradient(45deg, ${POSTER} 0 8px, ${INK} 8px 16px)` }}
+          />
+        </div>
+        <div
+          className="k-latch absolute left-1/2 top-1/2 -ml-5 -mt-5 h-10 w-10 border-[3px]"
+          style={{ background: POSTER, borderColor: INK, transform: "scale(0)" }}
+        />
       </div>
     </div>
   );
 }
 
-/** Click anywhere to proceed prompt with cyan typing animation & blinking cyan block cursor */
+/** Gate prompt: an ink plate that snaps open and decodes its label */
 function ProceedPrompt({ onProceed }: { onProceed: () => void }) {
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== "undefined" ? window.matchMedia("(max-width: 767px)").matches : false
+  const [isMobile] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 767px)").matches : false,
   );
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  const fullText = isMobile ? "TAP TO PROCEED" : "CLICK ANYWHERE TO PROCEED";
-  const [displayedText, setDisplayedText] = useState("");
-
-  useEffect(() => {
-    let currentIdx = 0;
-    const interval = setInterval(() => {
-      currentIdx++;
-      setDisplayedText(fullText.slice(0, currentIdx));
-      if (currentIdx >= fullText.length) {
-        clearInterval(interval);
-      }
-    }, 35);
-
-    return () => clearInterval(interval);
-  }, [fullText]);
+  const label = isMobile ? "TAP TO PROCEED" : "CLICK ANYWHERE TO PROCEED";
 
   return (
     <button
       type="button"
-      onClick={onProceed}
+      onClick={(e) => {
+        e.stopPropagation();
+        onProceed();
+      }}
       aria-label="Proceed to portfolio"
-      className="group flex flex-col items-center gap-2.5 md:gap-3 p-4 md:p-6 text-center cursor-pointer select-none focus-visible:outline-none"
+      className="group flex flex-col items-center gap-2 text-center cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0d0d10]"
     >
-      <div className="flex items-center justify-center gap-1.5 md:gap-2 font-mono text-xl sm:text-2xl md:text-4xl font-black uppercase tracking-[0.1em] md:tracking-[0.12em] text-[#0d0d10] group-hover:scale-105 transition-transform duration-200">
-        <span className="text-[#0d0d10]/60">❯</span>
-        <span>{displayedText}</span>
-        <span
-          className="inline-block w-3 h-5 sm:w-4 sm:h-7 md:w-5 md:h-9 bg-[#0d0d10] opacity-80 animate-pulse ml-0.5"
-          aria-hidden="true"
-        />
-      </div>
-      <span className="font-mono text-[9px] sm:text-xs font-bold uppercase tracking-[0.18em] md:tracking-[0.25em] text-[#0d0d10]/75">
-        [ SYSTEM READY // TAP ANYWHERE TO ENTER ]
+      <span
+        className="k-plate card-notch block origin-center whitespace-nowrap px-5 py-2.5 font-mono text-xs font-black uppercase tracking-[0.16em] transition-transform duration-150 group-active:translate-y-[2px] md:px-7 md:py-3 md:text-sm"
+        style={{ background: INK, color: POSTER, ["--notch" as string]: "12px" }}
+      >
+        <span className="sr-only">{label}</span>
+        <span className="k-plate-text" aria-hidden="true">
+          {label}
+        </span>
+      </span>
+      <span className="k-plate-sub px-2 font-mono text-[9px] font-bold uppercase tracking-[0.2em] opacity-0"
+        style={{ color: `${INK}bf`, background: POSTER }}>
+        [ SYSTEM READY // ANY KEY ALSO WORKS ]
       </span>
     </button>
   );
-}
-
-/** helper component to handle terminal-style typing animation for each line */
-function TypingLine({
-  text,
-  status,
-  active,
-  isComplete,
-}: {
-  text: string;
-  status?: string;
-  active: boolean;
-  isComplete: boolean;
-}) {
-  const elRef = useRef<HTMLParagraphElement>(null);
-
-  useEffect(() => {
-    const el = elRef.current;
-    if (!el) return;
-
-    if (isComplete) {
-      el.innerHTML = `${text}${status ? `<span class="font-black text-[#0d0d10]"> ${status}</span>` : ""}`;
-      return;
-    }
-
-    if (!active) {
-      el.innerHTML = "";
-      return;
-    }
-
-    let currentLen = 0;
-    let raf = 0;
-    let tick: ReturnType<typeof setTimeout> | undefined;
-
-    const typeFast = () => {
-      const isFinished = currentLen >= text.length;
-      const sliced = text.slice(0, currentLen);
-      const cursor = !isFinished ? '<span class="animate-pulse">▊</span>' : '';
-      const statusHTML = isFinished && status 
-        ? `<span class="font-black text-[#0d0d10]"> ${status}</span>`
-        : "";
-      el.innerHTML = `${sliced}${cursor}${statusHTML}`;
-
-      if (!isFinished) {
-        currentLen += 2;
-        tick = setTimeout(() => {
-          raf = requestAnimationFrame(typeFast);
-        }, 16);
-      }
-    };
-
-    typeFast();
-
-    return () => {
-      if (tick) clearTimeout(tick);
-      cancelAnimationFrame(raf);
-    };
-  }, [active, isComplete, text, status]);
-
-  if (!active && !isComplete) return null;
-
-  return <p ref={elRef} />;
 }
 
 const JAPANESE_GLYPHS = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789X#@!%";
