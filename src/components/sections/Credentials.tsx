@@ -216,7 +216,22 @@ export function Credentials() {
     return () => {
       tween.kill();
     };
-  }, [terminalState, tab, showMore]);
+  }, [terminalState, tab]);
+
+  /* expanding the extra certs racks in only the newly shown rows — the
+     featured ones above are already on screen and must stay put */
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!showMore || !body || prefersReducedMotion()) return;
+    const tween = gsap.fromTo(
+      body.querySelectorAll("#cred-more .cred-item"),
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.32, ease: MOTION.servo, stagger: 0.04, clearProps: "transform,opacity" },
+    );
+    return () => {
+      tween.kill();
+    };
+  }, [showMore]);
 
   // Escape key closes modal
   useEffect(() => {
