@@ -253,11 +253,15 @@ export function Credentials() {
     setPreviewCert(c);
   };
 
+  // Top-anchored, not justify-center: expanding the extra certs grows the
+  // terminal, and centring made the whole block (title included) shift up.
+  // The md padding reproduces the old centred position of the collapsed
+  // layout (content ≈ 527px tall inside an 80px/16px padded box).
   return (
     <section
       id="credentials"
       ref={rootRef}
-      className="relative z-10 overflow-hidden border-t border-periwinkle/10 bg-world min-h-screen md:h-screen w-full max-w-full flex flex-col justify-center px-4 sm:px-6 pt-20 pb-8 md:pb-4 md:px-16"
+      className="relative z-10 overflow-hidden border-t border-periwinkle/10 bg-world min-h-screen md:h-screen w-full max-w-full flex flex-col justify-start px-4 sm:px-6 pt-20 md:pt-[max(5rem,calc(50vh-231px))] pb-8 md:pb-4 md:px-16"
     >
       <CyberLines flip />
 
