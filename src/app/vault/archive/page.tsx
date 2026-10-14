@@ -176,6 +176,7 @@ const ARTS_VIDEOS: { index: string; name: string; youtubeId: string; tools?: str
     index: "A-01",
     name: "DOWN? VIDEO EXPLAINER",
     youtubeId: "k4_VRURl6m4",
+    tools: "REMOTION // CLAUDE // EPIDEMIC SOUND",
     blurb:
       "\"Barkada can't decide where to eat? Swipe together on Down?\" Explainer for the group hangout decider: one shared room, everyone swipes on nearby spots, and the group lands on a unanimous pick.",
   },

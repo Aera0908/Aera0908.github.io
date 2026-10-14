@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { gsap } from "@/lib/gsap";
+import { gsap, MOTION } from "@/lib/gsap";
 import { hudState } from "@/lib/hud-state";
 import { navReturn } from "@/lib/nav-return";
 import { CyberLines } from "@/components/ui/CyberLines";
@@ -125,15 +125,9 @@ export function Projects() {
           },
         });
 
-        /* The FAMILIAR teaser is the punchline to the flagship fan, so it must
-           not ride the same stagger as the cards — it waits until all three have
-           landed, then announces itself.
-           The entry vector is layout-dependent: on desktop the tape is a slanted
-           full-bleed ribbon, so it slides in ALONG its own 30-degree angle. On
-           mobile it is an ordinary button sitting under the archive link, so that
-        if (isDesktop) {
-          gsap.set(".next-build-teaser", { autoAlpha: 0, x: -350, y: -202 });
-        }
+        /* The FAMILIAR button is the punchline to the flagship fan: it stays
+           hidden until the folders have landed, then docks in on its own beat. */
+        gsap.set(".next-build-teaser", { autoAlpha: 0, x: -12 });
 
         /* once: true — this is a one-shot entrance. Without it a deep link to
            /vault (or a return from a case file) replays the card tween on each of
@@ -154,21 +148,11 @@ export function Projects() {
           },
         });
 
-        /* Cued AFTER cards finish entry animation: slides in along its exact 30-degree slanted angle,
-           settling with ease-in and bounce-out (back.out). */
-        if (isDesktop) {
-          reveal.to(
-            ".next-build-teaser",
-            {
-              autoAlpha: 1,
-              x: 0,
-              y: 0,
-              duration: 0.85,
-              ease: "back.out(1.4)",
-            },
-            "+=0.4",
-          );
-        }
+        reveal.to(
+          ".next-build-teaser",
+          { autoAlpha: 1, x: 0, duration: 0.45, ease: MOTION.servo },
+          "+=0.15",
+        );
       }
     );
 
@@ -219,50 +203,8 @@ export function Projects() {
         ))}
       </div>
 
-      {/* NEXT BUILD — FAMILIAR teaser ribbon tape: Desktop-only slanted caution tape. Hidden on mobile. */}
-      <div className="next-build-teaser pointer-events-none z-20 hidden md:block md:absolute md:order-none md:mt-0 md:w-auto md:bottom-90 md:-left-28">
-        <button
-          onClick={openNextBuild}
-          onMouseEnter={fx.blip}
-          className="group/next pointer-events-auto relative block shrink-0 cursor-pointer overflow-hidden rounded-sm border-y-2 border-black bg-[#e8d90c] text-left shadow-[0_20px_50px_rgba(0,0,0,0.85)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#fff024] focus-visible:outline-2 origin-top-left w-auto min-w-[1000px] rotate-[30deg] px-28 py-3"
-          aria-label="FAMILIAR - next build, in development. Open case file"
-        >
-          {/* Caution hazard stripes accent borders */}
-          <div className="animate-stripe-slow absolute inset-x-0 top-0 h-1 bg-[repeating-linear-gradient(45deg,#0c0d12,#0c0d12_10px,#e8d90c_10px,#e8d90c_20px)]" />
-          <div className="animate-stripe-slow absolute inset-x-0 bottom-0 h-1 bg-[repeating-linear-gradient(45deg,#0c0d12,#0c0d12_10px,#e8d90c_10px,#e8d90c_20px)]" />
-
-          <div className="animate-marquee-slow flex w-max items-center whitespace-nowrap">
-            {[0, 1].map((half) => (
-              <div
-                key={half}
-                aria-hidden={half === 1}
-                className="flex items-center gap-6 pr-6 font-mono text-xs font-black uppercase tracking-wider text-[#0c0d12]"
-              >
-                <span className="opacity-40">●</span>
-                <span className="flex items-center gap-1.5 font-bold">
-                  <span className="h-2.5 w-2.5 rounded-full bg-black" />
-                  P-06 // FAMILIAR
-                </span>
-                <span className="opacity-40">●</span>
-                <span className="bg-black text-[#e8d90c] px-2.5 py-0.5 rounded-xs text-[10px] font-extrabold tracking-widest">
-                  IN DEVELOPMENT
-                </span>
-                <span className="opacity-40">●</span>
-                <span className="font-bold underline decoration-2 underline-offset-4 group-hover/next:translate-x-1 transition-transform inline-flex items-center gap-1">
-                  DECRYPT CASE FILE →
-                </span>
-                <span className="opacity-40">●</span>
-                <span className="opacity-70 text-[10px] font-extrabold tracking-widest">
-                  RESTRICTED AREA
-                </span>
-              </div>
-            ))}
-          </div>
-        </button>
-      </div>
-
-      {/* full archive uplink */}
-      <div className="mt-4 flex shrink-0 justify-center">
+      {/* full archive uplink + the next build, side by side */}
+      <div className="mt-4 flex shrink-0 flex-col items-center justify-center gap-3 sm:flex-row">
         <Link
           href="/vault/archive"
           className="group relative overflow-hidden rounded-md border border-periwinkle/30 bg-world-2/95 px-6 py-3 md:px-8 md:py-3.5 font-mono text-xs tracking-[0.16em] text-periwinkle uppercase transition-all duration-300 hover:scale-105 hover:border-iris-bright cursor-pointer"
@@ -282,6 +224,44 @@ export function Projects() {
             <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
           </span>
         </Link>
+
+        {/* NEXT BUILD: a classified file you can open, not decoration */}
+        <button
+          type="button"
+          onClick={openNextBuild}
+          onMouseEnter={fx.blip}
+          aria-label="Familiar, next build, in development. Open case file"
+          className="next-build-teaser group/next relative flex cursor-pointer items-center gap-3 overflow-hidden rounded-md border border-iris-bright/60 bg-world-2 py-2 pl-3 pr-2 text-left transition-colors duration-300 hover:border-iris-bright active:translate-y-[2px]"
+        >
+          <span
+            className="absolute inset-0 z-0 -translate-x-[101%] bg-iris-bright transition-transform duration-300 ease-out group-hover/next:translate-x-0"
+            aria-hidden="true"
+          />
+          {/* padlock: the file is still sealed */}
+          <svg
+            viewBox="0 0 16 18"
+            className="relative z-10 h-4 w-3.5 shrink-0 text-iris-bright transition-colors duration-300 group-hover/next:text-ink"
+            aria-hidden="true"
+          >
+            <rect x="1.5" y="8" width="13" height="9" fill="none" stroke="currentColor" strokeWidth="2" />
+            <path d="M4.5 8 V5 a3.5 3.5 0 0 1 7 0 V8" fill="none" stroke="currentColor" strokeWidth="2" />
+            <rect x="7" y="11" width="2" height="3" fill="currentColor" />
+          </svg>
+          <span className="relative z-10 flex flex-col gap-1 leading-none">
+            <span className="font-mono text-[9px] font-bold tracking-[0.16em] text-iris-bright transition-colors duration-300 group-hover/next:text-ink">
+              P-06 // IN DEVELOPMENT
+            </span>
+            <span className="font-display text-sm font-black uppercase tracking-tight text-paper transition-colors duration-300 group-hover/next:text-ink">
+              FAMILIAR
+            </span>
+          </span>
+          <span className="relative z-10 ml-2 flex items-center gap-1.5 bg-iris-bright px-2.5 py-1.5 font-mono text-[10px] font-black tracking-[0.14em] text-ink transition-colors duration-300 group-hover/next:bg-ink group-hover/next:text-iris-bright">
+            VIEW BRIEF
+            <span className="transition-transform duration-300 group-hover/next:translate-x-0.5" aria-hidden="true">
+              →
+            </span>
+          </span>
+        </button>
       </div>
     </section>
   );

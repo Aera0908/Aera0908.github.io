@@ -817,7 +817,7 @@ export function Hero({
             onClick={() => fx.click()}
             onMouseEnter={fx.blip}
             aria-label="Latest build: Down?, group meetup and hangout decider"
-            className="group/release relative flex items-center justify-between gap-3 overflow-hidden border-y border-ink/15 py-2 t-micro text-ink-soft"
+            className="group/release relative flex items-center justify-between gap-3 overflow-hidden border border-ink/25 py-1.5 pl-2.5 pr-1.5 t-micro text-ink-soft transition-colors duration-300 hover:border-ink active:translate-y-[1px]"
           >
             <span
               className="absolute inset-0 -translate-x-[101%] bg-iris-bright transition-transform duration-300 ease-out group-hover/release:translate-x-0"
@@ -832,10 +832,11 @@ export function Hero({
               </span>
             </span>
             <span
-              className="relative font-bold text-ink transition-transform duration-300 group-hover/release:translate-x-1"
+              className="relative flex shrink-0 items-center gap-1.5 bg-ink px-2.5 py-1.5 font-mono text-[9px] font-black tracking-[0.14em] text-iris-bright"
               aria-hidden="true"
             >
-              →
+              VIEW
+              <span className="transition-transform duration-300 group-hover/release:translate-x-0.5">→</span>
             </span>
           </Link>
 
