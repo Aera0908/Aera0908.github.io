@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { gsap } from "@/lib/gsap";
+import { gsap, MOTION, prefersReducedMotion } from "@/lib/gsap";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { DecodeText } from "@/components/ui/DecodeText";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
@@ -142,122 +142,28 @@ const SOFT_SKILLS = [
   "Rapid Self-Directed Technical Learning",
 ];
 
-// Sequential typing component for hacker prompts.
-// onComplete lives in a ref and a done-guard blocks re-runs: the parent
-// re-renders on every cmdXDone flip, and a fresh onComplete identity used
-// to restart the interval — the "types, then retypes" bug.
-function TypingText({
-  text,
-  active,
-  onComplete,
-}: {
-  text: string;
-  active: boolean;
-  onComplete: () => void;
-}) {
-  const [displayed, setDisplayed] = useState("");
-  const [isDone, setIsDone] = useState(false);
-  const onCompleteRef = useRef(onComplete);
-  useEffect(() => {
-    onCompleteRef.current = onComplete;
-  }, [onComplete]);
+const STACK: { label: string; items: string[] }[] = [
+  { label: "LANGUAGES", items: ["TypeScript", "JavaScript", "Python", "C/C++", "Solidity", "SystemVerilog", "SQL"] },
+  { label: "FRAMEWORKS", items: ["React", "Next.js", "Express", "Tailwind CSS", "Flutter", "Hardhat"] },
+  { label: "INFRA / TOOLS", items: ["PostgreSQL", "MongoDB", "Firebase", "Git", "Docker", "KiCad", "Figma"] },
+];
 
-  useEffect(() => {
-    if (!active || isDone) return;
-    let idx = 0;
-    const timer = setInterval(() => {
-      if (idx < text.length) {
-        idx++;
-        setDisplayed(text.slice(0, idx));
-      } else {
-        clearInterval(timer);
-        setIsDone(true);
-        onCompleteRef.current();
-      }
-    }, 18);
-    return () => clearInterval(timer);
-  }, [text, active, isDone]);
-
-  return (
-    <span>
-      {displayed}
-      {active && !isDone && (
-        <span className="animate-pulse text-iris-bright">▊</span>
-      )}
-    </span>
-  );
-}
-
-/** rAF count-up for the stats widget — runs once when activated */
-function useCountUp(target: number, active: boolean, duration = 900) {
-  const [value, setValue] = useState(0);
-  const ranRef = useRef(false);
-  useEffect(() => {
-    if (!active || ranRef.current) return;
-    ranRef.current = true;
-    const t0 = performance.now();
-    let raf = 0;
-    const tick = (t: number) => {
-      const p = Math.min((t - t0) / duration, 1);
-      // ease-out so the last keys land slower, like a settling meter
-      setValue(Math.round(target * (1 - Math.pow(1 - p, 2))));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [active, target, duration]);
-  return value;
-}
-
-const MEM_BLOCKS = 12;
-const MEM_TARGET = 81;
-
-/** animated system-specs rows: status flicker, key count-up, mem-alloc fill */
-function SystemSpecs({ active, totalKeys }: { active: boolean; totalKeys: number }) {
-  const keys = useCountUp(totalKeys, active, 800);
-  const mem = useCountUp(MEM_TARGET, active, 1100);
-  const filled = Math.round((mem / 100) * MEM_BLOCKS);
-
-  return (
-    <div className="border border-periwinkle/10 bg-world/30 p-3 rounded text-[9px] text-periwinkle/50 space-y-1 select-none">
-      <div className="flex justify-between">
-        <span>DATABASE STATUS:</span>
-        {active ? (
-          <span className="text-iris-bright">RECONCILED // READY</span>
-        ) : (
-          <span className="animate-pulse text-periwinkle/55">SYNCING ▊</span>
-        )}
-      </div>
-      <div className="flex justify-between">
-        <span>TOTAL LOGS INGESTED:</span>
-        <span>{keys} KEYS</span>
-      </div>
-      <div className="flex justify-between">
-        <span>CIPHER ALGORITHM:</span>
-        <span className={active ? "" : "opacity-40"}>ECDSA-SHA256</span>
-      </div>
-      <div className="pt-1.5 border-t border-periwinkle/5">
-        <div className="flex items-center justify-between mb-0.5">
-          <span>
-            MEM_ALLOC: [{"█".repeat(filled)}
-            {"░".repeat(MEM_BLOCKS - filled)}] {mem}%
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
+type Tab = "certs" | "caps";
+const TABS: { id: Tab; cmd: string; label: string }[] = [
+  { id: "certs", cmd: "get --certifications", label: "CERTIFICATIONS" },
+  { id: "caps", cmd: "query --capabilities", label: "CAPABILITIES" },
+];
 
 export function Credentials() {
   const rootRef = useRef<HTMLElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const { fx } = useHudAudio();
   const [previewCert, setPreviewCert] = useState<Certificate | null>(null);
+  const [tab, setTab] = useState<Tab>("certs");
+  const [showMore, setShowMore] = useState(false);
 
-  // Terminal state machine: hidden -> loading -> typing -> ready
-  const [terminalState, setTerminalState] = useState<"hidden" | "loading" | "typing" | "ready">("hidden");
-  const [cmd1Done, setCmd1Done] = useState(false);
-  const [cmd2Done, setCmd2Done] = useState(false);
-  const [cmd3Done, setCmd3Done] = useState(false);
+  // Terminal state machine: hidden -> loading -> ready
+  const [terminalState, setTerminalState] = useState<"hidden" | "loading" | "ready">("hidden");
 
   // Freeze background page scroll when modal is active
   useEffect(() => {
@@ -268,23 +174,10 @@ export function Credentials() {
 
   // BIOS loader delay
   useEffect(() => {
-    if (terminalState === "loading") {
-      const t = setTimeout(() => {
-        setTerminalState("typing");
-      }, 1200);
-      return () => clearTimeout(t);
-    }
+    if (terminalState !== "loading") return;
+    const t = setTimeout(() => setTerminalState("ready"), 900);
+    return () => clearTimeout(t);
   }, [terminalState]);
-
-  // Complete typing phase
-  useEffect(() => {
-    if (cmd3Done) {
-      const t = setTimeout(() => {
-        setTerminalState("ready");
-      }, 300);
-      return () => clearTimeout(t);
-    }
-  }, [cmd3Done]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -304,12 +197,26 @@ export function Credentials() {
             } else {
               setTerminalState("ready");
             }
-          }
+          },
         },
       });
     }, rootRef);
     return () => ctx.revert();
   }, []);
+
+  /* the visible panel's entries rack in on ready and on every tab switch */
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (terminalState !== "ready" || !body || prefersReducedMotion()) return;
+    const tween = gsap.fromTo(
+      body.querySelectorAll(".cred-item"),
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.32, ease: MOTION.servo, stagger: 0.04, clearProps: "transform,opacity" },
+    );
+    return () => {
+      tween.kill();
+    };
+  }, [terminalState, tab, showMore]);
 
   // Escape key closes modal
   useEffect(() => {
@@ -326,6 +233,10 @@ export function Credentials() {
 
   const featured = CERTIFICATES.filter((c) => c.featured);
   const additional = CERTIFICATES.filter((c) => !c.featured);
+  const openCert = (c: Certificate) => {
+    fx.click();
+    setPreviewCert(c);
+  };
 
   return (
     <section
@@ -343,216 +254,159 @@ export function Credentials() {
         ● 003 // CERTIFICATIONS & CAPABILITY MATRIX
       </p>
 
-      {/* Terminal Dashboard Container */}
-      <div className="cred-reveal w-full border border-periwinkle/15 bg-world-2/80 rounded-lg overflow-hidden flex flex-col font-mono min-h-[460px] lg:max-h-[calc(100vh-13rem)] relative">
-        
-        {/* Terminal Header Bar */}
-        <div className="bg-world border-b border-periwinkle/15 px-4 py-2 flex items-center justify-between text-xs text-iris-bright select-none">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-signal" />
-            <span>AERA_SYS // MODULE: CREDENTIALS_DB_v2.0</span>
-          </div>
-          <div className="text-periwinkle/55 hidden sm:block">
-            SYS_SEC: ACTIVE // PORT_443
+      {/* Terminal */}
+      <div className="cred-reveal w-full border border-periwinkle/15 bg-world-2/80 rounded-lg overflow-hidden flex flex-col font-mono min-h-[420px] lg:max-h-[calc(100vh-13rem)] relative">
+        {/* header: the tabs are the terminal's commands */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-periwinkle/15 bg-world px-4 py-2.5">
+          <span className="flex items-center gap-2 text-xs text-iris-bright select-none">
+            <span className="h-2.5 w-2.5 rounded-full bg-signal" />
+            AERA_SYS // CREDENTIALS
+          </span>
+          <div role="tablist" aria-label="Credentials view" className="flex gap-2">
+            {TABS.map((t) => {
+              const on = tab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  role="tab"
+                  id={`cred-tab-${t.id}`}
+                  aria-selected={on}
+                  aria-controls="cred-panel"
+                  onClick={() => {
+                    if (on) return;
+                    fx.click();
+                    setTab(t.id);
+                  }}
+                  onMouseEnter={fx.blip}
+                  className={`flex cursor-pointer items-center gap-2 border px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] transition-colors active:translate-y-[1px] ${
+                    on
+                      ? "border-iris-bright bg-iris-bright text-ink"
+                      : "border-periwinkle/25 text-periwinkle/75 hover:border-periwinkle/60 hover:text-paper"
+                  }`}
+                >
+                  <span className={`block h-2 w-2 border ${on ? "border-ink bg-ink" : "border-periwinkle/50"}`} aria-hidden="true" />
+                  {t.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Dynamic BIOS loading screen */}
         {terminalState === "loading" ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-iris-bright text-xs font-mono space-y-4 min-h-[380px] select-none">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-signal" />
-              <span>DECRYPTING SECURE CREDENTIALS DATASET...</span>
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 text-xs text-iris-bright select-none min-h-[340px]">
+            <span>LOADING CREDENTIALS...</span>
+            <div className="h-2 w-64 overflow-hidden rounded border border-iris/30 bg-world-2 p-0.5">
+              <div className="h-full bg-signal animate-[loader-fill_0.9s_ease-in-out_forwards]" />
             </div>
-            <div className="w-64 h-2 border border-iris/30 rounded overflow-hidden p-0.5 bg-world-2">
-              <div className="h-full bg-signal animate-[loader-fill_1.2s_ease-in-out_forwards]" />
-            </div>
-            <div className="text-[9px] text-periwinkle/55 tracking-wider">ALGORITHM: ECDSA-SHA256 // SECURE_KEY: LOADED</div>
           </div>
         ) : (
-          /* Terminal Body */
-          <div className={`grid gap-4 p-4 lg:grid-cols-12 flex-1 min-h-0 lg:[grid-template-rows:minmax(0,1fr)] transition-opacity duration-300 ${terminalState === "hidden" ? "opacity-0" : "opacity-100"}`}>
-            
-            {/* Left Panel: Capabilities (Diagnostic logs) */}
-            <div className="lg:col-span-5 min-w-0 min-h-0 flex flex-col justify-between gap-4">
-              <div className="border border-periwinkle/10 bg-world/50 p-4 rounded flex-1 flex flex-col justify-between min-h-[220px]">
-                <p className="text-[10px] text-iris-bright mb-3 font-bold select-none">
-                  $ {terminalState === "ready" ? "query --capabilities --matrix" : (
-                    <TypingText text="query --capabilities --matrix" active={terminalState === "typing"} onComplete={() => setCmd1Done(true)} />
-                  )}
-                </p>
-                
-                <div className={`mb-4 flex-1 flex flex-col justify-between transition-all duration-500 ${terminalState === "ready" || cmd1Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+          <div
+            ref={bodyRef}
+            id="cred-panel"
+            role="tabpanel"
+            aria-labelledby={`cred-tab-${tab}`}
+            className={`min-h-0 flex-1 overflow-y-auto p-5 md:p-6 transition-opacity duration-300 ${terminalState === "hidden" ? "opacity-0" : "opacity-100"}`}
+          >
+            <p className="mb-4 text-[10px] font-bold text-iris-bright select-none">
+              $ {TABS.find((t) => t.id === tab)?.cmd}
+            </p>
+
+            {tab === "certs" ? (
+              <>
+                {/* featured: issuer + name only; the detail lives in the preview */}
+                <div className="grid gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+                  {featured.map((c) => (
+                    <button
+                      key={c.name}
+                      type="button"
+                      onClick={() => openCert(c)}
+                      onMouseEnter={fx.blip}
+                      aria-label={`Preview ${c.name} certificate from ${c.issuer}`}
+                      className="cred-item group/cert flex cursor-pointer items-start justify-between gap-3 border-t border-periwinkle/15 py-3.5 text-left transition-colors hover:border-iris-bright"
+                    >
+                      <span className="min-w-0">
+                        <span className="mb-1 block text-[9px] font-bold tracking-[0.16em] text-iris-bright/80">{c.issuer}</span>
+                        <span className="block font-display text-sm font-black uppercase leading-tight tracking-tight text-paper transition-colors group-hover/cert:text-iris-bright">
+                          {c.name}
+                        </span>
+                      </span>
+                      <span className="mt-4 shrink-0 text-xs text-periwinkle/40 transition-transform group-hover/cert:translate-x-1 group-hover/cert:text-iris-bright" aria-hidden="true">
+                        →
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* the rest stay folded until asked for */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    fx.click();
+                    setShowMore((v) => !v);
+                  }}
+                  onMouseEnter={fx.blip}
+                  aria-expanded={showMore}
+                  aria-controls="cred-more"
+                  className="mt-4 cursor-pointer border border-periwinkle/25 px-3 py-1.5 text-[10px] font-bold tracking-[0.16em] text-periwinkle/80 transition-colors hover:border-iris-bright hover:text-iris-bright"
+                >
+                  {showMore ? "− HIDE ADDITIONAL" : `+ ${additional.length} MORE CERTIFICATIONS`}
+                </button>
+                {showMore && (
+                  <ul id="cred-more" className="mt-3 grid gap-x-6 sm:grid-cols-2">
+                    {additional.map((c) => (
+                      <li key={c.name} className="cred-item">
+                        <button
+                          type="button"
+                          onClick={() => openCert(c)}
+                          onMouseEnter={fx.blip}
+                          aria-label={`Preview ${c.name} certificate from ${c.issuer}`}
+                          className="flex w-full cursor-pointer items-baseline justify-between gap-3 border-b border-periwinkle/10 py-2 text-left text-[11px] transition-colors hover:text-iris-bright"
+                        >
+                          <span className="truncate text-periwinkle/85">{c.name}</span>
+                          <span className="shrink-0 text-[9px] tracking-widest text-periwinkle/45">{c.issuer}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            ) : (
+              <div className="grid gap-8 lg:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                   <div>
-                    <span className="text-periwinkle/55 text-[8px] block mb-1.5">{"// HARDWARE & SYSTEMS CORE"}</span>
-                    <ul className="flex flex-col gap-1 border-l border-iris/25 pl-3">
-                      {HARD_SKILLS.map((s, idx) => (
-                        <li key={s} className="text-[11px] leading-relaxed text-periwinkle/80">
-                          <span className="text-iris font-bold">[OK_{String(idx + 1).padStart(2, "0")}]</span> {s}
-                        </li>
+                    <p className="mb-2 text-[9px] font-bold tracking-[0.16em] text-iris-bright/80">CORE</p>
+                    <ul className="space-y-2">
+                      {HARD_SKILLS.map((s) => (
+                        <li key={s} className="cred-item text-[12px] leading-snug text-paper/90">{s}</li>
                       ))}
                     </ul>
                   </div>
-
-                  <div className="mt-4">
-                    <span className="text-periwinkle/55 text-[8px] block mb-1.5">{"// COLLABORATION & INTEGRATION MODE"}</span>
-                    <ul className="flex flex-col gap-1 border-l border-periwinkle/20 pl-3">
-                      {SOFT_SKILLS.map((s, idx) => (
-                        <li key={s} className="text-[11px] leading-relaxed text-periwinkle/60">
-                          <span className="text-periwinkle/55 font-bold">[MOD_{String(idx + 1).padStart(2, "0")}]</span> {s}
-                        </li>
+                  <div>
+                    <p className="mb-2 text-[9px] font-bold tracking-[0.16em] text-iris-bright/80">WAYS OF WORKING</p>
+                    <ul className="space-y-2">
+                      {SOFT_SKILLS.map((s) => (
+                        <li key={s} className="cred-item text-[12px] leading-snug text-periwinkle/70">{s}</li>
                       ))}
                     </ul>
-                  </div>
-
-                  <div className="mt-4">
-                    <span className="text-periwinkle/55 text-[8px] block mb-1.5">{"// TECH STACK SUMMARY"}</span>
-                    <div className="text-[9.5px] leading-relaxed text-periwinkle/65 border-l border-iris/25 pl-3 font-mono">
-                      <div>LANGUAGES  :: TypeScript, JavaScript, Python, C/C++, Solidity, SystemVerilog, SQL</div>
-                      <div>FRAMEWORKS :: React, Next.js, Express, Tailwind CSS, Flutter, Hardhat</div>
-                      <div>INFRA/TOOL :: PostgreSQL, MongoDB, Firebase, Git, Docker, KiCad, Figma</div>
-                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* System Specs Widget — animates once the terminal is ready */}
-              <SystemSpecs
-                active={terminalState === "ready" || cmd3Done}
-                totalKeys={CERTIFICATES.length}
-              />
-            </div>
-
-            {/* Right Panel: Certifications Folder Files */}
-            <div className="lg:col-span-7 min-w-0 min-h-0 flex flex-col gap-4">
-              {/* min-h-fit keeps the cards at natural size when space is
-                  tight — the additional-certs table below yields and scrolls */}
-              <div className="flex-1 min-h-fit flex flex-col">
-                <p className="text-[10px] text-iris-bright font-bold select-none mb-2">
-                  $ {terminalState === "ready" ? "get --certifications --featured" : (
-                    <TypingText text="get --certifications --featured" active={terminalState === "typing" && cmd1Done} onComplete={() => setCmd2Done(true)} />
-                  )}
-                </p>
-
-                <div className={`grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 flex-1 transition-opacity duration-500 ${terminalState === "ready" || cmd2Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-                  {/* Cards are not role="button" — each contains its own
-                      [PREVIEW] button and [DOWNLOAD] link, and ARIA forbids
-                      focusable descendants inside a button. Those two controls
-                      are the keyboard path; the card stays a mouse target. */}
-                  {featured.map((c) => (
-                    <div
-                      key={c.name}
-                      onClick={() => {
-                        fx.click();
-                        setPreviewCert(c);
-                      }}
-                      className="group/cert text-left cursor-pointer relative border-t border-periwinkle/20 hover:border-iris-bright transition-colors pt-3 flex flex-col justify-between"
-                    >
-                      <div className="relative z-10">
-                        <div className="flex items-center justify-between gap-2 mb-1.5">
-                          <span className="text-[9px] text-iris-bright font-bold">FILE: {c.issuer}_SYS.DB</span>
-                          <span className="text-[8px] px-1 bg-iris/10 border border-iris/20 text-iris leading-none">VERIFIED</span>
-                        </div>
-                        <h3 className="font-display text-xs font-black uppercase tracking-tight text-paper mb-1">
-                          {c.name}
-                        </h3>
-                        <p className="text-[10px] leading-relaxed text-periwinkle/70 mb-3 font-sans">
-                          {c.detail}
-                        </p>
-                      </div>
-
-                      {/* Terminal Action Buttons */}
-                      <div className="flex gap-2.5 mt-auto pt-2 border-t border-periwinkle/5 z-10">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            fx.click();
-                            setPreviewCert(c);
-                          }}
-                          aria-label={`Preview ${c.name} certificate`}
-                          className="px-2 py-1 border border-iris/30 text-iris hover:bg-iris hover:text-world text-[8px] font-mono transition-colors cursor-pointer focus-visible:outline-2"
-                        >
-                          [ PREVIEW ]
-                        </button>
-                        <a
-                          href={c.url}
-                          download={c.downloadName}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            fx.click();
-                          }}
-                          aria-label={`Download ${c.name} certificate`}
-                          className="px-2 py-1 border border-periwinkle/30 text-periwinkle/70 hover:border-paper hover:text-paper text-[8px] font-mono transition-colors focus-visible:outline-2"
-                          onMouseEnter={fx.blip}
-                        >
-                          [ DOWNLOAD ]
-                        </a>
+                <div className="space-y-4">
+                  {STACK.map((g) => (
+                    <div key={g.label} className="cred-item">
+                      <p className="mb-2 text-[9px] font-bold tracking-[0.16em] text-iris-bright/80">{g.label}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {g.items.map((i) => (
+                          <span key={i} className="border border-periwinkle/20 px-2 py-1 text-[10px] text-periwinkle/85">
+                            {i}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-
-              {/* Additional logs rendered as an ASCII Table */}
-              <div className="min-h-0 flex flex-col">
-                <p className="text-[10px] text-iris-bright mb-2 font-bold select-none shrink-0">
-                  $ {terminalState === "ready" ? "list --certifications --additional" : (
-                    <TypingText text="list --certifications --additional" active={terminalState === "typing" && cmd2Done} onComplete={() => setCmd3Done(true)} />
-                  )}
-                </p>
-
-                <div className={`overflow-x-auto overflow-y-auto min-h-0 border border-periwinkle/10 bg-world/20 rounded transition-opacity duration-500 ${terminalState === "ready" || cmd3Done ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-                  <table className="w-full text-left text-[10px] border-collapse">
-                    <thead className="sticky top-0 z-10">
-                      <tr className="border-b border-periwinkle/10 bg-world-2 text-periwinkle/55">
-                        <th scope="col" className="px-4 py-1.5 font-mono font-bold">LOG_ID</th>
-                        <th scope="col" className="px-4 py-1.5 font-mono font-bold">TRAINING LOG / DETAILS</th>
-                        <th scope="col" className="px-4 py-1.5 font-mono font-bold">ISSUER</th>
-                        <th scope="col" className="px-4 py-1.5 font-mono font-bold text-right">UPLINKS</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {additional.map((c, idx) => (
-                        <tr
-                          key={c.name}
-                          className="border-b border-periwinkle/5 hover:bg-world-2/40 transition-colors"
-                        >
-                          <td className="px-4 py-1.5 font-bold text-iris/80">
-                            TR-{String(idx + 1).padStart(2, "0")}
-                          </td>
-                          <td className="px-4 py-1.5 text-periwinkle/80 max-w-xs truncate">
-                            {c.name}
-                          </td>
-                          <td className="px-4 py-1.5 text-periwinkle/50">
-                            {c.issuer}
-                          </td>
-                          <td className="px-4 py-1.5 text-right space-x-2">
-                            <button
-                              onClick={() => {
-                                fx.click();
-                                setPreviewCert(c);
-                              }}
-                              className="text-iris hover:underline cursor-pointer bg-transparent border-0 p-0"
-                            >
-                              [PRV]
-                            </button>
-                            <a
-                              href={c.url}
-                              download={c.downloadName}
-                              className="text-periwinkle/50 hover:text-paper"
-                              onMouseEnter={fx.blip}
-                              onClick={fx.click}
-                            >
-                              [DL]
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         )}
       </div>
@@ -582,14 +436,14 @@ export function Credentials() {
           <div className="relative w-full max-w-4xl h-[85vh] border border-periwinkle/20 bg-world/95 rounded-lg flex flex-col overflow-hidden font-mono shadow-[0_20px_60px_rgba(0,0,0,0.8)] z-10 animate-zoom-in">
             
             {/* Tactical Crosshair / Corner Details */}
-            <div className="absolute top-1 left-1 text-[8px] text-periwinkle/20 pointer-events-none select-none">┌ SEC_PREVIEW ┐</div>
-            <div className="absolute bottom-1 left-1 text-[8px] text-periwinkle/20 pointer-events-none select-none">└ MODULE_AERA ┘</div>
 
             {/* Modal Header */}
             <div className="bg-world-2/40 text-paper px-6 py-4 flex items-center justify-between text-xs font-bold border-b border-periwinkle/15 select-none z-10">
-              <div className="flex min-w-0 items-center gap-2">
-                <span className="w-2 h-2 shrink-0 rounded-full bg-iris-bright" />
-                <span className="truncate tracking-widest text-periwinkle">DECRYPTING: {previewCert.downloadName}</span>
+              <div className="flex min-w-0 flex-col gap-1">
+                <span className="truncate font-display text-sm font-black uppercase tracking-tight text-paper">{previewCert.name}</span>
+                <span className="truncate text-[10px] font-normal tracking-wider text-periwinkle/60">
+                  <span className="text-iris-bright">{previewCert.issuer}</span>{" // "}{previewCert.detail}
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <a
@@ -630,12 +484,6 @@ export function Credentials() {
                   className="w-full h-full border border-periwinkle/15 bg-world rounded shadow-2xl"
                 />
               )}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="bg-world-2/40 text-periwinkle/55 px-6 py-2 text-[8px] flex justify-between border-t border-periwinkle/15 select-none">
-              <span>CIPHER_DEC: COMPLETED // SUCCESS</span>
-              <span>AERA SECURE WORKSTATION v2.0 // DECRYPT_ENGINE_ACTIVE</span>
             </div>
           </div>
         </div>,
