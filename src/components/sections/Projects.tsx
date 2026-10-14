@@ -12,11 +12,20 @@ import { DecodeText } from "@/components/ui/DecodeText";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { usePageTransition } from "@/components/providers/PageTransitionProvider";
 
-/* top four flagships (fanned like collectible cards) — everything else
+/* top five flagships (fanned like collectible cards) — everything else
    lives in the ProjectGallery overlay; details live in /vault/archive/[slug] */
 const PROJECTS = [
   {
     index: "P-01",
+    name: "DOWN?",
+    slug: "down",
+    img: "/projects/notable-project-thumbnails/down.webp",
+    stack: "NEXT.JS / REALTIME / GEO",
+    summary: "Group meetup & hangout decider",
+    badge: "Latest Release",
+  },
+  {
+    index: "P-02",
     name: "FEHUVIA",
     slug: "fehuvia",
     img: "/projects/notable-project-thumbnails/fehuvia.webp",
@@ -24,7 +33,7 @@ const PROJECTS = [
     summary: "Morph L2 B2B Treasury co-pilot",
   },
   {
-    index: "P-02",
+    index: "P-03",
     name: "AEROVIT",
     slug: "aerovit",
     img: "/projects/notable-project-thumbnails/aerovit.webp",
@@ -33,7 +42,7 @@ const PROJECTS = [
     badge: "Awarded Best Thesis",
   },
   {
-    index: "P-03",
+    index: "P-04",
     name: "STICKOUT",
     slug: "stickout",
     img: "/projects/notable-project-thumbnails/stickOut.webp",
@@ -41,7 +50,7 @@ const PROJECTS = [
     summary: "VLSI interactive Stick-Diagram editor",
   },
   {
-    index: "P-04",
+    index: "P-05",
     name: "GHOSTCUE",
     slug: "ghostcue",
     img: "/projects/notable-project-thumbnails/ghostcue.webp",
@@ -49,6 +58,15 @@ const PROJECTS = [
     summary: "AI interview copilot & stealth HUD",
     badge: "Desktop HUD",
   },
+];
+
+/** resting + hover pose for each fanned folder, left to right */
+const FAN = [
+  "top-12 z-10 -translate-x-[215%] rotate-[-14deg] group-hover/vault:-translate-x-[237%] group-hover/vault:rotate-[-18deg]",
+  "top-5 z-20 -translate-x-[133%] rotate-[-7deg] group-hover/vault:-translate-x-[145%] group-hover/vault:-translate-y-2 group-hover/vault:rotate-[-9deg]",
+  "top-0 z-30 -translate-x-1/2 group-hover/vault:-translate-y-3",
+  "top-5 z-40 translate-x-[33%] rotate-[7deg] group-hover/vault:translate-x-[45%] group-hover/vault:-translate-y-2 group-hover/vault:rotate-[9deg]",
+  "top-12 z-[45] translate-x-[115%] rotate-[14deg] group-hover/vault:translate-x-[127%] group-hover/vault:rotate-[18deg]",
 ];
 
 /**
@@ -171,30 +189,31 @@ export function Projects() {
       </h2>
       <p className="t-label mb-6 text-periwinkle/60">● 002 // SELECTED BUILDS</p>
 
-      {/* fanned collectible cards (desktop, 4 folders in sequence P-01 -> P-04) */}
-      <div className="group/vault relative mx-auto hidden h-[480px] max-w-5xl md:block">
-        {/* Card 0: P-01 FEHUVIA (far left) */}
-        <div className="proj-card absolute left-1/2 top-10 w-[240px] -translate-x-[190%] rotate-[-12deg] z-10 transition-transform duration-500 ease-out group-hover/vault:-translate-x-[212%] group-hover/vault:rotate-[-16deg] hover:z-50">
-          <VaultCard {...PROJECTS[0]} />
-        </div>
-        {/* Card 1: P-02 AEROVIT (center-left) */}
-        <div className="proj-card absolute left-1/2 top-2 w-[255px] -translate-x-[102%] rotate-[-4deg] z-20 transition-transform duration-500 ease-out group-hover/vault:-translate-x-[114%] group-hover/vault:-translate-y-2 group-hover/vault:rotate-[-6deg] hover:z-50">
-          <VaultCard {...PROJECTS[1]} />
-        </div>
-        {/* Card 2: P-03 STICKOUT (center-right) */}
-        <div className="proj-card absolute left-1/2 top-2 w-[255px] -translate-x-[6%] rotate-[4deg] z-30 transition-transform duration-500 ease-out group-hover/vault:translate-x-[6%] group-hover/vault:-translate-y-2 group-hover/vault:rotate-[6deg] hover:z-50">
-          <VaultCard {...PROJECTS[2]} />
-        </div>
-        {/* Card 3: P-04 GHOSTCUE (far right) */}
-        <div className="proj-card absolute left-1/2 top-10 w-[240px] translate-x-[85%] rotate-[12deg] z-40 transition-transform duration-500 ease-out group-hover/vault:translate-x-[110%] group-hover/vault:rotate-[16deg] hover:z-50">
-          <VaultCard {...PROJECTS[3]} />
-        </div>
+      {/* fanned collectible cards (desktop, 5 folders in sequence P-01 -> P-05).
+          Card centres sit at -380 / -190 / 0 / 190 / 380px from the middle;
+          translate-x is in % of the 230px card, so (centre - 115) / 230. */}
+      <div className="group/vault relative mx-auto hidden h-[480px] w-full max-w-5xl md:block">
+        {FAN.map((f, i) => (
+          <div
+            key={PROJECTS[i].index}
+            className={`proj-card absolute left-1/2 w-[230px] transition-transform duration-500 ease-out hover:z-50 ${f}`}
+          >
+            <VaultCard {...PROJECTS[i]} />
+          </div>
+        ))}
       </div>
 
-      {/* 2x2 grid on small screens */}
+      {/* 2-column grid on small screens; the odd fifth folder centres on its own row */}
       <div className="vault-mobile-grid mx-auto grid grid-cols-2 w-full max-w-md gap-3 sm:gap-4 md:hidden">
-        {PROJECTS.map((p) => (
-          <div key={p.index} className="proj-card">
+        {PROJECTS.map((p, i) => (
+          <div
+            key={p.index}
+            className={`proj-card ${
+              i === PROJECTS.length - 1 && PROJECTS.length % 2 === 1
+                ? "col-span-2 mx-auto w-[calc(50%-0.375rem)] sm:w-[calc(50%-0.5rem)]"
+                : ""
+            }`}
+          >
             <VaultCard {...p} />
           </div>
         ))}
@@ -222,7 +241,7 @@ export function Projects() {
                 <span className="opacity-40">●</span>
                 <span className="flex items-center gap-1.5 font-bold">
                   <span className="h-2.5 w-2.5 rounded-full bg-black" />
-                  P-04 // FAMILIAR
+                  P-06 // FAMILIAR
                 </span>
                 <span className="opacity-40">●</span>
                 <span className="bg-black text-[#e8d90c] px-2.5 py-0.5 rounded-xs text-[10px] font-extrabold tracking-widest">
