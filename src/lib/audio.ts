@@ -117,6 +117,85 @@ class HudAudio {
     this.tone({ from: 160, to: 110, type: "sawtooth", peak: 0.07, decay: 0.12 });
   }
 
+  /** Heavy impact: a low sine drop plus a lowpassed noise knock. */
+  thump(peak = 0.22): void {
+    this.tone({ from: 95, to: 38, type: "sine", peak, decay: 0.32 });
+    this.noise({ duration: 0.06, peak: peak * 0.6, filter: "lowpass", freq: 900 });
+  }
+
+  /** Ratchet click: a short bright noise tick over a tiny square blip. */
+  ratchet(): void {
+    this.noise({ duration: 0.03, peak: 0.09, filter: "bandpass", freq: 2600 });
+    this.tone({ from: 210, to: 180, type: "square", peak: 0.025, decay: 0.04 });
+  }
+
+  /** Pressure release: highpassed noise that swells, then bleeds off. */
+  hiss(duration = 0.9): void {
+    this.noise({ duration, peak: 0.07, filter: "highpass", freq: 1800, attack: 0.05 });
+  }
+
+  /** Hydraulic motor: a low filtered saw that rises in pitch while it runs. */
+  hydraulic(duration = 0.8): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(52, t);
+    osc.frequency.linearRampToValueAtTime(96, t + duration);
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 380;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.05, t + 0.08);
+    gain.gain.setValueAtTime(0.05, t + duration - 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+    osc.connect(lp);
+    lp.connect(gain);
+    gain.connect(this.master);
+    osc.start(t);
+    osc.stop(t + duration + 0.05);
+    osc.onended = () => gain.disconnect();
+  }
+
+  private noiseBuffer: AudioBuffer | null = null;
+
+  private noise(opts: {
+    duration: number;
+    peak: number;
+    filter: BiquadFilterType;
+    freq: number;
+    attack?: number;
+  }): void {
+    if (!this.ctx || !this.master || this.muted) return;
+    const ctx = this.ctx;
+    if (!this.noiseBuffer) {
+      const len = ctx.sampleRate;
+      this.noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+      const data = this.noiseBuffer.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    }
+    const t = ctx.currentTime;
+    const src = ctx.createBufferSource();
+    src.buffer = this.noiseBuffer;
+    src.loop = true;
+    const filter = ctx.createBiquadFilter();
+    filter.type = opts.filter;
+    filter.frequency.value = opts.freq;
+    const gain = ctx.createGain();
+    const attack = opts.attack ?? 0.002;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(opts.peak, t + attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + opts.duration);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.master);
+    src.start(t);
+    src.stop(t + opts.duration + 0.05);
+    src.onended = () => gain.disconnect();
+  }
+
   private tone(opts: {
     from: number;
     to: number;

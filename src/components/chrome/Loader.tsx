@@ -47,6 +47,19 @@ const CLAMPS = [
 ];
 const GAUGE_SEGMENTS = 12;
 const STAGES = ["FRAME", "CORE", "LINK"];
+/** locking bolts sit this far above/below the seam centre (px) */
+const BOLT_OFFSET = 132;
+/** circuit traces on the door face, all running toward the lock housing */
+const TRACES = [
+  "M 60 140 H 300 L 360 200 V 360 L 430 430 H 520",
+  "M 60 860 H 280 L 340 800 V 640 L 430 570 H 520",
+  "M 130 300 H 220 L 260 340 V 470 H 485",
+  "M 130 700 H 240 L 280 660 V 530 H 485",
+  "M 20 500 H 200",
+  "M 470 90 V 280 L 530 340 V 400",
+  "M 470 910 V 720 L 530 660 V 600",
+];
+const RIVETS = Array.from({ length: 13 }, (_, i) => 30 + i * 45);
 
 /**
  * Intro: the poster assembles itself mechanically. Measuring lines draw
@@ -356,7 +369,10 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     }
   }
 
-  /* ---------- reveal: elevator doors slam shut, then part on AERA ---------- */
+  /* ---------- reveal: bulkhead doors close, lock, pressurise, release ----------
+     Heavy on purpose: hydraulic travel with a damper, an impact rebound,
+     a ratcheting lock dial and bolts, then a hiss, a stiff crack open and
+     a two-stage push apart. About 3.8s from the click. */
   useEffect(() => {
     if (phase !== "revealing") return;
 
@@ -367,6 +383,12 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
       return;
     }
     const letters = Array.from(logo.querySelectorAll<HTMLElement>(".aera-letter"));
+    const lockLabel = doors.querySelector<HTMLElement>(".k-lock-label");
+    const sfx = (fn: () => void) => () => {
+      try {
+        fn();
+      } catch {}
+    };
 
     const showLogo = () => {
       gsap.set([".k-chamber", ".k-hline", ".k-vline"], { opacity: 0 });
@@ -386,25 +408,66 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     const tl = gsap.timeline();
     revealTlRef.current = tl;
 
-    tl.to(".k-door-l", { xPercent: 0, duration: 0.34, ease: "power4.in" }, 0.05);
-    tl.to(".k-door-r", { xPercent: 0, duration: 0.34, ease: "power4.in" }, 0.05);
-    // impact: swap the chamber for the logo behind the closed doors
-    tl.call(() => {
-      showLogo();
-      gsap.set(letters, { yPercent: 40, opacity: 0, x: 0 });
-      try {
-        hudAudio.click();
-      } catch {}
-    }, [], 0.39);
-    tl.to(doors, { keyframes: { x: [-7, 6, -3, 0] }, duration: 0.18, ease: "none" }, 0.39);
-    tl.fromTo(".k-latch", { scale: 0, rotation: 45 }, { scale: 1, duration: 0.12, ease: "steps(3)" }, 0.39);
-    tl.to(".k-latch", { scale: 0, duration: 0.1, ease: MOTION.glitch }, 0.66);
+    // power is diverted: the chamber dims in steps as the rams engage
+    tl.to(".k-chamber", { opacity: 0.35, duration: 0.2, ease: "steps(3)" }, 0);
 
-    // doors part — fast out, then the letters stamp into place
-    tl.to(".k-door-l", { xPercent: -101, duration: 0.55, ease: MOTION.snap }, 0.74);
-    tl.to(".k-door-r", { xPercent: 101, duration: 0.55, ease: MOTION.snap }, 0.74);
-    tl.to(letters, { yPercent: 0, opacity: 1, duration: 0.4, ease: MOTION.servo, stagger: 0.05 }, 0.78);
-    tl.call(() => enter(true), [], 1.4);
+    // 1. hydraulic close: slow to start, cushioned by the damper
+    tl.call(sfx(() => hudAudio.hydraulic(0.95)), [], 0.05);
+    tl.to(".k-door-l", { xPercent: 0, duration: 0.95, ease: MOTION.hydraulic }, 0.1);
+    tl.to(".k-door-r", { xPercent: 0, duration: 0.95, ease: MOTION.hydraulic }, 0.1);
+
+    // 2. impact: rebound off the stop, inner plates carry on a beat
+    const hit = 1.05;
+    tl.call(
+      () => {
+        showLogo();
+        gsap.set(letters, { yPercent: 40, opacity: 0, x: 0 });
+        sfx(() => hudAudio.thump())();
+      },
+      [],
+      hit - 0.01,
+    );
+    tl.to(".k-door-l", { keyframes: { xPercent: [-1.4, 0] }, duration: 0.3, ease: "power2.out" }, hit);
+    tl.to(".k-door-r", { keyframes: { xPercent: [1.4, 0] }, duration: 0.3, ease: "power2.out" }, hit);
+    tl.to(".k-door-inner-l", { keyframes: { x: [9, -3, 0] }, duration: 0.34, ease: "none" }, hit);
+    tl.to(".k-door-inner-r", { keyframes: { x: [-9, 3, 0] }, duration: 0.34, ease: "none" }, hit);
+    tl.to(doors, { keyframes: { y: [5, -4, 2, 0] }, duration: 0.26, ease: "none" }, hit);
+
+    // 3. lock: dial seats, traces power up toward it, dial ratchets, bolts fire
+    tl.fromTo(".k-lock", { opacity: 1, scale: 0.7 }, { scale: 1, duration: 0.16, ease: "steps(3)" }, hit + 0.12);
+    tl.to(".k-trace", { strokeDashoffset: 0, duration: 0.55, ease: "power2.in", stagger: 0.04 }, hit + 0.12);
+    if (lockLabel) tl.add(decodeTween(lockLabel, { duration: 0.35, text: "SEALING" }), hit + 0.16);
+    [0.45, 0.72, 0.99].forEach((at, i) => {
+      tl.to(".k-dial", { rotation: (i + 1) * 30, svgOrigin: "130 130", duration: 0.13, ease: MOTION.servo }, hit + at);
+      tl.call(sfx(() => hudAudio.ratchet()), [], hit + at);
+      tl.to([".k-door-l", ".k-door-r"], { keyframes: { x: [2, -1, 0] }, duration: 0.1, ease: "none" }, hit + at + 0.02);
+    });
+    tl.to(".k-bolt", { scaleX: 1, duration: 0.16, ease: "power4.in", stagger: 0.05 }, hit + 0.6);
+    tl.call(sfx(() => hudAudio.thump(0.1)), [], hit + 0.76);
+    tl.to(".k-seal-fill", { scaleX: 1, duration: 0.36, ease: "steps(6)" }, hit + 1.1);
+    if (lockLabel) tl.add(decodeTween(lockLabel, { duration: 0.3, text: "SEALED" }), hit + 1.15);
+
+    // 4. release: dial spins back, bolts retract, pressure vents
+    const rel = hit + 1.6;
+    tl.to(".k-dial", { rotation: -30, svgOrigin: "130 130", duration: 0.3, ease: MOTION.servo }, rel);
+    tl.to(".k-bolt", { scaleX: 0, duration: 0.14, ease: "power3.in", stagger: 0.04 }, rel + 0.08);
+    tl.call(sfx(() => hudAudio.hiss(1.0)), [], rel + 0.1);
+    if (lockLabel) tl.add(decodeTween(lockLabel, { duration: 0.3, text: "RELEASE" }), rel + 0.05);
+    tl.to(".k-seal-fill", { scaleX: 0, duration: 0.3, ease: "steps(6)" }, rel + 0.1);
+    tl.to(".k-lock", { scale: 0.7, opacity: 0, duration: 0.16, ease: "steps(3)" }, rel + 0.35);
+
+    // 5. crack open against resistance: stick, slip, stick
+    const crack = rel + 0.45;
+    tl.to(".k-door-l", { keyframes: { xPercent: [-1.2, -1, -2.8, -2.6, -4.5] }, duration: 0.55, ease: "none" }, crack);
+    tl.to(".k-door-r", { keyframes: { xPercent: [1.2, 1, 2.8, 2.6, 4.5] }, duration: 0.55, ease: "none" }, crack);
+
+    // 6. the rams push the doors apart; AERA docks as the light comes in
+    const open = crack + 0.7;
+    tl.call(sfx(() => hudAudio.hydraulic(0.8)), [], open - 0.05);
+    tl.to(".k-door-l", { xPercent: -101, duration: 0.85, ease: MOTION.hydraulicOpen }, open);
+    tl.to(".k-door-r", { xPercent: 101, duration: 0.85, ease: MOTION.hydraulicOpen }, open);
+    tl.to(letters, { yPercent: 0, opacity: 1, duration: 0.45, ease: MOTION.servo, stagger: 0.06 }, open + 0.35);
+    tl.call(() => enter(true), [], open + 1.0);
 
     return () => {
       tl.kill();
@@ -670,30 +733,162 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
         </div>
       </div>
 
-      {/* elevator doors: parked off-screen until the reveal */}
+      {/* bulkhead doors: parked off-screen until the reveal */}
       <div
         ref={doorsRef}
         className="pointer-events-none absolute inset-0 z-[120] overflow-hidden"
         style={{ visibility: "hidden" }}
         aria-hidden="true"
       >
-        <div className="k-door-l absolute inset-y-0 left-0 w-1/2" style={{ background: INK }}>
-          <div
-            className="absolute inset-y-0 right-0 w-3"
-            style={{ backgroundImage: `repeating-linear-gradient(45deg, ${POSTER} 0 8px, ${INK} 8px 16px)` }}
-          />
+        <div className="k-door-l absolute inset-y-0 left-0 w-1/2 overflow-hidden" style={{ background: INK }}>
+          <DoorFace side="l" />
         </div>
-        <div className="k-door-r absolute inset-y-0 right-0 w-1/2" style={{ background: INK }}>
-          <div
-            className="absolute inset-y-0 left-0 w-3"
-            style={{ backgroundImage: `repeating-linear-gradient(45deg, ${POSTER} 0 8px, ${INK} 8px 16px)` }}
-          />
+        <div className="k-door-r absolute inset-y-0 right-0 w-1/2 overflow-hidden" style={{ background: INK }}>
+          <DoorFace side="r" />
         </div>
+
+        {/* locking bolts: shoot from the port door across the seam */}
+        {[-1, 1].map((dir) => (
+          <div
+            key={dir}
+            className="k-bolt absolute left-1/2 -ml-[90px] h-4 w-[180px] border-2"
+            style={{
+              top: `calc(50% + ${dir * BOLT_OFFSET}px - 8px)`,
+              borderColor: INK,
+              backgroundImage: `repeating-linear-gradient(90deg, ${POSTER} 0 14px, ${INK} 14px 18px)`,
+              transform: "scaleX(0)",
+              transformOrigin: "0% 50%",
+            }}
+          />
+        ))}
+
+        {/* lock dial: appears once the halves of the housing meet */}
         <div
-          className="k-latch absolute left-1/2 top-1/2 -ml-5 -mt-5 h-10 w-10 border-[3px]"
-          style={{ background: POSTER, borderColor: INK, transform: "scale(0)" }}
-        />
+          className="k-lock absolute left-1/2 top-1/2 h-[200px] w-[200px] -ml-[100px] -mt-[100px] md:h-[240px] md:w-[240px] md:-ml-[120px] md:-mt-[120px]"
+          style={{ opacity: 0 }}
+        >
+          <svg viewBox="0 0 260 260" className="h-full w-full overflow-visible">
+            <polygon points="130,22 122,8 138,8" fill={POSTER} />
+            <g className="k-dial">
+              <circle cx={130} cy={130} r={86} fill={INK} stroke={POSTER} strokeWidth={5} />
+              {Array.from({ length: 8 }, (_, i) => (
+                <rect
+                  key={i}
+                  x={125}
+                  y={36}
+                  width={10}
+                  height={20}
+                  fill={POSTER}
+                  transform={`rotate(${i * 45} 130 130)`}
+                />
+              ))}
+              <circle cx={130} cy={130} r={58} fill="none" stroke={POSTER} strokeWidth={1.5} strokeDasharray="4 6" />
+              <rect x={127} y={84} width={6} height={92} fill={POSTER} />
+              <rect x={84} y={127} width={92} height={6} fill={POSTER} />
+              <circle cx={130} cy={130} r={16} fill={INK} stroke={POSTER} strokeWidth={3} />
+            </g>
+          </svg>
+          <p
+            className="k-lock-label absolute left-1/2 top-full mt-12 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] font-black tracking-[0.3em]"
+            style={{ color: POSTER }}
+          >
+            SEALING
+          </p>
+        </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * One bulkhead door. The SVG is drawn for the port side with the seam at
+ * x=600; the starboard door mirrors it. Labels stay outside the mirror so
+ * they read the right way round.
+ */
+function DoorFace({ side }: { side: "l" | "r" }) {
+  const port = side === "l";
+  return (
+    <div className={`k-door-inner-${side} absolute inset-0`}>
+      <svg
+        viewBox="0 0 600 1000"
+        preserveAspectRatio="xMaxYMid slice"
+        className="absolute inset-0 h-full w-full"
+        style={port ? undefined : { transform: "scaleX(-1)" }}
+      >
+        {/* recessed panels with clipped corners */}
+        <path d="M 40 60 H 520 L 560 100 V 400 H 40 Z" fill="none" stroke={POSTER} strokeOpacity={0.18} strokeWidth={2} />
+        <path d="M 40 600 H 560 V 900 L 520 940 H 40 Z" fill="none" stroke={POSTER} strokeOpacity={0.18} strokeWidth={2} />
+        <line x1={0} y1={455} x2={480} y2={455} stroke={POSTER} strokeOpacity={0.3} strokeWidth={2} />
+        <line x1={0} y1={545} x2={480} y2={545} stroke={POSTER} strokeOpacity={0.3} strokeWidth={2} />
+        {RIVETS.map((x) => (
+          <g key={x} fill={POSTER} fillOpacity={0.4}>
+            <circle cx={x} cy={26} r={3.5} />
+            <circle cx={x} cy={974} r={3.5} />
+          </g>
+        ))}
+        {/* dormant traces, then the live copies that power up on lock */}
+        {TRACES.map((d) => (
+          <path key={d} d={d} fill="none" stroke={POSTER} strokeOpacity={0.14} strokeWidth={2} />
+        ))}
+        {TRACES.map((d) => (
+          <path
+            key={`live-${d}`}
+            className="k-trace"
+            d={d}
+            fill="none"
+            stroke={POSTER}
+            strokeWidth={2.5}
+            pathLength={1}
+            strokeDasharray={1}
+            strokeDashoffset={1}
+          />
+        ))}
+        {TRACES.map((d) => {
+          const [x, y] = d.slice(2).split(" ").map(Number);
+          return <circle key={`via-${d}`} cx={x} cy={y} r={6} fill={INK} stroke={POSTER} strokeOpacity={0.6} strokeWidth={2} />;
+        })}
+        {/* half of the lock housing: the two halves meet into one ring */}
+        <path d="M 600 382 A 118 118 0 0 0 600 618" fill={INK} stroke={POSTER} strokeWidth={4} />
+        <path d="M 600 408 A 92 92 0 0 0 600 592" fill="none" stroke={POSTER} strokeOpacity={0.45} strokeWidth={1.5} strokeDasharray="3 6" />
+      </svg>
+
+      {/* hazard seam */}
+      <div
+        className={`absolute inset-y-0 w-3 ${port ? "right-0" : "left-0"}`}
+        style={{ backgroundImage: `repeating-linear-gradient(45deg, ${POSTER} 0 8px, ${INK} 8px 16px)` }}
+      />
+      {/* bolt sockets on the seam */}
+      {[-1, 1].map((dir) => (
+        <div
+          key={dir}
+          className={`absolute h-5 w-12 border-2 ${port ? "right-3" : "left-3"}`}
+          style={{ top: `calc(50% + ${dir * BOLT_OFFSET}px - 10px)`, borderColor: `${POSTER}80` }}
+        />
+      ))}
+      {/* plate label + pressure-seal gauge */}
+      <div
+        className={`absolute bottom-10 flex flex-col gap-1.5 font-mono text-[9px] font-bold tracking-[0.22em] ${
+          port ? "left-6 md:left-10" : "right-6 items-end md:right-10"
+        }`}
+        style={{ color: `${POSTER}b3` }}
+      >
+        <span>{port ? "BAY DOOR // PORT" : "BAY DOOR // STBD"}</span>
+        <span className="flex items-center gap-2">
+          SEAL
+          <span className="relative block h-1.5 w-20 border md:w-28" style={{ borderColor: `${POSTER}80` }}>
+            <span
+              className="k-seal-fill absolute inset-0"
+              style={{ background: POSTER, transform: "scaleX(0)", transformOrigin: port ? "0% 50%" : "100% 50%" }}
+            />
+          </span>
+        </span>
+      </div>
+      <span
+        className={`absolute top-10 font-mono text-[9px] font-bold tracking-[0.22em] ${port ? "left-6 md:left-10" : "right-6 md:right-10"}`}
+        style={{ color: `${POSTER}80` }}
+      >
+        SECTOR AERA
+      </span>
     </div>
   );
 }

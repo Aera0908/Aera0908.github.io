@@ -35,6 +35,16 @@ export const MOTION = {
       ? CustomEase.create("servo", "M0,0 C0.18,0 0.24,1.1 0.52,1.07 0.72,1.04 0.84,1 1,1")
       : "power3.out",
   glitch: "steps(4)",
+  /** heavy hydraulic travel: slow to start, then a damper cushions the end */
+  hydraulic:
+    typeof window !== "undefined"
+      ? CustomEase.create("hydraulic", "M0,0 C0.42,0 0.6,0.8 0.78,0.95 0.86,0.995 0.93,1 1,1")
+      : "power3.inOut",
+  /** pressure release: barely moves, then the rams push and coast out */
+  hydraulicOpen:
+    typeof window !== "undefined"
+      ? CustomEase.create("hydraulicOpen", "M0,0 C0.3,0 0.38,0.04 0.5,0.32 0.62,0.62 0.72,0.92 1,1")
+      : "power3.inOut",
 } as const;
 
 /** duration ceilings (seconds) — feedback / content entrance / transitions */
