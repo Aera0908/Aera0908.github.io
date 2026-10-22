@@ -16,7 +16,7 @@ export const hudState = {
   introArrival: 0,
 
   // Background parallax Y offsets (for slide-in from bottom)
-  earthY: 14.5,
+  earthY: 31.2, // rest height: keep in step with EARTH_PLANE.y in scene.ts
   earthOpacity: 1.0, // opacity for Hero Earth fade-out
   oldMoonY: -9.5,
   oldMoonOpacity: 1.0, // opacity for Hero moon surface fade-out

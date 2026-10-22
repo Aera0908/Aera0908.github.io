@@ -50,6 +50,10 @@ function StarField({ count = 500 }) {
 }
 
 import { hudState } from "@/lib/hud-state";
+import { CAMERA_PATH, EARTH_DIM, EARTH_PLANE, getLookTarget, restCameraQuaternion } from "@/lib/scene";
+
+/** the Earth tint, in sRGB so it dims the same as the intro's CSS brightness() */
+const EARTH_TINT = new THREE.Color().setRGB(EARTH_DIM, EARTH_DIM, EARTH_DIM, THREE.SRGBColorSpace);
 
 export function MoonScene() {
   const spaceMaterialRef = useRef<THREE.ShaderMaterial>(null);
@@ -60,6 +64,23 @@ export function MoonScene() {
   const oldMoonRef = useRef<THREE.Mesh>(null);
   const facilityRef = useRef<THREE.Mesh>(null);
   const newMoonRef = useRef<THREE.Mesh>(null);
+
+  /* Earth is far enough away that no camera movement should move it: not
+     the intro arrival, not the pointer sway. It faces the screen at the rest
+     pose, and every frame its rest transform relative to the rest camera
+     (path point and look target only) is re-applied to the live camera, so
+     it stays screen-fixed while the nearer layers drift. Scrolling still
+     moves it, through hudState.earthY. */
+  // scratch objects hoisted out of the frame loop (spec §7: no per-frame allocs)
+  const earthRig = useRef({
+    restQuat: restCameraQuaternion(new THREE.Quaternion()),
+    refCam: new THREE.PerspectiveCamera(),
+    look: new THREE.Vector3(),
+    rest: new THREE.Matrix4(),
+    rel: new THREE.Matrix4(),
+    pos: new THREE.Vector3(),
+    one: new THREE.Vector3(1, 1, 1),
+  }).current;
   
   // Load the user's flat assets from public folder
   const earthTexture = useLoader(THREE.TextureLoader, "/bg-assets/earth-no-bg.webp");
@@ -112,7 +133,7 @@ export function MoonScene() {
   }, []);
 
   // Update shader time uniform & mesh coordinates every frame from mutable hudState
-  useFrame(() => {
+  useFrame(({ camera }) => {
     timer.update();
     if (spaceMaterialRef.current) {
       spaceMaterialRef.current.uniforms.uTime.value = timer.getElapsed();
@@ -120,8 +141,18 @@ export function MoonScene() {
     
     // Animate positions in R3F loop to keep rendering performant & un-react-rendered
     if (earthRef.current) {
-      earthRef.current.position.y = hudState.earthY;
-      const mat = earthRef.current.material as THREE.MeshBasicMaterial;
+      const earth = earthRef.current;
+      const r = earthRig;
+      r.pos.set(0, hudState.earthY, EARTH_PLANE.z);
+      CAMERA_PATH.getPoint(hudState.scrollProgress, r.refCam.position);
+      r.refCam.lookAt(getLookTarget(hudState.scrollProgress, r.look));
+      r.refCam.updateMatrixWorld();
+      camera.updateMatrixWorld();
+      r.rest.compose(r.pos, r.restQuat, r.one);
+      r.rel.copy(r.refCam.matrixWorldInverse).multiply(r.rest);
+      r.rest.multiplyMatrices(camera.matrixWorld, r.rel);
+      r.rest.decompose(earth.position, earth.quaternion, earth.scale);
+      const mat = earth.material as THREE.MeshBasicMaterial;
       if (mat) mat.opacity = hudState.earthOpacity;
     }
     if (oldMoonRef.current) {
@@ -158,13 +189,16 @@ export function MoonScene() {
       {/* 2. Starfield Foreground Detail Layer */}
       <StarField count={3000} />
 
-      {/* 3. Flat 2D Earth Plane (Z = -28) */}
-      <mesh ref={earthRef} position={[0, hudState.earthY, -28]}>
-        <planeGeometry args={[60, 40]} />
+      {/* 3. Flat 2D Earth Plane (Z = -28), facing the screen; unfogged so it
+          keeps the same full-brightness lighting as the intro's Earth */}
+      <mesh ref={earthRef} position={[0, hudState.earthY, EARTH_PLANE.z]}>
+        <planeGeometry args={[EARTH_PLANE.width, EARTH_PLANE.height]} />
         <meshBasicMaterial
           map={earthTexture}
+          color={EARTH_TINT}
           transparent
           depthWrite={false}
+          fog={false}
         />
       </mesh>
 

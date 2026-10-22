@@ -134,32 +134,89 @@ class HudAudio {
     this.noise({ duration, peak: 0.07, filter: "highpass", freq: 1800, attack: 0.05 });
   }
 
-  /** Hydraulic motor: a low filtered saw that rises in pitch while it runs. */
-  hydraulic(duration = 0.8): void {
+  /**
+   * Sliding door: a pneumatic rush (band-passed noise sweeping up), a quiet
+   * servo whine riding on it, and a soft seat at the end of travel.
+   */
+  door(duration = 0.8): void {
+    this.sweep({ kind: "noise", duration, from: 900, to: 2600, q: 0.9, peak: 0.05 });
+    this.sweep({ kind: "triangle", duration, from: 420, to: 640, q: 0, peak: 0.012 });
+    this.tone({ from: 160, to: 110, type: "sine", peak: 0.06, decay: 0.12, delay: duration - 0.04 });
+  }
+
+  /** Brakes: a magnetic whine falling in pitch over a friction hiss that eases off with it. */
+  brake(duration = 2): void {
+    this.sweep({ kind: "sine", duration, from: 880, to: 220, q: 0, peak: 0.028 });
+    this.sweep({ kind: "noise", duration, from: 3600, to: 1400, q: 1.4, peak: 0.035 });
+  }
+
+  /**
+   * A tone or band-passed noise whose pitch (or band centre) glides from
+   * `from` to `to` over `duration`, with a short attack and a smooth release.
+   */
+  private sweep(opts: {
+    kind: "noise" | OscillatorType;
+    duration: number;
+    from: number;
+    to: number;
+    q: number;
+    peak: number;
+  }): void {
     if (!this.ctx || !this.master || this.muted) return;
     const ctx = this.ctx;
     const t = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    osc.type = "sawtooth";
-    osc.frequency.setValueAtTime(52, t);
-    osc.frequency.linearRampToValueAtTime(96, t + duration);
-    const lp = ctx.createBiquadFilter();
-    lp.type = "lowpass";
-    lp.frequency.value = 380;
+    const end = t + opts.duration;
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.05, t + 0.08);
-    gain.gain.setValueAtTime(0.05, t + duration - 0.1);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
-    osc.connect(lp);
-    lp.connect(gain);
+    gain.gain.exponentialRampToValueAtTime(opts.peak, t + Math.min(0.08, opts.duration / 4));
+    gain.gain.setValueAtTime(opts.peak, end - opts.duration * 0.3);
+    gain.gain.exponentialRampToValueAtTime(0.0001, end);
     gain.connect(this.master);
-    osc.start(t);
-    osc.stop(t + duration + 0.05);
-    osc.onended = () => gain.disconnect();
+
+    let src: AudioScheduledSourceNode;
+    if (opts.kind === "noise") {
+      const noise = ctx.createBufferSource();
+      noise.buffer = this.getNoiseBuffer(ctx);
+      noise.loop = true;
+      const band = ctx.createBiquadFilter();
+      band.type = "bandpass";
+      band.Q.value = opts.q;
+      band.frequency.setValueAtTime(opts.from, t);
+      band.frequency.exponentialRampToValueAtTime(opts.to, end);
+      noise.connect(band);
+      band.connect(gain);
+      src = noise;
+    } else {
+      const osc = ctx.createOscillator();
+      osc.type = opts.kind;
+      osc.frequency.setValueAtTime(opts.from, t);
+      osc.frequency.exponentialRampToValueAtTime(opts.to, end);
+      osc.connect(gain);
+      src = osc;
+    }
+    src.start(t);
+    src.stop(end + 0.05);
+    src.onended = () => gain.disconnect();
+  }
+
+  /** Docking chime: a soft two-note bell. */
+  chime(): void {
+    this.tone({ from: 1046, to: 1046, type: "sine", peak: 0.07, decay: 0.6 });
+    this.tone({ from: 784, to: 784, type: "sine", peak: 0.07, decay: 0.8, delay: 0.22 });
   }
 
   private noiseBuffer: AudioBuffer | null = null;
+
+  /** one second of white noise, built once and looped by every noise source */
+  private getNoiseBuffer(ctx: AudioContext): AudioBuffer {
+    if (!this.noiseBuffer) {
+      const len = ctx.sampleRate;
+      this.noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+      const data = this.noiseBuffer.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    }
+    return this.noiseBuffer;
+  }
 
   private noise(opts: {
     duration: number;
@@ -170,15 +227,9 @@ class HudAudio {
   }): void {
     if (!this.ctx || !this.master || this.muted) return;
     const ctx = this.ctx;
-    if (!this.noiseBuffer) {
-      const len = ctx.sampleRate;
-      this.noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
-      const data = this.noiseBuffer.getChannelData(0);
-      for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
-    }
     const t = ctx.currentTime;
     const src = ctx.createBufferSource();
-    src.buffer = this.noiseBuffer;
+    src.buffer = this.getNoiseBuffer(ctx);
     src.loop = true;
     const filter = ctx.createBiquadFilter();
     filter.type = opts.filter;

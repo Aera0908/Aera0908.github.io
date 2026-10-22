@@ -5,7 +5,7 @@ import Link from "next/link";
 import { gsap, ScrollTrigger, MOTION, DUR } from "@/lib/gsap";
 import { decodeTween, scrambled } from "@/lib/decode";
 import { hudState } from "@/lib/hud-state";
-import { expDampAlpha } from "@/lib/scene";
+import { EARTH_EXIT_Y, expDampAlpha } from "@/lib/scene";
 import { CyberLines } from "@/components/ui/CyberLines";
 import { useHudAudio } from "@/components/providers/HudAudioProvider";
 import { Magnetic } from "@/components/ui/Magnetic";
@@ -257,7 +257,7 @@ export function Hero({
           immediateRender: false,
         }, 0.1)
         .to(hudState, {
-          earthY: 24.0,
+          earthY: EARTH_EXIT_Y,
           earthOpacity: 0.0,
           oldMoonY: -2.0,
           oldMoonOpacity: 0.0,
@@ -358,7 +358,7 @@ export function Hero({
           immediateRender: false,
         }, 3.05)
         .to(hudState, {
-          earthY: 24.0,
+          earthY: EARTH_EXIT_Y,
           earthOpacity: 0.0,
           oldMoonY: -2.0,
           oldMoonOpacity: 0.0,
@@ -479,6 +479,8 @@ export function Hero({
             className="hero-logo-target font-display font-black tracking-[-0.08em] text-paper uppercase select-none text-[12vw] md:text-[9vw] leading-none py-4 px-8 -my-4 -mx-8"
             style={{
               opacity: entered && isBaseRoute ? 1 : 0,
+              // matches the intro's flying sign, and keeps the white logo readable over the Earth
+              textShadow: "0 4px 24px rgba(0,0,0,0.55)",
             }}
           >
             <div className="flex gap-[0.02em]">
