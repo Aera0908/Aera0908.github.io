@@ -37,12 +37,14 @@ export function Hero({
   useEffect(() => {
     if (!entered) return;
 
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+
     if (!isBaseRoute) {
       // On deep links, immediately set hero text & logo to hidden state
       gsap.set(".hero-reveal:not(.hero-img-container)", { opacity: 0, y: -30, pointerEvents: "none" });
       gsap.set(".hero-logo-target", { opacity: 0, y: -30, pointerEvents: "none" });
       gsap.set(".hero-scroll-cue", { opacity: 0, pointerEvents: "none" });
-      if (cardRef.current) {
+      if (cardRef.current && !isMobile) {
         gsap.set(cardRef.current, { opacity: 1, scale: 1 });
       }
       return;
@@ -93,19 +95,21 @@ export function Hero({
         0.35,
       );
 
-      introTl.fromTo(
-        cardRef.current,
-        { opacity: 0, y: 28, scale: 0.96 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.7,
-          ease: MOTION.servo,
-          clearProps: "transform",
-        },
-        0.25,
-      );
+      if (!isMobile) {
+        introTl.fromTo(
+          cardRef.current,
+          { opacity: 0, y: 28, scale: 0.96 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.7,
+            ease: MOTION.servo,
+            clearProps: "transform",
+          },
+          0.25,
+        );
+      }
 
       // Scroll down cue: last, once everything has settled
       introTl.fromTo(
@@ -145,8 +149,30 @@ export function Hero({
     };
 
 
-    // Helper to position the absolute card exactly over its layout placeholder
+    // Helper to position the absolute card over its desktop placeholder or full-viewport mobile sheet
     const matchPlaceholder = () => {
+      if (window.matchMedia("(max-width: 767px)").matches) {
+        gsap.set(card, {
+          left: 0,
+          top: 0,
+          width: "100vw",
+          height: "100vh",
+          padding: 0,
+          opacity: 1,
+        });
+
+        const wrapEl = card.querySelector(".hero-card-img-wrap") as HTMLElement;
+        if (wrapEl) {
+          gsap.set(wrapEl, {
+            left: "6%",
+            width: "88%",
+            top: "66%",
+            height: "28%",
+          });
+        }
+        return;
+      }
+
       const bounds = getCardBounds();
       if (bounds.width === 0 || bounds.height === 0) return;
 
@@ -191,13 +217,13 @@ export function Hero({
           height: isMobile ? "28%" : "100%",
         };
 
-        // Create scroll trigger timeline to pin Hero section and morph the card
+        // Create scroll trigger timeline to pin Hero section and morph/transition the white section
         const tl = gsap.timeline({
           scrollTrigger: {
             id: "hero-pin",
             trigger: root,
             start: "top top",
-            end: isMobile ? "+=1100" : "+=1700",
+            end: isMobile ? "+=1150" : "+=1700",
             pin: true,
             scrub: true,
             invalidateOnRefresh: true,
@@ -205,17 +231,28 @@ export function Hero({
         });
 
         // Step A: Initial state at scroll 0, fade out Hero text
-        tl.set(".hero-card-img-wrap", {
-          left: "0%",
-          width: "100%",
-          top: "15%",
-          height: "70%",
-        }, 0);
+        tl.set(
+          ".hero-card-img-wrap",
+          isMobile
+            ? {
+                left: wrapExpanded.left,
+                width: wrapExpanded.width,
+                top: wrapExpanded.top,
+                height: wrapExpanded.height,
+              }
+            : {
+                left: "0%",
+                width: "100%",
+                top: "15%",
+                height: "70%",
+              },
+          0
+        );
 
         if (isBaseRoute) {
           tl.to([".hero-logo-target", ".hero-reveal:not(.hero-img-container)", ".hero-scroll-cue"], {
             opacity: 0,
-            y: -30,
+            y: isMobile ? -36 : -30,
             pointerEvents: "none",
             duration: 0.45,
             stagger: 0.05,
@@ -226,7 +263,7 @@ export function Hero({
             { opacity: 1, y: 0, pointerEvents: "auto" },
             {
               opacity: 0,
-              y: -30,
+              y: isMobile ? -36 : -30,
               pointerEvents: "none",
               duration: 0.45,
               immediateRender: false,
@@ -235,75 +272,155 @@ export function Hero({
           );
         }
 
-        // Step B: Morph the exact same card container to cover the full viewport
-        tl.fromTo(card, {
-          left: () => getCardBounds().left,
-          top: () => getCardBounds().top,
-          width: () => getCardBounds().width,
-          height: () => getCardBounds().height,
-          borderRadius: "10px",
-          padding: "1.25rem",
-          "--notch": "22px",
-        }, {
-          left: 0,
-          top: 0,
-          width: "100vw",
-          height: "100vh",
-          borderRadius: 0,
-          padding: 0,
-          "--notch": "0px",
-          duration: 0.9,
-          ease: "power2.inOut",
-          immediateRender: false,
-        }, 0.1)
-        .to(hudState, {
-          earthY: EARTH_EXIT_Y,
-          earthOpacity: 0.0,
-          oldMoonY: -2.0,
-          oldMoonOpacity: 0.0,
-          duration: 0.9,
-          ease: "power2.inOut",
-        }, 0.1)
-        .fromTo(".hero-card-meta", {
-          opacity: 1,
-          pointerEvents: "auto",
-        }, {
-          opacity: 0,
-          pointerEvents: "none",
-          duration: 0.3,
-          immediateRender: false,
-        }, 0.1)
-        .fromTo(".hero-card-img-wrap", {
-          left: "0%",
-          width: "100%",
-          top: "15%",
-          height: "70%",
-        }, {
-          left: wrapExpanded.left,
-          width: wrapExpanded.width,
-          top: wrapExpanded.top,
-          height: wrapExpanded.height,
-          duration: 0.9,
-          ease: "power2.inOut",
-          immediateRender: false,
-        }, 0.1);
-
-        // Step C: Reveal the one-screen intro collage
-        tl.fromTo(".hero-intro", {
-          opacity: 0,
-          y: 24,
-        }, {
-          opacity: 1,
-          y: 0,
-          duration: 0.45,
-          ease: "power2.out",
-        }, 0.8);
+        if (isMobile) {
+          // Step B (Mobile): Sweep full-viewport notched paper deck up from bottom with internal parallax
+          tl.set(".hero-card-meta", { opacity: 0, pointerEvents: "none" }, 0)
+            .set(".hero-shutter-top", { opacity: 1, scaleX: 1 }, 0)
+            .set(".hero-shutter-bottom", { opacity: 0 }, 0)
+            .fromTo(
+              card,
+              {
+                left: 0,
+                top: 0,
+                width: "100vw",
+                height: "100vh",
+                yPercent: 100,
+                borderRadius: "16px",
+                padding: 0,
+                "--notch": "44px",
+                pointerEvents: "none",
+              },
+              {
+                yPercent: 0,
+                borderRadius: "0px",
+                "--notch": "0px",
+                pointerEvents: "auto",
+                duration: 0.85,
+                ease: "power2.inOut",
+              },
+              0.08
+            )
+            .to(
+              ".hero-shutter-top",
+              {
+                opacity: 0,
+                duration: 0.22,
+                ease: "power2.out",
+              },
+              0.75
+            )
+            .to(
+              hudState,
+              {
+                earthY: EARTH_EXIT_Y,
+                earthOpacity: 0.0,
+                oldMoonY: -2.0,
+                oldMoonOpacity: 0.0,
+                duration: 0.85,
+                ease: "power2.inOut",
+              },
+              0.08
+            )
+            .fromTo(
+              ".hero-card-img-wrap",
+              {
+                y: 56,
+                scale: 0.92,
+                opacity: 0,
+              },
+              {
+                y: 0,
+                scale: 1,
+                opacity: 1,
+                duration: 0.58,
+                ease: "power2.out",
+              },
+              0.38
+            )
+            .fromTo(
+              ".hero-intro",
+              {
+                opacity: 0,
+                y: 28,
+              },
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.42,
+                ease: "power2.out",
+              },
+              0.58
+            );
+        } else {
+          // Step B (Desktop): Morph the right-column card container to cover the full viewport
+          tl.fromTo(card, {
+            left: () => getCardBounds().left,
+            top: () => getCardBounds().top,
+            width: () => getCardBounds().width,
+            height: () => getCardBounds().height,
+            borderRadius: "10px",
+            padding: "1.25rem",
+            "--notch": "22px",
+          }, {
+            left: 0,
+            top: 0,
+            width: "100vw",
+            height: "100vh",
+            borderRadius: 0,
+            padding: 0,
+            "--notch": "0px",
+            duration: 0.9,
+            ease: "power2.inOut",
+            immediateRender: false,
+          }, 0.1)
+          .to(hudState, {
+            earthY: EARTH_EXIT_Y,
+            earthOpacity: 0.0,
+            oldMoonY: -2.0,
+            oldMoonOpacity: 0.0,
+            duration: 0.9,
+            ease: "power2.inOut",
+          }, 0.1)
+          .fromTo(".hero-card-meta", {
+            opacity: 1,
+            pointerEvents: "auto",
+          }, {
+            opacity: 0,
+            pointerEvents: "none",
+            duration: 0.3,
+            immediateRender: false,
+          }, 0.1)
+          .fromTo(".hero-card-img-wrap", {
+            left: "0%",
+            width: "100%",
+            top: "15%",
+            height: "70%",
+          }, {
+            left: wrapExpanded.left,
+            width: wrapExpanded.width,
+            top: wrapExpanded.top,
+            height: wrapExpanded.height,
+            duration: 0.9,
+            ease: "power2.inOut",
+            immediateRender: false,
+          }, 0.1)
+          // Step C (Desktop): Reveal the one-screen intro collage
+          .fromTo(".hero-intro", {
+            opacity: 0,
+            y: 24,
+          }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.45,
+            ease: "power2.out",
+          }, 0.8);
+        }
 
         // Step D: Sequential photo reveals as you scroll
         tl.fromTo(".feed-fig-1",
           { opacity: 0, scale: 0.95, pointerEvents: "none" },
           { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.35, onStart: () => { fxRef.current.click(); } },
-          1.2
+          isMobile ? 0.85 : 1.2
         )
         .to(".feed-fig-1", { opacity: 0, scale: 1.05, pointerEvents: "none", duration: 0.35 }, 1.65);
 
@@ -336,67 +453,131 @@ export function Hero({
           ease: "power2.in",
         }, 2.95);
 
-        // Step F: Shrink card back to placeholder bounds, slide up cleanly
-        tl.fromTo(card, {
-          left: 0,
-          top: 0,
-          width: "100vw",
-          height: "100vh",
-          borderRadius: 0,
-          padding: 0,
-          "--notch": "0px",
-        }, {
-          left: () => getCardBounds().left,
-          top: () => getCardBounds().top - window.innerHeight,
-          width: () => getCardBounds().width,
-          height: () => getCardBounds().height,
-          borderRadius: "10px",
-          padding: "1.25rem",
-          "--notch": "22px",
-          duration: 0.55,
-          ease: "power2.inOut",
-          immediateRender: false,
-        }, 3.05)
-        .to(hudState, {
-          earthY: EARTH_EXIT_Y,
-          earthOpacity: 0.0,
-          oldMoonY: -2.0,
-          oldMoonOpacity: 0.0,
-          duration: 0.55,
-          ease: "power2.inOut",
-        }, 3.05)
-        .fromTo(".hero-card-meta", {
-          opacity: 0,
-          pointerEvents: "none",
-        }, {
-          opacity: 1,
-          pointerEvents: "auto",
-          duration: 0.25,
-          immediateRender: false,
-        }, 3.05)
-        .fromTo(".hero-card-img-wrap", {
-          left: wrapExpanded.left,
-          width: wrapExpanded.width,
-          top: wrapExpanded.top,
-          height: wrapExpanded.height,
-        }, {
-          left: "0%",
-          width: "100%",
-          top: "15%",
-          height: "70%",
-          duration: 0.55,
-          ease: "power2.inOut",
-          immediateRender: false,
-        }, 3.05);
-
-        // Step G: Tight hold before unpinning
-        tl.to({}, { duration: 0.05 })
-          .set(".hero-card-img-wrap", {
+        if (isMobile) {
+          // Step F (Mobile): Lift the white paper deck upward off-screen to reveal Journey Moonbase
+          tl.fromTo(
+            ".hero-card-img-wrap",
+            {
+              y: 0,
+              scale: 1,
+              opacity: 1,
+            },
+            {
+              y: -28,
+              scale: 0.95,
+              opacity: 0,
+              duration: 0.35,
+              ease: "power2.in",
+              immediateRender: false,
+            },
+            2.95
+          )
+            .fromTo(
+              card,
+              {
+                yPercent: 0,
+                borderRadius: "0px",
+                "--notch": "0px",
+                pointerEvents: "auto",
+              },
+              {
+                yPercent: -100,
+                borderRadius: "16px",
+                "--notch": "36px",
+                pointerEvents: "none",
+                duration: 0.55,
+                ease: "power2.inOut",
+                immediateRender: false,
+              },
+              3.05
+            )
+            .fromTo(
+              ".hero-shutter-bottom",
+              { opacity: 0 },
+              {
+                opacity: 1,
+                duration: 0.15,
+                ease: "power2.out",
+                immediateRender: false,
+              },
+              3.02
+            )
+            .to(
+              hudState,
+              {
+                earthY: EARTH_EXIT_Y,
+                earthOpacity: 0.0,
+                oldMoonY: -2.0,
+                oldMoonOpacity: 0.0,
+                duration: 0.55,
+                ease: "power2.inOut",
+              },
+              3.05
+            )
+            .to({}, { duration: 0.05 });
+        } else {
+          // Step F (Desktop): Shrink card back to placeholder bounds, slide up cleanly
+          tl.fromTo(card, {
+            left: 0,
+            top: 0,
+            width: "100vw",
+            height: "100vh",
+            borderRadius: 0,
+            padding: 0,
+            "--notch": "0px",
+          }, {
+            left: () => getCardBounds().left,
+            top: () => getCardBounds().top - window.innerHeight,
+            width: () => getCardBounds().width,
+            height: () => getCardBounds().height,
+            borderRadius: "10px",
+            padding: "1.25rem",
+            "--notch": "22px",
+            duration: 0.55,
+            ease: "power2.inOut",
+            immediateRender: false,
+          }, 3.05)
+          .to(hudState, {
+            earthY: EARTH_EXIT_Y,
+            earthOpacity: 0.0,
+            oldMoonY: -2.0,
+            oldMoonOpacity: 0.0,
+            duration: 0.55,
+            ease: "power2.inOut",
+          }, 3.05)
+          .fromTo(".hero-card-meta", {
+            opacity: 0,
+            pointerEvents: "none",
+          }, {
+            opacity: 1,
+            pointerEvents: "auto",
+            duration: 0.25,
+            immediateRender: false,
+          }, 3.05)
+          .fromTo(".hero-card-img-wrap", {
+            left: wrapExpanded.left,
+            width: wrapExpanded.width,
+            top: wrapExpanded.top,
+            height: wrapExpanded.height,
+          }, {
             left: "0%",
             width: "100%",
             top: "15%",
             height: "70%",
-          }, 3.6);
+            duration: 0.55,
+            ease: "power2.inOut",
+            immediateRender: false,
+          }, 3.05);
+
+          // Step G: Tight hold before unpinning
+          tl.to({}, { duration: 0.05 })
+            .set(".hero-card-img-wrap", {
+              left: "0%",
+              width: "100%",
+              top: "15%",
+              height: "70%",
+            }, 3.6);
+        }
       }
     );
 
@@ -451,8 +632,8 @@ export function Hero({
     // Smooth scroll fallback in case snap listeners are not attached or detached (e.g. mobile)
     const heroST = ScrollTrigger.getById("hero-pin");
     const targetY = heroST
-      ? heroST.start + (heroST.end - heroST.start) * (0.8 / 3.6) + 10
-      : window.innerHeight * 0.8;
+      ? heroST.start + (heroST.end - heroST.start) * (1.15 / 3.6) + 10
+      : window.innerHeight * 0.85;
     setTimeout(() => {
       if (window.scrollY < 50) {
         window.scrollTo({ top: targetY, behavior: "smooth" });
@@ -464,7 +645,7 @@ export function Hero({
     <section
       id="top"
       ref={rootRef}
-      className="relative z-10 flex min-h-screen items-center px-6 py-12 md:py-20 md:px-16"
+      className="relative z-10 flex min-h-screen items-center overflow-hidden px-6 py-12 md:py-20 md:px-16"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-center w-full max-w-7xl mx-auto z-10">
         {/* Left Column: AERA Text Logo & About Me */}
@@ -476,7 +657,7 @@ export function Hero({
           }}
         >
           <div
-            className="hero-logo-target font-display font-black tracking-[-0.08em] text-paper uppercase select-none text-[12vw] md:text-[9vw] leading-none py-4 px-8 -my-4 -mx-8"
+            className="hero-logo-target font-display font-black tracking-[-0.08em] text-paper uppercase select-none text-[15vw] sm:text-[12vw] md:text-[9vw] leading-none py-4 px-8 -my-4 -mx-8"
             style={{
               opacity: entered && isBaseRoute ? 1 : 0,
               // matches the intro's flying sign, and keeps the white logo readable over the Earth
@@ -492,7 +673,7 @@ export function Hero({
           </div>
           
           {/* stacked display words, KPR-style — phrases over paragraphs */}
-          <h1 className="hero-reveal hero-headline opacity-0 font-display font-black text-iris-bright text-[7vw] md:text-[3.6vw] leading-[0.95] tracking-tight uppercase">
+          <h1 className="hero-reveal hero-headline opacity-0 font-display font-black text-iris-bright text-[8.5vw] sm:text-[7vw] md:text-[3.6vw] leading-[0.95] tracking-tight uppercase">
             <span className="sr-only">Software Engineer.</span>
             <span aria-hidden="true">
               <span className="hero-decode block">SOFTWARE</span>
@@ -649,14 +830,14 @@ export function Hero({
           </div>
         </div>
 
-        {/* Right Column Spacer: Reserves card's slot in grid */}
+        {/* Right Column Spacer: Reserves card's slot in grid (Desktop only) */}
         <div
           ref={cardPlaceholderRef}
-          className="hero-img-container w-full max-w-[290px] sm:max-w-sm md:max-w-md aspect-[3/4] max-md:max-h-[42vh] justify-self-center md:justify-self-end relative z-40 pointer-events-none"
+          className="hero-img-container hidden md:block w-full md:max-w-md aspect-[3/4] md:justify-self-end relative z-40 pointer-events-none"
         />
       </div>
 
-      {/* Pinned Card: Used for both layout and scrollytelling expansion */}
+      {/* Pinned Card: Used for both desktop layout and scrollytelling 2nd-screen expansion */}
       <div
         ref={cardRef}
         className="card-notch absolute z-30 bg-paper text-ink p-5 flex flex-col justify-between overflow-hidden opacity-0 transform-gpu will-change-transform"
@@ -664,8 +845,17 @@ export function Hero({
           pointerEvents: entered ? "auto" : "none",
         }}
       >
+        {/* Mobile KPR shutter edge accents during Hero <-> White Section transitions */}
+        <span
+          aria-hidden="true"
+          className="hero-shutter-top pointer-events-none absolute inset-x-0 top-0 z-40 h-1.5 bg-signal md:hidden"
+        />
+        <span
+          aria-hidden="true"
+          className="hero-shutter-bottom pointer-events-none absolute inset-x-0 bottom-0 z-40 h-1.5 bg-signal opacity-0 md:hidden"
+        />
         <CyberLines tone="ink" />
-        <div className="hero-card-meta flex justify-between t-micro text-ink-soft">
+        <div className="hero-card-meta flex justify-between t-micro text-ink-soft max-md:opacity-0 max-md:pointer-events-none">
           <span>● SYSTEM {"//"} ACTIVE_PORTRAIT</span>
           <span>CPE &apos;26 {"//"} MNL·REMOTE</span>
         </div>
@@ -812,7 +1002,7 @@ export function Hero({
           </div>
         </div>
 
-        <div className="hero-card-meta flex flex-col gap-2.5">
+        <div className="hero-card-meta flex flex-col gap-2.5 max-md:opacity-0 max-md:pointer-events-none">
           {/* latest release: a line of the operator dossier, not a separate badge */}
           <Link
             href="/vault/archive/down"

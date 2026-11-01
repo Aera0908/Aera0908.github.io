@@ -33,10 +33,10 @@ const BEAM_TILE = 1400;
 /**
  * The cab is drawn on a 16:9 rig (SVG viewBox 1600x900) so the window, the
  * shaft behind it and the gate stay registered at any screen size. Wide
- * screens crop it like background-size: cover; tall phones crop to the
- * window and the ceiling and floor run on past the rig.
+ * screens fit the rig height (the 3D walls run out to 1.5x the rig width);
+ * tall phones crop to the window and the ceiling and floor run on past the rig.
  */
-const RIG_WIDTH = "max(100vw, min(177.78vh, 195vw))";
+const RIG_WIDTH = "max(66.67vw, min(177.78vh, 195vw))";
 /**
  * The cab is a real CSS 3D box on a 1600x900 stage: the front wall with the
  * door at z=0, walls/ceiling/floor running CAB_DEPTH toward the camera, the
@@ -1117,7 +1117,6 @@ function ProceedPrompt({ onProceed }: { onProceed: () => void }) {
 const LINE = "#1f2423";
 const FRAME_C = "#c5c9c8";
 const FRAME_HI = "#dfe2e1";
-const FRAME_LO = "#a3a8a7";
 const PILLAR = "#2c3130";
 const PILLAR_HI = "#3d4342";
 const PILLAR_LO = "#1a1e1d";
@@ -1133,53 +1132,183 @@ const svgUrl = (w: number, h: number, body: string) =>
   )}")`;
 
 /**
- * Side wall texture (600x740), local x 0 at the door: a grey jamb with bolt
- * holes and brass trim, a charcoal pillar with a recessed rounded window and
- * a stepped lower panel, then white wall panels toward the camera.
+ * Side wall texture (600x740), local x 0 at the door, camera at x > 600, y = 370:
+ * every recessed bay is drawn with perspective-correct inner reveal walls (wide
+ * door-facing wall on the left, overhanging camera-side lip on the right, shaded
+ * top reveal and lit bottom ledge) plus soft Gaussian occlusion shadows.
  */
 const WALL_TEXTURE = svgUrl(
   CAB_DEPTH,
   740,
-  `<rect width='${CAB_DEPTH}' height='740' fill='${PANEL}'/>
+  `<defs>
+    <linearGradient id='w-recess-x' x1='1' y1='0' x2='0' y2='0'>
+      <stop offset='0' stop-color='#000' stop-opacity='0.32'/>
+      <stop offset='0.14' stop-color='#000' stop-opacity='0'/>
+      <stop offset='1' stop-color='#000' stop-opacity='0.06'/>
+    </linearGradient>
+    <linearGradient id='w-recess-y' x1='0' y1='0' x2='0' y2='1'>
+      <stop offset='0' stop-color='#000' stop-opacity='0.34'/>
+      <stop offset='0.18' stop-color='#000' stop-opacity='0'/>
+      <stop offset='1' stop-color='#fff' stop-opacity='0.12'/>
+    </linearGradient>
+    <linearGradient id='ao' x1='0' y1='0' x2='0' y2='1'>
+      <stop offset='0' stop-color='#000' stop-opacity='0.42'/>
+      <stop offset='0.09' stop-color='#000' stop-opacity='0'/>
+      <stop offset='0.88' stop-color='#000' stop-opacity='0'/>
+      <stop offset='1' stop-color='#000' stop-opacity='0.48'/>
+    </linearGradient>
+    <linearGradient id='p-cast' x1='0' y1='0' x2='1' y2='0'>
+      <stop offset='0' stop-color='#000' stop-opacity='0.38'/>
+      <stop offset='0.45' stop-color='#000' stop-opacity='0.12'/>
+      <stop offset='1' stop-color='#000' stop-opacity='0'/>
+    </linearGradient>
+  </defs>
+  <rect width='${CAB_DEPTH}' height='740' fill='${PANEL}'/>
   <path d='M360 400 H600 V740 H360 Z' fill='${PANEL_LO}'/>
-  <path d='M480 0 V740' stroke='${FRAME_LO}' stroke-width='2'/>
+  <rect x='360' y='0' width='48' height='740' fill='url(#p-cast)'/>
+  <path d='M388 20 H580 V82 H388 Z' fill='#bec4c3'/>
+  <path d='M388 20 L406 32 V74 L388 82 Z' fill='#9ca3a2'/>
+  <path d='M388 20 H580 V32 H406 Z' fill='#7b8281'/>
+  <path d='M406 74 H580 V82 H388 Z' fill='#f4f6f6'/>
+  <rect x='406' y='32' width='174' height='42' fill='#181c1b'/>
+  ${[40, 52, 64].map((vy) => `<path d='M406 ${vy} H580 L574 ${vy + 5} H406 Z' fill='#484f4e'/><rect x='406' y='${vy + 5}' width='174' height='4' fill='#090b0b'/>`).join("")}
+  <path d='M388 20 H580 V82 H388 Z' fill='none' stroke='${LINE}' stroke-width='2.5'/>
+  <path d='M388 108 H580 V370 H388 Z' fill='#d0d5d4'/>
+  <rect x='410' y='124' width='170' height='234' fill='url(#w-recess-x)'/>
+  <rect x='410' y='124' width='170' height='234' fill='url(#w-recess-y)'/>
+  <path d='M388 108 L410 124 V358 L388 370 Z' fill='#b0b7b6' stroke='${LINE}' stroke-width='1.5'/>
+  <path d='M388 108 H580 V124 H410 Z' fill='#858c8b' stroke='${LINE}' stroke-width='1.5'/>
+  <path d='M410 358 H580 V370 H388 Z' fill='#f6f8f8' stroke='${LINE}' stroke-width='1.5'/>
+  <path d='M388 108 H580 V370 H388 Z' fill='none' stroke='${LINE}' stroke-width='2.5'/>
+  <path d='M388 444 H580 V676 H388 Z' fill='#b6bcbb'/>
+  <rect x='410' y='454' width='170' height='206' fill='url(#w-recess-x)'/>
+  <rect x='410' y='454' width='170' height='206' fill='url(#w-recess-y)'/>
+  ${[486, 522, 558, 594, 630].map((ry) => `<path d='M410 ${ry} H580 V${ry + 6} H410 Z' fill='#8e9594'/><path d='M410 ${ry + 6} H580 V${ry + 11} H410 Z' fill='#dce0df'/>`).join("")}
+  <path d='M388 444 L410 454 V660 L388 676 Z' fill='#989f9e' stroke='${LINE}' stroke-width='1.5'/>
+  <path d='M388 444 H580 V454 H410 Z' fill='#737978' stroke='${LINE}' stroke-width='1.5'/>
+  <path d='M410 660 H580 V676 H388 Z' fill='#e8eceb' stroke='${LINE}' stroke-width='1.5'/>
+  <path d='M388 444 H580 V676 H388 Z' fill='none' stroke='${LINE}' stroke-width='2.5'/>
+  <rect x='360' y='426' width='240' height='12' fill='#000' opacity='0.28'/>
+  <path d='M360 384 L374 392 H600 V384 Z' fill='${FRAME_HI}' stroke='${LINE}' stroke-width='2'/>
+  <path d='M360 384 V418 L374 426 V392 Z' fill='#8d9392' stroke='${LINE}' stroke-width='2'/>
+  <rect x='374' y='392' width='226' height='34' fill='${PILLAR}' stroke='${LINE}' stroke-width='2'/>
+  <rect x='374' y='394' width='226' height='10' fill='${FRAME_C}'/>
+  <rect x='374' y='405' width='226' height='5' fill='${BRASS}'/>
+  <path d='M360 686 L372 694 H600 V686 Z' fill='${PILLAR_HI}' stroke='${LINE}' stroke-width='2'/>
+  <rect x='360' y='694' width='240' height='46' fill='#202524' stroke='${LINE}' stroke-width='2'/>
+  <rect x='360' y='694' width='240' height='4' fill='${BRASS}'/>
   <rect x='0' y='0' width='100' height='740' fill='${FRAME_C}'/>
   <rect x='0' y='0' width='8' height='740' fill='${FRAME_HI}'/>
-  <rect x='90' y='0' width='4' height='740' fill='${BRASS}'/>
-  ${[170, 240, 310, 560].map((y) => `<circle cx='48' cy='${y}' r='9' fill='${LINE}'/>`).join("")}
+  <path d='M20 0 H30 V740 H20 Z' fill='#7b8180'/>
+  <path d='M20 0 H24 V740 H20 Z' fill='#4e5352'/>
+  <path d='M30 0 H33 V740 H30 Z' fill='${FRAME_HI}'/>
+  <rect x='88' y='0' width='6' height='740' fill='${BRASS}' stroke='${LINE}' stroke-width='1'/>
+  ${[112, 380, 612].map((sy) => `<path d='M0 ${sy} H100 V${sy + 5} H0 Z' fill='#6e7473'/><path d='M0 ${sy + 5} H100 V${sy + 8} H0 Z' fill='${FRAME_HI}'/>`).join("")}
+  ${[170, 240, 310, 560].map((y) => `<circle cx='58' cy='${y}' r='12' fill='#7e8483'/><circle cx='54' cy='${y}' r='9.5' fill='${LINE}'/><path d='M46 ${y + 3} A9 9 0 0 0 64 ${y + 3}' stroke='${FRAME_HI}' stroke-width='2.5' fill='none'/><circle cx='52' cy='${y}' r='4' fill='#383e3d'/>`).join("")}
   <rect x='100' y='0' width='260' height='740' fill='${PILLAR}'/>
   <rect x='100' y='0' width='12' height='740' fill='${PILLAR_HI}'/>
   <rect x='348' y='0' width='12' height='740' fill='${PILLAR_LO}'/>
+  <rect x='163' y='128' width='130' height='210' rx='22' fill='#000' opacity='0.35'/>
   <rect x='170' y='120' width='130' height='210' rx='22' fill='${FRAME_C}' stroke='${LINE}' stroke-width='3'/>
-  <rect x='186' y='136' width='98' height='178' rx='14' fill='${PILLAR_LO}' stroke='${LINE}' stroke-width='2'/>
+  <rect x='186' y='136' width='98' height='178' rx='14' fill='#0d100f' stroke='${LINE}' stroke-width='2'/>
+  <path d='M186 150 Q186 136 200 136 H270 Q284 136 284 150 V162 H204 V300 L186 310 Z' fill='#252a29'/>
   <path d='M190 300 Q235 316 280 300' stroke='${PILLAR_HI}' stroke-width='3' fill='none'/>
   <rect x='100' y='380' width='260' height='34' fill='${PILLAR_LO}'/>
   <path d='M100 380 H360' stroke='${PILLAR_HI}' stroke-width='3'/>
-  <path d='M130 440 H330 V680 L290 720 H130 Z' fill='#262b2a' stroke='${LINE}' stroke-width='2'/>
+  <path d='M130 440 H330 V680 L290 720 H130 Z' fill='#1c201f' stroke='${LINE}' stroke-width='2'/>
+  <path d='M130 440 L148 454 V704 L130 720 Z' fill='#2c3231'/>
+  <path d='M148 704 H282 L316 670 L330 680 L290 720 H130 Z' fill='#3d4443'/>
   <path d='M100 0 V740 M360 0 V740' stroke='${LINE}' stroke-width='3'/>
-  <defs><linearGradient id='ao' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#000' stop-opacity='0.35'/><stop offset='0.07' stop-color='#000' stop-opacity='0'/><stop offset='0.9' stop-color='#000' stop-opacity='0'/><stop offset='1' stop-color='#000' stop-opacity='0.4'/></linearGradient></defs>
   <rect width='${CAB_DEPTH}' height='740' fill='url(#ao)'/>`,
 );
-/** ceiling texture (800x600), local y 0 at the door: charcoal with structural bands */
+/**
+ * Ceiling texture (800x600), local y 0 at the door, camera at x=400, y > 600:
+ * recessed coffers show their door-facing top reveal wall and center-facing side
+ * reveal wall with deep inset shadows and recessed light troughs.
+ */
 const CEILING_TEXTURE = svgUrl(
   800,
   CAB_DEPTH,
-  `<rect width='800' height='${CAB_DEPTH}' fill='${PILLAR}'/>
+  `<defs>
+    <linearGradient id='c-ao' x1='0' y1='0' x2='1' y2='0'>
+      <stop offset='0' stop-color='#000' stop-opacity='0.5'/>
+      <stop offset='0.15' stop-color='#000' stop-opacity='0'/>
+      <stop offset='0.85' stop-color='#000' stop-opacity='0'/>
+      <stop offset='1' stop-color='#000' stop-opacity='0.5'/>
+    </linearGradient>
+  </defs>
+  <rect width='800' height='${CAB_DEPTH}' fill='${PILLAR}'/>
   <rect x='0' y='0' width='90' height='${CAB_DEPTH}' fill='${PILLAR_LO}'/>
   <rect x='710' y='0' width='90' height='${CAB_DEPTH}' fill='${PILLAR_LO}'/>
-  ${[120, 300, 480].map((y) => `<rect x='90' y='${y}' width='620' height='22' fill='${PILLAR_HI}'/><path d='M90 ${y + 22} H710' stroke='${LINE}' stroke-width='3'/>`).join("")}
-  <path d='M90 0 V${CAB_DEPTH} M710 0 V${CAB_DEPTH}' stroke='${LINE}' stroke-width='3'/>`,
+  <rect x='382' y='0' width='36' height='${CAB_DEPTH}' fill='${PILLAR_HI}' stroke='${LINE}' stroke-width='2.5'/>
+  <rect x='382' y='0' width='6' height='${CAB_DEPTH}' fill='#505756'/>
+  <rect x='412' y='0' width='6' height='${CAB_DEPTH}' fill='${PILLAR_LO}'/>
+  ${[16, 150, 330, 510].map((cy) => `
+    <rect x='112' y='${cy}' width='254' height='92' fill='#151918' stroke='${LINE}' stroke-width='2.5'/>
+    <path d='M112 ${cy} H366 L352 ${cy + 16} H122 Z' fill='#0b0d0d'/>
+    <path d='M366 ${cy} V${cy + 92} L352 ${cy + 82} V${cy + 16} Z' fill='#262b2a'/>
+    <path d='M112 ${cy} V${cy + 92} L122 ${cy + 82} V${cy + 16} Z' fill='#0e1110'/>
+    <rect x='124' y='${cy + 14}' width='28' height='68' rx='4' fill='#cfe2e6' opacity='0.18'/>
+    <path d='M128 ${cy + 18} H148 V${cy + 78} H128 Z' fill='#dcebef' stroke='${LINE}' stroke-width='1.5'/>
+    <path d='M128 ${cy + 18} H148 L144 ${cy + 24} H132 Z' fill='#8ea2a8'/>
+    <rect x='434' y='${cy}' width='254' height='92' fill='#151918' stroke='${LINE}' stroke-width='2.5'/>
+    <path d='M434 ${cy} H688 L678 ${cy + 16} H448 Z' fill='#0b0d0d'/>
+    <path d='M434 ${cy} V${cy + 92} L448 ${cy + 82} V${cy + 16} Z' fill='#262b2a'/>
+    <path d='M688 ${cy} V${cy + 92} L678 ${cy + 82} V${cy + 16} Z' fill='#0e1110'/>
+    <rect x='648' y='${cy + 14}' width='28' height='68' rx='4' fill='#cfe2e6' opacity='0.18'/>
+    <path d='M652 ${cy + 18} H672 V${cy + 78} H652 Z' fill='#dcebef' stroke='${LINE}' stroke-width='1.5'/>
+    <path d='M652 ${cy + 18} H672 L668 ${cy + 24} H656 Z' fill='#8ea2a8'/>
+  `).join("")}
+  ${[120, 300, 480].map((y) => `
+    <rect x='90' y='${y + 22}' width='620' height='10' fill='#000' opacity='0.35'/>
+    <rect x='90' y='${y}' width='620' height='22' fill='${PILLAR_HI}'/>
+    <rect x='90' y='${y}' width='620' height='4' fill='#525958'/>
+    <rect x='90' y='${y + 17}' width='620' height='5' fill='${PILLAR_LO}'/>
+    <path d='M90 ${y} H710 M90 ${y + 22} H710' stroke='${LINE}' stroke-width='3'/>
+  `).join("")}
+  <path d='M90 0 V${CAB_DEPTH} M710 0 V${CAB_DEPTH}' stroke='${LINE}' stroke-width='3'/>
+  <rect width='800' height='${CAB_DEPTH}' fill='url(#c-ao)'/>`,
 );
-/** floor texture (800x600), local y 0 at the door: a grey threshold with brass trim, dark deck plates */
+/**
+ * Floor texture (800x600), local y 0 at the door, camera at x=400, y > 600:
+ * recessed side drainage troughs with visible inner vertical walls, deep beveled
+ * deck-plate joints, and a machined threshold sill.
+ */
 const FLOOR_TEXTURE = svgUrl(
   800,
   CAB_DEPTH,
-  `<rect width='800' height='${CAB_DEPTH}' fill='#262b2a'/>
-  ${[130, 260, 390, 520].map((y) => `<path d='M0 ${y} H800' stroke='${LINE}' stroke-width='3'/>`).join("")}
-  <path d='M400 26 V${CAB_DEPTH}' stroke='${LINE}' stroke-width='3'/>
+  `<defs>
+    <linearGradient id='f-ao' x1='0' y1='0' x2='1' y2='0'>
+      <stop offset='0' stop-color='#000' stop-opacity='0.5'/>
+      <stop offset='0.14' stop-color='#000' stop-opacity='0'/>
+      <stop offset='0.86' stop-color='#000' stop-opacity='0'/>
+      <stop offset='1' stop-color='#000' stop-opacity='0.5'/>
+    </linearGradient>
+  </defs>
+  <rect width='800' height='${CAB_DEPTH}' fill='#262b2a'/>
+  <rect x='0' y='26' width='58' height='${CAB_DEPTH - 26}' fill='#121514'/>
+  <rect x='44' y='26' width='14' height='${CAB_DEPTH - 26}' fill='#323837'/>
+  <rect x='742' y='26' width='58' height='${CAB_DEPTH - 26}' fill='#121514'/>
+  <rect x='742' y='26' width='14' height='${CAB_DEPTH - 26}' fill='#323837'/>
+  <path d='M44 26 V${CAB_DEPTH} M58 26 V${CAB_DEPTH} M742 26 V${CAB_DEPTH} M756 26 V${CAB_DEPTH}' stroke='${LINE}' stroke-width='2.5'/>
+  ${Array.from({ length: 18 }, (_, i) => `<path d='M8 ${42 + i * 30} H42 V${52 + i * 30} H8 Z' fill='#070908'/><path d='M8 ${52 + i * 30} H42 V${55 + i * 30} H8 Z' fill='#2c3130'/><path d='M758 ${42 + i * 30} H792 V${52 + i * 30} H758 Z' fill='#070908'/><path d='M758 ${52 + i * 30} H792 V${55 + i * 30} H758 Z' fill='#2c3130'/>`).join("")}
+  ${[130, 260, 390, 520].map((y) => `
+    <rect x='58' y='${y - 4}' width='684' height='4' fill='#1a1e1d'/>
+    <path d='M58 ${y} H742' stroke='${LINE}' stroke-width='3.5'/>
+    <rect x='58' y='${y + 2}' width='684' height='4' fill='#383f3e'/>
+  `).join("")}
+  <rect x='395' y='26' width='10' height='${CAB_DEPTH - 26}' fill='#181c1b'/>
+  <path d='M395 26 V${CAB_DEPTH} M405 26 V${CAB_DEPTH}' stroke='#383f3e' stroke-width='2'/>
+  <path d='M400 26 V${CAB_DEPTH}' stroke='${LINE}' stroke-width='3.5'/>
+  <rect x='0' y='26' width='800' height='12' fill='#000' opacity='0.35'/>
   <rect x='0' y='0' width='800' height='26' fill='${FRAME_C}'/>
-  <rect x='0' y='20' width='800' height='3' fill='${BRASS}'/>
-  <path d='M0 26 H800' stroke='${LINE}' stroke-width='3'/>`,
+  <rect x='0' y='0' width='800' height='4' fill='${FRAME_HI}'/>
+  <rect x='0' y='7' width='800' height='5' fill='#6d7372'/>
+  <rect x='0' y='12' width='800' height='2' fill='${FRAME_HI}'/>
+  <rect x='0' y='18' width='800' height='4' fill='${BRASS}'/>
+  <rect x='0' y='22' width='800' height='4' fill='#8a7842'/>
+  <path d='M0 26 H800' stroke='${LINE}' stroke-width='3'/>
+  <rect width='800' height='${CAB_DEPTH}' fill='url(#f-ao)'/>`,
 );
 
 /** upper window (big chamfer top-left), the lower slot under the crossbar, and the half each leaf carries */
@@ -1253,22 +1382,59 @@ const REVEALS: Record<"l" | "r", { a: number[]; b: number[]; shade: string }[]> 
   ],
 };
 
-/** the pillar's inner face (260 x 740), seen from the room: a recessed rounded window and a stepped panel */
+/**
+ * The pillar's inner face (260 x 740), seen from the room (camera at x > 260, y = 370):
+ * every recess shows its wide door-facing left reveal wall, shaded top reveal wall
+ * (above eye level) or lit bottom reveal ledge (below eye level), and drop shadows.
+ */
 const PILLAR_FACE = svgUrl(
   260,
   740,
-  `<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${PILLAR_HI}'/><stop offset='1' stop-color='${PILLAR}'/></linearGradient></defs>
+  `<defs>
+    <linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>
+      <stop offset='0' stop-color='${PILLAR_HI}'/>
+      <stop offset='1' stop-color='${PILLAR}'/>
+    </linearGradient>
+    <linearGradient id='p-well' x1='1' y1='0' x2='0' y2='0'>
+      <stop offset='0' stop-color='#000' stop-opacity='0.5'/>
+      <stop offset='0.25' stop-color='#000' stop-opacity='0'/>
+    </linearGradient>
+  </defs>
   <rect width='260' height='740' fill='url(#g)'/>
   <rect x='0' y='0' width='260' height='6' fill='${PILLAR_HI}'/>
+  <path d='M44 22 H216 V78 H44 Z' fill='#141817'/>
+  <path d='M44 22 L60 32 V70 L44 78 Z' fill='#262b2a'/>
+  <path d='M44 22 H216 V32 H60 Z' fill='#0c0e0e'/>
+  <path d='M60 70 H216 V78 H44 Z' fill='#464d4c'/>
+  ${[38, 50, 62].map((vy) => `<path d='M60 ${vy} H216 L210 ${vy + 5} H60 Z' fill='#383e3d'/><rect x='60' y='${vy + 5}' width='156' height='4' fill='#070908'/>`).join("")}
+  <path d='M44 22 H216 V78 H44 Z' fill='none' stroke='${LINE}' stroke-width='2.5'/>
+  <rect x='0' y='94' width='260' height='5' fill='#171a19'/>
+  <rect x='0' y='99' width='260' height='3' fill='#4b5251'/>
+  <rect x='58' y='128' width='130' height='210' rx='22' fill='#000' opacity='0.38'/>
   <rect x='65' y='120' width='130' height='210' rx='22' fill='${FRAME_C}' stroke='${LINE}' stroke-width='3'/>
-  <rect x='65' y='120' width='130' height='10' rx='5' fill='${FRAME_HI}'/>
-  <rect x='81' y='136' width='98' height='178' rx='14' fill='#101312' stroke='${LINE}' stroke-width='2'/>
-  <rect x='81' y='136' width='98' height='26' rx='10' fill='#0a0c0b'/>
+  <path d='M72 138 Q72 124 88 124 H185' stroke='${FRAME_HI}' stroke-width='5' fill='none' stroke-linecap='round'/>
+  <path d='M191 136 V310 Q191 326 175 326 H82' stroke='#8d9392' stroke-width='5' fill='none' stroke-linecap='round'/>
+  <rect x='81' y='136' width='98' height='178' rx='14' fill='#090b0b' stroke='${LINE}' stroke-width='2.5'/>
+  <path d='M81 150 Q81 136 95 136 H165 Q179 136 179 150 V160 H102 V298 L81 306 Z' fill='#282e2d'/>
+  <path d='M81 150 Q81 136 95 136 H165 Q179 136 179 150 V158 H98 Z' fill='#161a19'/>
+  <rect x='101' y='158' width='78' height='142' rx='6' fill='#0d100f' stroke='${BRASS}' stroke-width='1.5' stroke-opacity='0.65'/>
+  <path d='M108 286 L164 166 H174 L118 286 Z' fill='#fff' fill-opacity='0.07'/>
   <path d='M87 300 Q130 314 173 300' stroke='${PILLAR_HI}' stroke-width='3' fill='none'/>
-  <rect x='0' y='380' width='260' height='34' fill='${PILLAR_LO}'/>
-  <rect x='0' y='380' width='260' height='4' fill='${PILLAR_HI}'/>
-  <path d='M30 440 H230 V680 L190 720 H30 Z' fill='#262b2a' stroke='${LINE}' stroke-width='2'/>
-  <path d='M30 440 H230' stroke='#0f1211' stroke-width='6'/>
+  <rect x='0' y='380' width='260' height='34' fill='#141817'/>
+  <path d='M0 380 H260 V388 H0 Z' fill='#090b0b'/>
+  <path d='M0 406 H260 V414 H0 Z' fill='#454c4b'/>
+  <rect x='0' y='394' width='260' height='5' fill='${BRASS}'/>
+  <rect x='0' y='398' width='260' height='2' fill='#786838'/>
+  <path d='M30 440 H230 V680 L190 720 H30 Z' fill='#161a19' stroke='${LINE}' stroke-width='2.5'/>
+  <rect x='50' y='454' width='180' height='250' fill='url(#p-well)'/>
+  <path d='M30 440 L52 454 V702 L30 720 Z' fill='#2f3534' stroke='${LINE}' stroke-width='1.5'/>
+  <path d='M30 440 H230 L216 454 H52 Z' fill='#0a0c0c' stroke='${LINE}' stroke-width='1.5'/>
+  <path d='M52 702 H182 L216 668 L230 680 L190 720 H30 Z' fill='#464e4d' stroke='${LINE}' stroke-width='1.5'/>
+  ${[476, 502, 528, 554].map((vy) => `<path d='M52 ${vy} H228 L220 ${vy + 7} H52 Z' fill='#383f3e'/><rect x='52' y='${vy + 7}' width='176' height='6' fill='#090b0b'/>`).join("")}
+  <path d='M56 597 H200 V669 L176 693 H56 Z' fill='#000' opacity='0.38'/>
+  <path d='M62 590 H206 V662 L182 686 H62 Z' fill='${PILLAR}' stroke='${LINE}' stroke-width='2'/>
+  <path d='M64 592 H204 V597 H64 Z' fill='${PILLAR_HI}'/>
+  <path d='M62 590 L68 596 V680 L62 686 Z' fill='#464d4c'/>
   <path d='M0 0 V740 M260 0 V740' stroke='${LINE}' stroke-width='3'/>`,
 );
 /** pillar boxes stand proud of each wall over this depth range */
@@ -1305,20 +1471,51 @@ function CabRoom() {
               filter: left === 400 ? "brightness(0.86)" : undefined,
             }}
           >
-            {/* call panel beside the door, on the right wall */}
+            {/* call panel beside the door, on the right wall's first slice */}
             {left === 1200 && i === 0 && (
               <div
-                className="absolute left-[8px] top-[300px] h-[118px] w-[44px] rounded-[6px]"
+                className="absolute left-[8px] top-[292px] h-[132px] w-[46px] rounded-[6px]"
                 style={{
                   background: FRAME_C,
                   border: `2px solid ${LINE}`,
-                  boxShadow: `inset 0 3px 0 ${FRAME_HI}, inset 0 -4px 0 ${FRAME_LO}, 4px 6px 8px rgba(0,0,0,0.35)`,
+                  boxShadow: `-5px 6px 0 ${PILLAR_LO}, -5px 6px 0 2px ${LINE}, inset 0 4px 0 ${FRAME_HI}, inset 3px 0 0 ${FRAME_HI}, inset 0 -5px 0 #8a908f`,
                 }}
               >
-                <div className="absolute left-[10px] top-[10px] h-[16px] w-[20px] rounded-[3px]" style={{ background: PILLAR_LO }} />
                 <div
-                  className="absolute left-[6px] top-[40px] h-[46px] w-[28px] rounded-[3px]"
-                  style={{ background: SCREEN_BLUE, border: `2px solid ${LINE}`, boxShadow: `inset 0 6px 0 rgba(255,255,255,0.25)` }}
+                  className="absolute left-[9px] top-[9px] h-[16px] w-[24px] rounded-[3px] px-[3px] py-[3px]"
+                  style={{ background: "#0d100f", boxShadow: `inset 0 2px 0 #000, 0 1px 0 ${FRAME_HI}` }}
+                >
+                  <div className="h-[2px] w-full bg-[#050606]" />
+                  <div className="mt-[2px] h-[2px] w-full bg-[#050606]" />
+                  <div className="mt-[2px] h-[2px] w-full bg-[#050606]" />
+                </div>
+                <div
+                  className="absolute left-[6px] top-[32px] h-[48px] w-[30px] rounded-[3px]"
+                  style={{
+                    background: SCREEN_BLUE,
+                    border: `2px solid ${LINE}`,
+                    boxShadow: `inset 0 5px 0 #1f4d8f, inset 3px 0 0 #2659a1, 0 1px 0 ${FRAME_HI}`,
+                  }}
+                >
+                  <div className="mt-[10px] mx-[4px] h-[2px] w-[18px] bg-white/75" />
+                  <div className="mt-[4px] mx-[4px] h-[2px] w-[12px] bg-white/45" />
+                  <div className="mt-[8px] mx-[4px] h-[8px] w-[18px] border border-white/50 bg-[#255599]" />
+                </div>
+                <div
+                  className="absolute left-[13px] top-[88px] h-[12px] w-[16px] rounded-[2px]"
+                  style={{
+                    background: PILLAR,
+                    border: `1.5px solid ${LINE}`,
+                    boxShadow: `-2px 2px 0 #0f1211, inset 0 2px 0 ${POSTER}`,
+                  }}
+                />
+                <div
+                  className="absolute left-[13px] top-[104px] h-[12px] w-[16px] rounded-[2px]"
+                  style={{
+                    background: PILLAR,
+                    border: `1.5px solid ${LINE}`,
+                    boxShadow: `-2px 2px 0 #0f1211, inset 0 2px 0 ${BRASS}`,
+                  }}
                 />
               </div>
             )}
@@ -1356,9 +1553,11 @@ function CabRoom() {
               width: PILLAR_BOX.proud,
               height: 740,
               transform: `translateZ(${PILLAR_BOX.z1}px)`,
-              background: `linear-gradient(180deg, ${PILLAR_HI}, ${PILLAR})`,
+              background: `linear-gradient(180deg, transparent 0 380px, ${PILLAR_LO} 380px 393px, ${BRASS} 393px 398px, ${PILLAR_LO} 398px 414px, transparent 414px), linear-gradient(90deg, ${PILLAR_HI} 0 8px, ${PILLAR} 8px 18px, #161a19 18px 22px, #262b2a 22px calc(100% - 22px), #464d4c calc(100% - 22px) calc(100% - 18px), ${PILLAR} calc(100% - 18px) calc(100% - 10px), ${PILLAR_LO} calc(100% - 10px))`,
               borderLeft: `3px solid ${LINE}`,
               borderRight: `3px solid ${LINE}`,
+              boxShadow: "inset 0 6px 0 #4d5453, inset 0 -10px 0 #141817",
+              filter: shade,
             }}
           />
         </Fragment>
@@ -1376,8 +1575,9 @@ function CabRoom() {
               width: 800,
               height: BEAM_DROP,
               transform: `translateZ(${z1}px)`,
-              background: `linear-gradient(180deg, ${PILLAR}, ${PILLAR_HI})`,
+              background: `linear-gradient(180deg, ${PILLAR_LO} 0 6px, ${PILLAR} 6px 26px, ${PILLAR_HI} 26px 33px, ${BRASS} 33px 37px)`,
               borderBottom: `3px solid ${LINE}`,
+              boxShadow: "inset 0 -3px 0 #141817",
             }}
           />
           <div
@@ -1390,7 +1590,8 @@ function CabRoom() {
               height: z1 - z0,
               transformOrigin: "0 0",
               transform: `rotateX(90deg) translateY(${z0}px)`,
-              background: PILLAR_LO,
+              background: `linear-gradient(90deg, #0e1110 0 12%, ${PILLAR_LO} 12% 88%, #0e1110 88%)`,
+              borderBottom: `2px solid ${LINE}`,
             }}
           />
         </Fragment>
@@ -1423,104 +1624,176 @@ function CabRoom() {
   );
 }
 
-/** a bolt hole: dark bore, shadowed upper lip, lit lower rim */
-function Bolt({ x, y, r = 8 }: { x: number; y: number; r?: number }) {
+/**
+ * A 3D counter-sunk bolt socket: the outer rim sits on the plate face (z0),
+ * while the cylindrical bore and recessed hex head shift in true perspective
+ * toward the vanishing point at depth z0 - 16.
+ */
+function Bolt({ x, y, r = 8, z0 = 0 }: { x: number; y: number; r?: number; z0?: number }) {
+  const [ox, oy] = at(x, y, z0).split(" ").map(Number);
+  const [ix, iy] = at(x, y, z0 - 16).split(" ").map(Number);
   return (
     <g>
-      <circle cx={x} cy={y} r={r + 2} fill={FRAME_LO} />
-      <circle cx={x} cy={y} r={r} fill={LINE} />
-      <path d={`M ${x - r + 1} ${y + 2} A ${r - 1} ${r - 1} 0 0 0 ${x + r - 1} ${y + 2}`} fill="none" stroke={FRAME_HI} strokeWidth={2} />
+      <circle cx={ox} cy={oy} r={r + 3} fill="#7e8483" stroke={LINE} strokeWidth={1.5} />
+      <path
+        d={`M ${ox - r - 1} ${oy + 2} A ${r + 1} ${r + 1} 0 0 0 ${ox + r + 1} ${oy + 2}`}
+        fill="none"
+        stroke={FRAME_HI}
+        strokeWidth={2.5}
+      />
+      <circle cx={(ox + ix) / 2} cy={(oy + iy) / 2} r={r} fill={LINE} />
+      <circle cx={ix} cy={iy} r={Math.max(3, r * 0.55)} fill="#3b4241" />
     </g>
   );
 }
 
 /**
  * One leaf of the cab's front door: half the grey frame with deep window
- * and slot reveals, brass trim, bolt holes, gussets and half of a crossbar
- * that stands proud of the frame. Both leaves slide into the side walls
- * once the outer gate is open.
+ * and slot reveals, a proud brass window collar, a 3D recessed jamb louver
+ * cavity, proud gusset plates, and half of a crossbar with a 3D recessed trough.
  */
 function CabLeaf({ side }: { side: "l" | "r" }) {
   const port = side === "l";
   const win = port ? WINDOW_L : WINDOW_R;
+  const slot = port ? SLOT_L : SLOT_R;
+  const leaf = port ? LEAF_L : LEAF_R;
   const x0 = port ? 400 : 800;
+  const jambX0 = port ? 400 : 1110;
+  const jambX1 = port ? 490 : 1200;
   const sx = (x: number) => (port ? x : 1600 - x);
   /* crossbar half: back face at z=0, front face BAR_PROUD toward you */
   const barX0 = port ? 505 : 800;
   const barX1 = port ? 800 : 1095;
   const barEnd = port ? barX0 : barX1;
+  /* 3D recessed jamb louver cavity (z = 0 -> -24) */
+  const ventX0 = port ? 416 : 1136;
+  const ventX1 = port ? 464 : 1184;
+  const ventInnerX = port ? ventX0 : ventX1;
+  /* 3D recessed trough inside the crossbar (z = BAR_PROUD -> 34) */
+  const troughX0 = port ? 542 : 812;
+  const troughX1 = port ? 788 : 1058;
+  const troughEnd = port ? troughX0 : troughX1;
+
   return (
     <g className={`k-cab-door-${side}`}>
       <clipPath id={`k-leaf-clip-${side}`}>
         <rect x={x0} y={112} width={400} height={688} />
       </clipPath>
       {/* frame plate: lit at the top, falling off toward the floor */}
-      <path d={`${port ? LEAF_L : LEAF_R} ${win} ${port ? SLOT_L : SLOT_R}`} fillRule="evenodd" fill="url(#k-plate)" />
+      <path d={`${leaf} ${win} ${slot}`} fillRule="evenodd" fill="url(#k-plate)" />
       <rect x={x0} y={112} width={400} height={8} fill={FRAME_HI} />
 
-      {/* reveals: the frame's thickness inside the window and the slot */}
+      {/* 3D recessed jamb louver cavity + beveled jamb armor joints (no extra clipPath needed) */}
+      <path d={faceQuad([jambX0, 240], [jambX1, 240], 0, -10)} fill="#6e7473" />
+      <path d={`M ${jambX0} 240 H ${jambX1}`} stroke={LINE} strokeWidth={2} />
+      <path d={`M ${jambX0} 243 H ${jambX1}`} stroke={FRAME_HI} strokeWidth={2.5} />
+      <path d={faceQuad([x0, 590], [x0 + 400, 590], 0, -10)} fill="#6e7473" />
+      <path d={`M ${x0} 590 H ${x0 + 400}`} stroke={LINE} strokeWidth={2} />
+      <path d={`M ${x0} 593 H ${x0 + 400}`} stroke={FRAME_HI} strokeWidth={2.5} />
+
+      {/* recessed jamb pocket backplate at z = -24 */}
+      <g transform={atDepth(-24)}>
+        <rect x={ventX0} y={438} width={48} height={128} fill="#141817" />
+      </g>
+      {/* 3D louver blades angled from z = -4 back to z = -22 */}
+      {[456, 476, 496, 516, 536].map((vy) => (
+        <path key={vy} d={faceQuad([ventX0, vy], [ventX1, vy], -4, -22)} fill="#7b8180" stroke={LINE} strokeWidth={1.2} />
+      ))}
+      {/* perspective inner reveal walls of the jamb pocket (z = 0 -> -24) */}
+      <path d={faceQuad([ventX0, 438], [ventX1, 438], 0, -24)} fill="#6e7473" stroke={LINE} strokeWidth={1.5} />
+      <path d={faceQuad([ventX0, 566], [ventX1, 566], 0, -24)} fill={FRAME_HI} stroke={LINE} strokeWidth={1.5} />
+      <path d={faceQuad([ventInnerX, 438], [ventInnerX, 566], 0, -24)} fill="#949a99" stroke={LINE} strokeWidth={1.5} />
+      <rect x={ventX0} y={438} width={48} height={128} fill="none" stroke={LINE} strokeWidth={2.5} />
+      {/* ambient occlusion from the side wall onto the outer door jamb */}
+      <rect x={port ? 400 : 1178} y={112} width={22} height={688} fill="#000" opacity={0.14} />
+
+      {/* glass at the back of each reveal (drawn before REVEALS so no clipPath mask is needed) */}
+      {GLASS[side].map((pts, i) => {
+        const d = `M ${pts.map(([x, y]) => at(x, y, REVEAL)).join(" L ")} Z`;
+        return <path key={i} d={d} fill="rgba(170,196,206,0.10)" stroke="rgba(0,0,0,0.38)" strokeWidth={6} />;
+      })}
+
+      {/* reveals: 2-stage stepped bulkhead thickness (outer bevel 0 -> -40, stepped glazing flange -40 -> -55) */}
       {REVEALS[side].map(({ a, b, shade }) => (
-        <path key={`${a}-${b}`} d={faceQuad(a, b, 0, REVEAL)} fill={shade} stroke={shade} strokeWidth={1} />
+        <g key={`${a}-${b}`}>
+          <path d={faceQuad(a, b, 0, -40)} fill={shade} stroke={shade} strokeWidth={1} />
+          <path d={faceQuad(a, b, -40, REVEAL)} fill={PILLAR} stroke={LINE} strokeWidth={1.5} />
+        </g>
       ))}
       {REVEALS[side].map(({ a, b }) => (
         <path key={`e${a}-${b}`} d={`M ${at(a[0], a[1], REVEAL)} L ${at(b[0], b[1], REVEAL)}`} stroke={LINE} strokeWidth={2.5} />
       ))}
-      {/* glass at the back of each reveal: both openings are sealed panes */}
-      {GLASS[side].map((pts, i) => {
-        const d = `M ${pts.map(([x, y]) => at(x, y, REVEAL)).join(" L ")} Z`;
-        return (
-          <g key={i}>
-            <clipPath id={`k-glass-${side}-${i}`}>
-              <path d={d} />
-            </clipPath>
-            <path d={d} fill="rgba(170,196,206,0.10)" />
-            <g clipPath={`url(#k-glass-${side}-${i})`}>
-              <path d="M 380 900 L 900 -60 L 980 -60 L 460 900 Z M 520 900 L 1040 -60 L 1062 -60 L 542 900 Z" fill="rgba(255,255,255,0.07)" />
-            </g>
-          </g>
-        );
-      })}
 
       <g clipPath={`url(#k-leaf-clip-${side})`}>
         {/* outlines: the plate's outer edge, the window and the slot mouths */}
         <path d="M 400 112 H 1200 V 800 H 400 Z" fill="none" stroke={LINE} strokeWidth={2.5} />
         <path d={win} fill="none" stroke={LINE} strokeWidth={2.5} />
         <path d="M 490 800 V 705 H 1110 V 800" fill="none" stroke={LINE} strokeWidth={2.5} />
-        {/* brass trim */}
-        <path d={WINDOW_TRIM} fill="none" stroke={BRASS} strokeWidth={3} />
+        {/* proud 3D brass trim collar: casts a shadow and shows its extruded return edge */}
+        <path d={WINDOW_TRIM} fill="none" stroke="#000" strokeWidth={8} opacity={0.22} transform="translate(0 3)" />
+        <g transform={atDepth(6)}>
+          <path d={WINDOW_TRIM} fill="none" stroke={LINE} strokeWidth={6} />
+          <path d={WINDOW_TRIM} fill="none" stroke={BRASS} strokeWidth={3.5} />
+        </g>
         {/* the crossbar's cast shadow on the frame below it */}
-        <rect x={500} y={690} width={600} height={22} rx={10} fill="#000" opacity={0.28} filter="url(#k-soft)" />
+        <rect x={500} y={690} width={600} height={26} rx={10} fill="#000" opacity={0.34} filter="url(#k-soft)" />
       </g>
 
-      {/* crossbar: the top face and the end face show its thickness */}
+      {/* crossbar: 3D top face, bottom underside face, and outer end face (z = 0 -> BAR_PROUD) */}
       <path d={faceQuad([barX0, 612], [barX1, 612], 0, BAR_PROUD)} fill={PILLAR_HI} stroke={LINE} strokeWidth={2} />
+      <path d={faceQuad([barX0, 688], [barX1, 688], 0, BAR_PROUD)} fill="#0d100f" stroke={LINE} strokeWidth={2} />
       <path d={faceQuad([barEnd, 612], [barEnd, 688], 0, BAR_PROUD)} fill={PILLAR_LO} stroke={LINE} strokeWidth={2} />
       <g transform={atDepth(BAR_PROUD)}>
         <rect x={barX0} y={612} width={barX1 - barX0} height={76} fill={PILLAR} stroke={LINE} strokeWidth={2.5} />
-        <rect x={barX0 + (port ? 12 : 0)} y={616} width={barX1 - barX0 - 12} height={8} fill={PILLAR_HI} />
-        <rect x={barX0 + (port ? 12 : 0)} y={672} width={barX1 - barX0 - 12} height={5} fill={PILLAR_HI} />
+        <rect x={barX0 + (port ? 12 : 0)} y={616} width={barX1 - barX0 - 12} height={7} fill={PILLAR_HI} />
+        <rect x={barX0 + (port ? 12 : 0)} y={673} width={barX1 - barX0 - 12} height={5} fill={PILLAR_HI} />
+      </g>
+      {/* 3D recessed grip trough carved into the crossbar (z = BAR_PROUD -> 34) */}
+      <g transform={atDepth(34)}>
+        <rect x={troughX0} y={630} width={246} height={36} fill="#0d100f" />
+        <rect x={troughX0} y={644} width={246} height={8} fill={PILLAR} stroke={LINE} strokeWidth={1.5} />
+        <rect x={troughX0} y={645} width={246} height={2.5} fill={BRASS} />
+      </g>
+      <path d={faceQuad([troughX0, 630], [troughX1, 630], BAR_PROUD, 34)} fill="#121615" stroke={LINE} strokeWidth={1.5} />
+      <path d={faceQuad([troughX0, 666], [troughX1, 666], BAR_PROUD, 34)} fill={PILLAR_HI} stroke={LINE} strokeWidth={1.5} />
+      <path d={faceQuad([troughEnd, 630], [troughEnd, 666], BAR_PROUD, 34)} fill={PILLAR_LO} stroke={LINE} strokeWidth={1.5} />
+      <g transform={atDepth(BAR_PROUD)}>
+        <rect x={troughX0} y={630} width={246} height={36} fill="none" stroke={LINE} strokeWidth={2} />
       </g>
 
-      {/* gussets in the window's lower corner and the slot's upper corner */}
-      <path
-        d={`M ${sx(490)} 545 L ${sx(490)} 590 L ${sx(536)} 590 Z M ${sx(490)} 705 L ${sx(530)} 705 L ${sx(490)} 742 Z`}
-        fill={FRAME_HI}
-        stroke={LINE}
-        strokeWidth={2}
-      />
-      {/* bolt holes down the jamb, and a ringed bolt beside the crossbar */}
+      {/* proud 3D corner gussets (z = 0 -> 10) with thickness return faces */}
+      <path d={faceQuad([sx(490), 545], [sx(536), 590], 0, 10)} fill="#8d9392" stroke={LINE} strokeWidth={1.5} />
+      <path d={faceQuad([sx(530), 705], [sx(490), 742], 0, 10)} fill="#8d9392" stroke={LINE} strokeWidth={1.5} />
+      <g transform={atDepth(10)}>
+        <path
+          d={`M ${sx(490)} 545 L ${sx(490)} 590 L ${sx(536)} 590 Z M ${sx(490)} 705 L ${sx(530)} 705 L ${sx(490)} 742 Z`}
+          fill={FRAME_HI}
+          stroke={LINE}
+          strokeWidth={2}
+        />
+      </g>
+      {/* 3D counter-sunk bolt sockets down the jamb, and a proud ringed collar beside the crossbar */}
       {[250, 320, 390].map((y) => (
         <Bolt key={y} x={sx(445)} y={y} />
       ))}
-      <circle cx={sx(452)} cy={650} r={15} fill={FRAME_HI} stroke={LINE} strokeWidth={2.5} />
-      <Bolt x={sx(452)} y={650} r={6} />
+      <path
+        d={`M ${sx(452) - 16} 653 A 16 16 0 1 0 ${sx(452) + 16} 653`}
+        fill="none"
+        stroke="#000"
+        strokeOpacity={0.28}
+        strokeWidth={5}
+      />
+      <g transform={atDepth(8)}>
+        <circle cx={sx(452)} cy={650} r={15} fill={FRAME_HI} stroke={LINE} strokeWidth={2.5} />
+      </g>
+      <Bolt x={sx(452)} y={650} r={6} z0={8} />
       {/* the leaves' meeting edge, the full height of the door: frame, glass and crossbar */}
       <path d={port ? "M 799 112 V 800" : "M 801 112 V 800"} stroke={port ? LINE : FRAME_HI} strokeWidth={2} />
     </g>
   );
 }
 
-/** The front wall at z=0: the two door leaves under a header that stands proud with a status slot */
+/** The front wall at z=0: the two door leaves under a 3D header with recessed louver bays and a proud status housing */
 function CabFront() {
   return (
     <svg viewBox="0 0 1600 900" className="absolute inset-0 h-full w-full overflow-visible">
@@ -1545,15 +1818,60 @@ function CabFront() {
       </g>
 
       {/* header: its shadow on the door, the underside, then the face toward you */}
-      <rect x={400} y={112} width={800} height={18} fill="#000" opacity={0.3} filter="url(#k-soft)" clipPath="url(#k-pocket)" />
+      <rect x={400} y={112} width={800} height={18} fill="#000" opacity={0.32} filter="url(#k-soft)" clipPath="url(#k-pocket)" />
       <path d={faceQuad([400, 112], [1200, 112], 0, HEADER_PROUD)} fill={PILLAR_LO} stroke={LINE} strokeWidth={2} />
       <g transform={atDepth(HEADER_PROUD)}>
         <rect x={400} y={60} width={800} height={52} fill={PILLAR} stroke={LINE} strokeWidth={2.5} />
         <rect x={400} y={60} width={800} height={6} fill={PILLAR_HI} />
         <rect x={400} y={104} width={800} height={3} fill={BRASS} />
+      </g>
+
+      {/* 3D recessed louver vent bays carved into the header wings (z = HEADER_PROUD -> 10) */}
+      {[
+        { x0: 458, x1: 586, innerX: 458 },
+        { x0: 1014, x1: 1142, innerX: 1142 },
+      ].map(({ x0, x1, innerX }) => (
+        <g key={x0}>
+          <g transform={atDepth(10)}>
+            <rect x={x0} y={70} width={x1 - x0} height={28} fill="#0d100f" />
+          </g>
+          {[77, 86].map((vy) => (
+            <path
+              key={vy}
+              d={faceQuad([x0, vy], [x1, vy], HEADER_PROUD - 2, 12)}
+              fill={PILLAR_HI}
+              stroke={LINE}
+              strokeWidth={1.2}
+            />
+          ))}
+          <path d={faceQuad([x0, 70], [x1, 70], HEADER_PROUD, 10)} fill="#090b0b" stroke={LINE} strokeWidth={1.5} />
+          <path d={faceQuad([innerX, 70], [innerX, 98], HEADER_PROUD, 10)} fill={PILLAR_LO} stroke={LINE} strokeWidth={1.5} />
+          <g transform={atDepth(HEADER_PROUD)}>
+            <rect x={x0} y={70} width={x1 - x0} height={28} fill="none" stroke={LINE} strokeWidth={2} />
+            <path d={`M ${x0} 99 H ${x1}`} stroke={PILLAR_HI} strokeWidth={1.5} />
+          </g>
+        </g>
+      ))}
+      <Bolt x={426} y={84} r={6} z0={HEADER_PROUD} />
+      <Bolt x={1174} y={84} r={6} z0={HEADER_PROUD} />
+
+      {/* central status housing: extruded proud from z = HEADER_PROUD (30) out to z = 46 */}
+      <g transform={atDepth(HEADER_PROUD)}>
+        <rect x={618} y={72} width={364} height={36} rx={10} fill="#000" opacity={0.32} />
+      </g>
+      <path d={faceQuad([624, 102], [976, 102], HEADER_PROUD, 46)} fill="#0a0c0c" stroke={LINE} strokeWidth={2} />
+      <path d={faceQuad([620, 72], [620, 96], HEADER_PROUD, 46)} fill={PILLAR_LO} stroke={LINE} strokeWidth={1.5} />
+      <path d={faceQuad([980, 72], [980, 96], HEADER_PROUD, 46)} fill="#141817" stroke={LINE} strokeWidth={1.5} />
+      <g transform={atDepth(46)}>
         <rect x={620} y={66} width={360} height={36} rx={10} fill={PILLAR_LO} stroke={LINE} strokeWidth={2.5} />
-        <rect x={652} y={72} width={296} height={24} rx={4} fill="#111413" />
-        <rect x={652} y={72} width={296} height={6} rx={3} fill="#060807" />
+        <path d="M 630 68.5 H 970" stroke={PILLAR_HI} strokeWidth={2} />
+        <circle cx={636} cy={84} r={3.5} fill={POSTER} stroke={LINE} strokeWidth={1.5} />
+        <circle cx={964} cy={84} r={3.5} fill={BRASS} stroke={LINE} strokeWidth={1.5} />
+      </g>
+
+      {/* status display screen well: recessed deep from z = 46 back to z = 22 */}
+      <g transform={atDepth(22)}>
+        <rect x={652} y={72} width={296} height={24} rx={3} fill="#0e1211" />
         <text
           className="k-status font-mono"
           x={800}
@@ -1566,6 +1884,13 @@ function CabFront() {
         >
           DESCENDING
         </text>
+      </g>
+      <path d={faceQuad([652, 72], [948, 72], 46, 22)} fill="#050706" stroke={LINE} strokeWidth={1.2} />
+      <path d={faceQuad([652, 72], [652, 96], 46, 22)} fill="#181d1c" stroke={LINE} strokeWidth={1.2} />
+      <path d={faceQuad([948, 72], [948, 96], 46, 22)} fill="#181d1c" stroke={LINE} strokeWidth={1.2} />
+      <g transform={atDepth(46)}>
+        <rect x={652} y={72} width={296} height={24} rx={4} fill="none" stroke={LINE} strokeWidth={2} />
+        <path d="M 655 96.5 H 945" stroke={PILLAR_HI} strokeWidth={1.5} />
       </g>
     </svg>
   );
