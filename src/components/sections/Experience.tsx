@@ -27,8 +27,8 @@ const ENTRIES: JourneyEntry[] = [
     period: "2026 - PRESENT",
     url: "https://naaxtech.com/",
     blurb:
-      "Building client systems at Naaxtech, a technology execution partner that streamlines business operations, connects teams, data and tools, and grows revenue through integrated software.",
-    tags: ["Software Engineering", "Business Systems", "Integrations"],
+      "Develop full-stack business systems and integrations for clients. Enforce failure-focused testing across staged release workflows while delivering accessible, motion-crafted user interfaces.",
+    tags: ["Full-Stack", "System Integrations", "Software QA", "UI/UX Motion"],
     logo: "/icons/naaxtech-logo.svg",
   },
   {
