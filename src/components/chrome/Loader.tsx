@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gsap, MOTION } from "@/lib/gsap";
 import { hudState } from "@/lib/hud-state";
 import { hudAudio } from "@/lib/audio";
@@ -45,13 +45,12 @@ const RIG_WIDTH = "max(66.67vw, min(177.78vh, 195vw))";
  */
 const CAB_PERSPECTIVE = 900;
 const CAB_DEPTH = 600;
-const GATE_GAP = 60;
 /**
  * Walls, ceiling and floor are cut into slices along their depth: a plane
  * that reaches past the camera is culled whole, so each slice is hidden
  * only once you have walked past it.
  */
-const SLICE = 60;
+const SLICE = 100;
 const SLICES = CAB_DEPTH / SLICE;
 /** the gate's lintel, as a share of the gate height; it parks this far below too */
 const LINTEL = 0.26;
@@ -111,6 +110,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   const logoRef = useRef<HTMLDivElement>(null);
   const gateRef = useRef<HTMLDivElement>(null);
   const rigRef = useRef<HTMLDivElement>(null);
+  const rigKRef = useRef(1);
   const earthRef = useRef<HTMLImageElement>(null);
   const promptRef = useRef<HTMLDivElement>(null);
   const enteredRef = useRef(false);
@@ -202,7 +202,11 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
   useLayoutEffect(() => {
     const rig = rigRef.current;
     if (!rig) return;
-    const fit = () => rig.style.setProperty("--rig-k", String(rig.offsetWidth / 1600));
+    const fit = () => {
+      const k = rig.offsetWidth / 1600;
+      rigKRef.current = k || 1;
+      rig.style.setProperty("--rig-k", String(k));
+    };
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(rig);
@@ -217,6 +221,9 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     if (!root) return;
 
     const ctx = gsap.context(() => {
+      if (gateRef.current) {
+        gsap.set(gateRef.current, { y: 0, yPercent: (1 + LINTEL) * 100, force3D: true });
+      }
       gsap.to(".k-lights", { opacity: 0, duration: 0.6, ease: "power2.out", delay: 0.1 });
       gsap.delayedCall(1.2, () => {
         if (enteredRef.current) return;
@@ -227,12 +234,12 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
       // one timeline holds every looping layer, so braking is one timeScale ramp
       const d = gsap.timeline();
-      d.to(".k-rails", { y: -RAIL_TILE, duration: RAIL_TILE / DESCENT_SPEED, ease: "none", repeat: -1 }, 0);
-      d.to(".k-beams", { y: -BEAM_TILE, duration: BEAM_TILE / DESCENT_SPEED, ease: "none", repeat: -1 }, 0);
+      d.to(".k-rails", { y: -RAIL_TILE, duration: RAIL_TILE / DESCENT_SPEED, ease: "none", repeat: -1, force3D: true }, 0);
+      d.to(".k-beams", { y: -BEAM_TILE, duration: BEAM_TILE / DESCENT_SPEED, ease: "none", repeat: -1, force3D: true }, 0);
       // the cab rides the guide rails with a fine, constant rumble
       d.to(
         ".k-cab",
-        { y: () => gsap.utils.random(-1.2, 1.2), duration: 0.06, ease: "steps(1)", repeat: -1, repeatRefresh: true },
+        { y: () => gsap.utils.random(-1.2, 1.2), duration: 0.06, ease: "steps(1)", repeat: -1, repeatRefresh: true, force3D: true },
         0,
       );
       descentRef.current = d;
@@ -403,16 +410,16 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
     // 1. brake: the gate covers one screen height while the speed falls
     // linearly to zero, so that distance takes 2H / v
-    const rise = gate.getBoundingClientRect().height * (1 + LINTEL);
+    const rise = rigKRef.current * 900 * (1 + LINTEL);
     const brake = gsap.utils.clamp(1.4, 3.6, (2 * rise) / DESCENT_SPEED);
     const descent = descentRef.current;
     if (descent) tl.to(descent, { timeScale: 0, duration: brake, ease: "none" }, 0);
-    tl.fromTo(gate, { y: 0, yPercent: (1 + LINTEL) * 100 }, { yPercent: 0, duration: brake, ease: "power1.out" }, 0);
+    tl.fromTo(gate, { y: 0, yPercent: (1 + LINTEL) * 100 }, { yPercent: 0, duration: brake, ease: "power1.out", force3D: true }, 0);
     const status = overlayRef.current?.querySelector<HTMLElement>(".k-status") ?? null;
     if (status) tl.add(decodeTween(status, { duration: 0.4, text: "BRAKING" }), 0.05);
     tl.call(sfx(() => hudAudio.brake(brake)), [], 0.05);
     // deceleration presses you down: the view sags while the car slows
-    tl.to(".k-sway", { y: 8, duration: brake * 0.6, ease: "power2.out" }, 0);
+    tl.to(".k-sway", { y: 8, duration: brake * 0.6, ease: "power2.out", force3D: true }, 0);
 
     // 2. dock: everything behind the gate is struck; it will open onto the
     // live world, with AERA in paper white waiting at the centre
@@ -471,6 +478,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
     // the box. Near wall edges sweep past fast, the doorway grows slower,
     // and a footstep bob rides on the camera, not on the cab.
     const walk = cabOpen + 0.85;
+    tl.set([gate, ".k-lintel"], { visibility: "hidden" }, walk);
     // the world camera moves with you, from the arrival pose to rest
     tl.call(() => arrive(2.2, MOTION.servo), [], walk);
     // once you step out there is nothing left to skip; clear the corner for the site header
@@ -657,7 +665,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
       </div>
 
       {/* everything that moves with the car: the view sags and bounces as one */}
-      <div className="k-sway pointer-events-none absolute inset-0 z-[120]">
+      <div className="k-sway pointer-events-none absolute inset-0 z-[120] will-change-transform">
         {/* Earth, far enough away that the descent never moves it; placed in
             screen space to match the hero's WebGL Earth (see the layout effect) */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -668,7 +676,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
           aria-hidden="true"
           draggable={false}
           className="k-earth k-scene absolute left-0 top-0 max-w-none select-none"
-          style={{ filter: `brightness(${EARTH_DIM})` }}
+          style={{ opacity: EARTH_DIM }}
         />
         <div
           ref={rigRef}
@@ -687,7 +695,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
             ))}
             {/* cross girders: full-width bands that sweep past the window */}
             <div
-              className="k-beams absolute inset-x-0 top-0"
+              className="k-beams absolute inset-x-0 top-0 will-change-transform"
               style={{
                 height: `calc(100% + ${BEAM_TILE}px)`,
                 backgroundImage: girderSkin,
@@ -697,7 +705,7 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
             {/* guide rails just inside the window edges, the right one mirrored */}
             {["left-[30%]", "right-[30%] -scale-x-100"].map((pos) => (
               <div key={pos} className={`absolute inset-y-0 ${pos} w-[7%] overflow-hidden`}>
-                <div className="k-rails absolute inset-x-0 top-0" style={{ height: `calc(100% + ${RAIL_TILE}px)`, ...railSkin }}>
+                <div className="k-rails absolute inset-x-0 top-0 will-change-transform" style={{ height: `calc(100% + ${RAIL_TILE}px)`, ...railSkin }}>
                   {/* marker lamps on the beam face */}
                   <div
                     className="absolute inset-y-0 left-[74%] w-[6%]"
@@ -712,52 +720,50 @@ export function Loader({ onDone, onWaiting }: { onDone: () => void; onWaiting?: 
 
           {/* the cab: a 3D box on a 1600x900 stage scaled to the rig */}
           <div
-            className="k-cab absolute left-0 top-0 h-[900px] w-[1600px] origin-top-left"
+            className="k-cab absolute left-0 top-0 h-[900px] w-[1600px] origin-top-left will-change-transform"
             aria-hidden="true"
-            style={{ scale: "var(--rig-k, 1)", perspective: CAB_PERSPECTIVE, perspectiveOrigin: "800px 430px" }}
+            style={{ scale: "var(--rig-k, 1)" }}
           >
-            {/* the camera: everything in the box moves together when you walk */}
-            <div className="k-cam absolute inset-0" style={{ transformStyle: "preserve-3d", ["--rig-k" as string]: 1 }}>
-              {/* the airtight gate, just beyond the door: parked below until the car brakes */}
+            {/* the airtight gate, just beyond the door: kept on a flat 2D layer behind the 3D stage to avoid 3D plane-splitting */}
+            <div
+              ref={gateRef}
+              className="absolute inset-0 will-change-transform"
+              style={{ transform: `translate3d(0, ${(1 + LINTEL) * 100}%, 0)`, ["--rig-k" as string]: 1 }}
+            >
+              {/* lintel: a heavy extruded header with a hazard band, leads the gate up into view */}
               <div
-                className="absolute inset-0"
-                style={{ transform: `translateZ(-${GATE_GAP}px) scale(${(CAB_PERSPECTIVE + GATE_GAP) / CAB_PERSPECTIVE})` }}
+                className="k-lintel absolute inset-x-0 bottom-full"
+                style={{
+                  height: `${LINTEL * 100}%`,
+                  background: GUN,
+                  boxShadow: `inset 0 4px 0 ${GUN_TOP}, inset 0 -34px 0 ${GUN_BOTTOM}`,
+                }}
               >
                 <div
-                  ref={gateRef}
-                  className="absolute inset-0"
-                  style={{ transform: `translateY(${(1 + LINTEL) * 100}%)` }}
-                >
-                  {/* lintel: a heavy extruded header with a hazard band, leads the gate up into view */}
-                  <div
-                    className="k-lintel absolute inset-x-0 bottom-full"
-                    style={{
-                      height: `${LINTEL * 100}%`,
-                      background: GUN,
-                      boxShadow: `inset 0 4px 0 ${GUN_TOP}, inset 0 -34px 0 ${GUN_BOTTOM}`,
-                    }}
-                  >
-                    <div
-                      className="absolute inset-x-0 bottom-[10px] h-[24px]"
-                      style={{ backgroundImage: `repeating-linear-gradient(-45deg, ${INK} 0 12px, ${POSTER} 12px 24px)` }}
-                    />
-                    <div className="absolute left-[8%] right-[8%] top-[30%] h-[3px]" style={{ background: POSTER }} />
-                  </div>
-                  <div className="absolute inset-0 overflow-hidden">
-                    {/* port door sits above starboard: its latch slides out over the seam */}
-                    <div className="k-door-l absolute inset-y-0 left-0 z-[2] w-1/2" style={{ background: GUN_DEEP }}>
-                      <DoorFace side="l" />
-                    </div>
-                    <div className="k-door-r absolute inset-y-0 right-0 z-[1] w-1/2 overflow-hidden" style={{ background: GUN_DEEP }}>
-                      <DoorFace side="r" />
-                    </div>
-                  </div>
+                  className="absolute inset-x-0 bottom-[10px] h-[24px]"
+                  style={{ backgroundImage: `repeating-linear-gradient(-45deg, ${INK} 0 12px, ${POSTER} 12px 24px)` }}
+                />
+                <div className="absolute left-[8%] right-[8%] top-[30%] h-[3px]" style={{ background: POSTER }} />
+              </div>
+              <div className="absolute inset-0 overflow-hidden">
+                {/* port door sits above starboard: its latch slides out over the seam */}
+                <div className="k-door-l absolute inset-y-0 left-0 z-[2] w-1/2 will-change-transform" style={{ background: GUN_DEEP }}>
+                  <DoorFace side="l" />
+                </div>
+                <div className="k-door-r absolute inset-y-0 right-0 z-[1] w-1/2 overflow-hidden will-change-transform" style={{ background: GUN_DEEP }}>
+                  <DoorFace side="r" />
                 </div>
               </div>
+            </div>
 
-              <CabRoom />
-              {/* the front wall: header and door leaves, at z=0 */}
-              <CabFront />
+            {/* 3D perspective stage isolated from .k-cab's 2D rumble transform */}
+            <div className="absolute inset-0" style={{ perspective: CAB_PERSPECTIVE, perspectiveOrigin: "800px 430px" }}>
+              {/* the camera: everything in the box moves together when you walk */}
+              <div className="k-cam absolute inset-0 will-change-transform" style={{ transformStyle: "preserve-3d", ["--rig-k" as string]: 1 }}>
+                <CabRoom />
+                {/* the front wall: header and door leaves, at z=0 */}
+                <CabFront />
+              </div>
             </div>
           </div>
         </div>
@@ -902,9 +908,10 @@ function Vents({ x, y, n, len }: { x: number; y: number; n: number; len: number 
  * starboard door mirrors it. The port door carries the sliding lock; the
  * starboard door carries its keepers.
  */
-function DoorFace({ side }: { side: "l" | "r" }) {
+const DoorFace = memo(function DoorFace({ side }: { side: "l" | "r" }) {
   const port = side === "l";
   const flip = !port;
+  const dx = port ? 4 : -4;
 
   return (
     <div className={`k-door-inner-${side} absolute inset-0`}>
@@ -919,16 +926,14 @@ function DoorFace({ side }: { side: "l" | "r" }) {
             <rect width={24} height={24} fill={POSTER} />
             <rect width={12} height={24} fill={INK} />
           </pattern>
-          <filter id={`k-drop-${side}`} x="-10%" y="-10%" width="130%" height="140%">
-            <feDropShadow dx={port ? 4 : -4} dy={10} stdDeviation={7} floodColor="#000" floodOpacity={0.6} />
-          </filter>
         </defs>
 
         <rect x={-10} y={-10} width={620} height={1020} fill={GUN_DEEP} />
 
         {/* armour plates: extruded, some vented, some carrying an emissive strip */}
         {TILES.map(({ x, y }, i) => (
-          <g key={`${x}-${y}`} filter={`url(#k-drop-${side})`}>
+          <g key={`${x}-${y}`}>
+            <rect x={x + dx} y={y + 10} width={TILE_W} height={TILE_H} rx={3} fill="#000" opacity={0.48} />
             <Plate x={x} y={y} w={TILE_W} h={TILE_H} b={9} flip={flip} />
             {i % 3 === 0 && <Vents x={x + 26} y={y + 40} n={5} len={TILE_W - 52} />}
             {i % 4 === 1 && <rect x={x + 22} y={y + 26} width={TILE_W - 44} height={3} fill={POSTER} />}
@@ -955,7 +960,8 @@ function DoorFace({ side }: { side: "l" | "r" }) {
           const crown = vert ? `translate(${port ? -off : off} 0)` : `translate(0 ${-off})`;
           const belly = vert ? `translate(${port ? off : -off} 0)` : `translate(0 ${off})`;
           return (
-            <g key={d} fill="none" filter={`url(#k-drop-${side})`}>
+            <g key={d} fill="none">
+              <path d={d} transform={`translate(${dx} 10)`} stroke="#000" strokeOpacity={0.48} strokeWidth={w + 2} />
               <path d={d} stroke="#2e3139" strokeWidth={w} />
               <path d={d} transform={belly} stroke="#15161a" strokeWidth={w / 2} />
               <path d={d} transform={crown} stroke={GUN_EDGE} strokeWidth={2.5} />
@@ -972,14 +978,17 @@ function DoorFace({ side }: { side: "l" | "r" }) {
           );
         })}
         {STRAPS.map((x) => (
-          <g key={x} filter={`url(#k-drop-${side})`}>
+          <g key={x}>
+            <rect x={x - 9 + dx} y={434} width={18} height={152} rx={2} fill="#000" opacity={0.48} />
             <Plate x={x - 9} y={424} w={18} h={152} b={4} flip={flip} />
           </g>
         ))}
 
         {/* hydraulic rams: ribbed cylinder, collars, machined rod into the sill */}
         {RAMS.map((y) => (
-          <g key={y} filter={`url(#k-drop-${side})`}>
+          <g key={y}>
+            <rect x={300 + dx} y={y - 12} width={170} height={44} rx={2} fill="#000" opacity={0.48} />
+            <rect x={470 + dx} y={y + 2} width={HAZARD_X - 470} height={16} fill="#000" opacity={0.48} />
             <rect x={300} y={y - 20} width={170} height={40} fill="#2e3139" />
             <rect x={300} y={y - 20} width={170} height={7} fill={GUN_TOP} />
             <rect x={300} y={y + 10} width={170} height={10} fill="#15161a" />
@@ -1014,11 +1023,12 @@ function DoorFace({ side }: { side: "l" | "r" }) {
                 style={{ backgroundImage: `repeating-linear-gradient(90deg, #b9bdc7 0 5px, transparent 5px 9px)` }}
               />
             </div>
-            {/* pinion, meshing with the rack */}
+            {/* pinion shadow & wheel, meshing with the rack */}
+            <div className="pointer-events-none absolute left-[38px] top-[10px] h-[44px] w-[44px] rounded-full bg-black/50" />
             <svg
               viewBox="0 0 52 52"
-              className="k-gear absolute left-[34px] top-[6px] h-[52px] w-[52px]"
-              style={{ transform: `rotate(${GEAR_TURN}deg)`, filter: "drop-shadow(0 4px 4px rgba(0,0,0,0.6))" }}
+              className="k-gear absolute left-[34px] top-[6px] h-[52px] w-[52px] will-change-transform"
+              style={{ transform: `rotate(${GEAR_TURN}deg)` }}
             >
               {Array.from({ length: 12 }, (_, i) => (
                 <rect key={i} x={23} y={1} width={6} height={9} fill={STEEL} transform={`rotate(${i * 30} 26 26)`} />
@@ -1068,7 +1078,7 @@ function DoorFace({ side }: { side: "l" | "r" }) {
       )}
     </div>
   );
-}
+});
 
 /** a dark drop shadow under floating HUD text, so it reads over any part of the cab */
 const FLOAT_SHADOW = "0 2px 8px rgba(0,0,0,0.75), 0 1px 1px rgba(0,0,0,0.9)";
@@ -1137,10 +1147,7 @@ const svgUrl = (w: number, h: number, body: string) =>
  * door-facing wall on the left, overhanging camera-side lip on the right, shaded
  * top reveal and lit bottom ledge) plus soft Gaussian occlusion shadows.
  */
-const WALL_TEXTURE = svgUrl(
-  CAB_DEPTH,
-  740,
-  `<defs>
+const WALL_BODY = `<defs>
     <linearGradient id='w-recess-x' x1='1' y1='0' x2='0' y2='0'>
       <stop offset='0' stop-color='#000' stop-opacity='0.32'/>
       <stop offset='0.14' stop-color='#000' stop-opacity='0'/>
@@ -1219,7 +1226,13 @@ const WALL_TEXTURE = svgUrl(
   <path d='M130 440 L148 454 V704 L130 720 Z' fill='#2c3231'/>
   <path d='M148 704 H282 L316 670 L330 680 L290 720 H130 Z' fill='#3d4443'/>
   <path d='M100 0 V740 M360 0 V740' stroke='${LINE}' stroke-width='3'/>
-  <rect width='${CAB_DEPTH}' height='740' fill='url(#ao)'/>`,
+  <rect width='${CAB_DEPTH}' height='740' fill='url(#ao)'/>`;
+
+const WALL_TEXTURE = svgUrl(CAB_DEPTH, 740, WALL_BODY);
+const WALL_TEXTURE_LEFT = svgUrl(
+  CAB_DEPTH,
+  740,
+  `${WALL_BODY}<rect width='${CAB_DEPTH}' height='740' fill='#000' opacity='0.14'/>`,
 );
 /**
  * Ceiling texture (800x600), local y 0 at the door, camera at x=400, y > 600:
@@ -1387,10 +1400,7 @@ const REVEALS: Record<"l" | "r", { a: number[]; b: number[]; shade: string }[]> 
  * every recess shows its wide door-facing left reveal wall, shaded top reveal wall
  * (above eye level) or lit bottom reveal ledge (below eye level), and drop shadows.
  */
-const PILLAR_FACE = svgUrl(
-  260,
-  740,
-  `<defs>
+const PILLAR_BODY = `<defs>
     <linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>
       <stop offset='0' stop-color='${PILLAR_HI}'/>
       <stop offset='1' stop-color='${PILLAR}'/>
@@ -1435,7 +1445,13 @@ const PILLAR_FACE = svgUrl(
   <path d='M62 590 H206 V662 L182 686 H62 Z' fill='${PILLAR}' stroke='${LINE}' stroke-width='2'/>
   <path d='M64 592 H204 V597 H64 Z' fill='${PILLAR_HI}'/>
   <path d='M62 590 L68 596 V680 L62 686 Z' fill='#464d4c'/>
-  <path d='M0 0 V740 M260 0 V740' stroke='${LINE}' stroke-width='3'/>`,
+  <path d='M0 0 V740 M260 0 V740' stroke='${LINE}' stroke-width='3'/>`;
+
+const PILLAR_FACE = svgUrl(260, 740, PILLAR_BODY);
+const PILLAR_FACE_LEFT = svgUrl(
+  260,
+  740,
+  `${PILLAR_BODY}<rect width='260' height='740' fill='#000' opacity='0.14'/>`,
 );
 /** pillar boxes stand proud of each wall over this depth range */
 const PILLAR_BOX = { z0: 100, z1: 360, proud: 70 };
@@ -1447,7 +1463,7 @@ const BEAMS = [
 const BEAM_DROP = 40;
 
 /** Walls, ceiling and floor as sliced planes running from the door plane toward the camera */
-function CabRoom() {
+const CabRoom = memo(function CabRoom() {
   const slices = Array.from({ length: SLICES }, (_, i) => i);
   return (
     <>
@@ -1464,11 +1480,9 @@ function CabRoom() {
               height: 740,
               transformOrigin: "0 50%",
               transform: `rotateY(-90deg) translateX(${i * SLICE}px)`,
-              backgroundImage: WALL_TEXTURE,
+              backgroundImage: left === 400 ? WALL_TEXTURE_LEFT : WALL_TEXTURE,
               backgroundSize: `${CAB_DEPTH}px 740px`,
               backgroundPosition: `${-i * SLICE}px 0`,
-              // the left wall faces away from the light
-              filter: left === 400 ? "brightness(0.86)" : undefined,
             }}
           >
             {/* call panel beside the door, on the right wall's first slice */}
@@ -1525,9 +1539,9 @@ function CabRoom() {
 
       {/* pillar boxes standing proud of each wall: an inner face and the end facing you */}
       {[
-        { wall: 400, inner: 400 + PILLAR_BOX.proud, shade: "brightness(0.86)" },
-        { wall: 1200, inner: 1200 - PILLAR_BOX.proud, shade: undefined },
-      ].map(({ wall, inner, shade }) => (
+        { wall: 400, inner: 400 + PILLAR_BOX.proud, face: PILLAR_FACE_LEFT, dimEnd: true },
+        { wall: 1200, inner: 1200 - PILLAR_BOX.proud, face: PILLAR_FACE, dimEnd: false },
+      ].map(({ wall, inner, face, dimEnd }) => (
         // a fragment, not a wrapper: a plain div would flatten the 3D faces onto the door plane
         <Fragment key={wall}>
           <div
@@ -1540,8 +1554,7 @@ function CabRoom() {
               height: 740,
               transformOrigin: "0 0",
               transform: `rotateY(-90deg) translateX(${PILLAR_BOX.z0}px)`,
-              backgroundImage: PILLAR_FACE,
-              filter: shade,
+              backgroundImage: face,
             }}
           />
           <div
@@ -1553,11 +1566,10 @@ function CabRoom() {
               width: PILLAR_BOX.proud,
               height: 740,
               transform: `translateZ(${PILLAR_BOX.z1}px)`,
-              background: `linear-gradient(180deg, transparent 0 380px, ${PILLAR_LO} 380px 393px, ${BRASS} 393px 398px, ${PILLAR_LO} 398px 414px, transparent 414px), linear-gradient(90deg, ${PILLAR_HI} 0 8px, ${PILLAR} 8px 18px, #161a19 18px 22px, #262b2a 22px calc(100% - 22px), #464d4c calc(100% - 22px) calc(100% - 18px), ${PILLAR} calc(100% - 18px) calc(100% - 10px), ${PILLAR_LO} calc(100% - 10px))`,
+              background: `${dimEnd ? "linear-gradient(rgba(0,0,0,0.14), rgba(0,0,0,0.14)), " : ""}linear-gradient(180deg, transparent 0 380px, ${PILLAR_LO} 380px 393px, ${BRASS} 393px 398px, ${PILLAR_LO} 398px 414px, transparent 414px), linear-gradient(90deg, ${PILLAR_HI} 0 8px, ${PILLAR} 8px 18px, #161a19 18px 22px, #262b2a 22px calc(100% - 22px), #464d4c calc(100% - 22px) calc(100% - 18px), ${PILLAR} calc(100% - 18px) calc(100% - 10px), ${PILLAR_LO} calc(100% - 10px))`,
               borderLeft: `3px solid ${LINE}`,
               borderRight: `3px solid ${LINE}`,
               boxShadow: "inset 0 6px 0 #4d5453, inset 0 -10px 0 #141817",
-              filter: shade,
             }}
           />
         </Fragment>
@@ -1622,7 +1634,7 @@ function CabRoom() {
       )}
     </>
   );
-}
+});
 
 /**
  * A 3D counter-sunk bolt socket: the outer rim sits on the plate face (z0),
@@ -1736,7 +1748,7 @@ function CabLeaf({ side }: { side: "l" | "r" }) {
           <path d={WINDOW_TRIM} fill="none" stroke={BRASS} strokeWidth={3.5} />
         </g>
         {/* the crossbar's cast shadow on the frame below it */}
-        <rect x={500} y={690} width={600} height={26} rx={10} fill="#000" opacity={0.34} filter="url(#k-soft)" />
+        <rect x={500} y={688} width={600} height={28} rx={10} fill="url(#k-soft-grad)" />
       </g>
 
       {/* crossbar: 3D top face, bottom underside face, and outer end face (z = 0 -> BAR_PROUD) */}
@@ -1794,104 +1806,109 @@ function CabLeaf({ side }: { side: "l" | "r" }) {
 }
 
 /** The front wall at z=0: the two door leaves under a 3D header with recessed louver bays and a proud status housing */
-function CabFront() {
+const CabFront = memo(function CabFront() {
   return (
-    <svg viewBox="0 0 1600 900" className="absolute inset-0 h-full w-full overflow-visible">
-      <defs>
-        <clipPath id="k-pocket">
-          <rect x={400} y={60} width={800} height={760} />
-        </clipPath>
-        <linearGradient id="k-plate" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor={FRAME_HI} />
-          <stop offset="0.35" stopColor={FRAME_C} />
-          <stop offset="1" stopColor="#b3b8b7" />
-        </linearGradient>
-        <filter id="k-soft" x="-20%" y="-100%" width="140%" height="300%">
-          <feGaussianBlur stdDeviation={6} />
-        </filter>
-      </defs>
+    <>
+      <svg viewBox="0 0 1600 900" className="absolute inset-0 h-full w-full overflow-visible">
+        <defs>
+          <clipPath id="k-pocket">
+            <rect x={400} y={60} width={800} height={760} />
+          </clipPath>
+          <linearGradient id="k-plate" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={FRAME_HI} />
+            <stop offset="0.35" stopColor={FRAME_C} />
+            <stop offset="1" stopColor="#b3b8b7" />
+          </linearGradient>
+          <linearGradient id="k-soft-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#000" stopOpacity="0.38" />
+            <stop offset="0.55" stopColor="#000" stopOpacity="0.2" />
+            <stop offset="1" stopColor="#000" stopOpacity="0" />
+          </linearGradient>
+        </defs>
 
-      {/* the leaves slide into wall pockets: clipped to the doorway */}
-      <g clipPath="url(#k-pocket)">
-        <CabLeaf side="l" />
-        <CabLeaf side="r" />
-      </g>
-
-      {/* header: its shadow on the door, the underside, then the face toward you */}
-      <rect x={400} y={112} width={800} height={18} fill="#000" opacity={0.32} filter="url(#k-soft)" clipPath="url(#k-pocket)" />
-      <path d={faceQuad([400, 112], [1200, 112], 0, HEADER_PROUD)} fill={PILLAR_LO} stroke={LINE} strokeWidth={2} />
-      <g transform={atDepth(HEADER_PROUD)}>
-        <rect x={400} y={60} width={800} height={52} fill={PILLAR} stroke={LINE} strokeWidth={2.5} />
-        <rect x={400} y={60} width={800} height={6} fill={PILLAR_HI} />
-        <rect x={400} y={104} width={800} height={3} fill={BRASS} />
-      </g>
-
-      {/* 3D recessed louver vent bays carved into the header wings (z = HEADER_PROUD -> 10) */}
-      {[
-        { x0: 458, x1: 586, innerX: 458 },
-        { x0: 1014, x1: 1142, innerX: 1142 },
-      ].map(({ x0, x1, innerX }) => (
-        <g key={x0}>
-          <g transform={atDepth(10)}>
-            <rect x={x0} y={70} width={x1 - x0} height={28} fill="#0d100f" />
-          </g>
-          {[77, 86].map((vy) => (
-            <path
-              key={vy}
-              d={faceQuad([x0, vy], [x1, vy], HEADER_PROUD - 2, 12)}
-              fill={PILLAR_HI}
-              stroke={LINE}
-              strokeWidth={1.2}
-            />
-          ))}
-          <path d={faceQuad([x0, 70], [x1, 70], HEADER_PROUD, 10)} fill="#090b0b" stroke={LINE} strokeWidth={1.5} />
-          <path d={faceQuad([innerX, 70], [innerX, 98], HEADER_PROUD, 10)} fill={PILLAR_LO} stroke={LINE} strokeWidth={1.5} />
-          <g transform={atDepth(HEADER_PROUD)}>
-            <rect x={x0} y={70} width={x1 - x0} height={28} fill="none" stroke={LINE} strokeWidth={2} />
-            <path d={`M ${x0} 99 H ${x1}`} stroke={PILLAR_HI} strokeWidth={1.5} />
-          </g>
+        {/* the leaves slide into wall pockets: clipped to the doorway */}
+        <g clipPath="url(#k-pocket)">
+          <CabLeaf side="l" />
+          <CabLeaf side="r" />
         </g>
-      ))}
-      <Bolt x={426} y={84} r={6} z0={HEADER_PROUD} />
-      <Bolt x={1174} y={84} r={6} z0={HEADER_PROUD} />
 
-      {/* central status housing: extruded proud from z = HEADER_PROUD (30) out to z = 46 */}
-      <g transform={atDepth(HEADER_PROUD)}>
-        <rect x={618} y={72} width={364} height={36} rx={10} fill="#000" opacity={0.32} />
-      </g>
-      <path d={faceQuad([624, 102], [976, 102], HEADER_PROUD, 46)} fill="#0a0c0c" stroke={LINE} strokeWidth={2} />
-      <path d={faceQuad([620, 72], [620, 96], HEADER_PROUD, 46)} fill={PILLAR_LO} stroke={LINE} strokeWidth={1.5} />
-      <path d={faceQuad([980, 72], [980, 96], HEADER_PROUD, 46)} fill="#141817" stroke={LINE} strokeWidth={1.5} />
-      <g transform={atDepth(46)}>
-        <rect x={620} y={66} width={360} height={36} rx={10} fill={PILLAR_LO} stroke={LINE} strokeWidth={2.5} />
-        <path d="M 630 68.5 H 970" stroke={PILLAR_HI} strokeWidth={2} />
-        <circle cx={636} cy={84} r={3.5} fill={POSTER} stroke={LINE} strokeWidth={1.5} />
-        <circle cx={964} cy={84} r={3.5} fill={BRASS} stroke={LINE} strokeWidth={1.5} />
-      </g>
+        {/* header: its shadow on the door, the underside, then the face toward you */}
+        <rect x={400} y={112} width={800} height={22} fill="url(#k-soft-grad)" clipPath="url(#k-pocket)" />
+        <path d={faceQuad([400, 112], [1200, 112], 0, HEADER_PROUD)} fill={PILLAR_LO} stroke={LINE} strokeWidth={2} />
+        <g transform={atDepth(HEADER_PROUD)}>
+          <rect x={400} y={60} width={800} height={52} fill={PILLAR} stroke={LINE} strokeWidth={2.5} />
+          <rect x={400} y={60} width={800} height={6} fill={PILLAR_HI} />
+          <rect x={400} y={104} width={800} height={3} fill={BRASS} />
+        </g>
 
-      {/* status display screen well: recessed deep from z = 46 back to z = 22 */}
-      <g transform={atDepth(22)}>
-        <rect x={652} y={72} width={296} height={24} rx={3} fill="#0e1211" />
-        <text
-          className="k-status font-mono"
-          x={800}
-          y={89}
-          textAnchor="middle"
-          fontSize={15}
-          fontWeight={800}
-          letterSpacing={4}
-          fill={POSTER}
+        {/* 3D recessed louver vent bays carved into the header wings (z = HEADER_PROUD -> 10) */}
+        {[
+          { x0: 458, x1: 586, innerX: 458 },
+          { x0: 1014, x1: 1142, innerX: 1142 },
+        ].map(({ x0, x1, innerX }) => (
+          <g key={x0}>
+            <g transform={atDepth(10)}>
+              <rect x={x0} y={70} width={x1 - x0} height={28} fill="#0d100f" />
+            </g>
+            {[77, 86].map((vy) => (
+              <path
+                key={vy}
+                d={faceQuad([x0, vy], [x1, vy], HEADER_PROUD - 2, 12)}
+                fill={PILLAR_HI}
+                stroke={LINE}
+                strokeWidth={1.2}
+              />
+            ))}
+            <path d={faceQuad([x0, 70], [x1, 70], HEADER_PROUD, 10)} fill="#090b0b" stroke={LINE} strokeWidth={1.5} />
+            <path d={faceQuad([innerX, 70], [innerX, 98], HEADER_PROUD, 10)} fill={PILLAR_LO} stroke={LINE} strokeWidth={1.5} />
+            <g transform={atDepth(HEADER_PROUD)}>
+              <rect x={x0} y={70} width={x1 - x0} height={28} fill="none" stroke={LINE} strokeWidth={2} />
+              <path d={`M ${x0} 99 H ${x1}`} stroke={PILLAR_HI} strokeWidth={1.5} />
+            </g>
+          </g>
+        ))}
+        <Bolt x={426} y={84} r={6} z0={HEADER_PROUD} />
+        <Bolt x={1174} y={84} r={6} z0={HEADER_PROUD} />
+
+        {/* central status housing: extruded proud from z = HEADER_PROUD (30) out to z = 46 */}
+        <g transform={atDepth(HEADER_PROUD)}>
+          <rect x={618} y={72} width={364} height={36} rx={10} fill="#000" opacity={0.32} />
+        </g>
+        <path d={faceQuad([624, 102], [976, 102], HEADER_PROUD, 46)} fill="#0a0c0c" stroke={LINE} strokeWidth={2} />
+        <path d={faceQuad([620, 72], [620, 96], HEADER_PROUD, 46)} fill={PILLAR_LO} stroke={LINE} strokeWidth={1.5} />
+        <path d={faceQuad([980, 72], [980, 96], HEADER_PROUD, 46)} fill="#141817" stroke={LINE} strokeWidth={1.5} />
+        <g transform={atDepth(46)}>
+          <rect x={620} y={66} width={360} height={36} rx={10} fill={PILLAR_LO} stroke={LINE} strokeWidth={2.5} />
+          <path d="M 630 68.5 H 970" stroke={PILLAR_HI} strokeWidth={2} />
+          <circle cx={636} cy={84} r={3.5} fill={POSTER} stroke={LINE} strokeWidth={1.5} />
+          <circle cx={964} cy={84} r={3.5} fill={BRASS} stroke={LINE} strokeWidth={1.5} />
+        </g>
+
+        {/* status display screen well: recessed deep from z = 46 back to z = 22 */}
+        <g transform={atDepth(22)}>
+          <rect x={652} y={72} width={296} height={24} rx={3} fill="#0e1211" />
+        </g>
+        <path d={faceQuad([652, 72], [948, 72], 46, 22)} fill="#050706" stroke={LINE} strokeWidth={1.2} />
+        <path d={faceQuad([652, 72], [652, 96], 46, 22)} fill="#181d1c" stroke={LINE} strokeWidth={1.2} />
+        <path d={faceQuad([948, 72], [948, 96], 46, 22)} fill="#181d1c" stroke={LINE} strokeWidth={1.2} />
+        <g transform={atDepth(46)}>
+          <rect x={652} y={72} width={296} height={24} rx={4} fill="none" stroke={LINE} strokeWidth={2} />
+          <path d="M 655 96.5 H 945" stroke={PILLAR_HI} strokeWidth={1.5} />
+        </g>
+      </svg>
+
+      {/* Isolated HTML status label so decodeTween text mutations never re-rasterize the 1600x900 CabFront SVG */}
+      <div
+        className="pointer-events-none absolute left-[648px] top-[63px] flex h-[25px] w-[304px] items-center justify-center"
+        style={{ contain: "layout paint" }}
+      >
+        <span
+          className="k-status font-mono text-[15px] font-extrabold leading-none tracking-[4px]"
+          style={{ color: POSTER }}
         >
           DESCENDING
-        </text>
-      </g>
-      <path d={faceQuad([652, 72], [948, 72], 46, 22)} fill="#050706" stroke={LINE} strokeWidth={1.2} />
-      <path d={faceQuad([652, 72], [652, 96], 46, 22)} fill="#181d1c" stroke={LINE} strokeWidth={1.2} />
-      <path d={faceQuad([948, 72], [948, 96], 46, 22)} fill="#181d1c" stroke={LINE} strokeWidth={1.2} />
-      <g transform={atDepth(46)}>
-        <rect x={652} y={72} width={296} height={24} rx={4} fill="none" stroke={LINE} strokeWidth={2} />
-        <path d="M 655 96.5 H 945" stroke={PILLAR_HI} strokeWidth={1.5} />
-      </g>
-    </svg>
+        </span>
+      </div>
+    </>
   );
-}
+});

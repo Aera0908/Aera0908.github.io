@@ -144,9 +144,8 @@ class HudAudio {
     this.tone({ from: 160, to: 110, type: "sine", peak: 0.06, decay: 0.12, delay: duration - 0.04 });
   }
 
-  /** Brakes: a magnetic whine falling in pitch over a friction hiss that eases off with it. */
+  /** Brakes: a hydraulic friction hiss that eases off as the car slows. */
   brake(duration = 2): void {
-    this.sweep({ kind: "sine", duration, from: 880, to: 220, q: 0, peak: 0.028 });
     this.sweep({ kind: "noise", duration, from: 3600, to: 1400, q: 1.4, peak: 0.035 });
   }
 
